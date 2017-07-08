@@ -96,6 +96,34 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1C2CA0151F10A4E50085B662 /* GUI */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = GUI;
+			sourceTree = "<group>";
+		};
+		1C2CA0161F10A4F70085B662 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Data;
+			sourceTree = "<group>";
+		};
+		1C2CA0171F10A5050085B662 /* UserTrack */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = UserTrack;
+			sourceTree = "<group>";
+		};
+		1C2CA0181F10A50B0085B662 /* AVEngine */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = AVEngine;
+			sourceTree = "<group>";
+		};
 		1C7E61761EE7DF4F0088F33F = {
 			isa = PBXGroup;
 			children = (
@@ -121,8 +149,12 @@
 		1C7E61811EE7DF4F0088F33F /* OneMinute */ = {
 			isa = PBXGroup;
 			children = (
-				1C7E61C01EE7E6640088F33F /* Log */,
 				1C7E61B51EE7E47C0088F33F /* Common */,
+				1C2CA0181F10A50B0085B662 /* AVEngine */,
+				1C2CA0171F10A5050085B662 /* UserTrack */,
+				1C2CA0161F10A4F70085B662 /* Data */,
+				1C2CA0151F10A4E50085B662 /* GUI */,
+				1C7E61C01EE7E6640088F33F /* Log */,
 				1C7E61851EE7DF4F0088F33F /* AppDelegate.h */,
 				1C7E61861EE7DF4F0088F33F /* AppDelegate.m */,
 				1C7E61881EE7DF4F0088F33F /* ViewController.h */,
