@@ -10,5 +10,7 @@
 #define DLY_PrefixHeader_pch
 
 #import "DLYCommon.h"
+#import "DLYLogModule.h"
+
 
 #endif /* DLY_PrefixHeader_pch */
