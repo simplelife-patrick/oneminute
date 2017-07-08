@@ -1,0 +1,30 @@
+
+platform :ios, '10.0'
+inhibit_all_warnings!
+
+def main_pods
+
+#pod 'pop'
+#pod 'Reachability'
+#pod 'MBProgressHUD'
+#pod 'YYKit'
+#pod 'Masonry'
+#pod 'fmdb'
+pod 'ZipArchive', '1.4.0'
+pod 'CocoaLumberjack', '3.2.0'
+
+########################调试##################################
+# 注意，发appstore的时候一定要全部移除掉
+#pod 'FLEX', '2.1.1-framework'
+#pod 'PFEasy', '1.0.1'
+#pod 'ATSDK', '0.2.1.56'
+#pod 'Reveal-iOS-SDK'
+#pod 'dyci'
+#pod 'DTFeedbackKit', '0.0.1-SNAPSHOT'
+###############################################################
+end
+
+target 'OneMinute' do
+    platform :ios, '10.0'
+    main_pods
+end
