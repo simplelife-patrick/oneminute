@@ -24,6 +24,7 @@
 		AD6557E51F133BAF00A2C95D /* DLYMiniVlogTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6557E41F133BAF00A2C95D /* DLYMiniVlogTemplate.m */; };
 		AD6557E81F133C7400A2C95D /* DLYMiniVlogPart.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6557E71F133C7400A2C95D /* DLYMiniVlogPart.m */; };
 		AD6557EA1F133D5C00A2C95D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD6557E91F133D5C00A2C95D /* CoreGraphics.framework */; };
+		AD6557F11F13892400A2C95D /* Universal_001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD6557F01F13892400A2C95D /* Universal_001.json */; };
 		FC0D0FE5F4D459BB4D13857E /* libPods-OneMinute.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C4410078F6FC633A4D50FCF1 /* libPods-OneMinute.a */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +82,7 @@
 		AD6557E61F133C7400A2C95D /* DLYMiniVlogPart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMiniVlogPart.h; sourceTree = "<group>"; };
 		AD6557E71F133C7400A2C95D /* DLYMiniVlogPart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMiniVlogPart.m; sourceTree = "<group>"; };
 		AD6557E91F133D5C00A2C95D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		AD6557F01F13892400A2C95D /* Universal_001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Universal_001.json; sourceTree = "<group>"; };
 		C4410078F6FC633A4D50FCF1 /* libPods-OneMinute.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OneMinute.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC05C70FE4A35674CFB74552 /* Pods-OneMinute.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneMinute.release.xcconfig"; path = "Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -250,6 +252,7 @@
 		AD6557D81F131D0E00A2C95D /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				AD6557EF1F13892400A2C95D /* Template */,
 				AD6557DC1F133AD300A2C95D /* Models */,
 			);
 			path = Data;
@@ -266,6 +269,14 @@
 				AD6557E11F133B8C00A2C95D /* DLYMiniVlogProduct.m */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		AD6557EF1F13892400A2C95D /* Template */ = {
+			isa = PBXGroup;
+			children = (
+				AD6557F01F13892400A2C95D /* Universal_001.json */,
+			);
+			path = Template;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -381,6 +392,7 @@
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
+				AD6557F11F13892400A2C95D /* Universal_001.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

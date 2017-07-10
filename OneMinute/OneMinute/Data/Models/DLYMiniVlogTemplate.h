@@ -42,7 +42,10 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTemplateType)
  模板详情
  */
 @property (nonatomic, strong) NSArray                 *parts;
-
+/**
+ 背景音乐
+ */
+@property (nonatomic, strong) NSURL                     *BGM;
 /**
  片头
  */

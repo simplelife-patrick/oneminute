@@ -61,9 +61,9 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTransitionType)
 @property (nonatomic, assign) CGFloat                   starTime;
 
 /**
- 时长
+ 终止时间
  */
-@property (nonatomic, assign) CGFloat                   duration;
+@property (nonatomic, assign) CGFloat                   stopTime;
 
 /**
  拍摄类型
@@ -73,17 +73,12 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTransitionType)
 /**
  音轨方案
  */
-@property (nonatomic, assign) DLYMiniVlogAudioType      *sound;
+@property (nonatomic, assign) DLYMiniVlogAudioType      *soundType;
 
 /**
  转场效果类型
  */
 @property (nonatomic, assign) DLYMiniVlogTransitionType *transitionType;
-
-/**
- 背景音乐
- */
-@property (nonatomic, strong) NSURL                     *BGM;
 
 /**
  字幕
