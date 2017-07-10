@@ -11,6 +11,7 @@
 
 #import "DLYCommon.h"
 #import "DLYLogModule.h"
+#import <CoreGraphics/CoreGraphics.h>
 
 
 #endif /* DLY_PrefixHeader_pch */
