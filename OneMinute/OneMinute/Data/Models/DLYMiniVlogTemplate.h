@@ -11,11 +11,11 @@
 /**
  模板类型
 
- - DLYTemplateUniversal: 通用
- - DLYTemplateGourmandism: 美食主义
- - DLYTemplateTraveler: 旅行家
- - DLYTemplateTypeScenery: 美景
- - DLYTemplateTypeHumanity: 人文
+ - DLYMiniVlogTemplateTypeUniversal: 通用
+ - DLYMiniVlogTemplateTypeGourmandism: 美食主义
+ - DLYMiniVlogTemplateTypeTraveler: 旅行家
+ - DLYMiniVlogTemplateTypeScenery: 美景
+ - DLYMiniVlogTemplateTypeHumanity: 人文
  */
 typedef NS_ENUM(NSInteger,DLYMiniVlogTemplateType)
 {
@@ -31,7 +31,7 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTemplateType)
 /**
  模板编号
  */
-@property (nonatomic, strong) NSString                *templateNum;
+@property (nonatomic, strong) NSString                        *templateNum;
 
 /**
  模板类型
@@ -41,19 +41,19 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTemplateType)
 /**
  模板详情
  */
-@property (nonatomic, strong) NSArray                 *parts;
+@property (nonatomic, strong) NSArray                         *parts;
 /**
  背景音乐
  */
-@property (nonatomic, strong) NSURL                     *BGM;
+@property (nonatomic, strong) NSURL                           *BGM;
 /**
  片头
  */
-@property (nonatomic, strong) NSURL                   *videoHeader;
+@property (nonatomic, strong) NSURL                           *videoHeader;
 
 /**
  片尾
  */
-@property (nonatomic, strong) NSURL                   *videoTail;
+@property (nonatomic, strong) NSURL                           *videoTail;
 
 @end
