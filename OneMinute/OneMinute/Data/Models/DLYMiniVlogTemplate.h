@@ -7,6 +7,7 @@
 //
 
 #import "DLYModule.h"
+#import "DLYMiniVlogPart.h"
 
 /**
  模板类型
@@ -31,17 +32,17 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTemplateType)
 /**
  模板编号
  */
-@property (nonatomic, strong) NSString                        *templateNum;
+@property (nonatomic, strong) NSString                        *templateId;
 
 /**
  模板类型
  */
-@property (nonatomic, assign) DLYMiniVlogTemplateType         *templateType;
+@property (nonatomic, assign) DLYMiniVlogTemplateType         templateType;
 
 /**
  模板详情
  */
-@property (nonatomic, strong) NSArray                         *parts;
+@property (nonatomic, strong) NSArray                         <DLYMiniVlogPart *>*parts;
 /**
  背景音乐
  */
@@ -54,6 +55,6 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTemplateType)
 /**
  片尾
  */
-@property (nonatomic, strong) NSURL                           *videoTail;
+@property (nonatomic, strong) NSURL                           *videoTailer;
 
 @end

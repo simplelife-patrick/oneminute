@@ -17,7 +17,7 @@
  */
 typedef NS_ENUM(NSInteger, DLYMiniVlogRecordType)
 {
-    DLYMiniVlogRecordTypeNormal,
+    DLYMiniVlogRecordTypeNormal = 0,
     DLYMiniVlogRecordTypeSlomo,
     DLYMiniVlogRecordTypeTimelapse
 };
@@ -31,7 +31,7 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogRecordType)
  */
 typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
 {
-    DLYMiniVlogAudioTypeNormal,
+    DLYMiniVlogAudioTypeNormal = 0,
     DLYMiniVlogAudioTypeNarrate,
     DLYMiniVlogAudioTypeMusic
 };
@@ -47,38 +47,39 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
  */
 typedef NS_ENUM(NSInteger,DLYMiniVlogTransitionType)
 {
-    DLYMiniVlogTransitionTypeDissolve,
+    DLYMiniVlogTransitionTypeDissolve = 0,
     DLYMiniVlogTransitionTypePush,
     DLYMiniVlogTransitionTypeClockwiseRotate,
     DLYMiniVlogTransitionTypeZoomIn,
     DLYMiniVlogTransitionTypeZoomOut
 };
+
 @interface DLYMiniVlogPart : DLYModule
 
 /**
  起始时间
  */
-@property (nonatomic, assign) CGFloat                   starTime;
+@property (nonatomic, strong) NSString                      *starTime;
 
 /**
  终止时间
  */
-@property (nonatomic, assign) CGFloat                   stopTime;
+@property (nonatomic, strong) NSString                      *stopTime;
 
 /**
  拍摄类型
  */
-@property (nonatomic, strong) NSString                  *recordType;
+@property (nonatomic, assign) DLYMiniVlogRecordType         recordType;
 
 /**
  音轨方案
  */
-@property (nonatomic, assign) DLYMiniVlogAudioType      *soundType;
+@property (nonatomic, assign) DLYMiniVlogAudioType          soundType;
 
 /**
  转场效果类型
  */
-@property (nonatomic, assign) DLYMiniVlogTransitionType *transitionType;
+@property (nonatomic, assign) DLYMiniVlogTransitionType     transitionType;
 
 /**
  字幕
