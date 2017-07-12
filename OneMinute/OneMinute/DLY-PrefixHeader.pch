@@ -9,6 +9,8 @@
 #ifndef DLY_PrefixHeader_pch
 #define DLY_PrefixHeader_pch
 
+#import <UIKit/UIKit.h>
+#import <AVFoundation/AVFoundation.h>
 #import "DLYCommon.h"
 #import "DLYLogModule.h"
 #import <CoreGraphics/CoreGraphics.h>

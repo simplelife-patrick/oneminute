@@ -1,0 +1,55 @@
+//
+//  DLYSession.m
+//  OneMinute
+//
+//  Created by chenzonghai on 12/07/2017.
+//  Copyright © 2017 动旅游. All rights reserved.
+//
+
+#import "DLYSession.h"
+#import "DLYMiniVlogTemplate.h"
+
+@implementation DLYSession
+
+- (BOOL) draftExitAtFile{
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    NSArray *homeDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
+    NSString *documentPath = [homeDir objectAtIndex:0];
+    
+    NSString *dataPath = [documentPath stringByAppendingPathComponent:@"Data"];
+    NSString *draftPath = [dataPath stringByAppendingPathComponent:@"Draft"];
+    
+    if ([fileManager fileExistsAtPath:dataPath] && [fileManager fileExistsAtPath:draftPath]) {
+        
+        NSArray *draftArray = [fileManager contentsOfDirectoryAtPath:draftPath error:nil];
+        NSLog(@"The current folder have %lu files",draftArray.count);
+        if ([draftArray count]) {
+            //Draft box is not empty
+            return YES;
+        }else{
+            //Draft box is empty
+            return NO;
+        }
+    }
+    return nil;
+}
+
++ (DLYMiniVlogTemplate *)loadTemplateWithTemplateId:(NSString *)templateId{
+    
+    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:templateId];
+    
+    return template;
+}
+
+- (void)resetSession{
+    
+    if ([self draftExitAtFile]) {
+        
+    }else{
+        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:@"001"];
+    }
+}
+
+@end

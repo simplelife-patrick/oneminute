@@ -11,11 +11,12 @@
 
 @implementation DLYMiniVlogTemplate
 
--(instancetype)init{
+-(instancetype)initWithTemplateId:(NSString *)templateId{
     
     if (self = [super init]) {
         
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"Universal_001.json" ofType:nil];
+        [NSBundle mainBundle] ;
+        NSString *path = [[NSBundle mainBundle] pathForResource:templateId ofType:nil];
         NSData *data = [NSData dataWithContentsOfFile:path];
         NSMutableDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         
@@ -28,6 +29,7 @@
     }
     return self;
 }
+
 -(NSArray<DLYMiniVlogPart *> *)parts{
     
     NSMutableArray *mArray = [NSMutableArray array];
@@ -45,4 +47,5 @@
     }
     return [mArray copy];
 }
+
 @end

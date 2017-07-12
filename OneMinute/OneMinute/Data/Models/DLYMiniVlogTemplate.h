@@ -57,4 +57,12 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTemplateType)
  */
 @property (nonatomic, strong) NSURL                           *videoTailer;
 
+/**
+ 初始化模板
+
+ @param templateId 模板名称
+ @return 返回模板对象
+ */
+-(instancetype)initWithTemplateId:(NSString *)templateId;
+
 @end
