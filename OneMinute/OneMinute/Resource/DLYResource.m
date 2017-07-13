@@ -9,21 +9,8 @@
 #import "DLYResource.h"
 #import "DLYMiniVlogDraft.h"
 
-#define DataFolder @"Data"
-#define ResourceFolder @"Resource"
-#define SampleFolder @"Sample"
-#define BGMFolder @"BGM"
-#define VideoHeaderFolder @"VideoHeader"
-#define VideoTailerFolder @"VideoTailer"
-#define SoundEffectFolder @"SoundEffect"
-#define DraftFolder @"Draft"
 
 @interface DLYResource ()
-
-@property (nonatomic, strong) NSFileManager                *fileManager;
-@property (nonatomic, strong) NSString                     *resourceFolderPath;
-@property (nonatomic, strong) NSString                     *resourcePath;
-
 
 @end
 
@@ -103,8 +90,7 @@
             
             NSMutableArray *mArray = [NSMutableArray array];
             for (NSString *path in draftArray) {
-                if([[path substringFromIndex:path.length - 3] isEqualToString:@"mp4"]){
-                    ;
+                if ([path hasSuffix:@"mp4"]) {
                     NSURL *url = [NSURL fileURLWithPath: [[NSBundle mainBundle] pathForResource:path ofType:nil]];
                     [mArray addObject:url];
                 }

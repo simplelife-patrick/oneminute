@@ -91,4 +91,10 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTransitionType)
  */
 @property (nonatomic, strong) NSString                  *filter;
 
+/**
+ 是否完成拍摄
+ */
+@property (nonatomic, assign) BOOL                      *isRecordFinished;
+
+
 @end

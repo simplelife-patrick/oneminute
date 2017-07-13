@@ -8,6 +8,15 @@
 
 #import "DLYModule.h"
 
+#define DataFolder @"Data"
+#define ResourceFolder @"Resource"
+#define SampleFolder @"Sample"
+#define BGMFolder @"BGM"
+#define VideoHeaderFolder @"VideoHeader"
+#define VideoTailerFolder @"VideoTailer"
+#define SoundEffectFolder @"SoundEffect"
+#define DraftFolder @"Draft"
+
 typedef  NS_ENUM(NSInteger, DLYResourceType){
     DLYResourceTypeVideoHeader = 0,
     DLYResourceTypeVideoTailer,
@@ -18,6 +27,9 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
 
 @interface DLYResource : DLYModule
 
+@property (nonatomic, strong) NSFileManager                *fileManager;
+@property (nonatomic, strong) NSString                     *resourceFolderPath;
+@property (nonatomic, strong) NSString                     *resourcePath;
 
 /**
  加载资源文件
