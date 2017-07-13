@@ -16,6 +16,7 @@
 		1C7E619D1EE7DF4F0088F33F /* OneMinuteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E619C1EE7DF4F0088F33F /* OneMinuteTests.m */; };
 		1C7E61A81EE7DF4F0088F33F /* OneMinuteUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61A71EE7DF4F0088F33F /* OneMinuteUITests.m */; };
 		1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61C21EE7E6730088F33F /* DLYLogModule.m */; };
+		AD3C2A651F1727E4000C5A5C /* DLYMiniVlogDraft.m in Sources */ = {isa = PBXBuildFile; fileRef = AD3C2A641F1727E4000C5A5C /* DLYMiniVlogDraft.m */; };
 		AD64A5281F14B356002E0C75 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD64A5271F14B356002E0C75 /* CoreData.framework */; };
 		AD64A52F1F14DBC3002E0C75 /* DLYCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AD64A52E1F14DBC3002E0C75 /* DLYCaptureManager.m */; };
 		AD64A5311F14DC8E002E0C75 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD64A5301F14DC8E002E0C75 /* AVFoundation.framework */; };
@@ -73,6 +74,8 @@
 		1C7E61C11EE7E6730088F33F /* DLYLogModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DLYLogModule.h; path = Log/DLYLogModule.h; sourceTree = "<group>"; };
 		1C7E61C21EE7E6730088F33F /* DLYLogModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DLYLogModule.m; path = Log/DLYLogModule.m; sourceTree = "<group>"; };
 		7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneMinute.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute.debug.xcconfig"; sourceTree = "<group>"; };
+		AD3C2A631F1727E4000C5A5C /* DLYMiniVlogDraft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMiniVlogDraft.h; sourceTree = "<group>"; };
+		AD3C2A641F1727E4000C5A5C /* DLYMiniVlogDraft.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMiniVlogDraft.m; sourceTree = "<group>"; };
 		AD413C591F1168A2002F678D /* DLY-PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DLY-PrefixHeader.pch"; sourceTree = "<group>"; };
 		AD64A5271F14B356002E0C75 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		AD64A52D1F14DBC3002E0C75 /* DLYCaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYCaptureManager.h; sourceTree = "<group>"; };
@@ -297,12 +300,14 @@
 		AD83F80B1F1612B700A42926 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				AD83F8101F1612B700A42926 /* DLYMiniVlogTemplate.h */,
+				AD83F8111F1612B700A42926 /* DLYMiniVlogTemplate.m */,
+				AD3C2A631F1727E4000C5A5C /* DLYMiniVlogDraft.h */,
+				AD3C2A641F1727E4000C5A5C /* DLYMiniVlogDraft.m */,
 				AD83F80C1F1612B700A42926 /* DLYMiniVlogPart.h */,
 				AD83F80D1F1612B700A42926 /* DLYMiniVlogPart.m */,
 				AD83F80E1F1612B700A42926 /* DLYMiniVlogProduct.h */,
 				AD83F80F1F1612B700A42926 /* DLYMiniVlogProduct.m */,
-				AD83F8101F1612B700A42926 /* DLYMiniVlogTemplate.h */,
-				AD83F8111F1612B700A42926 /* DLYMiniVlogTemplate.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -527,6 +532,7 @@
 				AD83F7F21F15C84200A42926 /* DLYMobileDevice.m in Sources */,
 				AD83F8181F1612B700A42926 /* DLYMiniVlogTemplate.m in Sources */,
 				1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */,
+				AD3C2A651F1727E4000C5A5C /* DLYMiniVlogDraft.m in Sources */,
 				AD6557D51F131CC200A2C95D /* DLYModule.m in Sources */,
 				ADD68A391F16379600F64878 /* DLYResource.m in Sources */,
 				1C7E61871EE7DF4F0088F33F /* AppDelegate.m in Sources */,

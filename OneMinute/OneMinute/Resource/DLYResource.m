@@ -7,10 +7,23 @@
 //
 
 #import "DLYResource.h"
+#import "DLYMiniVlogDraft.h"
+
+#define DataFolder @"Data"
+#define ResourceFolder @"Resource"
+#define SampleFolder @"Sample"
+#define BGMFolder @"BGM"
+#define VideoHeaderFolder @"VideoHeader"
+#define VideoTailerFolder @"VideoTailer"
+#define SoundEffectFolder @"SoundEffect"
+#define DraftFolder @"Draft"
 
 @interface DLYResource ()
 
 @property (nonatomic, strong) NSFileManager                *fileManager;
+@property (nonatomic, strong) NSString                     *resourceFolderPath;
+@property (nonatomic, strong) NSString                     *resourcePath;
+
 
 @end
 
@@ -22,60 +35,84 @@
     }
     return _fileManager;
 }
-- (NSString *) getDataPath{
+- (void) getResoourcePath{
+    NSArray *homeDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
+    NSString *documentPath = [homeDir objectAtIndex:0];
+    
+    NSString *dataPath = [documentPath stringByAppendingPathComponent:DataFolder];
+    if ([_fileManager fileExistsAtPath:dataPath]) {
+        
+        NSString *resourcePath = [dataPath stringByAppendingPathComponent:ResourceFolder];
+        if ([_fileManager fileExistsAtPath:resourcePath]) {
+           _resourceFolderPath = resourcePath;
+        }
+    }
+}
+
+- (NSURL *) loadResourceWithType:(DLYResourceType)resourceType fileName:(NSString *)fileName{
+    [self getResoourcePath];
+    
+    switch (resourceType) {
+        case DLYResourceTypeVideoHeader:
+            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:VideoHeaderFolder];
+            break;
+        case DLYResourceTypeVideoTailer:
+            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:VideoTailerFolder];
+            break;
+
+        case DLYResourceTypeBGM:
+            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:BGMFolder];
+            break;
+
+        case DLYResourceTypeSoundEffect:
+            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:SoundEffectFolder];
+            break;
+
+        case DLYResourceTypeSampleVideo:
+            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:SoundEffectFolder];
+            break;
+        default:
+            break;
+    }
+    
+    if ([_fileManager fileExistsAtPath:_resourcePath]) {
+        
+        NSArray *resourcesArray = [_fileManager contentsOfDirectoryAtPath:_resourcePath error:nil];
+        
+        for (NSString *path in resourcesArray) {
+            if([path isEqualToString:fileName]){
+                ;
+                NSURL *url = [NSURL fileURLWithPath: [[NSBundle mainBundle] pathForResource:path ofType:nil]];
+                return url;
+            }
+        }
+    }
+    return nil;
+}
+-(NSArray *)loadBDraftParts{
     
     NSArray *homeDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
     NSString *documentPath = [homeDir objectAtIndex:0];
     
-    NSString *dataPath = [documentPath stringByAppendingPathComponent:@"Data"];
+    NSString *dataPath = [documentPath stringByAppendingPathComponent:DataFolder];
     if ([_fileManager fileExistsAtPath:dataPath]) {
-        return dataPath;
+        
+        NSString *draftPath = [dataPath stringByAppendingPathComponent:DraftFolder];
+        if ([_fileManager fileExistsAtPath:draftPath]) {
+            NSArray *draftArray = [_fileManager contentsOfDirectoryAtPath:draftPath error:nil];
+            
+            NSMutableArray *mArray = [NSMutableArray array];
+            for (NSString *path in draftArray) {
+                if([[path substringFromIndex:path.length - 3] isEqualToString:@"mp4"]){
+                    ;
+                    NSURL *url = [NSURL fileURLWithPath: [[NSBundle mainBundle] pathForResource:path ofType:nil]];
+                    [mArray addObject:url];
+                }
+            }
+            return mArray;
+        }
     }
     return nil;
-}
-- (void) loadBVideoHeaderWithFileName:(NSString *)fileName{
-    
-    NSString *dataPath = [self getDataPath];
-    NSString *resourcePath = [dataPath stringByAppendingPathComponent:@"Resource"];
-    
-    if ([_fileManager fileExistsAtPath:dataPath] && [_fileManager fileExistsAtPath:resourcePath]) {
-        
-        NSArray *resourcesArray = [_fileManager contentsOfDirectoryAtPath:resourcePath error:nil];
-    }
-}
-
-- (void) loadBVideoTailerWithFileName:(NSString *)fileName{
-    
-    NSString *dataPath = [self getDataPath];
-    NSString *ResourcePath = [dataPath stringByAppendingPathComponent:@"Resource"];
-    
-    if ([_fileManager fileExistsAtPath:ResourcePath]) {
-        
-    }
-}
-
-- (void) loadBVideoBGMWithFileName:(NSString *)fileName{
-    
-    NSString *dataPath = [self getDataPath];
-    NSString *ResourcePath = [dataPath stringByAppendingPathComponent:@"Resource"];
-    
-    if ([_fileManager fileExistsAtPath:ResourcePath]) {
-        
-    }
-}
-
-- (void) loadTemplateSampleWithFileName:(NSString *)fileName{
-    
-    NSString *dataPath = [self getDataPath];
-    NSString *samplesPath = [dataPath stringByAppendingPathComponent:@"Samples"];
-    
-    if ([_fileManager fileExistsAtPath:samplesPath]) {
-        
-    }
-}
-
-- (void) loadBDraftParts{
-    
 }
 
 @end
