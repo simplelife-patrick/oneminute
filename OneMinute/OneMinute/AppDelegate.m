@@ -17,6 +17,57 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]){
+        
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstLaunch"];
+        NSLog(@"首次启动");
+        
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSArray *homeDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
+        
+        NSString *documentPath = [homeDir objectAtIndex:0];
+        NSString *dataPath = [documentPath stringByAppendingPathComponent:DataFolder];
+        
+        if (![fileManager fileExistsAtPath:dataPath]) {
+            [fileManager createDirectoryAtPath:dataPath withIntermediateDirectories:YES attributes:nil error:nil];
+            
+            NSString *draftPath = [dataPath stringByAppendingPathComponent:DraftFolder];
+            
+            if (![fileManager fileExistsAtPath:draftPath]) {
+                [fileManager createDirectoryAtPath:draftPath withIntermediateDirectories:YES attributes:nil error:nil];
+            }
+            
+            NSString *templatePath = [dataPath stringByAppendingPathComponent:TemplateFolder];
+            
+            if (![fileManager fileExistsAtPath:templatePath]) {
+                [fileManager createDirectoryAtPath:templatePath withIntermediateDirectories:YES attributes:nil error:nil];
+            }
+            
+            NSString *samplesPath = [dataPath stringByAppendingPathComponent:SampleFolder];
+            
+            if (![fileManager fileExistsAtPath:samplesPath]) {
+                [fileManager createDirectoryAtPath:samplesPath withIntermediateDirectories:YES attributes:nil error:nil];
+            }
+            
+            NSString *productsPath = [dataPath stringByAppendingPathComponent:ProductFolder];
+            
+            if (![fileManager fileExistsAtPath:productsPath]) {
+                [fileManager createDirectoryAtPath:productsPath withIntermediateDirectories:YES attributes:nil error:nil];
+            }
+            
+            NSString *resourcePath = [dataPath stringByAppendingPathComponent:ResourceFolder];
+            
+            if (![fileManager fileExistsAtPath:resourcePath]) {
+                [fileManager createDirectoryAtPath:resourcePath withIntermediateDirectories:YES attributes:nil error:nil];
+            }
+        }
+        NSArray *dataFolderArray = [fileManager contentsOfDirectoryAtPath:dataPath error:nil];
+        NSLog(@"当前Data目录下有 %lu 个文件夹\n %@",dataFolderArray.count,dataFolderArray);
+
+    }else{
+        NSLog(@"不是第一次启动了");
+    }
     return YES;
 }
 

@@ -336,7 +336,7 @@
     self.videoConnection.videoOrientation = AVCaptureVideoOrientationPortrait;
     [self.captureSession startRunning];
 }
-#pragma mark
+
 #pragma mark -旋转屏幕-
 - (CGAffineTransform)transformFromCurrentVideoOrientationToOrientation:(AVCaptureVideoOrientation)orientation
 {
@@ -417,7 +417,6 @@
     [_currentVideoDeviceInput.device unlockForConfiguration];
 }
 
-#pragma mark
 #pragma mark -视频数据输出设置-
 
 - (BOOL)setupAssetWriterVideoInput:(CMFormatDescriptionRef)currentFormatDescription
