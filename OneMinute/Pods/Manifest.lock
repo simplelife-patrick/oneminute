@@ -1,0 +1,20 @@
+PODS:
+  - CocoaLumberjack (3.2.0):
+    - CocoaLumberjack/Default (= 3.2.0)
+    - CocoaLumberjack/Extensions (= 3.2.0)
+  - CocoaLumberjack/Default (3.2.0)
+  - CocoaLumberjack/Extensions (3.2.0):
+    - CocoaLumberjack/Default
+  - ZipArchive (1.4.0)
+
+DEPENDENCIES:
+  - CocoaLumberjack (= 3.2.0)
+  - ZipArchive (= 1.4.0)
+
+SPEC CHECKSUMS:
+  CocoaLumberjack: 9b4aed7073d242f29cc2f62068d995faf67f703a
+  ZipArchive: e25a4373192673e3229ac8d6e9f64a3e5713c966
+
+PODFILE CHECKSUM: 963ca92aafbe3f3118ad4e272182ac3fcdf89020
+
+COCOAPODS: 1.2.1
