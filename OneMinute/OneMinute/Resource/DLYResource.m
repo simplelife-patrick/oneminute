@@ -100,5 +100,22 @@
     }
     return nil;
 }
-
+- (NSURL *) saveToSandboxFolderType:(NSSearchPathDirectory)sandboxFolderType subfolderName:(NSString *)subfolderName suffixType:(NSString *)suffixName{
+    
+    CocoaSecurityResult * result = [CocoaSecurity md5:[[NSDate date] description]];
+    
+    NSArray *homeDir = NSSearchPathForDirectoriesInDomains(sandboxFolderType, NSUserDomainMask,YES);
+    NSString *documentsDir = [homeDir objectAtIndex:0];
+    NSString *filePath = [documentsDir stringByAppendingPathComponent:subfolderName];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *outputPath = [NSString stringWithFormat:@"%@/%@%@",filePath,result.hex,suffixName];
+    NSURL *outPutUrl = [NSURL fileURLWithPath:outputPath];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:outputPath])
+    {
+        [[NSFileManager defaultManager] removeItemAtPath:outputPath error:nil];
+    }
+    return outPutUrl;
+}
 @end

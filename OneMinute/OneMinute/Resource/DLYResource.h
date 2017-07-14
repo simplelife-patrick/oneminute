@@ -32,14 +32,20 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
 - (NSURL *) loadResourceWithType:(DLYResourceType )resourceType fileName:(NSString *)fileName;
 
 /**
- 
- */
-
-/**
  加载草稿视频片段文件
 
  @return 返回草稿片段
  */
 -(NSArray *)loadBDraftParts;
+
+/**
+ 保存到沙盒文件夹
+
+ @param sandboxFolderType 保存文件夹类型
+ @param subfolderName 子文件夹名称
+ @param suffixName 文件后缀
+ @return 返回保存后的URL
+ */
+- (NSURL *) saveToSandboxFolderType:(NSSearchPathDirectory)sandboxFolderType subfolderName:(NSString *)subfolderName suffixType:(NSString *)suffixName;
 
 @end
