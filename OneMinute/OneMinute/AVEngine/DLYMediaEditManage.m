@@ -408,5 +408,50 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         });
     }];
 }
-
+#pragma mark - 截取 -
+-(void)trimVideoByRange:(NSURL *)assetUrl startTime:(CMTime)startTime stop:(CMTime)stopTime{
+    
+    AVAsset *selectedAsset = [AVAsset assetWithURL:assetUrl];
+    AVAssetTrack *videoAssertTrack = nil;
+    AVAssetTrack *audioAssertTrack = nil;
+    
+    if ([[selectedAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0]) {
+        videoAssertTrack = [[selectedAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0];
+    }
+    if ([[selectedAsset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0]) {
+        audioAssertTrack = [[selectedAsset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
+    }
+    
+    AVMutableComposition *composition = [AVMutableComposition composition];
+    
+    CMTimeRange videoTimeRange = CMTimeRangeMake(startTime,stopTime);
+    
+    AVMutableCompositionTrack *videoCompositionTrack = [composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+    AVMutableCompositionTrack *audioCompositionTrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+    [videoCompositionTrack insertTimeRange:videoTimeRange ofTrack:videoAssertTrack atTime:kCMTimeZero error:nil];
+    [audioCompositionTrack insertTimeRange:videoTimeRange ofTrack:audioAssertTrack atTime:kCMTimeZero error:nil];
+    
+    AVMutableVideoCompositionLayerInstruction *videoCompositionLayerIns = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoAssertTrack];
+    [videoCompositionLayerIns setTransform:videoAssertTrack.preferredTransform atTime:kCMTimeZero];
+    
+    //得到视频素材
+    AVMutableVideoCompositionInstruction *videoCompositionIns = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+    [videoCompositionIns setTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssertTrack.timeRange.duration)];
+    //得到视频轨道
+    AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
+    videoComposition.instructions = @[videoCompositionIns];
+    videoComposition.renderSize = CGSizeMake(videoAssertTrack.naturalSize.height,videoAssertTrack.naturalSize.width);
+    //裁剪出对应的大小
+    //value视频的总帧数，timescale是指每秒视频播放的帧数，视频播放速率，（value / timescale）才是视频实际的秒数时长
+    videoComposition.frameDuration = CMTimeMake(1, 60);
+    
+    //调整视频方向
+    AVMutableVideoCompositionLayerInstruction *layerInst;
+    layerInst = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoAssertTrack];
+    [layerInst setTransform:videoAssertTrack.preferredTransform atTime:kCMTimeZero];
+    AVMutableVideoCompositionInstruction *inst = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+    inst.timeRange = CMTimeRangeMake(kCMTimeZero, selectedAsset.duration);
+    inst.layerInstructions = [NSArray arrayWithObject:layerInst];
+    videoComposition.instructions = [NSArray arrayWithObject:inst];
+}
 @end
