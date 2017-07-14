@@ -15,6 +15,26 @@
 		1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C7E61901EE7DF4F0088F33F /* LaunchScreen.storyboard */; };
 		1C7E619D1EE7DF4F0088F33F /* OneMinuteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E619C1EE7DF4F0088F33F /* OneMinuteTests.m */; };
 		1C7E61A81EE7DF4F0088F33F /* OneMinuteUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61A71EE7DF4F0088F33F /* OneMinuteUITests.m */; };
+		1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61C21EE7E6730088F33F /* DLYLogModule.m */; };
+		AD3C2A651F1727E4000C5A5C /* DLYMiniVlogDraft.m in Sources */ = {isa = PBXBuildFile; fileRef = AD3C2A641F1727E4000C5A5C /* DLYMiniVlogDraft.m */; };
+		AD64A5281F14B356002E0C75 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD64A5271F14B356002E0C75 /* CoreData.framework */; };
+		AD64A52F1F14DBC3002E0C75 /* DLYCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AD64A52E1F14DBC3002E0C75 /* DLYCaptureManager.m */; };
+		AD64A5311F14DC8E002E0C75 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD64A5301F14DC8E002E0C75 /* AVFoundation.framework */; };
+		AD6557D31F131CC200A2C95D /* DLYAsyncQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6557CB1F131CC200A2C95D /* DLYAsyncQueue.m */; };
+		AD6557D41F131CC200A2C95D /* DLYCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6557CD1F131CC200A2C95D /* DLYCommon.m */; };
+		AD6557D51F131CC200A2C95D /* DLYModule.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6557CF1F131CC200A2C95D /* DLYModule.m */; };
+		AD6557D61F131CC200A2C95D /* DLYModuleManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AD6557D11F131CC200A2C95D /* DLYModuleManager.m */; };
+		AD6557EA1F133D5C00A2C95D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD6557E91F133D5C00A2C95D /* CoreGraphics.framework */; };
+		AD83F7F21F15C84200A42926 /* DLYMobileDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = AD83F7F11F15C84200A42926 /* DLYMobileDevice.m */; };
+		AD83F7F51F15CD5600A42926 /* DLYVolumeAutomation.m in Sources */ = {isa = PBXBuildFile; fileRef = AD83F7F41F15CD5600A42926 /* DLYVolumeAutomation.m */; };
+		AD83F7F81F15CF1E00A42926 /* DLYMediaEditManage.m in Sources */ = {isa = PBXBuildFile; fileRef = AD83F7F71F15CF1E00A42926 /* DLYMediaEditManage.m */; };
+		AD83F8161F1612B700A42926 /* DLYMiniVlogPart.m in Sources */ = {isa = PBXBuildFile; fileRef = AD83F80D1F1612B700A42926 /* DLYMiniVlogPart.m */; };
+		AD83F8171F1612B700A42926 /* DLYMiniVlogProduct.m in Sources */ = {isa = PBXBuildFile; fileRef = AD83F80F1F1612B700A42926 /* DLYMiniVlogProduct.m */; };
+		AD83F8181F1612B700A42926 /* DLYMiniVlogTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = AD83F8111F1612B700A42926 /* DLYMiniVlogTemplate.m */; };
+		AD83F8191F1612B700A42926 /* Universal_001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD83F8131F1612B700A42926 /* Universal_001.json */; };
+		AD83F81C1F1613A100A42926 /* DLYSession.m in Sources */ = {isa = PBXBuildFile; fileRef = AD83F81B1F1613A100A42926 /* DLYSession.m */; };
+		ADD68A391F16379600F64878 /* DLYResource.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD68A381F16379600F64878 /* DLYResource.m */; };
+		FC0D0FE5F4D459BB4D13857E /* libPods-OneMinute.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C4410078F6FC633A4D50FCF1 /* libPods-OneMinute.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +71,45 @@
 		1C7E61A31EE7DF4F0088F33F /* OneMinuteUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OneMinuteUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C7E61A71EE7DF4F0088F33F /* OneMinuteUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OneMinuteUITests.m; sourceTree = "<group>"; };
 		1C7E61A91EE7DF4F0088F33F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1C7E61C11EE7E6730088F33F /* DLYLogModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DLYLogModule.h; path = Log/DLYLogModule.h; sourceTree = "<group>"; };
+		1C7E61C21EE7E6730088F33F /* DLYLogModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DLYLogModule.m; path = Log/DLYLogModule.m; sourceTree = "<group>"; };
+		7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneMinute.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute.debug.xcconfig"; sourceTree = "<group>"; };
+		AD3C2A631F1727E4000C5A5C /* DLYMiniVlogDraft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMiniVlogDraft.h; sourceTree = "<group>"; };
+		AD3C2A641F1727E4000C5A5C /* DLYMiniVlogDraft.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMiniVlogDraft.m; sourceTree = "<group>"; };
+		AD413C591F1168A2002F678D /* DLY-PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DLY-PrefixHeader.pch"; sourceTree = "<group>"; };
+		AD64A5271F14B356002E0C75 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		AD64A52D1F14DBC3002E0C75 /* DLYCaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYCaptureManager.h; sourceTree = "<group>"; };
+		AD64A52E1F14DBC3002E0C75 /* DLYCaptureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYCaptureManager.m; sourceTree = "<group>"; };
+		AD64A5301F14DC8E002E0C75 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		AD6557CA1F131CC200A2C95D /* DLYAsyncQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAsyncQueue.h; sourceTree = "<group>"; };
+		AD6557CB1F131CC200A2C95D /* DLYAsyncQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAsyncQueue.m; sourceTree = "<group>"; };
+		AD6557CC1F131CC200A2C95D /* DLYCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYCommon.h; sourceTree = "<group>"; };
+		AD6557CD1F131CC200A2C95D /* DLYCommon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYCommon.m; sourceTree = "<group>"; };
+		AD6557CE1F131CC200A2C95D /* DLYModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYModule.h; sourceTree = "<group>"; };
+		AD6557CF1F131CC200A2C95D /* DLYModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYModule.m; sourceTree = "<group>"; };
+		AD6557D01F131CC200A2C95D /* DLYModuleManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYModuleManager.h; sourceTree = "<group>"; };
+		AD6557D11F131CC200A2C95D /* DLYModuleManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYModuleManager.m; sourceTree = "<group>"; };
+		AD6557D21F131CC200A2C95D /* DLYSharedInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYSharedInstance.h; sourceTree = "<group>"; };
+		AD6557E91F133D5C00A2C95D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		AD83F7F01F15C84200A42926 /* DLYMobileDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMobileDevice.h; sourceTree = "<group>"; };
+		AD83F7F11F15C84200A42926 /* DLYMobileDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMobileDevice.m; sourceTree = "<group>"; };
+		AD83F7F31F15CD5600A42926 /* DLYVolumeAutomation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYVolumeAutomation.h; sourceTree = "<group>"; };
+		AD83F7F41F15CD5600A42926 /* DLYVolumeAutomation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYVolumeAutomation.m; sourceTree = "<group>"; };
+		AD83F7F61F15CF1E00A42926 /* DLYMediaEditManage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMediaEditManage.h; sourceTree = "<group>"; };
+		AD83F7F71F15CF1E00A42926 /* DLYMediaEditManage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMediaEditManage.m; sourceTree = "<group>"; };
+		AD83F80C1F1612B700A42926 /* DLYMiniVlogPart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMiniVlogPart.h; sourceTree = "<group>"; };
+		AD83F80D1F1612B700A42926 /* DLYMiniVlogPart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMiniVlogPart.m; sourceTree = "<group>"; };
+		AD83F80E1F1612B700A42926 /* DLYMiniVlogProduct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMiniVlogProduct.h; sourceTree = "<group>"; };
+		AD83F80F1F1612B700A42926 /* DLYMiniVlogProduct.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMiniVlogProduct.m; sourceTree = "<group>"; };
+		AD83F8101F1612B700A42926 /* DLYMiniVlogTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMiniVlogTemplate.h; sourceTree = "<group>"; };
+		AD83F8111F1612B700A42926 /* DLYMiniVlogTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMiniVlogTemplate.m; sourceTree = "<group>"; };
+		AD83F8131F1612B700A42926 /* Universal_001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Universal_001.json; sourceTree = "<group>"; };
+		AD83F81A1F1613A100A42926 /* DLYSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYSession.h; sourceTree = "<group>"; };
+		AD83F81B1F1613A100A42926 /* DLYSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYSession.m; sourceTree = "<group>"; };
+		ADD68A371F16379600F64878 /* DLYResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYResource.h; sourceTree = "<group>"; };
+		ADD68A381F16379600F64878 /* DLYResource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYResource.m; sourceTree = "<group>"; };
+		C4410078F6FC633A4D50FCF1 /* libPods-OneMinute.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OneMinute.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FC05C70FE4A35674CFB74552 /* Pods-OneMinute.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneMinute.release.xcconfig"; path = "Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +117,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD64A5311F14DC8E002E0C75 /* AVFoundation.framework in Frameworks */,
+				AD64A5281F14B356002E0C75 /* CoreData.framework in Frameworks */,
+				AD6557EA1F133D5C00A2C95D /* CoreGraphics.framework in Frameworks */,
+				FC0D0FE5F4D459BB4D13857E /* libPods-OneMinute.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +141,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1C2CA0151F10A4E50085B662 /* GUI */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = GUI;
+			sourceTree = "<group>";
+		};
+		1C2CA0171F10A5050085B662 /* UserTrack */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = UserTrack;
+			sourceTree = "<group>";
+		};
 		1C7E61761EE7DF4F0088F33F = {
 			isa = PBXGroup;
 			children = (
@@ -85,6 +162,8 @@
 				1C7E619B1EE7DF4F0088F33F /* OneMinuteTests */,
 				1C7E61A61EE7DF4F0088F33F /* OneMinuteUITests */,
 				1C7E61801EE7DF4F0088F33F /* Products */,
+				4312C9369F29308C490B4284 /* Pods */,
+				5FEBA52BCEB5FEC50E919499 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,6 +180,14 @@
 		1C7E61811EE7DF4F0088F33F /* OneMinute */ = {
 			isa = PBXGroup;
 			children = (
+				AD6557D71F131D0E00A2C95D /* AVEngine */,
+				AD83F8151F1612B700A42926 /* Session */,
+				AD83F80A1F1612B700A42926 /* Data */,
+				AD83F8141F1612B700A42926 /* Resource */,
+				AD6557C91F131CC200A2C95D /* Common */,
+				1C2CA0171F10A5050085B662 /* UserTrack */,
+				1C2CA0151F10A4E50085B662 /* GUI */,
+				1C7E61C01EE7E6640088F33F /* Log */,
 				1C7E61851EE7DF4F0088F33F /* AppDelegate.h */,
 				1C7E61861EE7DF4F0088F33F /* AppDelegate.m */,
 				1C7E61881EE7DF4F0088F33F /* ViewController.h */,
@@ -118,6 +205,7 @@
 			isa = PBXGroup;
 			children = (
 				1C7E61831EE7DF4F0088F33F /* main.m */,
+				AD413C591F1168A2002F678D /* DLY-PrefixHeader.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -140,6 +228,116 @@
 			path = OneMinuteUITests;
 			sourceTree = "<group>";
 		};
+		1C7E61C01EE7E6640088F33F /* Log */ = {
+			isa = PBXGroup;
+			children = (
+				1C7E61C11EE7E6730088F33F /* DLYLogModule.h */,
+				1C7E61C21EE7E6730088F33F /* DLYLogModule.m */,
+			);
+			name = Log;
+			sourceTree = "<group>";
+		};
+		4312C9369F29308C490B4284 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */,
+				FC05C70FE4A35674CFB74552 /* Pods-OneMinute.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		5FEBA52BCEB5FEC50E919499 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AD64A5301F14DC8E002E0C75 /* AVFoundation.framework */,
+				AD64A5271F14B356002E0C75 /* CoreData.framework */,
+				AD6557E91F133D5C00A2C95D /* CoreGraphics.framework */,
+				C4410078F6FC633A4D50FCF1 /* libPods-OneMinute.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AD6557C91F131CC200A2C95D /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				AD6557CA1F131CC200A2C95D /* DLYAsyncQueue.h */,
+				AD6557CB1F131CC200A2C95D /* DLYAsyncQueue.m */,
+				AD6557CC1F131CC200A2C95D /* DLYCommon.h */,
+				AD6557CD1F131CC200A2C95D /* DLYCommon.m */,
+				AD6557CE1F131CC200A2C95D /* DLYModule.h */,
+				AD6557CF1F131CC200A2C95D /* DLYModule.m */,
+				AD6557D01F131CC200A2C95D /* DLYModuleManager.h */,
+				AD6557D11F131CC200A2C95D /* DLYModuleManager.m */,
+				AD6557D21F131CC200A2C95D /* DLYSharedInstance.h */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		AD6557D71F131D0E00A2C95D /* AVEngine */ = {
+			isa = PBXGroup;
+			children = (
+				AD64A52D1F14DBC3002E0C75 /* DLYCaptureManager.h */,
+				AD64A52E1F14DBC3002E0C75 /* DLYCaptureManager.m */,
+				AD83F7F01F15C84200A42926 /* DLYMobileDevice.h */,
+				AD83F7F11F15C84200A42926 /* DLYMobileDevice.m */,
+				AD83F7F31F15CD5600A42926 /* DLYVolumeAutomation.h */,
+				AD83F7F41F15CD5600A42926 /* DLYVolumeAutomation.m */,
+				AD83F7F61F15CF1E00A42926 /* DLYMediaEditManage.h */,
+				AD83F7F71F15CF1E00A42926 /* DLYMediaEditManage.m */,
+			);
+			path = AVEngine;
+			sourceTree = "<group>";
+		};
+		AD83F80A1F1612B700A42926 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				AD83F80B1F1612B700A42926 /* Models */,
+				AD83F8121F1612B700A42926 /* Template */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		AD83F80B1F1612B700A42926 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				AD83F8101F1612B700A42926 /* DLYMiniVlogTemplate.h */,
+				AD83F8111F1612B700A42926 /* DLYMiniVlogTemplate.m */,
+				AD3C2A631F1727E4000C5A5C /* DLYMiniVlogDraft.h */,
+				AD3C2A641F1727E4000C5A5C /* DLYMiniVlogDraft.m */,
+				AD83F80C1F1612B700A42926 /* DLYMiniVlogPart.h */,
+				AD83F80D1F1612B700A42926 /* DLYMiniVlogPart.m */,
+				AD83F80E1F1612B700A42926 /* DLYMiniVlogProduct.h */,
+				AD83F80F1F1612B700A42926 /* DLYMiniVlogProduct.m */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		AD83F8121F1612B700A42926 /* Template */ = {
+			isa = PBXGroup;
+			children = (
+				AD83F8131F1612B700A42926 /* Universal_001.json */,
+			);
+			path = Template;
+			sourceTree = "<group>";
+		};
+		AD83F8141F1612B700A42926 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				ADD68A371F16379600F64878 /* DLYResource.h */,
+				ADD68A381F16379600F64878 /* DLYResource.m */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
+		AD83F8151F1612B700A42926 /* Session */ = {
+			isa = PBXGroup;
+			children = (
+				AD83F81A1F1613A100A42926 /* DLYSession.h */,
+				AD83F81B1F1613A100A42926 /* DLYSession.m */,
+			);
+			path = Session;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -147,9 +345,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1C7E61AC1EE7DF4F0088F33F /* Build configuration list for PBXNativeTarget "OneMinute" */;
 			buildPhases = (
+				E42D6A5EE6491FE4970E630E /* [CP] Check Pods Manifest.lock */,
 				1C7E617B1EE7DF4F0088F33F /* Sources */,
 				1C7E617C1EE7DF4F0088F33F /* Frameworks */,
 				1C7E617D1EE7DF4F0088F33F /* Resources */,
+				B7B7E3E858E4E93FD9FA6273 /* [CP] Embed Pods Frameworks */,
+				83550378109E7656E28B1048 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -207,6 +408,7 @@
 				TargetAttributes = {
 					1C7E617E1EE7DF4F0088F33F = {
 						CreatedOnToolsVersion = 8.3.2;
+						DevelopmentTeam = 3QC6PDN9W4;
 						ProvisioningStyle = Automatic;
 					};
 					1C7E61971EE7DF4F0088F33F = {
@@ -249,6 +451,7 @@
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
+				AD83F8191F1612B700A42926 /* Universal_001.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -268,14 +471,77 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		83550378109E7656E28B1048 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B7B7E3E858E4E93FD9FA6273 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E42D6A5EE6491FE4970E630E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		1C7E617B1EE7DF4F0088F33F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD6557D41F131CC200A2C95D /* DLYCommon.m in Sources */,
+				AD64A52F1F14DBC3002E0C75 /* DLYCaptureManager.m in Sources */,
+				AD6557D31F131CC200A2C95D /* DLYAsyncQueue.m in Sources */,
 				1C7E618A1EE7DF4F0088F33F /* ViewController.m in Sources */,
+				AD83F81C1F1613A100A42926 /* DLYSession.m in Sources */,
+				AD83F7F21F15C84200A42926 /* DLYMobileDevice.m in Sources */,
+				AD83F8181F1612B700A42926 /* DLYMiniVlogTemplate.m in Sources */,
+				1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */,
+				AD3C2A651F1727E4000C5A5C /* DLYMiniVlogDraft.m in Sources */,
+				AD6557D51F131CC200A2C95D /* DLYModule.m in Sources */,
+				ADD68A391F16379600F64878 /* DLYResource.m in Sources */,
 				1C7E61871EE7DF4F0088F33F /* AppDelegate.m in Sources */,
+				AD83F8171F1612B700A42926 /* DLYMiniVlogProduct.m in Sources */,
+				AD83F8161F1612B700A42926 /* DLYMiniVlogPart.m in Sources */,
 				1C7E61841EE7DF4F0088F33F /* main.m in Sources */,
+				AD83F7F81F15CF1E00A42926 /* DLYMediaEditManage.m in Sources */,
+				AD6557D61F131CC200A2C95D /* DLYModuleManager.m in Sources */,
+				AD83F7F51F15CD5600A42926 /* DLYVolumeAutomation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -422,10 +688,13 @@
 		};
 		1C7E61AD1EE7DF4F0088F33F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 3QC6PDN9W4;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/OneMinute/DLY-PrefixHeader.pch";
 				INFOPLIST_FILE = OneMinute/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.dly.OneMinute;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -434,10 +703,13 @@
 		};
 		1C7E61AE1EE7DF4F0088F33F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FC05C70FE4A35674CFB74552 /* Pods-OneMinute.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 3QC6PDN9W4;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/OneMinute/DLY-PrefixHeader.pch";
 				INFOPLIST_FILE = OneMinute/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.dly.OneMinute;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -509,6 +781,7 @@
 				1C7E61AE1EE7DF4F0088F33F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1C7E61AF1EE7DF4F0088F33F /* Build configuration list for PBXNativeTarget "OneMinuteTests" */ = {
 			isa = XCConfigurationList;
@@ -517,6 +790,7 @@
 				1C7E61B11EE7DF4F0088F33F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1C7E61B21EE7DF4F0088F33F /* Build configuration list for PBXNativeTarget "OneMinuteUITests" */ = {
 			isa = XCConfigurationList;
@@ -525,6 +799,7 @@
 				1C7E61B41EE7DF4F0088F33F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
