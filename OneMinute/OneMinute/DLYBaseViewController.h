@@ -10,4 +10,12 @@
 
 @interface DLYBaseViewController : UIViewController
 
+@property (nonatomic, assign) NSInteger newState;
+@property (nonatomic, assign) NSInteger oldState;
+
+
+- (void)deviceChangeAndHomeOnTheLeft;
+
+- (void)deviceChangeAndHomeOnTheRight;
+
 @end

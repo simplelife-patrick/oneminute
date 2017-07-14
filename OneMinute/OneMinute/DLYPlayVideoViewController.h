@@ -10,4 +10,8 @@
 
 @interface DLYPlayVideoViewController : DLYBaseViewController
 
+
+@property (strong, nonatomic) void (^DismissBlock)();
+@property (nonatomic, assign) BOOL isAll;
+
 @end

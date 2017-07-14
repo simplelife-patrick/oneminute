@@ -10,4 +10,8 @@
 
 @interface DLYCatchCrash : NSObject
 
+
+//在AppDelegate中注册后，程序崩溃时会执行的方法
+void uncaughtExceptionHandler(NSException *exception);
+
 @end
