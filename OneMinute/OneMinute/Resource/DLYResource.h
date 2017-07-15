@@ -39,6 +39,15 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
 -(NSArray *)loadBDraftParts;
 
 /**
+ 保存文件到沙盒文件夹
+ 
+ @param resourcePath 文件夹路径
+ @param suffixName 文件后缀名
+ @return 返回保存后的URL
+ */
+- (NSURL *) saveToSandboxWithPath:(NSString *)resourcePath suffixType:(NSString *)suffixName;
+
+/**
  保存到沙盒文件夹
 
  @param sandboxFolderType 保存文件夹类型
@@ -46,6 +55,6 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
  @param suffixName 文件后缀
  @return 返回保存后的URL
  */
-- (NSURL *) saveToSandboxFolderType:(NSSearchPathDirectory)sandboxFolderType subfolderName:(NSString *)subfolderName suffixType:(NSString *)suffixName;
+- (NSURL *) saveToSandboxWithFolderType:(NSSearchPathDirectory)sandboxFolderType subfolderName:(NSString *)subfolderName suffixType:(NSString *)suffixName;
 
 @end

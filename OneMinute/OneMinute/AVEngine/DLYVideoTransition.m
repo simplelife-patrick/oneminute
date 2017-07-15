@@ -30,7 +30,6 @@
     return transition;
 }
 
-
 - (id)init {
     self = [super init];
     if (self) {

@@ -17,15 +17,15 @@
 
 //沙盒文件目录文件夹
 #define kPathDocument [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]
-#define DataFolder @"Data"
-#define TemplateFolder @"Template"
-#define ResourceFolder @"Resource"
-#define SampleFolder @"Sample"
-#define ProductFolder @"Product"
-#define DraftFolder @"Draft"
-#define BGMFolder @"BGM"
-#define VideoHeaderFolder @"VideoHeader"
-#define VideoTailerFolder @"VideoTailer"
-#define SoundEffectFolder @"SoundEffect"
+#define kDataFolder @"Data"
+#define kTemplateFolder @"Template"
+#define kResourceFolder @"Resource"
+#define kSampleFolder @"Sample"
+#define kProductFolder @"Product"
+#define kDraftFolder @"Draft"
+#define kBGMFolder @"BGM"
+#define kVideoHeaderFolder @"VideoHeader"
+#define kVideoTailerFolder @"VideoTailer"
+#define kSoundEffectFolder @"SoundEffect"
 
 @end

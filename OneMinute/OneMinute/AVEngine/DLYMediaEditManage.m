@@ -16,6 +16,7 @@
 #import "DLYTransitionComposition.h"
 #import "DLYTransitionInstructions.h"
 #import "DLYVideoTransition.h"
+#import "DLYResource.h"
 
 typedef void(^SuccessBlock)(void);
 typedef void(^FailureBlock)(NSError *error);
@@ -383,7 +384,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     [self.bodyMovie addTarget:self.filter];
     
     DLYResource *resource = [[DLYResource alloc]init];
-    NSURL *outputUrl = [resource saveToSandboxFolderType:NSDocumentDirectory subfolderName:@"HeaderVideos" suffixType:@".mp4"];
+    NSURL *outputUrl = [resource saveToSandboxWithPath:kVideoHeaderFolder suffixType:@".mp4"];
     
     self.movieWriter =  [[GPUImageMovieWriter alloc] initWithMovieURL:outputUrl size:videoSize];
     
