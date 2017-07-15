@@ -148,7 +148,6 @@
     if (self.isExport) {
         
         //创建假模型数据
-//        partModelArray = [[NSMutableArray alloc]init];
         [partModelArray removeAllObjects];
         for(int i = 0; i < 6; i ++)
         {
@@ -168,7 +167,6 @@
                 [dict setObject:@"0" forKey:@"shootType"];
                 [dict setObject:@"10''" forKey:@"time"];
             }
-            
             
             [partModelArray addObject:dict];
             
