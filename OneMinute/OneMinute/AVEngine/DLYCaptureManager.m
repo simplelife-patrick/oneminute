@@ -322,11 +322,11 @@
     return nil;
 }
 
-#pragma mark - 切换动画
+#pragma mark - 摄像头切换动画
 - (void)changeCameraAnimation {
     CATransition *changeAnimation = [CATransition animation];
     changeAnimation.delegate = self;
-    changeAnimation.duration = 0.45;
+    changeAnimation.duration = 0.3;
     changeAnimation.type = @"oglFlip";
     changeAnimation.subtype = kCATransitionFromRight;
     //    changeAnimation.timingFunction = UIViewAnimationCurveEaseInOut;
@@ -343,8 +343,8 @@
     CGAffineTransform transform = CGAffineTransformIdentity;
     
     // Calculate offsets from an arbitrary reference orientation (portrait)
-    CGFloat orientationAngleOffset = [DLYCaptureManager angleOffsetFromPortraitOrientationToOrientation:orientation];
-    CGFloat videoOrientationAngleOffset = [DLYCaptureManager angleOffsetFromPortraitOrientationToOrientation:videoOrientation];
+    CGFloat orientationAngleOffset = [[DLYCaptureManager alloc ] angleOffsetFromPortraitOrientationToOrientation:orientation];
+    CGFloat videoOrientationAngleOffset = [[DLYCaptureManager alloc] angleOffsetFromPortraitOrientationToOrientation:videoOrientation];
     
     // Find the difference in angle between the passed in orientation and the current video orientation
     CGFloat angleOffset = orientationAngleOffset - videoOrientationAngleOffset;
@@ -352,7 +352,7 @@
     
     return transform;
 }
-+ (CGFloat)angleOffsetFromPortraitOrientationToOrientation:(AVCaptureVideoOrientation)orientation
+- (CGFloat)angleOffsetFromPortraitOrientationToOrientation:(AVCaptureVideoOrientation)orientation
 {
     CGFloat angle = 0.0;
     
@@ -388,6 +388,7 @@
     
     readyToRecordVideo = NO;
 }
+#pragma mark - 点触设置曝光 -
 -(void)focusWithMode:(AVCaptureFocusMode)focusMode exposureMode:(AVCaptureExposureMode)exposureMode atPoint:(CGPoint)point{
     
     AVCaptureDevice *captureDevice = _currentVideoDeviceInput.device;
@@ -448,8 +449,7 @@
     
     if ([self.assetWriter canApplyOutputSettings:videoCompressionSettings forMediaType:AVMediaTypeVideo]) {
         
-        self.assetWriterVideoInput = [[AVAssetWriterInput alloc] initWithMediaType:AVMediaTypeVideo
-                                                                    outputSettings:videoCompressionSettings];
+        self.assetWriterVideoInput = [[AVAssetWriterInput alloc] initWithMediaType:AVMediaTypeVideo outputSettings:videoCompressionSettings];
         self.assetWriterVideoInput.expectsMediaDataInRealTime = YES;
         self.assetWriterVideoInput.transform = [self transformFromCurrentVideoOrientationToOrientation:referenceOrientation];
         
@@ -518,8 +518,7 @@
     return YES;
 }
 
-- (void)writeSampleBuffer:(CMSampleBufferRef)sampleBuffer
-                   ofType:(NSString *)mediaType
+- (void)writeSampleBuffer:(CMSampleBufferRef)sampleBuffer ofType:(NSString *)mediaType
 {
     if (self.assetWriter.status == AVAssetWriterStatusUnknown) {
         
@@ -659,6 +658,7 @@
         dispatch_async(movieWritingQueue, ^{
             
             UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+            
             // Don't update the reference orientation when the device orientation is face up/down or unknown.
             if (UIDeviceOrientationIsPortrait(orientation) || UIDeviceOrientationIsLandscape(orientation)) {
                 referenceOrientation = (AVCaptureVideoOrientation)orientation;
@@ -674,9 +674,7 @@
             self.fileURL = [NSURL URLWithString:[@"file://" stringByAppendingString:filePath]];
             
             NSError *error;
-            self.assetWriter = [[AVAssetWriter alloc] initWithURL:self.fileURL
-                                                         fileType:AVFileTypeMPEG4
-                                                            error:&error];
+            self.assetWriter = [[AVAssetWriter alloc] initWithURL:self.fileURL fileType:AVFileTypeMPEG4 error:&error];
             NSLog(@"AVAssetWriter error:%@", error);
             
             recordingWillBeStarted = YES;

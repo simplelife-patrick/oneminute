@@ -13,6 +13,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "DLYCommon.h"
 #import "DLYLogModule.h"
+#import <CocoaSecurity.h>
 #import <CoreGraphics/CoreGraphics.h>
 
 #endif /* DLY_PrefixHeader_pch */

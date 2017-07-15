@@ -22,41 +22,45 @@
     }
     return _fileManager;
 }
-- (void) getResoourcePath{
-    NSArray *homeDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
-    NSString *documentPath = [homeDir objectAtIndex:0];
-    
-    NSString *dataPath = [documentPath stringByAppendingPathComponent:DataFolder];
-    if ([_fileManager fileExistsAtPath:dataPath]) {
+-(NSString *)resourceFolderPath{
+
+    if (!_resourceFolderPath) {
         
-        NSString *resourcePath = [dataPath stringByAppendingPathComponent:ResourceFolder];
-        if ([_fileManager fileExistsAtPath:resourcePath]) {
-           _resourceFolderPath = resourcePath;
+        NSArray *homeDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
+        NSString *documentPath = [homeDir objectAtIndex:0];
+        
+        NSString *dataPath = [documentPath stringByAppendingPathComponent:kDataFolder];
+        if ([_fileManager fileExistsAtPath:dataPath]) {
+            
+            NSString *resourceFolderPath = [dataPath stringByAppendingPathComponent:kResourceFolder];
+            if ([_fileManager fileExistsAtPath:resourceFolderPath]) {
+                _resourceFolderPath = resourceFolderPath;
+            }
         }
     }
+    return _resourceFolderPath;
 }
 
 - (NSURL *) loadResourceWithType:(DLYResourceType)resourceType fileName:(NSString *)fileName{
-    [self getResoourcePath];
     
     switch (resourceType) {
         case DLYResourceTypeVideoHeader:
-            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:VideoHeaderFolder];
+            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:kVideoHeaderFolder];
             break;
         case DLYResourceTypeVideoTailer:
-            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:VideoTailerFolder];
+            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:kVideoTailerFolder];
             break;
 
         case DLYResourceTypeBGM:
-            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:BGMFolder];
+            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:kBGMFolder];
             break;
 
         case DLYResourceTypeSoundEffect:
-            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:SoundEffectFolder];
+            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:kSoundEffectFolder];
             break;
 
         case DLYResourceTypeSampleVideo:
-            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:SoundEffectFolder];
+            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:kSoundEffectFolder];
             break;
         default:
             break;
@@ -81,10 +85,10 @@
     NSArray *homeDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
     NSString *documentPath = [homeDir objectAtIndex:0];
     
-    NSString *dataPath = [documentPath stringByAppendingPathComponent:DataFolder];
+    NSString *dataPath = [documentPath stringByAppendingPathComponent:kDataFolder];
     if ([_fileManager fileExistsAtPath:dataPath]) {
         
-        NSString *draftPath = [dataPath stringByAppendingPathComponent:DraftFolder];
+        NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
         if ([_fileManager fileExistsAtPath:draftPath]) {
             NSArray *draftArray = [_fileManager contentsOfDirectoryAtPath:draftPath error:nil];
             
@@ -100,5 +104,30 @@
     }
     return nil;
 }
-
+- (NSURL *) saveToSandboxWithPath:(NSString *)resourcePath suffixType:(NSString *)suffixName{
+    
+    CocoaSecurityResult *result = [CocoaSecurity md5:[[NSDate date] description]];
+    NSString *storePath = [NSString stringWithFormat:@""""];
+    return nil;
+}
+- (NSURL *) saveToSandboxWithFolderType:(NSSearchPathDirectory)sandboxFolderType subfolderName:(NSString *)subfolderName suffixType:(NSString *)suffixName{
+    
+    CocoaSecurityResult * result = [CocoaSecurity md5:[[NSDate date] description]];
+    
+    NSArray *homeDir = NSSearchPathForDirectoriesInDomains(sandboxFolderType, NSUserDomainMask,YES);
+    NSString *documentsDir = [homeDir objectAtIndex:0];
+    NSString *filePath = [documentsDir stringByAppendingPathComponent:subfolderName];
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    NSString *outputPath = [NSString stringWithFormat:@"%@/%@%@",filePath,result.hex,suffixName];
+    NSURL *outPutUrl = [NSURL fileURLWithPath:outputPath];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:outputPath])
+    {
+        [[NSFileManager defaultManager] removeItemAtPath:outputPath error:nil];
+    }
+    return outPutUrl;
+}
 @end

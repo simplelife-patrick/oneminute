@@ -26,37 +26,37 @@
         NSArray *homeDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
         
         NSString *documentPath = [homeDir objectAtIndex:0];
-        NSString *dataPath = [documentPath stringByAppendingPathComponent:DataFolder];
+        NSString *dataPath = [documentPath stringByAppendingPathComponent:kDataFolder];
         
         if (![fileManager fileExistsAtPath:dataPath]) {
             
             [fileManager createDirectoryAtPath:dataPath withIntermediateDirectories:YES attributes:nil error:nil];
             
-            NSString *draftPath = [dataPath stringByAppendingPathComponent:DraftFolder];
+            NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
             
             if (![fileManager fileExistsAtPath:draftPath]) {
                 [fileManager createDirectoryAtPath:draftPath withIntermediateDirectories:YES attributes:nil error:nil];
             }
             
-            NSString *templatePath = [dataPath stringByAppendingPathComponent:TemplateFolder];
+            NSString *templatePath = [dataPath stringByAppendingPathComponent:kTemplateFolder];
             
             if (![fileManager fileExistsAtPath:templatePath]) {
                 [fileManager createDirectoryAtPath:templatePath withIntermediateDirectories:YES attributes:nil error:nil];
             }
             
-            NSString *samplesPath = [dataPath stringByAppendingPathComponent:SampleFolder];
+            NSString *samplesPath = [dataPath stringByAppendingPathComponent:kSampleFolder];
             
             if (![fileManager fileExistsAtPath:samplesPath]) {
                 [fileManager createDirectoryAtPath:samplesPath withIntermediateDirectories:YES attributes:nil error:nil];
             }
             
-            NSString *productsPath = [dataPath stringByAppendingPathComponent:ProductFolder];
+            NSString *productsPath = [dataPath stringByAppendingPathComponent:kProductFolder];
             
             if (![fileManager fileExistsAtPath:productsPath]) {
                 [fileManager createDirectoryAtPath:productsPath withIntermediateDirectories:YES attributes:nil error:nil];
             }
             
-            NSString *resourcePath = [dataPath stringByAppendingPathComponent:ResourceFolder];
+            NSString *resourcePath = [dataPath stringByAppendingPathComponent:kResourceFolder];
             
             if (![fileManager fileExistsAtPath:resourcePath]) {
                 [fileManager createDirectoryAtPath:resourcePath withIntermediateDirectories:YES attributes:nil error:nil];

@@ -30,7 +30,6 @@ typedef void (^OnBufferBlock)(CMSampleBufferRef sampleBuffer);
 @protocol DLYCaptureManagerDelegate <NSObject>
 - (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
                                       error:(NSError *)error;
-
 @end
 
 @interface DLYCaptureManager : NSObject
