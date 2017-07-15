@@ -95,7 +95,7 @@
     self.progress = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
     //设置的高度对进度条的高度没影响，整个高度=进度条的高度，进度条也是个圆角矩形
     //但slider滑动控件：设置的高度对slider也没影响，但整个高度=设置的高度，可以设置背景来检验
-    self.progress.frame = CGRectMake(32, SHeight - 45, 100, 2);
+    self.progress.frame = CGRectMake(32, SHeight - 45, SWitdh - 64, 2);
     //设置进度条颜色
     self.progress.trackTintColor = [UIColor whiteColor];
     //设置进度默认值，这个相当于百分比，范围在0~1之间，不可以设置最大最小值
@@ -104,19 +104,6 @@
     self.progress.progressTintColor = [UIColor redColor];
     [self.progress setProgress:0.0 animated:YES];
     [self.view addSubview:self.progress];
-    
-    //    //创建播放器层
-    //    NSString *path = [[NSBundle mainBundle] pathForResource:@"demo" ofType:@"mp4"];
-    //    NSURL *url = [NSURL fileURLWithPath:path];
-    //    self.playerItem = [AVPlayerItem playerItemWithURL:url];
-    //
-    //    [self addObserverToPlayItem:self.playerItem];
-    //
-    //    self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
-    //    self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
-    //    self.playerLayer.frame = self.view.frame;
-    //    self.playerLayer.videoGravity = AVLayerVideoGravityResize;
-    //    [self.view.layer addSublayer:self.playerLayer];
 }
 
 

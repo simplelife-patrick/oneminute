@@ -10,4 +10,6 @@
 
 @interface DLYRecordViewController : DLYBaseViewController
 
+@property (nonatomic, assign) BOOL isExport;
+
 @end

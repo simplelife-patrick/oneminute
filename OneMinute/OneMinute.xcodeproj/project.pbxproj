@@ -235,11 +235,11 @@
 		1C7E61821EE7DF4F0088F33F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				1C7E61831EE7DF4F0088F33F /* main.m */,
 				6F5F89A61F186B5300A04BF9 /* iconfont.ttf */,
 				6F5F89A81F186B8E00A04BF9 /* DLYPrefixHeader.pch */,
 				6F5F89BD1F18786200A04BF9 /* demo.mp4 */,
 				6F5F89BF1F18787800A04BF9 /* launch.mp4 */,
-				1C7E61831EE7DF4F0088F33F /* main.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";

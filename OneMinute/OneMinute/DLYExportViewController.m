@@ -9,6 +9,7 @@
 #import "DLYExportViewController.h"
 #import "DLYAnnularProgress.h"
 #import "ViewController.h"
+#import "DLYRecordViewController.h"
 
 #define SWitdh [UIScreen mainScreen].bounds.size.width
 #define SHeight [UIScreen mainScreen].bounds.size.height
@@ -78,10 +79,10 @@
     [self.centerView addSubview:self.successButton];
     
     //测试定时器button，要删掉
-    UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-    btn.backgroundColor = [UIColor purpleColor];
-    [self.syntheticView addSubview:btn];
-    [btn addTarget:self action:@selector(onClickTimer) forControlEvents:UIControlEventTouchUpInside];
+//    UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+//    btn.backgroundColor = [UIColor purpleColor];
+//    [self.syntheticView addSubview:btn];
+//    [btn addTarget:self action:@selector(onClickTimer) forControlEvents:UIControlEventTouchUpInside];
     
     //提示label
     self.remindLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 217, 112, 44)];
@@ -92,6 +93,10 @@
     self.remindLabel.textColor = [UIColor whiteColor];
     self.remindLabel.numberOfLines = 0;
     [self.syntheticView addSubview:self.remindLabel];
+    
+    _shootTime = 0.0;
+    _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
+    [[NSRunLoop mainRunLoop] addTimer:_shootTimer forMode:NSRunLoopCommonModes];
 }
 
 - (void)onClickTimer {
@@ -122,17 +127,17 @@
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) 2.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         
-        self.syntheticView.hidden = YES;
-        //显示所有控件
-        self.titleField.hidden = NO;
-        self.skipButton.hidden = NO;
-        self.skipLabel.hidden = NO;
+//        self.syntheticView.hidden = YES;
+//        //显示所有控件
+//        self.titleField.hidden = NO;
+//        self.skipButton.hidden = NO;
+//        self.skipLabel.hidden = NO;
         
-        //逻辑 逻辑 逻辑
-        [self.navigationController popToRootViewControllerAnimated:YES];
-        
+        NSArray *arr = self.navigationController.viewControllers;
+        DLYRecordViewController *recoedVC = arr[0];
+        recoedVC.isExport = YES;
+        [self.navigationController popToViewController:recoedVC animated:YES];
     });
-    
     
 }
 

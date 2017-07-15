@@ -75,9 +75,9 @@
 @property (nonatomic, strong) UIButton *playButton;         //播放单个视频
 @property (nonatomic, strong) UIButton *deletePartButton;   //删除单个视频
 @property (nonatomic, strong) UIView *prepareView;          //拍摄准备页面
-@property (nonatomic, strong) UIImageView *warningIcon;    //拍摄指导
-@property (nonatomic, strong) UILabel *shootGuide;         //拍摄指导
-@property (nonatomic, strong) UIButton *canelButton;       //取消拍摄
+@property (nonatomic, strong) UIImageView *warningIcon;     //拍摄指导
+@property (nonatomic, strong) UILabel *shootGuide;          //拍摄指导
+@property (nonatomic, strong) UIButton *canelButton;        //取消拍摄
 
 
 
@@ -141,6 +141,54 @@
     [self.view addSubview:[self mainView]];
     [self createMainViewLeft];
     
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    if (self.isExport) {
+        
+        //创建假模型数据
+//        partModelArray = [[NSMutableArray alloc]init];
+        [partModelArray removeAllObjects];
+        for(int i = 0; i < 6; i ++)
+        {
+            NSMutableDictionary * dict = [[NSMutableDictionary alloc]init];
+            [dict setObject:@"0" forKey:@"shootStatus"];
+            if(i == 0) {
+                selectVedioPart = i;
+                [dict setObject:@"1" forKey:@"prepareShoot"];
+                [dict setObject:@"0" forKey:@"shootType"];
+                [dict setObject:@"10''" forKey:@"time"];
+            }else if(i == 1) {
+                [dict setObject:@"0" forKey:@"prepareShoot"];
+                [dict setObject:@"1" forKey:@"shootType"];
+                [dict setObject:@"10''" forKey:@"time"];
+            }else {
+                [dict setObject:@"0" forKey:@"prepareShoot"];
+                [dict setObject:@"0" forKey:@"shootType"];
+                [dict setObject:@"10''" forKey:@"time"];
+            }
+            
+            
+            [partModelArray addObject:dict];
+            
+        }
+        
+        _shootTime = 0;
+        //    selectModel = 10004;
+        selectType = 0;
+        _prepareTime = 0;
+        selectPartTag = 0;
+        for(int i = 0; i < 7; i ++)
+        {
+            [[self shootStatusArray] addObject:@"0"];
+        }
+        
+    }
+    
+    self.isExport = NO;
+    [self createPartViewLayout];
+
 }
 
 #pragma mark ==== 主界面
@@ -264,14 +312,27 @@
 //后面改变的状态
 - (void)deviceChangeAndHomeOnTheLeft {
     
-    self.backView.transform = CGAffineTransformMakeRotation(M_PI);
-
+    [self createLeftPartView];
+    
+    if (!self.playView.isHidden) {
+        UIButton *button = (UIButton *)[self.view viewWithTag:selectPartTag];
+        //点击哪个item，光标移动到当前item
+        self.prepareView.frame = CGRectMake(button.x, button.y + button.height - 2, 10, 2);
+        [self.backScrollView insertSubview:button belowSubview:self.prepareView];
+    }
+    
 }
 
 //home在右 初始状态
 - (void)deviceChangeAndHomeOnTheRight {
-
-    NSLog(@"home在右");
+    
+    [self createPartView];
+    if (!self.playView.isHidden) {
+        UIButton *button = (UIButton *)[self.view viewWithTag:selectPartTag];
+        //点击哪个item，光标移动到当前item
+        self.prepareView.frame = CGRectMake(button.x, button.y, 10, 2);
+        [self.backScrollView insertSubview:button belowSubview:self.prepareView];
+    }
 
 }
 
@@ -424,17 +485,21 @@
     UIView * point1 = (UIView *)[self.view viewWithTag:91];
     UIView * point2 = (UIView *)[self.view viewWithTag:92];
     UIView * point3 = (UIView *)[self.view viewWithTag:93];
-    
-    point1.hidden = YES;
-    point2.hidden = YES;
-    point3.hidden = YES;
-    [_timer invalidate];
-    _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
-    self.canelButton.hidden = NO;
-    
-    if(_prepareTime == 1 || label.hidden == NO){
-        label.hidden = YES;
+        
+    if (_timer.isValid) {
+        point1.hidden = YES;
+        point2.hidden = YES;
+        point3.hidden = YES;
+        [_timer invalidate];
+        _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
+        self.canelButton.hidden = NO;
+        
+        if(_prepareTime == 1 || label.hidden == NO){
+            label.hidden = YES;
+        }
     }
+    
+
 }
 //代理方法,确定删除
 - (void)deletePopUpViewClick {
@@ -477,9 +542,20 @@
         }
     }
     
-    [self createPartView];
-    
+//    [self createPartView];
+    [self createPartViewLayout];
 }
+
+- (void)createPartViewLayout {
+
+    if (self.newState == 1) {
+        [self createPartView];
+    }else if (self.newState == 2){
+        [self createLeftPartView];
+    }
+
+}
+
 //代理方法,取消删除
 - (void)cancelPopUpViewClick {
     
@@ -585,6 +661,114 @@
     }
 }
 
+- (void)createLeftPartView {
+    //    self.backView.transform = CGAffineTransformMakeRotation(M_PI);
+
+    
+    [self.backScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    float episodeHeight = (SCREEN_HRIGHT - 30  * SCALE_HEIGHT - 10)/6;
+    if(SCREEN_HRIGHT > 420)
+    {
+        episodeHeight = (SCREEN_WIDTH - 30  * SCREEN_WIDTH/375 - 10)/6;
+    }
+    
+    NSMutableArray *leftModelArray = [NSMutableArray arrayWithArray:partModelArray];
+    leftModelArray = (NSMutableArray *)[[leftModelArray reverseObjectEnumerator] allObjects];
+    
+    for(int i = 1; i <= leftModelArray.count; i ++)
+    {
+        NSDictionary * dict = leftModelArray[i - 1];
+        UIButton * button = [[UIButton alloc]initWithFrame:CGRectMake(43, (episodeHeight + 2) * (i - 1), 10, episodeHeight)];
+        
+        UIEdgeInsets edgeInsets = {0, -43, 0, -5};
+        [button setHitEdgeInsets:edgeInsets];
+        //辨别改变段是否已经拍摄
+        if([dict[@"shootStatus"] isEqualToString:@"1"])
+        {
+            button.backgroundColor = RGB(255, 0, 0);
+        }else
+        {
+            button.backgroundColor = RGBA_HEX(0xc9c9c9, 0.1);
+            // 辨别该片段是否是默认准备拍摄片段
+            if([dict[@"prepareShoot"] isEqualToString:@"1"])
+            {
+                //光标
+                self.prepareView = [[UIView alloc]initWithFrame:CGRectMake(button.x, button.y + button.height - 2, 10, 2)];
+                self.prepareView.backgroundColor = [UIColor whiteColor];
+                [self.backScrollView addSubview:self.prepareView];
+                prepareAlpha = 1;
+                [_prepareShootTimer setFireDate:[NSDate distantPast]];
+                //判断拍摄状态
+                //正常状态
+                if([dict[@"shootType"] isEqualToString:@"0"])
+                {
+                    UILabel * timeLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, button.y, 39, button.height)];
+                    timeLabel.textAlignment = NSTextAlignmentRight;
+                    timeLabel.textColor = [UIColor whiteColor];
+                    timeLabel.font = FONT_SYSTEM(11);
+                    timeLabel.text = dict[@"time"];
+                    timeLabel.transform = CGAffineTransformMakeRotation(M_PI);
+                    [self.backScrollView addSubview:timeLabel];
+                    
+                }else if([dict[@"shootType"] isEqualToString:@"1"])
+                {//快进
+                    UILabel * timeLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, button.y + button.height/2 - 13, 39, 12)];
+                    timeLabel.textAlignment = NSTextAlignmentRight;
+                    timeLabel.textColor = [UIColor whiteColor];
+                    timeLabel.font = FONT_SYSTEM(11);
+                    timeLabel.text = dict[@"time"];
+                    timeLabel.transform = CGAffineTransformMakeRotation(M_PI);
+                    [self.backScrollView addSubview:timeLabel];
+                    
+                    UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(button.left - 24,  button.y + button.height/2 +1, 24, 12)];
+                    speedLabel.textColor = [UIColor whiteColor];
+                    speedLabel.font = FONT_SYSTEM(11);
+                    speedLabel.text = @"快进";
+                    speedLabel.transform = CGAffineTransformMakeRotation(M_PI);
+                    [self.backScrollView addSubview:speedLabel];
+                    
+                    
+                    UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(speedLabel.left - 15, speedLabel.top, 15, 14)];
+                    icon.image = [UIImage imageWithIcon:@"\U0000e670" inFont:ICONFONT size:19 color:[UIColor whiteColor]];
+                    icon.transform = CGAffineTransformMakeRotation(M_PI);
+                    [self.backScrollView addSubview:icon];
+                }else
+                {//延时
+                    UILabel * timeLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, button.y + button.height/2 - 13, 39, 12)];
+                    timeLabel.textAlignment = NSTextAlignmentRight;
+                    timeLabel.textColor = [UIColor whiteColor];
+                    timeLabel.font = FONT_SYSTEM(11);
+                    timeLabel.text = dict[@"time"];
+                    timeLabel.transform = CGAffineTransformMakeRotation(M_PI);
+                    [self.backScrollView addSubview:timeLabel];
+                    
+                    UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(button.left - 24,  button.y + button.height/2 +1, 24, 12)];
+                    speedLabel.textColor = [UIColor whiteColor];
+                    speedLabel.font = FONT_SYSTEM(11);
+                    speedLabel.text = @"延时";
+                    speedLabel.transform = CGAffineTransformMakeRotation(M_PI);
+                    [self.backScrollView addSubview:speedLabel];
+                    
+                    
+                    UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(speedLabel.left - 15, speedLabel.top, 15, 14)];
+                    icon.image = [UIImage imageWithIcon:@"\U0000e66f" inFont:ICONFONT size:19 color:[UIColor whiteColor]];
+                    icon.transform = CGAffineTransformMakeRotation(M_PI);
+                    [self.backScrollView addSubview:icon];
+                }
+            }
+        }
+        
+        
+//        button.tag = 10000 + i;
+        button.tag = 10000 + (7 - i);
+        [button addTarget:self action:@selector(vedioEpisodeClick:) forControlEvents:UIControlEventTouchUpInside];
+        
+        button.clipsToBounds = YES;
+        [self.backScrollView addSubview:button];
+        
+    }
+}
+
 - (void)prepareShootAction {
     
     [UIView animateWithDuration:0.1f animations:^{
@@ -617,8 +801,15 @@
     //    NSDictionary * dict = partModelArray[i];
     
     //点击哪个item，光标移动到当前item
-    self.prepareView.frame = CGRectMake(button.x, button.y, 10, 2);
-    [self.backScrollView insertSubview:button belowSubview:self.prepareView];
+    
+    if (self.newState == 1) {
+        self.prepareView.frame = CGRectMake(button.x, button.y, 10, 2);
+        [self.backScrollView insertSubview:button belowSubview:self.prepareView];
+    }else if (self.newState == 2){
+        self.prepareView.frame = CGRectMake(button.x, button.y + button.height - 2, 10, 2);
+        [self.backScrollView insertSubview:button belowSubview:self.prepareView];
+    }
+    
     
     if([dict[@"shootStatus"] isEqualToString:@"1"])
     {//说明时已拍摄片段
@@ -643,7 +834,9 @@
         selectVedioPart = i - 1;
         [partModelArray replaceObjectAtIndex:i-1 withObject:dict];
         
-        [self createPartView];
+//        [self createPartView];
+        [self createPartViewLayout];
+
     }
     
 }
@@ -760,7 +953,7 @@
 #pragma mark ===创建拍摄界面
 - (void)createShootView {
     
-    self.warningIcon = [[UIImageView alloc]initWithFrame:CGRectMake(28, SCREEN_WIDTH - 54, 32, 32)];
+    self.warningIcon = [[UIImageView alloc]initWithFrame:CGRectMake(28, SCREEN_HRIGHT - 54, 32, 32)];
     self.warningIcon.hidden = YES;
     self.warningIcon.image = [UIImage imageWithIcon:@"\U0000e663" inFont:ICONFONT size:32 color:[UIColor redColor]];
     [self.shootView addSubview:self.warningIcon];
@@ -794,7 +987,7 @@
     prepareLabel.tag = 94;
     [self.shootView addSubview:prepareLabel];
     
-    self.shootGuide = [[UILabel alloc]initWithFrame:CGRectMake(0, SCREEN_WIDTH - 49, 270, 30)];
+    self.shootGuide = [[UILabel alloc]initWithFrame:CGRectMake(0, SCREEN_HRIGHT - 49, 270, 30)];
     self.shootGuide.backgroundColor = RGBA(0, 0, 0, 0.7);
     self.shootGuide.text = @"拍摄指导：请保持光线充足";
     self.shootGuide.centerX = _shootView.centerX;
@@ -914,8 +1107,8 @@
             }
         }
         
-        [self createPartView];
-        
+//        [self createPartView];
+        [self createPartViewLayout];
         
         [UIView animateWithDuration:0.5f animations:^{
             self.exchangeCamera.hidden = NO;
@@ -990,8 +1183,6 @@
     {
         _mainView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HRIGHT)];
         _mainView.backgroundColor = RGB(70, 160, 235);
-        
-        NSLog(@"坐标大小：%f,%f,%f,%f", _mainView.x, _mainView.y ,_mainView.width,_mainView.height);
     }
     return _mainView;
 }
