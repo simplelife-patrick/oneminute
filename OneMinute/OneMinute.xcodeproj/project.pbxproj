@@ -19,6 +19,26 @@
 		1C7E61BE1EE7E4AC0088F33F /* DLYModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61B91EE7E4AC0088F33F /* DLYModule.m */; };
 		1C7E61BF1EE7E4AC0088F33F /* DLYModuleManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61BB1EE7E4AC0088F33F /* DLYModuleManager.m */; };
 		1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61C21EE7E6730088F33F /* DLYLogModule.m */; };
+		6F356E221F19F2B200BFD5C5 /* NSObject+JSONCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F356E191F19F2B200BFD5C5 /* NSObject+JSONCategories.m */; };
+		6F356E231F19F2B200BFD5C5 /* UIImage+iconfont.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F356E1B1F19F2B200BFD5C5 /* UIImage+iconfont.m */; };
+		6F356E241F19F2B200BFD5C5 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F356E1D1F19F2B200BFD5C5 /* UIView+Extension.m */; };
+		6F356E251F19F2B200BFD5C5 /* UIView+Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F356E1F1F19F2B200BFD5C5 /* UIView+Utility.m */; };
+		6F356E261F19F2B200BFD5C5 /* UIButton+LargerHitArea.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F356E211F19F2B200BFD5C5 /* UIButton+LargerHitArea.m */; };
+		6F356E2A1F19F4D300BFD5C5 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6F356E271F19F4D300BFD5C5 /* iconfont.ttf */; };
+		6F356E2B1F19F4D300BFD5C5 /* demo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 6F356E281F19F4D300BFD5C5 /* demo.mp4 */; };
+		6F356E2C1F19F4D300BFD5C5 /* launch.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 6F356E291F19F4D300BFD5C5 /* launch.mp4 */; };
+		6F356E351F19F5E200BFD5C5 /* DLYPopupMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F356E301F19F5E200BFD5C5 /* DLYPopupMenu.m */; };
+		6F356E361F19F5E200BFD5C5 /* DLYPopupMenuPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F356E321F19F5E200BFD5C5 /* DLYPopupMenuPath.m */; };
+		6F356E371F19F5E200BFD5C5 /* DLYRectConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F356E341F19F5E200BFD5C5 /* DLYRectConst.m */; };
+		6F356E3E1F19F5F500BFD5C5 /* DLYAnnularProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F356E391F19F5F500BFD5C5 /* DLYAnnularProgress.m */; };
+		6F356E3F1F19F5F500BFD5C5 /* DLYAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F356E3B1F19F5F500BFD5C5 /* DLYAlertView.m */; };
+		6F356E401F19F5F500BFD5C5 /* DLYCatchCrash.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F356E3D1F19F5F500BFD5C5 /* DLYCatchCrash.m */; };
+		6F356E461F19F64C00BFD5C5 /* DLYBaseNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F356E431F19F64C00BFD5C5 /* DLYBaseNavigationController.m */; };
+		6F356E471F19F64C00BFD5C5 /* DLYBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F356E451F19F64C00BFD5C5 /* DLYBaseViewController.m */; };
+		6F356E4B1F19F66800BFD5C5 /* DLYLaunchPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F356E4A1F19F66800BFD5C5 /* DLYLaunchPlayerViewController.m */; };
+		6F356E4F1F19F68200BFD5C5 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F356E4E1F19F68200BFD5C5 /* DLYRecordViewController.m */; };
+		6F356E531F19F69A00BFD5C5 /* DLYPlayVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F356E521F19F69A00BFD5C5 /* DLYPlayVideoViewController.m */; };
+		6F356E571F19F6B700BFD5C5 /* DLYExportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F356E561F19F6B700BFD5C5 /* DLYExportViewController.m */; };
 		ADFFF1971F18A33000FB5BF7 /* DLYCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF17E1F18A33000FB5BF7 /* DLYCaptureManager.m */; };
 		ADFFF1981F18A33000FB5BF7 /* DLYMediaEditManage.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1801F18A33000FB5BF7 /* DLYMediaEditManage.m */; };
 		ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */; };
@@ -77,6 +97,43 @@
 		1C7E61BC1EE7E4AC0088F33F /* DLYSharedInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DLYSharedInstance.h; path = Common/DLYSharedInstance.h; sourceTree = "<group>"; };
 		1C7E61C11EE7E6730088F33F /* DLYLogModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DLYLogModule.h; path = Log/DLYLogModule.h; sourceTree = "<group>"; };
 		1C7E61C21EE7E6730088F33F /* DLYLogModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DLYLogModule.m; path = Log/DLYLogModule.m; sourceTree = "<group>"; };
+		6F356E181F19F2B200BFD5C5 /* NSObject+JSONCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+JSONCategories.h"; sourceTree = "<group>"; };
+		6F356E191F19F2B200BFD5C5 /* NSObject+JSONCategories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+JSONCategories.m"; sourceTree = "<group>"; };
+		6F356E1A1F19F2B200BFD5C5 /* UIImage+iconfont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+iconfont.h"; sourceTree = "<group>"; };
+		6F356E1B1F19F2B200BFD5C5 /* UIImage+iconfont.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+iconfont.m"; sourceTree = "<group>"; };
+		6F356E1C1F19F2B200BFD5C5 /* UIView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extension.h"; sourceTree = "<group>"; };
+		6F356E1D1F19F2B200BFD5C5 /* UIView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extension.m"; sourceTree = "<group>"; };
+		6F356E1E1F19F2B200BFD5C5 /* UIView+Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Utility.h"; sourceTree = "<group>"; };
+		6F356E1F1F19F2B200BFD5C5 /* UIView+Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Utility.m"; sourceTree = "<group>"; };
+		6F356E201F19F2B200BFD5C5 /* UIButton+LargerHitArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+LargerHitArea.h"; sourceTree = "<group>"; };
+		6F356E211F19F2B200BFD5C5 /* UIButton+LargerHitArea.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+LargerHitArea.m"; sourceTree = "<group>"; };
+		6F356E271F19F4D300BFD5C5 /* iconfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = iconfont.ttf; sourceTree = "<group>"; };
+		6F356E281F19F4D300BFD5C5 /* demo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = demo.mp4; sourceTree = "<group>"; };
+		6F356E291F19F4D300BFD5C5 /* launch.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = launch.mp4; sourceTree = "<group>"; };
+		6F356E2F1F19F5E200BFD5C5 /* DLYPopupMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYPopupMenu.h; sourceTree = "<group>"; };
+		6F356E301F19F5E200BFD5C5 /* DLYPopupMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYPopupMenu.m; sourceTree = "<group>"; };
+		6F356E311F19F5E200BFD5C5 /* DLYPopupMenuPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYPopupMenuPath.h; sourceTree = "<group>"; };
+		6F356E321F19F5E200BFD5C5 /* DLYPopupMenuPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYPopupMenuPath.m; sourceTree = "<group>"; };
+		6F356E331F19F5E200BFD5C5 /* DLYRectConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRectConst.h; sourceTree = "<group>"; };
+		6F356E341F19F5E200BFD5C5 /* DLYRectConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRectConst.m; sourceTree = "<group>"; };
+		6F356E381F19F5F500BFD5C5 /* DLYAnnularProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAnnularProgress.h; sourceTree = "<group>"; };
+		6F356E391F19F5F500BFD5C5 /* DLYAnnularProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAnnularProgress.m; sourceTree = "<group>"; };
+		6F356E3A1F19F5F500BFD5C5 /* DLYAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAlertView.h; sourceTree = "<group>"; };
+		6F356E3B1F19F5F500BFD5C5 /* DLYAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAlertView.m; sourceTree = "<group>"; };
+		6F356E3C1F19F5F500BFD5C5 /* DLYCatchCrash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYCatchCrash.h; sourceTree = "<group>"; };
+		6F356E3D1F19F5F500BFD5C5 /* DLYCatchCrash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYCatchCrash.m; sourceTree = "<group>"; };
+		6F356E421F19F64C00BFD5C5 /* DLYBaseNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYBaseNavigationController.h; sourceTree = "<group>"; };
+		6F356E431F19F64C00BFD5C5 /* DLYBaseNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYBaseNavigationController.m; sourceTree = "<group>"; };
+		6F356E441F19F64C00BFD5C5 /* DLYBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYBaseViewController.h; sourceTree = "<group>"; };
+		6F356E451F19F64C00BFD5C5 /* DLYBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYBaseViewController.m; sourceTree = "<group>"; };
+		6F356E491F19F66800BFD5C5 /* DLYLaunchPlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYLaunchPlayerViewController.h; sourceTree = "<group>"; };
+		6F356E4A1F19F66800BFD5C5 /* DLYLaunchPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYLaunchPlayerViewController.m; sourceTree = "<group>"; };
+		6F356E4D1F19F68200BFD5C5 /* DLYRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRecordViewController.h; sourceTree = "<group>"; };
+		6F356E4E1F19F68200BFD5C5 /* DLYRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRecordViewController.m; sourceTree = "<group>"; };
+		6F356E511F19F69A00BFD5C5 /* DLYPlayVideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYPlayVideoViewController.h; sourceTree = "<group>"; };
+		6F356E521F19F69A00BFD5C5 /* DLYPlayVideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYPlayVideoViewController.m; sourceTree = "<group>"; };
+		6F356E551F19F6B700BFD5C5 /* DLYExportViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYExportViewController.h; sourceTree = "<group>"; };
+		6F356E561F19F6B700BFD5C5 /* DLYExportViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYExportViewController.m; sourceTree = "<group>"; };
 		7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneMinute.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute.debug.xcconfig"; sourceTree = "<group>"; };
 		ADFFF17D1F18A33000FB5BF7 /* DLYCaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYCaptureManager.h; sourceTree = "<group>"; };
 		ADFFF17E1F18A33000FB5BF7 /* DLYCaptureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYCaptureManager.m; sourceTree = "<group>"; };
@@ -135,6 +192,12 @@
 		1C2CA0151F10A4E50085B662 /* GUI */ = {
 			isa = PBXGroup;
 			children = (
+				6F356E2D1F19F5A600BFD5C5 /* Tool */,
+				6F356E411F19F61900BFD5C5 /* BaseController */,
+				6F356E481F19F65900BFD5C5 /* LaunchPlayerController */,
+				6F356E4C1F19F67500BFD5C5 /* RecordController */,
+				6F356E501F19F68E00BFD5C5 /* PlayVideoController */,
+				6F356E541F19F6A600BFD5C5 /* ExportController */,
 			);
 			name = GUI;
 			sourceTree = "<group>";
@@ -195,6 +258,9 @@
 		1C7E61821EE7DF4F0088F33F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				6F356E271F19F4D300BFD5C5 /* iconfont.ttf */,
+				6F356E281F19F4D300BFD5C5 /* demo.mp4 */,
+				6F356E291F19F4D300BFD5C5 /* launch.mp4 */,
 				ADFFF1A51F18A36700FB5BF7 /* DLY-PrefixHeader.pch */,
 				1C7E61831EE7DF4F0088F33F /* main.m */,
 			);
@@ -222,6 +288,16 @@
 		1C7E61B51EE7E47C0088F33F /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				6F356E181F19F2B200BFD5C5 /* NSObject+JSONCategories.h */,
+				6F356E191F19F2B200BFD5C5 /* NSObject+JSONCategories.m */,
+				6F356E1A1F19F2B200BFD5C5 /* UIImage+iconfont.h */,
+				6F356E1B1F19F2B200BFD5C5 /* UIImage+iconfont.m */,
+				6F356E1C1F19F2B200BFD5C5 /* UIView+Extension.h */,
+				6F356E1D1F19F2B200BFD5C5 /* UIView+Extension.m */,
+				6F356E1E1F19F2B200BFD5C5 /* UIView+Utility.h */,
+				6F356E1F1F19F2B200BFD5C5 /* UIView+Utility.m */,
+				6F356E201F19F2B200BFD5C5 /* UIButton+LargerHitArea.h */,
+				6F356E211F19F2B200BFD5C5 /* UIButton+LargerHitArea.m */,
 				ADFFF1A21F18A33C00FB5BF7 /* DLYCommon.h */,
 				ADFFF1A31F18A33C00FB5BF7 /* DLYCommon.m */,
 				1C7E61B61EE7E4AC0088F33F /* DLYAsyncQueue.h */,
@@ -259,6 +335,80 @@
 				C4410078F6FC633A4D50FCF1 /* libPods-OneMinute.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6F356E2D1F19F5A600BFD5C5 /* Tool */ = {
+			isa = PBXGroup;
+			children = (
+				6F356E2E1F19F5C000BFD5C5 /* PopupMenu */,
+				6F356E381F19F5F500BFD5C5 /* DLYAnnularProgress.h */,
+				6F356E391F19F5F500BFD5C5 /* DLYAnnularProgress.m */,
+				6F356E3A1F19F5F500BFD5C5 /* DLYAlertView.h */,
+				6F356E3B1F19F5F500BFD5C5 /* DLYAlertView.m */,
+				6F356E3C1F19F5F500BFD5C5 /* DLYCatchCrash.h */,
+				6F356E3D1F19F5F500BFD5C5 /* DLYCatchCrash.m */,
+			);
+			name = Tool;
+			sourceTree = "<group>";
+		};
+		6F356E2E1F19F5C000BFD5C5 /* PopupMenu */ = {
+			isa = PBXGroup;
+			children = (
+				6F356E2F1F19F5E200BFD5C5 /* DLYPopupMenu.h */,
+				6F356E301F19F5E200BFD5C5 /* DLYPopupMenu.m */,
+				6F356E311F19F5E200BFD5C5 /* DLYPopupMenuPath.h */,
+				6F356E321F19F5E200BFD5C5 /* DLYPopupMenuPath.m */,
+				6F356E331F19F5E200BFD5C5 /* DLYRectConst.h */,
+				6F356E341F19F5E200BFD5C5 /* DLYRectConst.m */,
+			);
+			name = PopupMenu;
+			sourceTree = "<group>";
+		};
+		6F356E411F19F61900BFD5C5 /* BaseController */ = {
+			isa = PBXGroup;
+			children = (
+				6F356E421F19F64C00BFD5C5 /* DLYBaseNavigationController.h */,
+				6F356E431F19F64C00BFD5C5 /* DLYBaseNavigationController.m */,
+				6F356E441F19F64C00BFD5C5 /* DLYBaseViewController.h */,
+				6F356E451F19F64C00BFD5C5 /* DLYBaseViewController.m */,
+			);
+			name = BaseController;
+			sourceTree = "<group>";
+		};
+		6F356E481F19F65900BFD5C5 /* LaunchPlayerController */ = {
+			isa = PBXGroup;
+			children = (
+				6F356E491F19F66800BFD5C5 /* DLYLaunchPlayerViewController.h */,
+				6F356E4A1F19F66800BFD5C5 /* DLYLaunchPlayerViewController.m */,
+			);
+			name = LaunchPlayerController;
+			sourceTree = "<group>";
+		};
+		6F356E4C1F19F67500BFD5C5 /* RecordController */ = {
+			isa = PBXGroup;
+			children = (
+				6F356E4D1F19F68200BFD5C5 /* DLYRecordViewController.h */,
+				6F356E4E1F19F68200BFD5C5 /* DLYRecordViewController.m */,
+			);
+			name = RecordController;
+			sourceTree = "<group>";
+		};
+		6F356E501F19F68E00BFD5C5 /* PlayVideoController */ = {
+			isa = PBXGroup;
+			children = (
+				6F356E511F19F69A00BFD5C5 /* DLYPlayVideoViewController.h */,
+				6F356E521F19F69A00BFD5C5 /* DLYPlayVideoViewController.m */,
+			);
+			name = PlayVideoController;
+			sourceTree = "<group>";
+		};
+		6F356E541F19F6A600BFD5C5 /* ExportController */ = {
+			isa = PBXGroup;
+			children = (
+				6F356E551F19F6B700BFD5C5 /* DLYExportViewController.h */,
+				6F356E561F19F6B700BFD5C5 /* DLYExportViewController.m */,
+			);
+			name = ExportController;
 			sourceTree = "<group>";
 		};
 		ADFFF17C1F18A33000FB5BF7 /* AVEngine */ = {
@@ -396,7 +546,7 @@
 				TargetAttributes = {
 					1C7E617E1EE7DF4F0088F33F = {
 						CreatedOnToolsVersion = 8.3.2;
-						DevelopmentTeam = 3QC6PDN9W4;
+						DevelopmentTeam = 3545373A7R;
 						ProvisioningStyle = Automatic;
 					};
 					1C7E61971EE7DF4F0088F33F = {
@@ -438,7 +588,10 @@
 			files = (
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
+				6F356E2C1F19F4D300BFD5C5 /* launch.mp4 in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
+				6F356E2A1F19F4D300BFD5C5 /* iconfont.ttf in Resources */,
+				6F356E2B1F19F4D300BFD5C5 /* demo.mp4 in Resources */,
 				ADFFF19F1F18A33000FB5BF7 /* Universal_001.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -512,22 +665,39 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F356E4F1F19F68200BFD5C5 /* DLYRecordViewController.m in Sources */,
 				ADFFF1A41F18A33C00FB5BF7 /* DLYCommon.m in Sources */,
 				1C7E618A1EE7DF4F0088F33F /* ViewController.m in Sources */,
 				1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */,
+				6F356E241F19F2B200BFD5C5 /* UIView+Extension.m in Sources */,
+				6F356E3E1F19F5F500BFD5C5 /* DLYAnnularProgress.m in Sources */,
 				1C7E61871EE7DF4F0088F33F /* AppDelegate.m in Sources */,
 				1C7E61BE1EE7E4AC0088F33F /* DLYModule.m in Sources */,
 				1C7E61BD1EE7E4AC0088F33F /* DLYAsyncQueue.m in Sources */,
 				ADFFF19E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m in Sources */,
+				6F356E221F19F2B200BFD5C5 /* NSObject+JSONCategories.m in Sources */,
+				6F356E4B1F19F66800BFD5C5 /* DLYLaunchPlayerViewController.m in Sources */,
 				ADFFF19A1F18A33000FB5BF7 /* DLYVolumeAutomation.m in Sources */,
+				6F356E231F19F2B200BFD5C5 /* UIImage+iconfont.m in Sources */,
+				6F356E461F19F64C00BFD5C5 /* DLYBaseNavigationController.m in Sources */,
+				6F356E351F19F5E200BFD5C5 /* DLYPopupMenu.m in Sources */,
 				1C7E61841EE7DF4F0088F33F /* main.m in Sources */,
 				ADFFF1971F18A33000FB5BF7 /* DLYCaptureManager.m in Sources */,
+				6F356E251F19F2B200BFD5C5 /* UIView+Utility.m in Sources */,
 				ADFFF1A01F18A33000FB5BF7 /* DLYResource.m in Sources */,
 				ADFFF1A11F18A33000FB5BF7 /* DLYSession.m in Sources */,
 				ADFFF19D1F18A33000FB5BF7 /* DLYMiniVlogProduct.m in Sources */,
+				6F356E361F19F5E200BFD5C5 /* DLYPopupMenuPath.m in Sources */,
 				ADFFF19C1F18A33000FB5BF7 /* DLYMiniVlogPart.m in Sources */,
 				ADFFF19B1F18A33000FB5BF7 /* DLYMiniVlogDraft.m in Sources */,
+				6F356E371F19F5E200BFD5C5 /* DLYRectConst.m in Sources */,
+				6F356E531F19F69A00BFD5C5 /* DLYPlayVideoViewController.m in Sources */,
+				6F356E261F19F2B200BFD5C5 /* UIButton+LargerHitArea.m in Sources */,
+				6F356E571F19F6B700BFD5C5 /* DLYExportViewController.m in Sources */,
 				ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */,
+				6F356E3F1F19F5F500BFD5C5 /* DLYAlertView.m in Sources */,
+				6F356E401F19F5F500BFD5C5 /* DLYCatchCrash.m in Sources */,
+				6F356E471F19F64C00BFD5C5 /* DLYBaseViewController.m in Sources */,
 				1C7E61BF1EE7E4AC0088F33F /* DLYModuleManager.m in Sources */,
 				ADFFF1981F18A33000FB5BF7 /* DLYMediaEditManage.m in Sources */,
 			);
@@ -679,7 +849,7 @@
 			baseConfigurationReference = 7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 3QC6PDN9W4;
+				DEVELOPMENT_TEAM = 3545373A7R;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/OneMinute/DLY-PrefixHeader.pch";
 				INFOPLIST_FILE = OneMinute/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -694,7 +864,7 @@
 			baseConfigurationReference = FC05C70FE4A35674CFB74552 /* Pods-OneMinute.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 3QC6PDN9W4;
+				DEVELOPMENT_TEAM = 3545373A7R;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/OneMinute/DLY-PrefixHeader.pch";
 				INFOPLIST_FILE = OneMinute/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
