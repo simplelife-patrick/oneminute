@@ -556,7 +556,7 @@
 				TargetAttributes = {
 					1C7E617E1EE7DF4F0088F33F = {
 						CreatedOnToolsVersion = 8.3.2;
-						DevelopmentTeam = 3545373A7R;
+						DevelopmentTeam = 3QC6PDN9W4;
 						ProvisioningStyle = Automatic;
 					};
 					1C7E61971EE7DF4F0088F33F = {
@@ -861,7 +861,7 @@
 			baseConfigurationReference = 7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 3545373A7R;
+				DEVELOPMENT_TEAM = 3QC6PDN9W4;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/OneMinute/DLYPrefixHeader.pch";
 				INFOPLIST_FILE = OneMinute/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -876,7 +876,7 @@
 			baseConfigurationReference = FC05C70FE4A35674CFB74552 /* Pods-OneMinute.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 3545373A7R;
+				DEVELOPMENT_TEAM = 3QC6PDN9W4;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/OneMinute/DLYPrefixHeader.pch";
 				INFOPLIST_FILE = OneMinute/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
