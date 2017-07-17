@@ -19,6 +19,25 @@
 		1C7E61BE1EE7E4AC0088F33F /* DLYModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61B91EE7E4AC0088F33F /* DLYModule.m */; };
 		1C7E61BF1EE7E4AC0088F33F /* DLYModuleManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61BB1EE7E4AC0088F33F /* DLYModuleManager.m */; };
 		1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61C21EE7E6730088F33F /* DLYLogModule.m */; };
+		6F8925961F1B11A800256093 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6F8925931F1B11A800256093 /* iconfont.ttf */; };
+		6F8925971F1B11A800256093 /* demo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 6F8925941F1B11A800256093 /* demo.mp4 */; };
+		6F8925981F1B11A800256093 /* launch.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 6F8925951F1B11A800256093 /* launch.mp4 */; };
+		6F89259C1F1B12A100256093 /* DLYExportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F89259B1F1B12A100256093 /* DLYExportViewController.m */; };
+		6F8925AF1F1B135100256093 /* DLYPlayVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925AE1F1B135100256093 /* DLYPlayVideoViewController.m */; };
+		6F8925B31F1B137000256093 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925B21F1B137000256093 /* DLYRecordViewController.m */; };
+		6F8925BE1F1B139500256093 /* NSObject+JSONCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925B51F1B139500256093 /* NSObject+JSONCategories.m */; };
+		6F8925BF1F1B139500256093 /* UIImage+iconfont.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925B71F1B139500256093 /* UIImage+iconfont.m */; };
+		6F8925C01F1B139500256093 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925B91F1B139500256093 /* UIView+Extension.m */; };
+		6F8925C11F1B139500256093 /* UIView+Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925BB1F1B139500256093 /* UIView+Utility.m */; };
+		6F8925C21F1B139500256093 /* UIButton+LargerHitArea.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925BD1F1B139500256093 /* UIButton+LargerHitArea.m */; };
+		6F8925C61F1B13B400256093 /* DLYLaunchPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925C51F1B13B400256093 /* DLYLaunchPlayerViewController.m */; };
+		6F8925CC1F1B13CA00256093 /* DLYBaseNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925C91F1B13CA00256093 /* DLYBaseNavigationController.m */; };
+		6F8925CD1F1B13CA00256093 /* DLYBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925CB1F1B13CA00256093 /* DLYBaseViewController.m */; };
+		6F8925D51F1B13FF00256093 /* DLYAnnularProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925D01F1B13FF00256093 /* DLYAnnularProgress.m */; };
+		6F8925D61F1B13FF00256093 /* DLYAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925D21F1B13FF00256093 /* DLYAlertView.m */; };
+		6F8925DF1F1B142300256093 /* DLYPopupMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DA1F1B142300256093 /* DLYPopupMenu.m */; };
+		6F8925E01F1B142300256093 /* DLYPopupMenuPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DC1F1B142300256093 /* DLYPopupMenuPath.m */; };
+		6F8925E11F1B142300256093 /* DLYRectConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DE1F1B142300256093 /* DLYRectConst.m */; };
 		ADFFF1971F18A33000FB5BF7 /* DLYCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF17E1F18A33000FB5BF7 /* DLYCaptureManager.m */; };
 		ADFFF1981F18A33000FB5BF7 /* DLYMediaEditManage.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1801F18A33000FB5BF7 /* DLYMediaEditManage.m */; };
 		ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */; };
@@ -80,6 +99,41 @@
 		1C7E61BC1EE7E4AC0088F33F /* DLYSharedInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DLYSharedInstance.h; path = Common/DLYSharedInstance.h; sourceTree = "<group>"; };
 		1C7E61C11EE7E6730088F33F /* DLYLogModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DLYLogModule.h; path = Log/DLYLogModule.h; sourceTree = "<group>"; };
 		1C7E61C21EE7E6730088F33F /* DLYLogModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DLYLogModule.m; path = Log/DLYLogModule.m; sourceTree = "<group>"; };
+		6F8925931F1B11A800256093 /* iconfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = iconfont.ttf; sourceTree = "<group>"; };
+		6F8925941F1B11A800256093 /* demo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = demo.mp4; sourceTree = "<group>"; };
+		6F8925951F1B11A800256093 /* launch.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = launch.mp4; sourceTree = "<group>"; };
+		6F89259A1F1B12A100256093 /* DLYExportViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYExportViewController.h; sourceTree = "<group>"; };
+		6F89259B1F1B12A100256093 /* DLYExportViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYExportViewController.m; sourceTree = "<group>"; };
+		6F8925AD1F1B135100256093 /* DLYPlayVideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYPlayVideoViewController.h; sourceTree = "<group>"; };
+		6F8925AE1F1B135100256093 /* DLYPlayVideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYPlayVideoViewController.m; sourceTree = "<group>"; };
+		6F8925B11F1B137000256093 /* DLYRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRecordViewController.h; sourceTree = "<group>"; };
+		6F8925B21F1B137000256093 /* DLYRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRecordViewController.m; sourceTree = "<group>"; };
+		6F8925B41F1B139500256093 /* NSObject+JSONCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+JSONCategories.h"; sourceTree = "<group>"; };
+		6F8925B51F1B139500256093 /* NSObject+JSONCategories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+JSONCategories.m"; sourceTree = "<group>"; };
+		6F8925B61F1B139500256093 /* UIImage+iconfont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+iconfont.h"; sourceTree = "<group>"; };
+		6F8925B71F1B139500256093 /* UIImage+iconfont.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+iconfont.m"; sourceTree = "<group>"; };
+		6F8925B81F1B139500256093 /* UIView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extension.h"; sourceTree = "<group>"; };
+		6F8925B91F1B139500256093 /* UIView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extension.m"; sourceTree = "<group>"; };
+		6F8925BA1F1B139500256093 /* UIView+Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Utility.h"; sourceTree = "<group>"; };
+		6F8925BB1F1B139500256093 /* UIView+Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Utility.m"; sourceTree = "<group>"; };
+		6F8925BC1F1B139500256093 /* UIButton+LargerHitArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+LargerHitArea.h"; sourceTree = "<group>"; };
+		6F8925BD1F1B139500256093 /* UIButton+LargerHitArea.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+LargerHitArea.m"; sourceTree = "<group>"; };
+		6F8925C41F1B13B400256093 /* DLYLaunchPlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYLaunchPlayerViewController.h; sourceTree = "<group>"; };
+		6F8925C51F1B13B400256093 /* DLYLaunchPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYLaunchPlayerViewController.m; sourceTree = "<group>"; };
+		6F8925C81F1B13CA00256093 /* DLYBaseNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYBaseNavigationController.h; sourceTree = "<group>"; };
+		6F8925C91F1B13CA00256093 /* DLYBaseNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYBaseNavigationController.m; sourceTree = "<group>"; };
+		6F8925CA1F1B13CA00256093 /* DLYBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYBaseViewController.h; sourceTree = "<group>"; };
+		6F8925CB1F1B13CA00256093 /* DLYBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYBaseViewController.m; sourceTree = "<group>"; };
+		6F8925CF1F1B13FF00256093 /* DLYAnnularProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAnnularProgress.h; sourceTree = "<group>"; };
+		6F8925D01F1B13FF00256093 /* DLYAnnularProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAnnularProgress.m; sourceTree = "<group>"; };
+		6F8925D11F1B13FF00256093 /* DLYAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAlertView.h; sourceTree = "<group>"; };
+		6F8925D21F1B13FF00256093 /* DLYAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAlertView.m; sourceTree = "<group>"; };
+		6F8925D91F1B142300256093 /* DLYPopupMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYPopupMenu.h; sourceTree = "<group>"; };
+		6F8925DA1F1B142300256093 /* DLYPopupMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYPopupMenu.m; sourceTree = "<group>"; };
+		6F8925DB1F1B142300256093 /* DLYPopupMenuPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYPopupMenuPath.h; sourceTree = "<group>"; };
+		6F8925DC1F1B142300256093 /* DLYPopupMenuPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYPopupMenuPath.m; sourceTree = "<group>"; };
+		6F8925DD1F1B142300256093 /* DLYRectConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRectConst.h; sourceTree = "<group>"; };
+		6F8925DE1F1B142300256093 /* DLYRectConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRectConst.m; sourceTree = "<group>"; };
 		7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneMinute.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute.debug.xcconfig"; sourceTree = "<group>"; };
 		ADFFF17D1F18A33000FB5BF7 /* DLYCaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYCaptureManager.h; sourceTree = "<group>"; };
 		ADFFF17E1F18A33000FB5BF7 /* DLYCaptureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYCaptureManager.m; sourceTree = "<group>"; };
@@ -144,6 +198,12 @@
 		1C2CA0151F10A4E50085B662 /* GUI */ = {
 			isa = PBXGroup;
 			children = (
+				6F8925CE1F1B13E200256093 /* Tool */,
+				6F8925C71F1B13BD00256093 /* BaseController */,
+				6F8925C31F1B13A700256093 /* LaunchPlayerController */,
+				6F8925B01F1B136200256093 /* RecordController */,
+				6F8925AC1F1B134400256093 /* PlayVideoController */,
+				6F8925991F1B128F00256093 /* ExportController */,
 			);
 			name = GUI;
 			sourceTree = "<group>";
@@ -204,6 +264,9 @@
 		1C7E61821EE7DF4F0088F33F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				6F8925931F1B11A800256093 /* iconfont.ttf */,
+				6F8925941F1B11A800256093 /* demo.mp4 */,
+				6F8925951F1B11A800256093 /* launch.mp4 */,
 				ADFFF1A51F18A36700FB5BF7 /* DLYPrefixHeader.pch */,
 				1C7E61831EE7DF4F0088F33F /* main.m */,
 			);
@@ -231,6 +294,16 @@
 		1C7E61B51EE7E47C0088F33F /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				6F8925B41F1B139500256093 /* NSObject+JSONCategories.h */,
+				6F8925B51F1B139500256093 /* NSObject+JSONCategories.m */,
+				6F8925B61F1B139500256093 /* UIImage+iconfont.h */,
+				6F8925B71F1B139500256093 /* UIImage+iconfont.m */,
+				6F8925B81F1B139500256093 /* UIView+Extension.h */,
+				6F8925B91F1B139500256093 /* UIView+Extension.m */,
+				6F8925BA1F1B139500256093 /* UIView+Utility.h */,
+				6F8925BB1F1B139500256093 /* UIView+Utility.m */,
+				6F8925BC1F1B139500256093 /* UIButton+LargerHitArea.h */,
+				6F8925BD1F1B139500256093 /* UIButton+LargerHitArea.m */,
 				ADFFF1A21F18A33C00FB5BF7 /* DLYCommon.h */,
 				ADFFF1A31F18A33C00FB5BF7 /* DLYCommon.m */,
 				1C7E61B61EE7E4AC0088F33F /* DLYAsyncQueue.h */,
@@ -268,6 +341,78 @@
 				C4410078F6FC633A4D50FCF1 /* libPods-OneMinute.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6F8925991F1B128F00256093 /* ExportController */ = {
+			isa = PBXGroup;
+			children = (
+				6F89259A1F1B12A100256093 /* DLYExportViewController.h */,
+				6F89259B1F1B12A100256093 /* DLYExportViewController.m */,
+			);
+			name = ExportController;
+			sourceTree = "<group>";
+		};
+		6F8925AC1F1B134400256093 /* PlayVideoController */ = {
+			isa = PBXGroup;
+			children = (
+				6F8925AD1F1B135100256093 /* DLYPlayVideoViewController.h */,
+				6F8925AE1F1B135100256093 /* DLYPlayVideoViewController.m */,
+			);
+			name = PlayVideoController;
+			sourceTree = "<group>";
+		};
+		6F8925B01F1B136200256093 /* RecordController */ = {
+			isa = PBXGroup;
+			children = (
+				6F8925B11F1B137000256093 /* DLYRecordViewController.h */,
+				6F8925B21F1B137000256093 /* DLYRecordViewController.m */,
+			);
+			name = RecordController;
+			sourceTree = "<group>";
+		};
+		6F8925C31F1B13A700256093 /* LaunchPlayerController */ = {
+			isa = PBXGroup;
+			children = (
+				6F8925C41F1B13B400256093 /* DLYLaunchPlayerViewController.h */,
+				6F8925C51F1B13B400256093 /* DLYLaunchPlayerViewController.m */,
+			);
+			name = LaunchPlayerController;
+			sourceTree = "<group>";
+		};
+		6F8925C71F1B13BD00256093 /* BaseController */ = {
+			isa = PBXGroup;
+			children = (
+				6F8925C81F1B13CA00256093 /* DLYBaseNavigationController.h */,
+				6F8925C91F1B13CA00256093 /* DLYBaseNavigationController.m */,
+				6F8925CA1F1B13CA00256093 /* DLYBaseViewController.h */,
+				6F8925CB1F1B13CA00256093 /* DLYBaseViewController.m */,
+			);
+			name = BaseController;
+			sourceTree = "<group>";
+		};
+		6F8925CE1F1B13E200256093 /* Tool */ = {
+			isa = PBXGroup;
+			children = (
+				6F8925D81F1B141200256093 /* PopupMenu */,
+				6F8925CF1F1B13FF00256093 /* DLYAnnularProgress.h */,
+				6F8925D01F1B13FF00256093 /* DLYAnnularProgress.m */,
+				6F8925D11F1B13FF00256093 /* DLYAlertView.h */,
+				6F8925D21F1B13FF00256093 /* DLYAlertView.m */,
+			);
+			name = Tool;
+			sourceTree = "<group>";
+		};
+		6F8925D81F1B141200256093 /* PopupMenu */ = {
+			isa = PBXGroup;
+			children = (
+				6F8925D91F1B142300256093 /* DLYPopupMenu.h */,
+				6F8925DA1F1B142300256093 /* DLYPopupMenu.m */,
+				6F8925DB1F1B142300256093 /* DLYPopupMenuPath.h */,
+				6F8925DC1F1B142300256093 /* DLYPopupMenuPath.m */,
+				6F8925DD1F1B142300256093 /* DLYRectConst.h */,
+				6F8925DE1F1B142300256093 /* DLYRectConst.m */,
+			);
+			name = PopupMenu;
 			sourceTree = "<group>";
 		};
 		ADFFF17C1F18A33000FB5BF7 /* AVEngine */ = {
@@ -411,7 +556,7 @@
 				TargetAttributes = {
 					1C7E617E1EE7DF4F0088F33F = {
 						CreatedOnToolsVersion = 8.3.2;
-						DevelopmentTeam = 3QC6PDN9W4;
+						DevelopmentTeam = 3545373A7R;
 						ProvisioningStyle = Automatic;
 					};
 					1C7E61971EE7DF4F0088F33F = {
@@ -453,7 +598,10 @@
 			files = (
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
+				6F8925981F1B11A800256093 /* launch.mp4 in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
+				6F8925961F1B11A800256093 /* iconfont.ttf in Resources */,
+				6F8925971F1B11A800256093 /* demo.mp4 in Resources */,
 				ADFFF19F1F18A33000FB5BF7 /* Universal_001.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -529,25 +677,41 @@
 			files = (
 				ADFFF1A41F18A33C00FB5BF7 /* DLYCommon.m in Sources */,
 				1C7E618A1EE7DF4F0088F33F /* ViewController.m in Sources */,
+				6F8925B31F1B137000256093 /* DLYRecordViewController.m in Sources */,
 				1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */,
 				ADFFF1AB1F18C00200FB5BF7 /* DLYTransitionInstructions.m in Sources */,
+				6F8925BE1F1B139500256093 /* NSObject+JSONCategories.m in Sources */,
 				1C7E61871EE7DF4F0088F33F /* AppDelegate.m in Sources */,
+				6F8925E01F1B142300256093 /* DLYPopupMenuPath.m in Sources */,
 				1C7E61BE1EE7E4AC0088F33F /* DLYModule.m in Sources */,
+				6F8925C61F1B13B400256093 /* DLYLaunchPlayerViewController.m in Sources */,
 				1C7E61BD1EE7E4AC0088F33F /* DLYAsyncQueue.m in Sources */,
 				ADFFF19E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m in Sources */,
 				ADFFF19A1F18A33000FB5BF7 /* DLYVolumeAutomation.m in Sources */,
+				6F8925BF1F1B139500256093 /* UIImage+iconfont.m in Sources */,
 				1C7E61841EE7DF4F0088F33F /* main.m in Sources */,
 				ADFFF1AE1F18C04400FB5BF7 /* DLYVideoTransition.m in Sources */,
 				ADFFF1971F18A33000FB5BF7 /* DLYCaptureManager.m in Sources */,
 				ADFFF1A01F18A33000FB5BF7 /* DLYResource.m in Sources */,
 				ADFFF1A11F18A33000FB5BF7 /* DLYSession.m in Sources */,
+				6F8925CC1F1B13CA00256093 /* DLYBaseNavigationController.m in Sources */,
 				ADFFF19D1F18A33000FB5BF7 /* DLYMiniVlogProduct.m in Sources */,
+				6F8925C01F1B139500256093 /* UIView+Extension.m in Sources */,
+				6F8925CD1F1B13CA00256093 /* DLYBaseViewController.m in Sources */,
+				6F8925C11F1B139500256093 /* UIView+Utility.m in Sources */,
+				6F8925C21F1B139500256093 /* UIButton+LargerHitArea.m in Sources */,
 				ADFFF1A81F18BFAC00FB5BF7 /* DLYTransitionComposition.m in Sources */,
+				6F8925AF1F1B135100256093 /* DLYPlayVideoViewController.m in Sources */,
+				6F89259C1F1B12A100256093 /* DLYExportViewController.m in Sources */,
+				6F8925E11F1B142300256093 /* DLYRectConst.m in Sources */,
+				6F8925D61F1B13FF00256093 /* DLYAlertView.m in Sources */,
 				ADFFF19C1F18A33000FB5BF7 /* DLYMiniVlogPart.m in Sources */,
+				6F8925D51F1B13FF00256093 /* DLYAnnularProgress.m in Sources */,
 				ADFFF19B1F18A33000FB5BF7 /* DLYMiniVlogDraft.m in Sources */,
 				ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */,
 				1C7E61BF1EE7E4AC0088F33F /* DLYModuleManager.m in Sources */,
 				ADFFF1981F18A33000FB5BF7 /* DLYMediaEditManage.m in Sources */,
+				6F8925DF1F1B142300256093 /* DLYPopupMenu.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -697,7 +861,7 @@
 			baseConfigurationReference = 7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 3QC6PDN9W4;
+				DEVELOPMENT_TEAM = 3545373A7R;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/OneMinute/DLYPrefixHeader.pch";
 				INFOPLIST_FILE = OneMinute/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -712,7 +876,7 @@
 			baseConfigurationReference = FC05C70FE4A35674CFB74552 /* Pods-OneMinute.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 3QC6PDN9W4;
+				DEVELOPMENT_TEAM = 3545373A7R;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/OneMinute/DLYPrefixHeader.pch";
 				INFOPLIST_FILE = OneMinute/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
