@@ -15,6 +15,7 @@ pod 'CocoaLumberjack', '3.2.0'
 pod 'GPUImage', '~> 0.1.7'
 pod 'Masonry', '~> 1.0.2'
 pod 'CocoaSecurity', '~> 1.2.4'
+pod 'UMengAnalytics', '~> 4.2.4'
 
 ########################调试##################################
 # 注意，发appstore的时候一定要全部移除掉
