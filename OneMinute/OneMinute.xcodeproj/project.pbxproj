@@ -19,6 +19,7 @@
 		1C7E61BE1EE7E4AC0088F33F /* DLYModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61B91EE7E4AC0088F33F /* DLYModule.m */; };
 		1C7E61BF1EE7E4AC0088F33F /* DLYModuleManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61BB1EE7E4AC0088F33F /* DLYModuleManager.m */; };
 		1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61C21EE7E6730088F33F /* DLYLogModule.m */; };
+		ADAD50D01F1CB748001DB4C6 /* Universal_001.json in Resources */ = {isa = PBXBuildFile; fileRef = ADAD50CF1F1CB748001DB4C6 /* Universal_001.json */; };
 		ADFFF1971F18A33000FB5BF7 /* DLYCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF17E1F18A33000FB5BF7 /* DLYCaptureManager.m */; };
 		ADFFF1981F18A33000FB5BF7 /* DLYMediaEditManage.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1801F18A33000FB5BF7 /* DLYMediaEditManage.m */; };
 		ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */; };
@@ -27,7 +28,6 @@
 		ADFFF19C1F18A33000FB5BF7 /* DLYMiniVlogPart.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF18A1F18A33000FB5BF7 /* DLYMiniVlogPart.m */; };
 		ADFFF19D1F18A33000FB5BF7 /* DLYMiniVlogProduct.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF18C1F18A33000FB5BF7 /* DLYMiniVlogProduct.m */; };
 		ADFFF19E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF18E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m */; };
-		ADFFF19F1F18A33000FB5BF7 /* Universal_001.json in Resources */ = {isa = PBXBuildFile; fileRef = ADFFF1901F18A33000FB5BF7 /* Universal_001.json */; };
 		ADFFF1A01F18A33000FB5BF7 /* DLYResource.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1931F18A33000FB5BF7 /* DLYResource.m */; };
 		ADFFF1A11F18A33000FB5BF7 /* DLYSession.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1961F18A33000FB5BF7 /* DLYSession.m */; };
 		ADFFF1A41F18A33C00FB5BF7 /* DLYCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1A31F18A33C00FB5BF7 /* DLYCommon.m */; };
@@ -81,6 +81,7 @@
 		1C7E61C11EE7E6730088F33F /* DLYLogModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DLYLogModule.h; path = Log/DLYLogModule.h; sourceTree = "<group>"; };
 		1C7E61C21EE7E6730088F33F /* DLYLogModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DLYLogModule.m; path = Log/DLYLogModule.m; sourceTree = "<group>"; };
 		7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneMinute.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute.debug.xcconfig"; sourceTree = "<group>"; };
+		ADAD50CF1F1CB748001DB4C6 /* Universal_001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Universal_001.json; sourceTree = "<group>"; };
 		ADFFF17D1F18A33000FB5BF7 /* DLYCaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYCaptureManager.h; sourceTree = "<group>"; };
 		ADFFF17E1F18A33000FB5BF7 /* DLYCaptureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYCaptureManager.m; sourceTree = "<group>"; };
 		ADFFF17F1F18A33000FB5BF7 /* DLYMediaEditManage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMediaEditManage.h; sourceTree = "<group>"; };
@@ -97,7 +98,6 @@
 		ADFFF18C1F18A33000FB5BF7 /* DLYMiniVlogProduct.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMiniVlogProduct.m; sourceTree = "<group>"; };
 		ADFFF18D1F18A33000FB5BF7 /* DLYMiniVlogTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMiniVlogTemplate.h; sourceTree = "<group>"; };
 		ADFFF18E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMiniVlogTemplate.m; sourceTree = "<group>"; };
-		ADFFF1901F18A33000FB5BF7 /* Universal_001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Universal_001.json; sourceTree = "<group>"; };
 		ADFFF1921F18A33000FB5BF7 /* DLYResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYResource.h; sourceTree = "<group>"; };
 		ADFFF1931F18A33000FB5BF7 /* DLYResource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYResource.m; sourceTree = "<group>"; };
 		ADFFF1951F18A33000FB5BF7 /* DLYSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYSession.h; sourceTree = "<group>"; };
@@ -270,6 +270,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		ADAD50CE1F1CB748001DB4C6 /* Template */ = {
+			isa = PBXGroup;
+			children = (
+				ADAD50CF1F1CB748001DB4C6 /* Universal_001.json */,
+			);
+			path = Template;
+			sourceTree = "<group>";
+		};
 		ADFFF17C1F18A33000FB5BF7 /* AVEngine */ = {
 			isa = PBXGroup;
 			children = (
@@ -294,8 +302,8 @@
 		ADFFF1851F18A33000FB5BF7 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				ADAD50CE1F1CB748001DB4C6 /* Template */,
 				ADFFF1861F18A33000FB5BF7 /* Models */,
-				ADFFF18F1F18A33000FB5BF7 /* Template */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -313,14 +321,6 @@
 				ADFFF18E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		ADFFF18F1F18A33000FB5BF7 /* Template */ = {
-			isa = PBXGroup;
-			children = (
-				ADFFF1901F18A33000FB5BF7 /* Universal_001.json */,
-			);
-			path = Template;
 			sourceTree = "<group>";
 		};
 		ADFFF1911F18A33000FB5BF7 /* Resource */ = {
@@ -454,7 +454,7 @@
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
-				ADFFF19F1F18A33000FB5BF7 /* Universal_001.json in Resources */,
+				ADAD50D01F1CB748001DB4C6 /* Universal_001.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
