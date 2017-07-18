@@ -25,7 +25,7 @@
     if ([fileManager fileExistsAtPath:dataPath] && [fileManager fileExistsAtPath:draftPath]) {
         
         NSArray *draftArray = [fileManager contentsOfDirectoryAtPath:draftPath error:nil];
-        NSLog(@"The current folder have %lu files",(unsigned long)draftArray.count);
+        DLYLog(@"The current folder have %lu files",(unsigned long)draftArray.count);
         if ([draftArray count]) {
             //Draft box is not empty
             return YES;

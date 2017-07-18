@@ -185,6 +185,12 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
+    //According to the preview center focus after launch
+    CGPoint point = self.previewView.center;
+    CGPoint cameraPoint = [self.captureManager.previewLayer captureDevicePointOfInterestForPoint:point];
+    [self setFocusCursorWithPoint:point];
+    [self.captureManager focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure atPoint:cameraPoint];
+    
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
     if (self.newState == 1) {

@@ -116,7 +116,7 @@
         
         NSString *phoneModel = [mobileDevice iPhoneModel];
         
-        NSLog(@"Current Phone Type: %@\n",phoneModel);
+        DLYLog(@"Current Phone Type: %@\n",phoneModel);
         if (phoneType == PhoneDeviceTypeIphone_7 || phoneType == PhoneDeviceTypeIphone_7_Plus) {
             self.captureSession.sessionPreset = AVCaptureSessionPreset3840x2160;
         }else if (phoneType == PhoneDeviceTypeIphone_6 || phoneType == PhoneDeviceTypeIphone_6_Plus){
@@ -129,17 +129,17 @@
             [_captureSession addInput:self.backCameraInput];
             _currentVideoDeviceInput = self.backCameraInput;
         }else{
-            NSLog(@"Back camera intput add faild");
+            DLYLog(@"Back camera intput add faild");
         }
         //添加麦克风的输入
         if ([_captureSession canAddInput:self.audioMicInput]) {
             [_captureSession addInput:self.audioMicInput];
         }else{
-            NSLog(@"Mic input add faild");
+            DLYLog(@"Mic input add faild");
         }
         
         if (error) {
-            NSLog(@"Video input creation failed");
+            DLYLog(@"Video input creation failed");
             return nil;
         }
         
@@ -171,13 +171,13 @@
                 if ([_captureSession canAddOutput:self.videoOutput]) {
                     [_captureSession addOutput:self.videoOutput];
                 }else{
-                    NSLog(@"Video output creation faild");
+                    DLYLog(@"Video output creation faild");
                 }
                 //添加音频输出
                 if ([_captureSession canAddOutput:self.audioOutput]) {
                     [_captureSession addOutput:self.audioOutput];
                 }else{
-                    NSLog(@"Audio output creation faild");
+                    DLYLog(@"Audio output creation faild");
                 }
                 //设置视频录制的方向
                 if ([self.videoConnection isVideoOrientationSupported]) {
@@ -190,7 +190,7 @@
                 
                 // BufferQueue
                 OSStatus err = CMBufferQueueCreate(kCFAllocatorDefault, 1, CMBufferQueueGetCallbacksForUnsortedSampleBuffers(), &previewBufferQueue);
-                NSLog(@"CMBufferQueueCreate error:%d", (int)err);
+                DLYLog(@"CMBufferQueueCreate error:%d", (int)err);
                 break;
             }
         }
@@ -223,7 +223,7 @@
         NSError *error;
         _backCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self backCamera] error:&error];
         if (error) {
-            NSLog(@"获取后置摄像头失败~");
+            DLYLog(@"获取后置摄像头失败~");
         }
     }
     return _backCameraInput;
@@ -235,7 +235,7 @@
         NSError *error;
         _frontCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self frontCamera] error:&error];
         if (error) {
-            NSLog(@"获取前置摄像头失败~");
+            DLYLog(@"获取前置摄像头失败~");
         }
     }
     return _frontCameraInput;
@@ -247,7 +247,7 @@
         NSError *error;
         _audioMicInput = [AVCaptureDeviceInput deviceInputWithDevice:mic error:&error];
         if (error) {
-            NSLog(@"获取麦克风失败~");
+            DLYLog(@"获取麦克风失败~");
         }
     }
     return _audioMicInput;
@@ -318,7 +318,7 @@
             // save the default format
             self.defaultFormat = device.activeFormat;
             defaultVideoMaxFrameDuration = device.activeVideoMaxFrameDuration;
-            NSLog(@"videoDevice.activeFormat:%@", device.activeFormat);
+            DLYLog(@"videoDevice.activeFormat:%@", device.activeFormat);
             return device;
         }
     }
@@ -375,7 +375,7 @@
         default:
             break;
     }
-    NSLog(@"当前旋转角度 :%f",angle);
+    DLYLog(@"当前旋转角度 :%f",angle);
     
     return angle;
 }
@@ -448,7 +448,7 @@
                                                nil], AVVideoCompressionPropertiesKey,
                                               nil];
     
-    NSLog(@"videoCompressionSetting:%@", videoCompressionSettings);
+    DLYLog(@"videoCompressionSetting:%@", videoCompressionSettings);
     
     if ([self.assetWriter canApplyOutputSettings:videoCompressionSettings forMediaType:AVMediaTypeVideo]) {
         
@@ -461,12 +461,12 @@
             [self.assetWriter addInput:self.assetWriterVideoInput];
         }
         else {
-            NSLog(@"Couldn't add asset writer video input.");
+            DLYLog(@"Couldn't add asset writer video input.");
             return NO;
         }
     }
     else {
-        NSLog(@"Couldn't apply video output settings.");
+        DLYLog(@"Couldn't apply video output settings.");
         return NO;
     }
     return YES;
@@ -508,13 +508,13 @@
         }
         else {
             
-            NSLog(@"Couldn't add asset writer audio input.");
+            DLYLog(@"Couldn't add asset writer audio input.");
             return NO;
         }
     }
     else {
         
-        NSLog(@"Couldn't apply audio output settings.");
+        DLYLog(@"Couldn't apply audio output settings.");
         return NO;
     }
     
@@ -532,7 +532,7 @@
         }
         else {
             
-            NSLog(@"AVAssetWriter startWriting error:%@", self.assetWriter.error);
+            DLYLog(@"AVAssetWriter startWriting error:%@", self.assetWriter.error);
         }
     }
     
@@ -544,8 +544,8 @@
                 
                 if (![self.assetWriterVideoInput appendSampleBuffer:sampleBuffer]) {
                     
-                    NSLog(@"isRecording:%d, willBeStarted:%d", self.isRecording, recordingWillBeStarted);
-                    NSLog(@"AVAssetWriterInput video appendSapleBuffer error:%@", self.assetWriter.error);
+                    DLYLog(@"isRecording:%d, willBeStarted:%d", self.isRecording, recordingWillBeStarted);
+                    DLYLog(@"AVAssetWriterInput video appendSapleBuffer error:%@", self.assetWriter.error);
                 }
             }
         }
@@ -555,7 +555,7 @@
                 
                 if (![self.assetWriterAudioInput appendSampleBuffer:sampleBuffer]) {
                     
-                    NSLog(@"AVAssetWriterInput audio appendSapleBuffer error:%@", self.assetWriter.error);
+                    DLYLog(@"AVAssetWriterInput audio appendSapleBuffer error:%@", self.assetWriter.error);
                 }
             }
         }
@@ -624,7 +624,7 @@
     {
         if ([videoDevice lockForConfiguration:nil]) {
             
-            NSLog(@"selected format:%@", selectedFormat);
+            DLYLog(@"selected format:%@", selectedFormat);
             videoDevice.activeFormat = selectedFormat;
             videoDevice.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);//设置帧率
             videoDevice.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
@@ -678,7 +678,7 @@
             
             NSError *error;
             self.assetWriter = [[AVAssetWriter alloc] initWithURL:self.fileURL fileType:AVFileTypeMPEG4 error:&error];
-            NSLog(@"AVAssetWriter error:%@", error);
+            DLYLog(@"AVAssetWriter error:%@", error);
             
             recordingWillBeStarted = YES;
             
@@ -821,7 +821,7 @@
     thumbnailImageRef = [assetImageGenerator copyCGImageAtTime:CMTimeMake(intervalTime, 2) actualTime:NULL error:&thumbnailImageGenerationError];
     
     if (!thumbnailImageRef)
-        NSLog(@"thumbnailImageGenerationError %@", thumbnailImageGenerationError);
+        DLYLog(@"thumbnailImageGenerationError %@", thumbnailImageGenerationError);
     
     UIImage *thumbnailImage = thumbnailImageRef ? [[UIImage alloc] initWithCGImage:thumbnailImageRef] : nil;
     return thumbnailImage;

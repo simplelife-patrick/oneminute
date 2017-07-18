@@ -32,7 +32,7 @@
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]){
         
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstLaunch"];
-        NSLog(@"首次启动");
+        DLYLog(@"首次启动");
         
         NSFileManager *fileManager = [NSFileManager defaultManager];
         NSArray *homeDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
@@ -75,13 +75,13 @@
             }
         }
         NSArray *dataFolderArray = [fileManager contentsOfDirectoryAtPath:dataPath error:nil];
-        NSLog(@"当前Data目录下有 %lu 个文件夹\n %@",dataFolderArray.count,dataFolderArray);
+        DLYLog(@"当前Data目录下有 %lu 个文件夹\n %@",dataFolderArray.count,dataFolderArray);
         
         DLYLaunchPlayerViewController *vc = [[DLYLaunchPlayerViewController alloc] init];
         self.window.rootViewController = vc;
         [self.window makeKeyAndVisible];
     }else{
-        NSLog(@"不是第一次启动了");
+        DLYLog(@"不是第一次启动了");
         //不是首次启动
         DLYRecordViewController *vc = [[DLYRecordViewController alloc] init];
         DLYBaseNavigationController *nvc = [[DLYBaseNavigationController alloc] initWithRootViewController:vc];
