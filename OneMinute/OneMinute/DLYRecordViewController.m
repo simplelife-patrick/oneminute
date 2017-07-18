@@ -7,6 +7,7 @@
 //
 
 #import "DLYRecordViewController.h"
+#import "DLYCaptureManager.h"
 #import "DLYAnnularProgress.h"
 //#import "FLEXManager.h"
 #import "DLYPlayVideoViewController.h"
@@ -34,10 +35,10 @@
     NSMutableArray * typeModelArray; //模拟选择样式的模型数组
     
 }
-
-@property (nonatomic, strong)UIView * mainView;  //主界面
-@property (nonatomic, strong)UIView * sceneView; //选择场景的view
-@property (nonatomic, strong)UIView * shootView; //拍摄界面
+@property (nonatomic, strong) DLYCaptureManager                 *captureManager;
+@property (nonatomic, strong) UIView                            *previewView;//previewView
+@property (nonatomic, strong) UIView * sceneView; //选择场景的view
+@property (nonatomic, strong) UIView * shootView; //拍摄界面
 
 //进度条
 @property (nonatomic, strong) UIView * timeView;
@@ -118,7 +119,6 @@
         [typeModelArray addObject:dict];
     }
     
-    
     _shootTime = 0;
     //    selectModel = 10004;
     selectType = 0;
@@ -129,8 +129,7 @@
         [[self shootStatusArray] addObject:@"0"];
     }
     self.view.backgroundColor = RGB(247, 247, 247);
-    [self.view addSubview:[self mainView]];
-    [self createMainViewLeft];
+    [self setupUI];
 }
 
 - (void)initData {
@@ -157,7 +156,6 @@
         }
         
         [partModelArray addObject:dict];
-        
     }
     
     _shootTime = 0;
@@ -183,7 +181,14 @@
 }
 
 #pragma mark ==== 主界面
-- (void)createMainViewLeft {
+- (void)setupUI {
+    
+    //PreviewView
+    _previewView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    _previewView.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:_previewView];
+    [self initializationRecorder];
+    
     //通用button 选择场景button
     self.chooseScene = [[UIButton alloc]initWithFrame:CGRectMake(11, 16, 40, 40)];
     self.chooseScene.backgroundColor = RGBA(0, 0, 0, 0.4);
@@ -193,14 +198,14 @@
     self.chooseScene.clipsToBounds = YES;
     self.chooseScene.titleLabel.font = FONT_SYSTEM(14);
     [self.chooseScene setTitleColor:RGB(0, 0, 0) forState:UIControlStateNormal];
-    [_mainView addSubview:self.chooseScene];
+    [self.view addSubview:self.chooseScene];
     //显示场景的label
     self.chooseSceneLabel = [[UILabel alloc]initWithFrame:CGRectMake(11, self.chooseScene.bottom + 2, 40, 13)];
     self.chooseSceneLabel.text = @"通用";
     self.chooseSceneLabel.font = FONT_SYSTEM(12);
     self.chooseSceneLabel.textColor = RGBA(255, 255, 255, 1);
     self.chooseSceneLabel.textAlignment = NSTextAlignmentCenter;
-    [_mainView addSubview:self.chooseSceneLabel];
+    [self.view addSubview:self.chooseSceneLabel];
     
     
     //切换前置摄像头
@@ -211,13 +216,13 @@
     self.exchangeCamera.clipsToBounds = YES;
     [self.exchangeCamera setImage:[UIImage imageWithIcon:@"\U0000e668" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
     [self.exchangeCamera addTarget:self action:@selector(onClickexchangeCamera:) forControlEvents:UIControlEventTouchUpInside];
-    [_mainView addSubview:self.exchangeCamera];
+    [self.view addSubview:self.exchangeCamera];
     
     //右边的view
     self.backView = [[UIView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH - 180 * SCALE_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT)];
     
     self.backView.backgroundColor = RGBA(0, 0, 0, 0.7);
-    [_mainView addSubview:self.backView];
+    [self.view addSubview:self.backView];
     
     //拍摄按钮
     self.shootButton = [[UIButton alloc]initWithFrame:CGRectMake(43 * SCALE_WIDTH, 0, 60*SCALE_WIDTH, 60 * SCALE_WIDTH)];
@@ -232,14 +237,14 @@
     //跳转成片播放界面
     self.nextButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 60, 60)];
     self.nextButton.backgroundColor = RGB(255, 0, 0);
-    self.nextButton.center = _mainView.center;
+    self.nextButton.center = self.view.center;
     self.nextButton.layer.cornerRadius = 30;
     self.nextButton.clipsToBounds = YES;
     self.nextButton.hidden = YES;
     [self.nextButton setImage:[UIImage imageNamed:@"next"] forState:UIControlStateNormal];
     self.nextButton.imageEdgeInsets = UIEdgeInsetsMake(15, 15, 15, 15);
     [self.nextButton addTarget:self action:@selector(onClickNextStep:) forControlEvents:UIControlEventTouchUpInside];
-    [_mainView addSubview:self.nextButton];
+    [self.view addSubview:self.nextButton];
     //删除全部片段
     self.deleteButton = [[UIButton alloc]initWithFrame:CGRectMake(self.nextButton.left - 91, self.nextButton.top, 60, 60)];
     self.deleteButton.layer.cornerRadius = 30;
@@ -248,7 +253,7 @@
     self.deleteButton.hidden = YES;
     [self.deleteButton setImage:[UIImage imageWithIcon:@"\U0000e669" inFont:ICONFONT size:20 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
     [self.deleteButton addTarget:self action:@selector(onClickDelete:) forControlEvents:UIControlEventTouchUpInside];
-    [_mainView addSubview:self.deleteButton];
+    [self.view addSubview:self.deleteButton];
     
     //片段view
     self.vedioEpisode = [[UIView alloc]initWithFrame:CGRectMake(self.shootButton.right, 15 * SCALE_HEIGHT, 53, SCREEN_HEIGHT - 30  * SCALE_HEIGHT)];
@@ -295,6 +300,21 @@
     UITapGestureRecognizer *skipGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(handleTapGesture:)];
     skipGesture.numberOfTapsRequired = 2;
     [self.shootView addGestureRecognizer:skipGesture];
+}
+- (void) initializationRecorder{
+    
+    self.captureManager = [[DLYCaptureManager alloc] initWithPreviewView:self.previewView outputMode:DLYOutputModeVideoData];
+    
+    self.captureManager.delegate = self;
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                 action:@selector(handleDoubleTap:)];
+    tapGesture.numberOfTapsRequired = 2;
+    [self.previewView addGestureRecognizer:tapGesture];
+}
+- (void)handleDoubleTap:(UITapGestureRecognizer *)sender {
+    
+    [self.captureManager toggleContentsGravity];
 }
 #pragma mark ==== 左手模式重新布局
 //设备方向改变后调用的方法
@@ -446,7 +466,7 @@
 }
 //切换摄像头
 - (void)onClickexchangeCamera:(UIButton *)sender {
-    
+
 }
 //拍摄按键
 - (void)onClickShootVideo:(UIButton *)sender {
@@ -1376,14 +1396,6 @@
 }
 
 #pragma mark === 懒加载
-- (UIView *)mainView {
-    if(_mainView == nil)
-    {
-        _mainView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-        _mainView.backgroundColor = RGB(70, 160, 235);
-    }
-    return _mainView;
-}
 
 - (UIView *)sceneView {
     if(_sceneView == nil)

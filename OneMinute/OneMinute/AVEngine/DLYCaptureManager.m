@@ -149,8 +149,9 @@
         
         if (previewView) {
             self.previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.captureSession];
+            self.previewLayer.orientation = UIDeviceOrientationLandscapeLeft;
             self.previewLayer.frame = previewView.bounds;
-            self.previewLayer.contentsGravity = kCAGravityResizeAspectFill;
+            self.previewLayer.contentsGravity = kCAGravityTopLeft;
             self.previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
             [previewView.layer insertSublayer:self.previewLayer atIndex:0];
         }
@@ -179,8 +180,10 @@
                     NSLog(@"Audio output creation faild");
                 }
                 //设置视频录制的方向
-                self.videoConnection.videoOrientation = AVCaptureVideoOrientationPortrait;
-                
+                if ([self.videoConnection isVideoOrientationSupported]) {
+                    
+                    [self.videoConnection setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
+                }
                 // Video
                 movieWritingQueue = dispatch_queue_create("moviewriting", DISPATCH_QUEUE_SERIAL);
                 videoOrientation = [self.videoConnection videoOrientation];
