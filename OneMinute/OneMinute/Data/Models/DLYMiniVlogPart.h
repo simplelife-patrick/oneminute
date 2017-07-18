@@ -57,6 +57,11 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTransitionType)
 @interface DLYMiniVlogPart : DLYModule
 
 /**
+ 片段序号
+ */
+@property (nonatomic, assign) NSInteger                     partNum;
+
+/**
  起始时间
  */
 @property (nonatomic, strong) NSString                      *starTime;

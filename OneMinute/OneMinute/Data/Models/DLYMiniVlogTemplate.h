@@ -60,9 +60,9 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTemplateType)
 /**
  初始化模板
 
- @param templateId 模板名称
+ @param templateName 模板名称
  @return 返回模板对象
  */
--(instancetype)initWithTemplateId:(NSString *)templateId;
+-(instancetype)initWithTemplateName:(NSString *)templateName;
 
 @end
