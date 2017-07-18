@@ -512,7 +512,7 @@
                 self.shootGuide.text = @"拍摄指导：请保持光线充足";
             }
         }
-    }
+     }
     
     [UIView animateWithDuration:0.5f animations:^{
         self.chooseScene.hidden = YES;
@@ -544,6 +544,8 @@
     __weak typeof(self) weakSelf = self;
     self.alert.sureButtonAction = ^{
         //数组初始化，view布局
+        weakSelf.nextButton.hidden = YES;
+        weakSelf.deleteButton.hidden = YES;
         [weakSelf initData];
         [weakSelf createPartViewLayout];
     };
@@ -1297,35 +1299,6 @@
     self.warningIcon.image = [UIImage imageWithIcon:@"\U0000e663" inFont:ICONFONT size:32 color:[UIColor redColor]];
     [self.shootView addSubview:self.warningIcon];
     
-//    UIView * secondPoint = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 20, 20)];
-//    secondPoint.center = self.shootView.center;
-//    secondPoint.layer.cornerRadius = 10;
-//    secondPoint.backgroundColor = RGB(216, 216, 216);
-//    secondPoint.tag = 92;
-//    [self.shootView addSubview:secondPoint];
-//    
-//    UIView * firstPoint = [[UIView alloc]initWithFrame:CGRectMake(secondPoint.left - 30, 0, 20, 20)];
-//    firstPoint.centerY = self.shootView.centerY;
-//    firstPoint.layer.cornerRadius = 10;
-//    firstPoint.backgroundColor = RGB(216, 216, 216);
-//    firstPoint.tag = 91;
-//    [self.shootView addSubview:firstPoint];
-//    
-//    UIView * thirdPoint = [[UIView alloc]initWithFrame:CGRectMake(secondPoint.right + 10, 0, 20, 20)];
-//    thirdPoint.centerY = self.shootView.centerY;
-//    thirdPoint.layer.cornerRadius = 10;
-//    thirdPoint.backgroundColor = RGB(216, 216, 216);
-//    thirdPoint.tag = 93;
-//    [self.shootView addSubview:thirdPoint];
-//    
-//    UILabel * prepareLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, secondPoint.top - 35, 45, 25)];
-//    prepareLabel.centerX = self.shootView.centerX;
-//    prepareLabel.text = @"准备";
-//    prepareLabel.font = FONT_SYSTEM(20);
-//    prepareLabel.textColor = RGB(0, 0, 0);
-//    prepareLabel.tag = 94;
-//    [self.shootView addSubview:prepareLabel];
-    
     self.shootGuide = [[UILabel alloc] init];
     if (self.newState == 1) {
         self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, 270, 30);
@@ -1402,7 +1375,6 @@
     self.timeNumber.clipsToBounds = YES;
     [_timeView addSubview:self.timeNumber];
     
-//    [self beginTime];
     _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
     if (self.newState == 1) {
         self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 10, 30, 15);
@@ -1418,59 +1390,6 @@
 
 }
 
-#pragma mark ====定时器
-- (void)beginTime {
-    _timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(action) userInfo:nil repeats:YES];
-    [_timer setFireDate:[NSDate distantFuture]];
-}
-
-- (void)action {
-    UILabel * label = (UILabel *)[self.view viewWithTag:94];
-    UIView * point1 = (UIView *)[self.view viewWithTag:91];
-    UIView * point2 = (UIView *)[self.view viewWithTag:92];
-    UIView * point3 = (UIView *)[self.view viewWithTag:93];
-    _prepareTime ++;
-    if(_prepareTime == 1)
-    {
-        label.hidden = YES;
-    }else if(_prepareTime == 2)
-    {
-        point1.backgroundColor = RGB(152, 152, 152);
-    }else if(_prepareTime == 3)
-    {
-        point2.backgroundColor = RGB(152, 152, 152);
-    }else
-    {
-        point3.backgroundColor = RGB(152, 152, 152);
-        point1.hidden = YES;
-        point2.hidden = YES;
-        point3.hidden = YES;
-        [_timer invalidate];
-        _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
-        if (self.newState == 1) {
-            self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 10, 30, 15);
-            self.cancelButton.centerX = _timeView.centerX;
-            self.cancelButton.transform = CGAffineTransformMakeRotation(0);
-            
-        }else {
-            self.cancelButton.frame = CGRectMake(0, _timeView.top - 25, 30, 15);
-            self.cancelButton.centerX = _timeView.centerX;
-            self.cancelButton.transform = CGAffineTransformMakeRotation(M_PI);
-        }
-        if (self.newState == 1) {
-            self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 10, 30, 15);
-            self.cancelButton.centerX = _timeView.centerX;
-            self.cancelButton.transform = CGAffineTransformMakeRotation(0);
-            
-        }else {
-            self.cancelButton.frame = CGRectMake(0, _timeView.top - 25, 30, 15);
-            self.cancelButton.centerX = _timeView.centerX;
-            self.cancelButton.transform = CGAffineTransformMakeRotation(M_PI);
-        }
-        self.cancelButton.hidden = NO;
-        
-    }
-}
 #pragma mark ==== 拍摄视频
 - (void)shootAction {
     _shootTime += 0.01;
