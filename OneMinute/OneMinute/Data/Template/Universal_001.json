@@ -1,5 +1,5 @@
 {
-  "id": "Universal_001.json",
+  "id": "001",
   "type": 0,
   "info": [
     {
@@ -48,11 +48,7 @@
       "stopTime": "01:00:00",
       "recordType": 2,
       "soundType": 0,
-<<<<<<< HEAD
       "transitionType":0
-=======
-      "transitionType":""
->>>>>>> 18efe88d97137515a27b2c565b9af783e20dd861
     }
   ],
   "BGM": "BGM001",

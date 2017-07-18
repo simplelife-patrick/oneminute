@@ -11,6 +11,7 @@
 #import "DLYAnnularProgress.h"
 //#import "FLEXManager.h"
 #import "DLYPlayVideoViewController.h"
+#import "DLYMiniVlogTemplate.h"
 
 @interface DLYRecordViewController ()
 {
@@ -55,14 +56,13 @@
 
 @property (nonatomic, strong) NSTimer * prepareShootTimer; //准备拍摄片段闪烁的计时器
 @property (nonatomic, strong) DLYAnnularProgress * progressView;    //环形进度条
-@property (nonatomic, strong) NSMutableArray * shootStatusArray;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) DLYAlertView *alert;          //警告框
 @property (nonatomic, strong) UIButton *chooseScene;        //选择场景
 @property (nonatomic, strong) UILabel *chooseSceneLabel;    //选择场景文字
-@property (nonatomic, strong) UIButton *toggleCameraBtn;     //切换摄像头
+@property (nonatomic, strong) UIButton *toggleCameraBtn;    //切换摄像头
 @property (nonatomic, strong) UIView *backView;             //控制页面底层
-@property (nonatomic, strong) UIButton *recordBtn;        //拍摄按钮
+@property (nonatomic, strong) UIButton *recordBtn;          //拍摄按钮
 @property (nonatomic, strong) UIButton *nextButton;         //下一步按钮
 @property (nonatomic, strong) UIButton *deleteButton;       //删除全部按钮
 @property (nonatomic, strong) UIView *vedioEpisode;         //片段展示底部
@@ -81,8 +81,7 @@
 
 @implementation DLYRecordViewController
 
-- (UIImageView *)focusCursorImageView
-{
+- (UIImageView *)focusCursorImageView {
     if (_focusCursorImageView == nil) {
         UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"focusIcon"]];
         imageView.frame = CGRectMake(0, 0, 50, 50);
@@ -98,31 +97,25 @@
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
 
-    //创建假模型数据
-    partModelArray = [[NSMutableArray alloc]init];
-    for(int i = 0; i < 6; i ++)
-    {
-        NSMutableDictionary * dict = [[NSMutableDictionary alloc]init];
-        [dict setObject:@"0" forKey:@"shootStatus"];
-        if(i == 0) {
-            selectVedioPart = i;
-            [dict setObject:@"1" forKey:@"prepareShoot"];
-            [dict setObject:@"0" forKey:@"shootType"];
-            [dict setObject:@"10''" forKey:@"time"];
-        }else if(i == 1) {
-            [dict setObject:@"0" forKey:@"prepareShoot"];
-            [dict setObject:@"1" forKey:@"shootType"];
-            [dict setObject:@"10''" forKey:@"time"];
-        }else {
-            [dict setObject:@"0" forKey:@"prepareShoot"];
-            [dict setObject:@"0" forKey:@"shootType"];
-            [dict setObject:@"10''" forKey:@"time"];
-        }
-        
-        [partModelArray addObject:dict];
-        
-    }
+    [self initData];
+    [self setupUI];
+}
+
+- (void)initData {
+
+    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];
+    partModelArray = [NSMutableArray arrayWithArray:template.parts];
     
+    for (int i = 0; i < 6; i++) {
+        DLYMiniVlogPart *part = partModelArray[i];
+        if (i == 0) {
+            part.prepareShoot = @"1";
+        }else {
+            part.prepareShoot = @"0";
+        }
+        part.shootStatus = @"0";
+    }
+
     typeModelArray = [[NSMutableArray alloc]init];
     NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"运动",@"风景",@"人文",nil];
     for(int i = 0; i < 5; i ++)
@@ -134,53 +127,9 @@
     }
     
     _shootTime = 0;
-    //    selectModel = 10004;
     selectType = 0;
     _prepareTime = 0;
     selectPartTag = 0;
-    for(int i = 0; i < 7; i ++)
-    {
-        [[self shootStatusArray] addObject:@"0"];
-    }
-    self.view.backgroundColor = RGB(247, 247, 247);
-    [self setupUI];
-}
-
-- (void)initData {
-    
-    //创建假模型数据
-    [partModelArray removeAllObjects];
-    for(int i = 0; i < 6; i ++)
-    {
-        NSMutableDictionary * dict = [[NSMutableDictionary alloc]init];
-        [dict setObject:@"0" forKey:@"shootStatus"];
-        if(i == 0) {
-            selectVedioPart = i;
-            [dict setObject:@"1" forKey:@"prepareShoot"];
-            [dict setObject:@"0" forKey:@"shootType"];
-            [dict setObject:@"10''" forKey:@"time"];
-        }else if(i == 1) {
-            [dict setObject:@"0" forKey:@"prepareShoot"];
-            [dict setObject:@"1" forKey:@"shootType"];
-            [dict setObject:@"10''" forKey:@"time"];
-        }else {
-            [dict setObject:@"0" forKey:@"prepareShoot"];
-            [dict setObject:@"0" forKey:@"shootType"];
-            [dict setObject:@"10''" forKey:@"time"];
-        }
-        
-        [partModelArray addObject:dict];
-    }
-    
-    _shootTime = 0;
-    //    selectModel = 10004;
-    selectType = 0;
-    _prepareTime = 0;
-    selectPartTag = 0;
-    for(int i = 0; i < 7; i ++)
-    {
-        [[self shootStatusArray] addObject:@"0"];
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -204,7 +153,7 @@
 
 #pragma mark ==== 主界面
 - (void)setupUI {
-    
+    self.view.backgroundColor = RGB(247, 247, 247);
     //PreviewView
     _previewView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     _previewView.backgroundColor = [UIColor clearColor];
@@ -317,7 +266,7 @@
     [self createSceneView];
     [self.view addSubview:[self shootView]];
 }
-- (void) initializationRecorder{
+- (void)initializationRecorder {
     
     self.captureManager = [[DLYCaptureManager alloc] initWithPreviewView:self.previewView outputMode:DLYOutputModeVideoData];
     
@@ -344,8 +293,7 @@
 }
 
 #pragma mark -触屏自动调整曝光-
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
     CGPoint point = [touch locationInView:self.previewView];
     
@@ -354,7 +302,7 @@
     [self setFocusCursorWithPoint:point];
     [self.captureManager focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure atPoint:cameraPoint];
 }
--(void)setFocusCursorWithPoint:(CGPoint)point{
+-(void)setFocusCursorWithPoint:(CGPoint)point {
     self.focusCursorImageView.center=point;
     self.focusCursorImageView.transform=CGAffineTransformMakeScale(2.0, 2.0);
     self.focusCursorImageView.alpha=1.0;
@@ -488,8 +436,8 @@
 //#endif
 
     //在这里添加选择提醒
-    for (NSDictionary *dict in partModelArray) {
-        if ([dict[@"shootStatus"] isEqualToString:@"1"]) {
+    for (DLYMiniVlogPart *part in partModelArray) {
+        if ([part.shootStatus isEqualToString:@"1"]) {
             
             __weak typeof(self) weakSelf = self;
             self.alert = [[DLYAlertView alloc] initWithMessage:@"切换模板后已经拍摄的视频会清空，确定吗?" andCancelButton:@"取消" andSureButton:@"确定"];
@@ -510,6 +458,7 @@
             return;
         }
     }
+
     
     [self showChooseSceneView];
 }
@@ -558,10 +507,10 @@
         [self createShootView];
         _shootTime = 0;
         _prepareTime = 0;
-        for (NSDictionary * dict in partModelArray) {
-            if([dict[@"prepareShoot"] isEqualToString:@"1"])
+        for (DLYMiniVlogPart *part in partModelArray) {
+            if([part.prepareShoot isEqualToString:@"1"])
             {
-                if([dict[@"shootType"] isEqualToString:@"1"])
+                if(part.recordType != DLYMiniVlogRecordTypeNormal)
                 {
                     if (self.newState == 1) {
                         self.warningIcon.frame = CGRectMake(28, SCREEN_HEIGHT - 54, 32, 32);
@@ -571,7 +520,11 @@
                         self.warningIcon.transform = CGAffineTransformMakeRotation(M_PI);
                     }
                     self.warningIcon.hidden = NO;
-                    self.shootGuide.text = @"延时拍摄不能录制现场声音";
+                    if (part.recordType == DLYMiniVlogRecordTypeSlomo) {
+                        self.shootGuide.text = @"慢动作拍摄不能录制现场声音";
+                    }else {
+                        self.shootGuide.text = @"延时拍摄不能录制现场声音";
+                    }
                 }else
                 {
                     self.warningIcon.hidden = YES;
@@ -738,7 +691,8 @@
 - (void)deleteSelectPartVideo {
     
     NSInteger i = selectPartTag - 10000;
-    NSMutableDictionary * dict = [[NSMutableDictionary alloc]initWithDictionary:partModelArray[i-1]];
+    
+    DLYMiniVlogPart *part = partModelArray[i-1];
     
     [UIView animateWithDuration:0.5f animations:^{
         self.playView.hidden = YES;
@@ -749,25 +703,22 @@
     
     for(int i = 0; i < partModelArray.count; i++)
     {
-        NSMutableDictionary * dict1 = [[NSMutableDictionary alloc]initWithDictionary:partModelArray[i]];
-        [dict1 setObject:@"0" forKey:@"prepareShoot"];
-        [partModelArray replaceObjectAtIndex:i withObject:dict1];
+        DLYMiniVlogPart *part1 = partModelArray[i];
+        part1.prepareShoot = @"0";
     }
-    dict[@"prepareShoot"] = @"0";
-    dict[@"shootStatus"] = @"0";
+    part.prepareShoot = @"0";
+    part.shootStatus = @"0";
     selectVedioPart = i - 1;
-    [partModelArray replaceObjectAtIndex:i-1 withObject:dict];
     
     NSInteger n = 0;
     for(int i = 0; i < partModelArray.count; i++)
     {
-        NSMutableDictionary * dict1 = [[NSMutableDictionary alloc]initWithDictionary:partModelArray[i]];
-        if([dict1[@"shootStatus"] isEqualToString:@"0"])
+        DLYMiniVlogPart *part2 = partModelArray[i];
+        
+        if([part2.shootStatus isEqualToString:@"0"])
         {
             selectVedioPart = i;
-            dict1[@"prepareShoot"] = @"1";
-            [partModelArray replaceObjectAtIndex:i withObject:dict1];
-            
+            part2.prepareShoot = @"1";
             break;
         }else
         {
@@ -776,8 +727,8 @@
     }
     
     //判断
-    for (NSDictionary *dict in partModelArray) {
-        if ([dict[@"shootStatus"] isEqualToString:@"0"]) {
+    for (DLYMiniVlogPart *part3 in partModelArray) {
+        if ([part3.shootStatus isEqualToString:@"0"]) {
             self.nextButton.hidden = YES;
             self.deleteButton.hidden = YES;
         }
@@ -812,29 +763,29 @@
     
     for(int i = 1; i <= partModelArray.count; i ++)
     {
-        NSDictionary * dict = partModelArray[i - 1];
+        DLYMiniVlogPart *part = partModelArray[i - 1];
         UIButton * button = [[UIButton alloc]initWithFrame:CGRectMake(43, (episodeHeight + 2) * (i - 1), 10, episodeHeight)];
         
         UIEdgeInsets edgeInsets = {0, -43, 0, -5};
         [button setHitEdgeInsets:edgeInsets];
         //辨别改变段是否已经拍摄
-        if([dict[@"shootStatus"] isEqualToString:@"1"])
+        if([part.shootStatus isEqualToString:@"1"])
         {
             button.backgroundColor = RGB(255, 0, 0);
             //显示标注
-            if([dict[@"shootType"] isEqualToString:@"0"])
+            if(part.recordType == DLYMiniVlogRecordTypeNormal)
             {
                 UILabel * timeLabel = [[UILabel alloc] init];
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-                timeLabel.text = dict[@"time"];
+//                timeLabel.text = dict[@"time"];
                 [timeLabel sizeToFit];
                 timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
                 timeLabel.centerY = button.centerY;
                 [self.backScrollView addSubview:timeLabel];
                 
-            }else if([dict[@"shootType"] isEqualToString:@"1"])
-            {//快进
+            }else if(part.recordType == DLYMiniVlogRecordTypeSlomo)
+            {//慢动作
                 UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
                 itemView.centerY = button.centerY;
                 [self.backScrollView addSubview:itemView];
@@ -843,13 +794,13 @@
                 timeLabel.textAlignment = NSTextAlignmentRight;
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-                timeLabel.text = dict[@"time"];
+//                timeLabel.text = dict[@"time"];
                 [itemView addSubview:timeLabel];
                 
                 UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
                 speedLabel.textColor = [UIColor whiteColor];
                 speedLabel.font = FONT_SYSTEM(11);
-                speedLabel.text = @"快进";
+                speedLabel.text = @"慢镜";
                 [itemView addSubview:speedLabel];
                 
                 UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
@@ -865,7 +816,7 @@
                 timeLabel.textAlignment = NSTextAlignmentRight;
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-                timeLabel.text = dict[@"time"];
+//                timeLabel.text = dict[@"time"];
                 [itemView addSubview:timeLabel];
                 
                 UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -882,7 +833,7 @@
         {
             button.backgroundColor = RGBA_HEX(0xc9c9c9, 0.1);
             // 辨别该片段是否是默认准备拍摄片段
-            if([dict[@"prepareShoot"] isEqualToString:@"1"]){
+            if([part.prepareShoot isEqualToString:@"1"]){
                 //光标
                 self.prepareView = [[UIView alloc]initWithFrame:CGRectMake(button.x, button.y, 10, 2)];
                 self.prepareView.backgroundColor = [UIColor whiteColor];
@@ -891,19 +842,19 @@
                 [_prepareShootTimer setFireDate:[NSDate distantPast]];
                 //判断拍摄状态
                 //正常状态
-                if([dict[@"shootType"] isEqualToString:@"0"])
+                if(part.recordType == DLYMiniVlogRecordTypeNormal)
                 {
                     UILabel * timeLabel = [[UILabel alloc] init];
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-                    timeLabel.text = dict[@"time"];
+//                    timeLabel.text = dict[@"time"];
                     [timeLabel sizeToFit];
                     timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
                     timeLabel.centerY = button.centerY;
                     [self.backScrollView addSubview:timeLabel];
                     
-                }else if([dict[@"shootType"] isEqualToString:@"1"])
-                {//快进
+                }else if(part.recordType == DLYMiniVlogRecordTypeSlomo)
+                {//慢进
                     UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
                     itemView.centerY = button.centerY;
                     [self.backScrollView addSubview:itemView];
@@ -912,13 +863,13 @@
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-                    timeLabel.text = dict[@"time"];
+//                    timeLabel.text = dict[@"time"];
                     [itemView addSubview:timeLabel];
                     
                     UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
                     speedLabel.textColor = [UIColor whiteColor];
                     speedLabel.font = FONT_SYSTEM(11);
-                    speedLabel.text = @"快进";
+                    speedLabel.text = @"慢镜";
                     [itemView addSubview:speedLabel];
                     
                     UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
@@ -934,7 +885,7 @@
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-                    timeLabel.text = dict[@"time"];
+//                    timeLabel.text = dict[@"time"];
                     [itemView addSubview:timeLabel];
                     
                     UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -975,29 +926,29 @@
     
     for(int i = 1; i <= leftModelArray.count; i ++)
     {
-        NSDictionary * dict = leftModelArray[i - 1];
+        DLYMiniVlogPart *part = leftModelArray[i - 1];
         UIButton * button = [[UIButton alloc]initWithFrame:CGRectMake(43, (episodeHeight + 2) * (i - 1), 10, episodeHeight)];
         
         UIEdgeInsets edgeInsets = {0, -43, 0, -20};
         [button setHitEdgeInsets:edgeInsets];
         //辨别改变段是否已经拍摄
-        if([dict[@"shootStatus"] isEqualToString:@"1"])
+        if([part.shootStatus isEqualToString:@"1"])
         {
             button.backgroundColor = RGB(255, 0, 0);
             //显示标注
-            if([dict[@"shootType"] isEqualToString:@"0"])
+            if(part.recordType == DLYMiniVlogRecordTypeNormal)
             {
                 UILabel * timeLabel = [[UILabel alloc] init];
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-                timeLabel.text = dict[@"time"];
+//                timeLabel.text = dict[@"time"];
                 [timeLabel sizeToFit];
                 timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
                 timeLabel.centerY = button.centerY;
                 timeLabel.transform = CGAffineTransformMakeRotation(M_PI);
                 [self.backScrollView addSubview:timeLabel];
                 
-            }else if([dict[@"shootType"] isEqualToString:@"1"])
+            }else if(part.recordType == DLYMiniVlogRecordTypeSlomo)
             {//快进
                 
                 UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
@@ -1009,13 +960,13 @@
                 timeLabel.textAlignment = NSTextAlignmentRight;
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-                timeLabel.text = dict[@"time"];
+//                timeLabel.text = dict[@"time"];
                 [itemView addSubview:timeLabel];
                 
                 UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
                 speedLabel.textColor = [UIColor whiteColor];
                 speedLabel.font = FONT_SYSTEM(11);
-                speedLabel.text = @"快进";
+                speedLabel.text = @"慢镜";
                 [itemView addSubview:speedLabel];
                 
                 UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
@@ -1034,7 +985,7 @@
                 timeLabel.textAlignment = NSTextAlignmentRight;
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-                timeLabel.text = dict[@"time"];
+//                timeLabel.text = dict[@"time"];
                 [itemView addSubview:timeLabel];
                 
                 UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -1052,7 +1003,7 @@
         {
             button.backgroundColor = RGBA_HEX(0xc9c9c9, 0.1);
             // 辨别该片段是否是默认准备拍摄片段
-            if([dict[@"prepareShoot"] isEqualToString:@"1"])
+            if([part.prepareShoot isEqualToString:@"1"])
             {
                 //光标
                 self.prepareView = [[UIView alloc]initWithFrame:CGRectMake(button.x, button.y + button.height - 2, 10, 2)];
@@ -1062,19 +1013,19 @@
                 [_prepareShootTimer setFireDate:[NSDate distantPast]];
                 //判断拍摄状态
                 //正常状态
-                if([dict[@"shootType"] isEqualToString:@"0"])
+                if(part.recordType == DLYMiniVlogRecordTypeNormal)
                 {
                     UILabel * timeLabel = [[UILabel alloc] init];
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-                    timeLabel.text = dict[@"time"];
+//                    timeLabel.text = dict[@"time"];
                     [timeLabel sizeToFit];
                     timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
                     timeLabel.centerY = button.centerY;
                     timeLabel.transform = CGAffineTransformMakeRotation(M_PI);
                     [self.backScrollView addSubview:timeLabel];
                     
-                }else if([dict[@"shootType"] isEqualToString:@"1"])
+                }else if(part.recordType == DLYMiniVlogRecordTypeSlomo)
                 {//快进
                     
                     UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
@@ -1086,13 +1037,13 @@
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-                    timeLabel.text = dict[@"time"];
+//                    timeLabel.text = dict[@"time"];
                     [itemView addSubview:timeLabel];
                     
                     UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
                     speedLabel.textColor = [UIColor whiteColor];
                     speedLabel.font = FONT_SYSTEM(11);
-                    speedLabel.text = @"快进";
+                    speedLabel.text = @"慢镜";
                     [itemView addSubview:speedLabel];
                     
                     UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
@@ -1111,7 +1062,7 @@
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-                    timeLabel.text = dict[@"time"];
+//                    timeLabel.text = dict[@"time"];
                     [itemView addSubview:timeLabel];
                     
                     UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -1164,11 +1115,8 @@
     UIButton * button = (UIButton *)sender;
     NSInteger i = button.tag - 10000;
     selectPartTag = button.tag;
-    NSMutableDictionary * dict = [[NSMutableDictionary alloc]initWithDictionary:partModelArray[i-1]];
-    //    NSDictionary * dict = partModelArray[i];
-    
+    DLYMiniVlogPart *part = partModelArray[i-1];
     //点击哪个item，光标移动到当前item
-    
     if (self.newState == 1) {
         self.prepareView.frame = CGRectMake(button.x, button.y, 10, 2);
         [self.backScrollView insertSubview:button belowSubview:self.prepareView];
@@ -1178,7 +1126,7 @@
     }
     
     
-    if([dict[@"shootStatus"] isEqualToString:@"1"])
+    if([part.shootStatus isEqualToString:@"1"])
     {//说明时已拍摄片段
         DDLogInfo(@"点击了已拍摄片段");
         [UIView animateWithDuration:0.5f animations:^{
@@ -1200,13 +1148,11 @@
         self.recordBtn.hidden = NO;
         for(int i = 0; i < partModelArray.count; i++)
         {
-            NSMutableDictionary * dict1 = [[NSMutableDictionary alloc]initWithDictionary:partModelArray[i]];
-            [dict1 setObject:@"0" forKey:@"prepareShoot"];
-            [partModelArray replaceObjectAtIndex:i withObject:dict1];
+            DLYMiniVlogPart *part1 = partModelArray[i];
+            part1.prepareShoot = @"0";
         }
-        dict[@"prepareShoot"] = @"1";
+        part.prepareShoot = @"1";
         selectVedioPart = i - 1;
-        [partModelArray replaceObjectAtIndex:i-1 withObject:dict];
         
 //        [self createPartView];
         [self createPartViewLayout];
@@ -1442,6 +1388,7 @@
 
 #pragma mark ==== 拍摄视频
 - (void)shootAction {
+
     _shootTime += 0.01;
     
     if((int)(_shootTime * 100) % 100 == 0)
@@ -1454,34 +1401,30 @@
     {
         [self.captureManager stopRecording];
         self.cancelButton.hidden = YES;
-        [[self shootStatusArray] replaceObjectAtIndex:selectVedioPart withObject:@"1"];
         [_shootTimer invalidate];
-        
-        NSMutableDictionary * dict = [[NSMutableDictionary alloc]initWithDictionary:partModelArray[selectVedioPart]];
+
+        DLYMiniVlogPart *part = partModelArray[selectVedioPart];
         for(int i = 0; i < partModelArray.count; i++)
         {
-            NSMutableDictionary * dict1 = [[NSMutableDictionary alloc]initWithDictionary:partModelArray[i]];
-            [dict1 setObject:@"0" forKey:@"prepareShoot"];
-            [partModelArray replaceObjectAtIndex:i withObject:dict1];
+            DLYMiniVlogPart *part1 = partModelArray[i];
+            part1.prepareShoot = @"0";
         }
-        dict[@"prepareShoot"] = @"0";
-        dict[@"shootStatus"] = @"1";
-        [partModelArray replaceObjectAtIndex:selectVedioPart withObject:dict];
+        part.prepareShoot = @"0";
+        part.shootStatus = @"1";
         
         NSInteger n = 0;
         for(int i = 0; i < partModelArray.count; i++)
         {
-            NSMutableDictionary * dict1 = [[NSMutableDictionary alloc]initWithDictionary:partModelArray[i]];
-            if([dict1[@"shootStatus"] isEqualToString:@"0"])
+            DLYMiniVlogPart *part2 = partModelArray[i];
+            if([part2.shootStatus isEqualToString:@"0"])
             {
                 selectVedioPart = i;
-                dict1[@"prepareShoot"] = @"1";
-                [partModelArray replaceObjectAtIndex:i withObject:dict1];
-                
+                part2.prepareShoot = @"1";
                 break;
             }else
             {
                 n++;
+                
             }
         }
 //        [self createPartView];
@@ -1570,14 +1513,6 @@
         _shootView.hidden = YES;
     }
     return _shootView;
-}
-
-- (NSMutableArray *)shootStatusArray {
-    if(_shootStatusArray == nil)
-    {
-        _shootStatusArray = [[NSMutableArray alloc]init];
-    }
-    return _shootStatusArray;
 }
 
 @end
