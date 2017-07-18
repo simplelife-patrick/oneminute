@@ -3,46 +3,52 @@
   "type": 0,
   "info": [
     {
+      "partNum": 0,
       "startTime": "00:00:00",
-      "stopTime": "08:00:00",
+      "stopTime": "00:08:00",
       "recordType": 1,
       "soundType": 0,
-      "transitionType": 0,
+      "transitionType": 0
     },
     {
+      "partNum": 1,
       "startTime": "00:08:01",
-      "stopTime": "08:16:19",
+      "stopTime": "00:16:19",
       "recordType": 2,
       "soundType": 0,
-      "transitionType": 1,
+      "transitionType": 1
     },
     {
+      "partNum": 2,
       "startTime": "00:16:20",
       "stopTime": "00:27:11",
       "recordType": 0,
       "soundType": 1,
-      "transitionType": 2,
+      "transitionType": 2
     },
     {
+      "partNum": 3,
       "startTime": "00:27:12",
       "stopTime": "00:32:11",
       "recordType": 2,
       "soundType": 0,
-      "transitionType": 3,
+      "transitionType": 3
     },
     {
+      "partNum": 4,
       "startTime": "00:32:12",
       "stopTime": "00:47:06",
       "recordType": 0,
       "soundType": 1,
-      "transitionType": 4,
+      "transitionType": 4
     },
     {
+      "partNum": 5,
       "startTime": "00:47:07",
       "stopTime": "01:00:00",
       "recordType": 2,
       "soundType": 0,
-      "transitionType": "",
+      "transitionType":""
     }
   ],
   "BGM": "BGM001",
