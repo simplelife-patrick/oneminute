@@ -34,6 +34,8 @@
     
     NSMutableArray * typeModelArray; //模拟选择样式的模型数组
     
+    BOOL isNeededToSave;
+    
 }
 @property (nonatomic, strong) DLYCaptureManager                 *captureManager;
 @property (nonatomic, strong) UIView                            *previewView;//previewView
@@ -57,9 +59,9 @@
 @property (nonatomic, strong) DLYAlertView *alert;          //警告框
 @property (nonatomic, strong) UIButton *chooseScene;        //选择场景
 @property (nonatomic, strong) UILabel *chooseSceneLabel;    //选择场景文字
-@property (nonatomic, strong) UIButton *exchangeCamera;     //切换摄像头
+@property (nonatomic, strong) UIButton *toggleCameraBtn;     //切换摄像头
 @property (nonatomic, strong) UIView *backView;             //控制页面底层
-@property (nonatomic, strong) UIButton *shootButton;        //拍摄按钮
+@property (nonatomic, strong) UIButton *recordBtn;        //拍摄按钮
 @property (nonatomic, strong) UIButton *nextButton;         //下一步按钮
 @property (nonatomic, strong) UIButton *deleteButton;       //删除全部按钮
 @property (nonatomic, strong) UIView *vedioEpisode;         //片段展示底部
@@ -217,13 +219,13 @@
     
     
     //切换前置摄像头
-    self.exchangeCamera = [[UIButton alloc]initWithFrame:CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40)];
-    self.exchangeCamera.layer.cornerRadius = 20;
-    self.exchangeCamera.backgroundColor = RGBA(0, 0, 0, 0.4);
-    self.exchangeCamera.clipsToBounds = YES;
-    [self.exchangeCamera setImage:[UIImage imageWithIcon:@"\U0000e668" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
-    [self.exchangeCamera addTarget:self action:@selector(onClickexchangeCamera:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:self.exchangeCamera];
+    self.toggleCameraBtn = [[UIButton alloc]initWithFrame:CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40)];
+    self.toggleCameraBtn.layer.cornerRadius = 20;
+    self.toggleCameraBtn.backgroundColor = RGBA(0, 0, 0, 0.4);
+    self.toggleCameraBtn.clipsToBounds = YES;
+    [self.toggleCameraBtn setImage:[UIImage imageWithIcon:@"\U0000e668" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.toggleCameraBtn addTarget:self action:@selector(toggleCameraAction) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.toggleCameraBtn];
     
     //右边的view
     self.backView = [[UIView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH - 180 * SCALE_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT)];
@@ -232,14 +234,14 @@
     [self.view addSubview:self.backView];
     
     //拍摄按钮
-    self.shootButton = [[UIButton alloc]initWithFrame:CGRectMake(43 * SCALE_WIDTH, 0, 60*SCALE_WIDTH, 60 * SCALE_WIDTH)];
-    self.shootButton.centerY = self.backView.centerY;
-    [self.shootButton setImage:[UIImage imageWithIcon:@"\U0000e664" inFont:ICONFONT size:20 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
-    self.shootButton.backgroundColor = RGB(255, 0, 0);
-    self.shootButton.layer.cornerRadius = 30 * SCALE_WIDTH;
-    self.shootButton.clipsToBounds = YES;
-    [self.shootButton addTarget:self action:@selector(onClickShootVideo:) forControlEvents:UIControlEventTouchUpInside];
-    [self.backView addSubview:self.shootButton];
+    self.recordBtn = [[UIButton alloc]initWithFrame:CGRectMake(43 * SCALE_WIDTH, 0, 60*SCALE_WIDTH, 60 * SCALE_WIDTH)];
+    self.recordBtn.centerY = self.backView.centerY;
+    [self.recordBtn setImage:[UIImage imageWithIcon:@"\U0000e664" inFont:ICONFONT size:20 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+    self.recordBtn.backgroundColor = RGB(255, 0, 0);
+    self.recordBtn.layer.cornerRadius = 30 * SCALE_WIDTH;
+    self.recordBtn.clipsToBounds = YES;
+    [self.recordBtn addTarget:self action:@selector(startRecordBtn:) forControlEvents:UIControlEventTouchUpInside];
+    [self.backView addSubview:self.recordBtn];
     
     //跳转成片播放界面
     self.nextButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 60, 60)];
@@ -263,7 +265,7 @@
     [self.view addSubview:self.deleteButton];
     
     //片段view
-    self.vedioEpisode = [[UIView alloc]initWithFrame:CGRectMake(self.shootButton.right, 15 * SCALE_HEIGHT, 53, SCREEN_HEIGHT - 30  * SCALE_HEIGHT)];
+    self.vedioEpisode = [[UIView alloc]initWithFrame:CGRectMake(self.recordBtn.right, 15 * SCALE_HEIGHT, 53, SCREEN_HEIGHT - 30  * SCALE_HEIGHT)];
     [self.backView addSubview:self.vedioEpisode];
     self.backScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, 53, self.vedioEpisode.height)];
     self.backScrollView.showsVerticalScrollIndicator = NO;
@@ -277,7 +279,7 @@
     [_prepareShootTimer setFireDate:[NSDate distantFuture]];
     
     //右侧编辑页面
-    self.playView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.shootButton.x + self.shootButton.width, SCREEN_HEIGHT)];
+    self.playView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.recordBtn.x + self.recordBtn.width, SCREEN_HEIGHT)];
     self.playView.hidden = YES;
     [self.backView addSubview:self.playView];
     //右侧：播放某个片段的button
@@ -302,11 +304,6 @@
     //创建场景页面
     [self createSceneView];
     [self.view addSubview:[self shootView]];
-    
-//    //添加双击跳过手势
-//    UITapGestureRecognizer *skipGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(handleTapGesture:)];
-//    skipGesture.numberOfTapsRequired = 2;
-//    [self.shootView addGestureRecognizer:skipGesture];
 }
 - (void) initializationRecorder{
     
@@ -322,6 +319,16 @@
 - (void)handleDoubleTap:(UITapGestureRecognizer *)sender {
     
     [self.captureManager toggleContentsGravity];
+}
+//切换摄像头
+- (void) toggleCameraAction{
+    
+    self.toggleCameraBtn.selected = !self.toggleCameraBtn.selected;
+    if (self.toggleCameraBtn.selected) {
+        [self.captureManager changeCameraInputDeviceisFront:YES];
+    }else{
+        [self.captureManager changeCameraInputDeviceisFront:NO];
+    }
 }
 #pragma mark ==== 左手模式重新布局
 //设备方向改变后调用的方法
@@ -380,8 +387,8 @@
     if (!self.chooseSceneLabel.isHidden && self.chooseSceneLabel) {
         self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(num);
     }
-    if (!self.exchangeCamera.isHidden && self.exchangeCamera) {
-        self.exchangeCamera.transform = CGAffineTransformMakeRotation(num);
+    if (!self.toggleCameraBtn.isHidden && self.toggleCameraBtn) {
+        self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(num);
     }
     if (!self.playView.isHidden && self.playView) {
         self.playButton.transform = CGAffineTransformMakeRotation(num);
@@ -476,7 +483,7 @@
     
     [UIView animateWithDuration:0.5f animations:^{
         self.chooseScene.hidden = YES;
-        self.exchangeCamera .hidden = YES;
+        self.toggleCameraBtn .hidden = YES;
         self.chooseSceneLabel.hidden = YES;
         self.backView.hidden = YES;
         if (self.newState == 1) {
@@ -501,50 +508,68 @@
 
 }
 //切换摄像头
-- (void)onClickexchangeCamera:(UIButton *)sender {
+- (void)onClicktoggleCameraBtn:(UIButton *)sender {
 
 }
 //拍摄按键
-- (void)onClickShootVideo:(UIButton *)sender {
+- (void)startRecordBtn:(UIButton *)sender {
     
     DDLogInfo(@"拍摄按钮");
-    [self.shootView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    [self createShootView];
-    _shootTime = 0;
-    _prepareTime = 0;
-    for (NSDictionary * dict in partModelArray) {
-        if([dict[@"prepareShoot"] isEqualToString:@"1"])
-        {
-            if([dict[@"shootType"] isEqualToString:@"1"])
+    // REC START
+    if (!self.captureManager.isRecording) {
+        
+        // change UI
+        [self.shootView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+        [self createShootView];
+        _shootTime = 0;
+        _prepareTime = 0;
+        for (NSDictionary * dict in partModelArray) {
+            if([dict[@"prepareShoot"] isEqualToString:@"1"])
             {
-                if (self.newState == 1) {
-                    self.warningIcon.frame = CGRectMake(28, SCREEN_HEIGHT - 54, 32, 32);
-                    self.warningIcon.transform = CGAffineTransformMakeRotation(0);
-                }else {
-                    self.warningIcon.frame = CGRectMake(28, 22, 32, 32);
-                    self.warningIcon.transform = CGAffineTransformMakeRotation(M_PI);
+                if([dict[@"shootType"] isEqualToString:@"1"])
+                {
+                    if (self.newState == 1) {
+                        self.warningIcon.frame = CGRectMake(28, SCREEN_HEIGHT - 54, 32, 32);
+                        self.warningIcon.transform = CGAffineTransformMakeRotation(0);
+                    }else {
+                        self.warningIcon.frame = CGRectMake(28, 22, 32, 32);
+                        self.warningIcon.transform = CGAffineTransformMakeRotation(M_PI);
+                    }
+                    self.warningIcon.hidden = NO;
+                    self.shootGuide.text = @"延时拍摄不能录制现场声音";
+                }else
+                {
+                    self.warningIcon.hidden = YES;
+                    self.shootGuide.text = @"拍摄指导：请保持光线充足";
                 }
-                self.warningIcon.hidden = NO;
-                self.shootGuide.text = @"延时拍摄不能录制现场声音";
-            }else
-            {
-                self.warningIcon.hidden = YES;
-                self.shootGuide.text = @"拍摄指导：请保持光线充足";
             }
         }
-    }
-    
-    [UIView animateWithDuration:0.5f animations:^{
-        self.chooseScene.hidden = YES;
-        self.chooseSceneLabel.hidden = YES;
-        self.exchangeCamera.hidden = YES;
-        self.backView.hidden = YES;
-        self.shootView.hidden = NO;
-        self.shootView.alpha = 1;
-    } completion:^(BOOL finished) {
-        [_timer setFireDate:[NSDate distantPast]];
         
-    }];
+        [UIView animateWithDuration:0.5f animations:^{
+            self.chooseScene.hidden = YES;
+            self.chooseSceneLabel.hidden = YES;
+            self.toggleCameraBtn.hidden = YES;
+            self.backView.hidden = YES;
+            self.shootView.hidden = NO;
+            self.shootView.alpha = 1;
+        } completion:^(BOOL finished) {
+            [_timer setFireDate:[NSDate distantPast]];
+            
+        }];
+        // timer start
+        [self.captureManager startRecording];
+    }
+    /*else{
+        
+        isNeededToSave = YES;
+        [self.captureManager stopRecording];
+        
+        [self.timer invalidate];
+        self.timer = nil;
+        
+        // change UI
+    }*/
+    
 }
 //跳转至下一个界面按键
 - (void)onClickNextStep:(UIButton *)sender {
@@ -606,11 +631,11 @@
         }
         self.chooseScene.hidden = NO;
         if (self.newState == 1) {
-            self.exchangeCamera.transform = CGAffineTransformMakeRotation(0);
+            self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.exchangeCamera.transform = CGAffineTransformMakeRotation(M_PI);
+            self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(M_PI);
         }
-        self.exchangeCamera.hidden = NO;
+        self.toggleCameraBtn.hidden = NO;
         if (self.newState == 1) {
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
         }else {
@@ -643,6 +668,7 @@
 }
 //取消按键
 - (void)onClickCancelClick:(UIButton *)sender {
+    [self.captureManager stopRecording];
     [_shootTimer invalidate];
     [UIView animateWithDuration:0.5f animations:^{
         self.progressView.hidden = YES;
@@ -654,7 +680,7 @@
         }
 
         self.chooseScene.hidden = NO;
-        self.exchangeCamera .hidden = NO;
+        self.toggleCameraBtn .hidden = NO;
         if (self.newState == 1) {
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
         }else {
@@ -669,38 +695,7 @@
     }];
     
 }
-//手势 双击取消等待
-- (void)handleTapGesture:(UITapGestureRecognizer *)skipGestureRecognizer {
-    UILabel * label = (UILabel *)[self.view viewWithTag:94];
-    UIView * point1 = (UIView *)[self.view viewWithTag:91];
-    UIView * point2 = (UIView *)[self.view viewWithTag:92];
-    UIView * point3 = (UIView *)[self.view viewWithTag:93];
-        
-    if (_timer.isValid) {
-        point1.hidden = YES;
-        point2.hidden = YES;
-        point3.hidden = YES;
-        [_timer invalidate];
-        _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
-        if (self.newState == 1) {
-            self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 10, 30, 15);
-            self.cancelButton.centerX = _timeView.centerX;
-            self.cancelButton.transform = CGAffineTransformMakeRotation(0);
-            
-        }else {
-            self.cancelButton.frame = CGRectMake(0, _timeView.top - 25, 30, 15);
-            self.cancelButton.centerX = _timeView.centerX;
-            self.cancelButton.transform = CGAffineTransformMakeRotation(M_PI);
-        }
-        self.cancelButton.hidden = NO;
-        
-        if(_prepareTime == 1 || label.hidden == NO){
-            label.hidden = YES;
-        }
-    }
-    
 
-}
 //删除某个片段的具体操作
 - (void)deleteSelectPartVideo {
     
@@ -709,7 +704,7 @@
     
     [UIView animateWithDuration:0.5f animations:^{
         self.playView.hidden = YES;
-        self.shootButton.hidden = NO;
+        self.recordBtn.hidden = NO;
     } completion:^(BOOL finished) {
         
     }];
@@ -1157,14 +1152,14 @@
                 self.deletePartButton.transform = CGAffineTransformMakeRotation(M_PI);
             }
             self.playView.hidden = NO;
-            self.shootButton.hidden = YES;
+            self.recordBtn.hidden = YES;
         } completion:^(BOOL finished) {
             
         }];
     }else
     {
         self.playView.hidden = YES;
-        self.shootButton.hidden = NO;
+        self.recordBtn.hidden = NO;
         for(int i = 0; i < partModelArray.count; i++)
         {
             NSMutableDictionary * dict1 = [[NSMutableDictionary alloc]initWithDictionary:partModelArray[i]];
@@ -1290,11 +1285,11 @@
 
         self.chooseScene.hidden = NO;
         if (self.newState == 1) {
-            self.exchangeCamera.transform = CGAffineTransformMakeRotation(0);
+            self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.exchangeCamera.transform = CGAffineTransformMakeRotation(M_PI);
+            self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(M_PI);
         }
-        self.exchangeCamera.hidden = NO;
+        self.toggleCameraBtn.hidden = NO;
         if (self.newState == 1) {
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
         }else {
@@ -1422,7 +1417,6 @@
     self.timeNumber.clipsToBounds = YES;
     [_timeView addSubview:self.timeNumber];
     
-//    [self beginTime];
     _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
     if (self.newState == 1) {
         self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 10, 30, 15);
@@ -1438,59 +1432,6 @@
 
 }
 
-#pragma mark ====定时器
-- (void)beginTime {
-    _timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(action) userInfo:nil repeats:YES];
-    [_timer setFireDate:[NSDate distantFuture]];
-}
-
-- (void)action {
-    UILabel * label = (UILabel *)[self.view viewWithTag:94];
-    UIView * point1 = (UIView *)[self.view viewWithTag:91];
-    UIView * point2 = (UIView *)[self.view viewWithTag:92];
-    UIView * point3 = (UIView *)[self.view viewWithTag:93];
-    _prepareTime ++;
-    if(_prepareTime == 1)
-    {
-        label.hidden = YES;
-    }else if(_prepareTime == 2)
-    {
-        point1.backgroundColor = RGB(152, 152, 152);
-    }else if(_prepareTime == 3)
-    {
-        point2.backgroundColor = RGB(152, 152, 152);
-    }else
-    {
-        point3.backgroundColor = RGB(152, 152, 152);
-        point1.hidden = YES;
-        point2.hidden = YES;
-        point3.hidden = YES;
-        [_timer invalidate];
-        _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
-        if (self.newState == 1) {
-            self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 10, 30, 15);
-            self.cancelButton.centerX = _timeView.centerX;
-            self.cancelButton.transform = CGAffineTransformMakeRotation(0);
-            
-        }else {
-            self.cancelButton.frame = CGRectMake(0, _timeView.top - 25, 30, 15);
-            self.cancelButton.centerX = _timeView.centerX;
-            self.cancelButton.transform = CGAffineTransformMakeRotation(M_PI);
-        }
-        if (self.newState == 1) {
-            self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 10, 30, 15);
-            self.cancelButton.centerX = _timeView.centerX;
-            self.cancelButton.transform = CGAffineTransformMakeRotation(0);
-            
-        }else {
-            self.cancelButton.frame = CGRectMake(0, _timeView.top - 25, 30, 15);
-            self.cancelButton.centerX = _timeView.centerX;
-            self.cancelButton.transform = CGAffineTransformMakeRotation(M_PI);
-        }
-        self.cancelButton.hidden = NO;
-        
-    }
-}
 #pragma mark ==== 拍摄视频
 - (void)shootAction {
     _shootTime += 0.01;
@@ -1501,8 +1442,9 @@
     }
     
     [_progressView drawProgress:0.1 * _shootTime];
-    if(_shootTime > 9.99)
+    if(_shootTime > 2)
     {
+        [self.captureManager stopRecording];
         self.cancelButton.hidden = YES;
         [[self shootStatusArray] replaceObjectAtIndex:selectVedioPart withObject:@"1"];
         [_shootTimer invalidate];
@@ -1551,11 +1493,11 @@
             [UIView animateWithDuration:0.5f animations:^{
                 self.completeButton.hidden = YES;
                 if (self.newState == 1) {
-                    self.exchangeCamera.transform = CGAffineTransformMakeRotation(0);
+                    self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(0);
                 }else {
-                    self.exchangeCamera.transform = CGAffineTransformMakeRotation(M_PI);
+                    self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(M_PI);
                 }
-                self.exchangeCamera.hidden = NO;
+                self.toggleCameraBtn.hidden = NO;
                 if (self.newState == 1) {
                     self.chooseScene.transform = CGAffineTransformMakeRotation(0);
                 }else {
@@ -1577,7 +1519,7 @@
                     DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
                     fvc.isAll = YES;
                     fvc.DismissBlock = ^{
-                        self.shootButton.hidden = YES;
+                        self.recordBtn.hidden = YES;
                         if (self.newState == 1) {
                             self.nextButton.transform = CGAffineTransformMakeRotation(0);
                         }else {

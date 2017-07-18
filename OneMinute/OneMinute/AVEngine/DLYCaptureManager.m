@@ -331,7 +331,7 @@
     changeAnimation.delegate = self;
     changeAnimation.duration = 0.3;
     changeAnimation.type = @"oglFlip";
-    changeAnimation.subtype = kCATransitionFromRight;
+    changeAnimation.subtype = kCATransitionFromBottom;
     //    changeAnimation.timingFunction = UIViewAnimationCurveEaseInOut;
     [self.previewLayer addAnimation:changeAnimation forKey:@"changeAnimation"];
 }
