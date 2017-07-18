@@ -38,7 +38,8 @@
     
 }
 @property (nonatomic, strong) DLYCaptureManager                 *captureManager;
-@property (nonatomic, strong) UIView                            *previewView;//previewView
+@property (nonatomic, strong) UIView                            *previewView;
+@property (nonatomic, strong) UIImageView                       *focusCursorImageView;
 @property (nonatomic, strong) UIView * sceneView; //选择场景的view
 @property (nonatomic, strong) UIView * shootView; //拍摄界面
 
@@ -80,6 +81,17 @@
 
 @implementation DLYRecordViewController
 
+- (UIImageView *)focusCursorImageView
+{
+    if (_focusCursorImageView == nil) {
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"focusIcon"]];
+        imageView.frame = CGRectMake(0, 0, 50, 50);
+        _focusCursorImageView = imageView;
+        [self.view addSubview:_focusCursorImageView];
+        
+    }
+    return _focusCursorImageView;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -329,6 +341,29 @@
     }else{
         [self.captureManager changeCameraInputDeviceisFront:NO];
     }
+}
+
+#pragma mark -触屏自动调整曝光-
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    UITouch *touch = [touches anyObject];
+    CGPoint point = [touch locationInView:self.previewView];
+    
+    CGPoint cameraPoint = [self.captureManager.previewLayer captureDevicePointOfInterestForPoint:point];
+    
+    [self setFocusCursorWithPoint:point];
+    [self.captureManager focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure atPoint:cameraPoint];
+}
+-(void)setFocusCursorWithPoint:(CGPoint)point{
+    self.focusCursorImageView.center=point;
+    self.focusCursorImageView.transform=CGAffineTransformMakeScale(2.0, 2.0);
+    self.focusCursorImageView.alpha=1.0;
+    [UIView animateWithDuration:1.0 animations:^{
+        self.focusCursorImageView.transform=CGAffineTransformIdentity;
+    } completion:^(BOOL finished) {
+        self.focusCursorImageView.alpha=0;
+        
+    }];
 }
 #pragma mark ==== 左手模式重新布局
 //设备方向改变后调用的方法
@@ -1249,7 +1284,6 @@
             view.backgroundColor = RGBA(0, 0, 0, 0.5);
             selectImage.hidden = YES;
         }
-        
     }
 }
 
@@ -1311,35 +1345,6 @@
     self.warningIcon.hidden = YES;
     self.warningIcon.image = [UIImage imageWithIcon:@"\U0000e663" inFont:ICONFONT size:32 color:[UIColor redColor]];
     [self.shootView addSubview:self.warningIcon];
-    
-//    UIView * secondPoint = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 20, 20)];
-//    secondPoint.center = self.shootView.center;
-//    secondPoint.layer.cornerRadius = 10;
-//    secondPoint.backgroundColor = RGB(216, 216, 216);
-//    secondPoint.tag = 92;
-//    [self.shootView addSubview:secondPoint];
-//    
-//    UIView * firstPoint = [[UIView alloc]initWithFrame:CGRectMake(secondPoint.left - 30, 0, 20, 20)];
-//    firstPoint.centerY = self.shootView.centerY;
-//    firstPoint.layer.cornerRadius = 10;
-//    firstPoint.backgroundColor = RGB(216, 216, 216);
-//    firstPoint.tag = 91;
-//    [self.shootView addSubview:firstPoint];
-//    
-//    UIView * thirdPoint = [[UIView alloc]initWithFrame:CGRectMake(secondPoint.right + 10, 0, 20, 20)];
-//    thirdPoint.centerY = self.shootView.centerY;
-//    thirdPoint.layer.cornerRadius = 10;
-//    thirdPoint.backgroundColor = RGB(216, 216, 216);
-//    thirdPoint.tag = 93;
-//    [self.shootView addSubview:thirdPoint];
-//    
-//    UILabel * prepareLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, secondPoint.top - 35, 45, 25)];
-//    prepareLabel.centerX = self.shootView.centerX;
-//    prepareLabel.text = @"准备";
-//    prepareLabel.font = FONT_SYSTEM(20);
-//    prepareLabel.textColor = RGB(0, 0, 0);
-//    prepareLabel.tag = 94;
-//    [self.shootView addSubview:prepareLabel];
     
     self.shootGuide = [[UILabel alloc] init];
     if (self.newState == 1) {
@@ -1570,11 +1575,6 @@
         _shootStatusArray = [[NSMutableArray alloc]init];
     }
     return _shootStatusArray;
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end
