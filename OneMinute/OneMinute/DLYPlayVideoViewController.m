@@ -108,7 +108,6 @@
     [self.view addSubview:self.progress];
 }
 
-
 -(void)onClickBack:(UIButton *)sender{
     
     
@@ -148,13 +147,10 @@
     [self.navigationController pushViewController:exportVC animated:YES];
 }
 
-
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations
-{
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskLandscape;
     
 }
-
 
 - (void)addObserverToPlayItem:(AVPlayerItem *)playerItem {
     //监控状态属性: 注意AVPlayer也有一个status属性,通过监控它的status也可以获得播放状态
@@ -163,12 +159,19 @@
     [playerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
 }
 
-
 - (void)removeObserverFromPlayerItem:(AVPlayerItem *)playerItem {
     [playerItem removeObserver:self forKeyPath:@"status"];
     [playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
 }
-
+#pragma mark - 重写父类方法
+- (void)deviceChangeAndHomeOnTheLeft {
+    NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeRight];
+    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+}
+- (void)deviceChangeAndHomeOnTheRight {
+    NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
+    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+}
 
 #pragma mark - 播放完成通知
 - (void)addNotification {
@@ -187,7 +190,16 @@
 
     [self.navigationController popViewControllerAnimated:YES];
 }
-
+#pragma mark - 页面将要显示
+- (void)viewWillAppear:(BOOL)animated {
+    if (self.newState == 1) {
+        NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
+        [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+    }else {
+        NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
+        [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+    }
+}
 #pragma mark - 播放进度监控
 /**
  *	进度条监控
