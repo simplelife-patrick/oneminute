@@ -36,7 +36,7 @@
 
 + (DLYMiniVlogTemplate *)loadTemplateWithTemplateId:(NSString *)templateId{
     
-    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:templateId];
+    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:templateId];
     
     return template;
 }
@@ -47,7 +47,7 @@
         DLYResource *resouece = [[DLYResource alloc] init];
         NSArray *draftArray = [resouece loadBDraftParts];
     }else{
-        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:@"001"];
+        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"001"];
     }
 }
 
