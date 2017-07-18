@@ -34,18 +34,8 @@
 	<array>
 		<string>armv7</string>
 	</array>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>Privacy - Media Library Usage Description</key>
-		<string>是否允许使用您的媒体资料库?</string>
-		<key>Privacy - Camera Usage Description</key>
-		<string>是否允许使用您的摄像头?</string>
-		<key>Privacy - Microphone Usage Description</key>
-		<string>是否允许使用您的麦克风?</string>
-	</dict>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>

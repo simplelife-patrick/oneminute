@@ -171,6 +171,14 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
+    NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
+    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+    if (self.newState == 1) {
+        [self deviceChangeAndHomeOnTheRightNewLayout];
+    }else {
+        [self deviceChangeAndHomeOnTheLeftNewLayout];
+    }
+    
     if (self.isExport) {
         
         [self initData];
@@ -210,7 +218,6 @@
     
     //切换前置摄像头
     self.exchangeCamera = [[UIButton alloc]initWithFrame:CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40)];
-
     self.exchangeCamera.layer.cornerRadius = 20;
     self.exchangeCamera.backgroundColor = RGBA(0, 0, 0, 0.4);
     self.exchangeCamera.clipsToBounds = YES;
@@ -296,10 +303,10 @@
     [self createSceneView];
     [self.view addSubview:[self shootView]];
     
-    //添加双击跳过手势
-    UITapGestureRecognizer *skipGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(handleTapGesture:)];
-    skipGesture.numberOfTapsRequired = 2;
-    [self.shootView addGestureRecognizer:skipGesture];
+//    //添加双击跳过手势
+//    UITapGestureRecognizer *skipGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(handleTapGesture:)];
+//    skipGesture.numberOfTapsRequired = 2;
+//    [self.shootView addGestureRecognizer:skipGesture];
 }
 - (void) initializationRecorder{
     
@@ -321,6 +328,11 @@
 //后面改变的状态
 - (void)deviceChangeAndHomeOnTheLeft {
     
+    [self deviceChangeAndHomeOnTheLeftNewLayout];
+
+}
+
+- (void)deviceChangeAndHomeOnTheLeftNewLayout {
     [self createLeftPartView];
     
     if (!self.playView.isHidden && self.playView) {
@@ -329,8 +341,9 @@
         self.prepareView.frame = CGRectMake(button.x, button.y + button.height - 2, 10, 2);
         [self.backScrollView insertSubview:button belowSubview:self.prepareView];
     }
-
+    
     [self changeDirectionOfView:M_PI];
+
 }
 
 - (void)changeDirectionOfView:(CGFloat)num {
@@ -349,6 +362,7 @@
         }else {
             self.shootGuide.frame = CGRectMake(0, 19, 270, 30);
         }
+        self.shootGuide.centerX = _shootView.centerX;
         self.shootGuide.transform = CGAffineTransformMakeRotation(num);
     }
     if (!self.progressView.isHidden && self.progressView) {
@@ -369,12 +383,11 @@
     if (!self.exchangeCamera.isHidden && self.exchangeCamera) {
         self.exchangeCamera.transform = CGAffineTransformMakeRotation(num);
     }
-    if (!self.playButton.isHidden && self.playButton) {
+    if (!self.playView.isHidden && self.playView) {
         self.playButton.transform = CGAffineTransformMakeRotation(num);
-    }
-    if (!self.deletePartButton.isHidden && self.deletePartButton) {
         self.deletePartButton.transform = CGAffineTransformMakeRotation(num);
     }
+
     if (!self.deleteButton.isHidden && self.deleteButton) {
         self.deleteButton.transform = CGAffineTransformMakeRotation(num);
     }
@@ -385,8 +398,9 @@
         if (num == 0) {
             self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 10, 30, 15);
         }else {
-            self.cancelButton.frame = CGRectMake(0, _timeView.top + 25, 30, 15);
+            self.cancelButton.frame = CGRectMake(0, _timeView.top - 25, 30, 15);
         }
+        self.cancelButton.centerX = _timeView.centerX;
         self.cancelButton.transform = CGAffineTransformMakeRotation(num);
     }
     
@@ -408,6 +422,11 @@
 //home在右 初始状态
 - (void)deviceChangeAndHomeOnTheRight {
     
+    [self deviceChangeAndHomeOnTheRightNewLayout];
+}
+
+- (void)deviceChangeAndHomeOnTheRightNewLayout{
+    
     [self createPartView];
     if (!self.playView.isHidden) {
         UIButton *button = (UIButton *)[self.view viewWithTag:selectPartTag];
@@ -416,7 +435,6 @@
         [self.backScrollView insertSubview:button belowSubview:self.prepareView];
     }
     [self changeDirectionOfView:0];
-
 }
 
 #pragma mark ==== button点击事件
@@ -433,6 +451,11 @@
             
             __weak typeof(self) weakSelf = self;
             self.alert = [[DLYAlertView alloc] initWithMessage:@"切换模板后已经拍摄的视频会清空，确定吗?" andCancelButton:@"取消" andSureButton:@"确定"];
+            if (self.newState == 1) {
+                self.alert.transform = CGAffineTransformMakeRotation(0);
+            }else {
+                self.alert.transform = CGAffineTransformMakeRotation(M_PI);
+            }
             self.alert.sureButtonAction = ^{
                 //数组初始化，view布局 弹出选择
                 [weakSelf initData];
@@ -456,6 +479,19 @@
         self.exchangeCamera .hidden = YES;
         self.chooseSceneLabel.hidden = YES;
         self.backView.hidden = YES;
+        if (self.newState == 1) {
+            for(int i = 0; i < typeModelArray.count; i++)
+            {
+                UIView *view = (UIView *)[self.view viewWithTag:101 + i];
+                view.transform = CGAffineTransformMakeRotation(0);
+            }
+        }else {
+            for(int i = 0; i < typeModelArray.count; i++)
+            {
+                UIView *view = (UIView *)[self.view viewWithTag:101 + i];
+                view.transform = CGAffineTransformMakeRotation(M_PI);
+            }
+        }
         self.sceneView.hidden = NO;
         self.sceneView.alpha = 1;
     } completion:^(BOOL finished) {
@@ -481,6 +517,13 @@
         {
             if([dict[@"shootType"] isEqualToString:@"1"])
             {
+                if (self.newState == 1) {
+                    self.warningIcon.frame = CGRectMake(28, SCREEN_HEIGHT - 54, 32, 32);
+                    self.warningIcon.transform = CGAffineTransformMakeRotation(0);
+                }else {
+                    self.warningIcon.frame = CGRectMake(28, 22, 32, 32);
+                    self.warningIcon.transform = CGAffineTransformMakeRotation(M_PI);
+                }
                 self.warningIcon.hidden = NO;
                 self.shootGuide.text = @"延时拍摄不能录制现场声音";
             }else
@@ -513,6 +556,11 @@
 - (void)onClickDelete:(UIButton *)sender {
     
     self.alert = [[DLYAlertView alloc] initWithMessage:@"确定删除全部片段?" andCancelButton:@"取消" andSureButton:@"确定"];
+    if (self.newState == 1) {
+        self.alert.transform = CGAffineTransformMakeRotation(0);
+    }else {
+        self.alert.transform = CGAffineTransformMakeRotation(M_PI);
+    }
     __weak typeof(self) weakSelf = self;
     self.alert.sureButtonAction = ^{
         //数组初始化，view布局
@@ -535,6 +583,11 @@
     
     __weak typeof(self) weakSelf = self;
     self.alert = [[DLYAlertView alloc] initWithMessage:@"确定删除此片段?" andCancelButton:@"取消" andSureButton:@"确定"];
+    if (self.newState == 1) {
+        self.alert.transform = CGAffineTransformMakeRotation(0);
+    }else {
+        self.alert.transform = CGAffineTransformMakeRotation(M_PI);
+    }
     self.alert.sureButtonAction = ^{
         [weakSelf deleteSelectPartVideo];
     };
@@ -546,8 +599,23 @@
 - (void)onClickCancelSelect:(UIButton *)sender {
     
     [UIView animateWithDuration:0.5f animations:^{
+        if (self.newState == 1) {
+            self.chooseScene.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.chooseScene.transform = CGAffineTransformMakeRotation(M_PI);
+        }
         self.chooseScene.hidden = NO;
+        if (self.newState == 1) {
+            self.exchangeCamera.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.exchangeCamera.transform = CGAffineTransformMakeRotation(M_PI);
+        }
         self.exchangeCamera.hidden = NO;
+        if (self.newState == 1) {
+            self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(M_PI);
+        }
         self.chooseSceneLabel.hidden = NO;
         self.backView.hidden = NO;
         self.sceneView.alpha = 0;
@@ -579,8 +647,19 @@
     [UIView animateWithDuration:0.5f animations:^{
         self.progressView.hidden = YES;
         self.timeNumber.hidden = YES;
+        if (self.newState == 1) {
+            self.chooseScene.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.chooseScene.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+
         self.chooseScene.hidden = NO;
         self.exchangeCamera .hidden = NO;
+        if (self.newState == 1) {
+            self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(M_PI);
+        }
         self.chooseSceneLabel.hidden = NO;
         self.backView.hidden = NO;
         self.shootView.alpha = 0;
@@ -603,6 +682,16 @@
         point3.hidden = YES;
         [_timer invalidate];
         _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
+        if (self.newState == 1) {
+            self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 10, 30, 15);
+            self.cancelButton.centerX = _timeView.centerX;
+            self.cancelButton.transform = CGAffineTransformMakeRotation(0);
+            
+        }else {
+            self.cancelButton.frame = CGRectMake(0, _timeView.top - 25, 30, 15);
+            self.cancelButton.centerX = _timeView.centerX;
+            self.cancelButton.transform = CGAffineTransformMakeRotation(M_PI);
+        }
         self.cancelButton.hidden = NO;
         
         if(_prepareTime == 1 || label.hidden == NO){
@@ -1060,6 +1149,13 @@
     {//说明时已拍摄片段
         DDLogInfo(@"点击了已拍摄片段");
         [UIView animateWithDuration:0.5f animations:^{
+            if (self.newState == 1) {
+                self.playButton.transform = CGAffineTransformMakeRotation(0);
+                self.deletePartButton.transform = CGAffineTransformMakeRotation(0);
+            }else {
+                self.playButton.transform = CGAffineTransformMakeRotation(M_PI);
+                self.deletePartButton.transform = CGAffineTransformMakeRotation(M_PI);
+            }
             self.playView.hidden = NO;
             self.shootButton.hidden = YES;
         } completion:^(BOOL finished) {
@@ -1186,8 +1282,24 @@
     
     [UIView animateWithDuration:0.5f animations:^{
         self.sceneView.alpha = 0;
+        if (self.newState == 1) {
+            self.chooseScene.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.chooseScene.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+
         self.chooseScene.hidden = NO;
+        if (self.newState == 1) {
+            self.exchangeCamera.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.exchangeCamera.transform = CGAffineTransformMakeRotation(M_PI);
+        }
         self.exchangeCamera.hidden = NO;
+        if (self.newState == 1) {
+            self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(M_PI);
+        }
         self.chooseSceneLabel.hidden = NO;
         self.backView.hidden = NO;
         
@@ -1205,39 +1317,47 @@
     self.warningIcon.image = [UIImage imageWithIcon:@"\U0000e663" inFont:ICONFONT size:32 color:[UIColor redColor]];
     [self.shootView addSubview:self.warningIcon];
     
-    UIView * secondPoint = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 20, 20)];
-    secondPoint.center = self.shootView.center;
-    secondPoint.layer.cornerRadius = 10;
-    secondPoint.backgroundColor = RGB(216, 216, 216);
-    secondPoint.tag = 92;
-    [self.shootView addSubview:secondPoint];
+//    UIView * secondPoint = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 20, 20)];
+//    secondPoint.center = self.shootView.center;
+//    secondPoint.layer.cornerRadius = 10;
+//    secondPoint.backgroundColor = RGB(216, 216, 216);
+//    secondPoint.tag = 92;
+//    [self.shootView addSubview:secondPoint];
+//    
+//    UIView * firstPoint = [[UIView alloc]initWithFrame:CGRectMake(secondPoint.left - 30, 0, 20, 20)];
+//    firstPoint.centerY = self.shootView.centerY;
+//    firstPoint.layer.cornerRadius = 10;
+//    firstPoint.backgroundColor = RGB(216, 216, 216);
+//    firstPoint.tag = 91;
+//    [self.shootView addSubview:firstPoint];
+//    
+//    UIView * thirdPoint = [[UIView alloc]initWithFrame:CGRectMake(secondPoint.right + 10, 0, 20, 20)];
+//    thirdPoint.centerY = self.shootView.centerY;
+//    thirdPoint.layer.cornerRadius = 10;
+//    thirdPoint.backgroundColor = RGB(216, 216, 216);
+//    thirdPoint.tag = 93;
+//    [self.shootView addSubview:thirdPoint];
+//    
+//    UILabel * prepareLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, secondPoint.top - 35, 45, 25)];
+//    prepareLabel.centerX = self.shootView.centerX;
+//    prepareLabel.text = @"准备";
+//    prepareLabel.font = FONT_SYSTEM(20);
+//    prepareLabel.textColor = RGB(0, 0, 0);
+//    prepareLabel.tag = 94;
+//    [self.shootView addSubview:prepareLabel];
     
-    UIView * firstPoint = [[UIView alloc]initWithFrame:CGRectMake(secondPoint.left - 30, 0, 20, 20)];
-    firstPoint.centerY = self.shootView.centerY;
-    firstPoint.layer.cornerRadius = 10;
-    firstPoint.backgroundColor = RGB(216, 216, 216);
-    firstPoint.tag = 91;
-    [self.shootView addSubview:firstPoint];
-    
-    UIView * thirdPoint = [[UIView alloc]initWithFrame:CGRectMake(secondPoint.right + 10, 0, 20, 20)];
-    thirdPoint.centerY = self.shootView.centerY;
-    thirdPoint.layer.cornerRadius = 10;
-    thirdPoint.backgroundColor = RGB(216, 216, 216);
-    thirdPoint.tag = 93;
-    [self.shootView addSubview:thirdPoint];
-    
-    UILabel * prepareLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, secondPoint.top - 35, 45, 25)];
-    prepareLabel.centerX = self.shootView.centerX;
-    prepareLabel.text = @"准备";
-    prepareLabel.font = FONT_SYSTEM(20);
-    prepareLabel.textColor = RGB(0, 0, 0);
-    prepareLabel.tag = 94;
-    [self.shootView addSubview:prepareLabel];
-    
-    self.shootGuide = [[UILabel alloc]initWithFrame:CGRectMake(0, SCREEN_HEIGHT - 49, 270, 30)];
+    self.shootGuide = [[UILabel alloc] init];
+    if (self.newState == 1) {
+        self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, 270, 30);
+        self.shootGuide.centerX = _shootView.centerX;
+        self.shootGuide.transform = CGAffineTransformMakeRotation(0);
+    }else {
+        self.shootGuide.frame = CGRectMake(0, 19, 270, 30);
+        self.shootGuide.centerX = _shootView.centerX;
+        self.shootGuide.transform = CGAffineTransformMakeRotation(M_PI);
+    }
     self.shootGuide.backgroundColor = RGBA(0, 0, 0, 0.7);
     self.shootGuide.text = @"拍摄指导：请保持光线充足";
-    self.shootGuide.centerX = _shootView.centerX;
     self.shootGuide.textColor = RGB(255, 255, 255);
     self.shootGuide.font = FONT_SYSTEM(14);
     self.shootGuide.textAlignment = NSTextAlignmentCenter;
@@ -1247,8 +1367,18 @@
     _timeView.centerY = self.shootView.centerY;
     [self.shootView addSubview:_timeView];
     
-    self.cancelButton = [[UIButton alloc]initWithFrame:CGRectMake(0, _timeView.bottom + 10, 30, 15)];
-    self.cancelButton.centerX = _timeView.centerX;
+    self.cancelButton = [[UIButton alloc] init];
+    if (self.newState == 1) {
+        self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 10, 30, 15);
+        self.cancelButton.centerX = _timeView.centerX;
+        self.cancelButton.transform = CGAffineTransformMakeRotation(0);
+
+    }else {
+        self.cancelButton.frame = CGRectMake(0, _timeView.top - 25, 30, 15);
+        self.cancelButton.centerX = _timeView.centerX;
+        self.cancelButton.transform = CGAffineTransformMakeRotation(M_PI);
+    }
+    
     [self.cancelButton addTarget:self action:@selector(onClickCancelClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.cancelButton setTitle:@"取消" forState:UIControlStateNormal];
     [self.cancelButton setTitleColor:RGB(0, 0, 0) forState:UIControlStateNormal];
@@ -1257,6 +1387,11 @@
     [_shootView addSubview:self.cancelButton];
     
     _progressView = [[DLYAnnularProgress alloc]initWithFrame:CGRectMake(0, 0, _timeView.width, _timeView.height)];
+    if (self.newState == 1) {
+        self.progressView.transform = CGAffineTransformMakeRotation(0);
+    }else {
+        self.progressView.transform = CGAffineTransformMakeRotation(M_PI);
+    }
     _progressView.progress = 0.01;
     _progressView.circleRadius = 28;
     [_timeView addSubview:_progressView];
@@ -1272,6 +1407,11 @@
     [_timeView addSubview:self.completeButton];
     
     self.timeNumber = [[UILabel alloc]initWithFrame:CGRectMake(3, 3, 54, 54)];
+    if (self.newState == 1) {
+        self.timeNumber.transform = CGAffineTransformMakeRotation(0);
+    }else {
+        self.timeNumber.transform = CGAffineTransformMakeRotation(M_PI);
+    }
     self.timeNumber.textColor = RGB(51, 51, 51);
     self.timeNumber.text = @"10";
     self.timeNumber.font = FONT_SYSTEM(20);
@@ -1282,7 +1422,20 @@
     self.timeNumber.clipsToBounds = YES;
     [_timeView addSubview:self.timeNumber];
     
-    [self beginTime];
+//    [self beginTime];
+    _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
+    if (self.newState == 1) {
+        self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 10, 30, 15);
+        self.cancelButton.centerX = _timeView.centerX;
+        self.cancelButton.transform = CGAffineTransformMakeRotation(0);
+        
+    }else {
+        self.cancelButton.frame = CGRectMake(0, _timeView.top - 25, 30, 15);
+        self.cancelButton.centerX = _timeView.centerX;
+        self.cancelButton.transform = CGAffineTransformMakeRotation(M_PI);
+    }
+    self.cancelButton.hidden = NO;
+
 }
 
 #pragma mark ====定时器
@@ -1314,6 +1467,26 @@
         point3.hidden = YES;
         [_timer invalidate];
         _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
+        if (self.newState == 1) {
+            self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 10, 30, 15);
+            self.cancelButton.centerX = _timeView.centerX;
+            self.cancelButton.transform = CGAffineTransformMakeRotation(0);
+            
+        }else {
+            self.cancelButton.frame = CGRectMake(0, _timeView.top - 25, 30, 15);
+            self.cancelButton.centerX = _timeView.centerX;
+            self.cancelButton.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+        if (self.newState == 1) {
+            self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 10, 30, 15);
+            self.cancelButton.centerX = _timeView.centerX;
+            self.cancelButton.transform = CGAffineTransformMakeRotation(0);
+            
+        }else {
+            self.cancelButton.frame = CGRectMake(0, _timeView.top - 25, 30, 15);
+            self.cancelButton.centerX = _timeView.centerX;
+            self.cancelButton.transform = CGAffineTransformMakeRotation(M_PI);
+        }
         self.cancelButton.hidden = NO;
         
     }
@@ -1365,6 +1538,11 @@
         //在这里添加完成页面
         self.progressView.hidden = YES;
         self.timeNumber.hidden = YES;
+        if (self.newState == 1) {
+            self.completeButton.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.completeButton.transform = CGAffineTransformMakeRotation(M_PI);
+        }
         self.completeButton.hidden = NO;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
             
@@ -1372,8 +1550,23 @@
             
             [UIView animateWithDuration:0.5f animations:^{
                 self.completeButton.hidden = YES;
+                if (self.newState == 1) {
+                    self.exchangeCamera.transform = CGAffineTransformMakeRotation(0);
+                }else {
+                    self.exchangeCamera.transform = CGAffineTransformMakeRotation(M_PI);
+                }
                 self.exchangeCamera.hidden = NO;
+                if (self.newState == 1) {
+                    self.chooseScene.transform = CGAffineTransformMakeRotation(0);
+                }else {
+                    self.chooseScene.transform = CGAffineTransformMakeRotation(M_PI);
+                }
                 self.chooseScene.hidden = NO;
+                if (self.newState == 1) {
+                    self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
+                }else {
+                    self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(M_PI);
+                }
                 self.chooseSceneLabel.hidden = NO;
                 self.backView.hidden = NO;
                 self.shootView.alpha = 0;
@@ -1385,7 +1578,17 @@
                     fvc.isAll = YES;
                     fvc.DismissBlock = ^{
                         self.shootButton.hidden = YES;
+                        if (self.newState == 1) {
+                            self.nextButton.transform = CGAffineTransformMakeRotation(0);
+                        }else {
+                            self.nextButton.transform = CGAffineTransformMakeRotation(M_PI);
+                        }
                         self.nextButton.hidden = NO;
+                        if (self.newState == 1) {
+                            self.deleteButton.transform = CGAffineTransformMakeRotation(0);
+                        }else {
+                            self.deleteButton.transform = CGAffineTransformMakeRotation(M_PI);
+                        }
                         self.deleteButton.hidden = NO;
                     };
                     [self.navigationController pushViewController:fvc animated:YES];

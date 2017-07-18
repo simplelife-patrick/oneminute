@@ -189,6 +189,26 @@
 
 }
 
+#pragma mark - 页面将要显示
+- (void)viewWillAppear:(BOOL)animated {
+    if (self.newState == 1) {
+        NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
+        [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+    }else {
+        NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
+        [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+    }
+}
+#pragma mark - 重写父类方法
+- (void)deviceChangeAndHomeOnTheLeft {
+    NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeRight];
+    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+}
+- (void)deviceChangeAndHomeOnTheRight {
+    NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
+    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+}
+
 #pragma mark ==== 键盘监听
 //监听 键盘将要显示
 - (void)changeContentViewPosition:(NSNotification *)notification {
