@@ -542,10 +542,6 @@
 
 
 }
-//切换摄像头
-- (void)onClicktoggleCameraBtn:(UIButton *)sender {
-
-}
 //拍摄按键
 - (void)startRecordBtn:(UIButton *)sender {
     
