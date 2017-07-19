@@ -56,6 +56,12 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTransitionType)
 
 @interface DLYMiniVlogPart : DLYModule
 
+
+/**
+ 拍摄时长
+ */
+@property (nonatomic, copy)   NSString                      *duration;
+
 /**
  拍摄状态
  */

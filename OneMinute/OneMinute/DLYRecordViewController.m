@@ -114,6 +114,8 @@
             part.prepareShoot = @"0";
         }
         part.shootStatus = @"0";
+        
+        part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
     }
 
     typeModelArray = [[NSMutableArray alloc]init];
@@ -130,6 +132,41 @@
     selectType = 0;
     _prepareTime = 0;
     selectPartTag = 0;
+}
+
+- (NSString *)getDurationwithStartTime:(NSString *)startTime andStopTime:(NSString *)stopTime {
+    
+    int startDuration = 0;
+    int stopDuation = 0;
+    NSArray *startArr = [startTime componentsSeparatedByString:@":"];
+    for (int i = 0; i < 3; i ++) {
+        NSString *timeStr = startArr[i];
+        int time = [timeStr intValue];
+        if (i == 0) {
+            startDuration = startDuration + time * 60 * 1000;
+        }if (i == 1) {
+            startDuration = startDuration + time * 1000;
+        }else {
+            startDuration = startDuration + time;
+        }
+    }
+    
+    NSArray *stopArr = [stopTime componentsSeparatedByString:@":"];
+    for (int i = 0; i < 3; i ++) {
+        NSString *timeStr = stopArr[i];
+        int time = [timeStr intValue];
+        if (i == 0) {
+            stopDuation = stopDuation + time * 60 * 1000;
+        }if (i == 1) {
+            stopDuation = stopDuation + time * 1000;
+        }else {
+            stopDuation = stopDuation + time;
+        }
+    }
+    
+    int duration = (stopDuation - startDuration) / 1000;
+    NSString *duraStr = [NSString stringWithFormat:@"%d%@", duration, @"''"];
+    return duraStr;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -778,7 +815,7 @@
                 UILabel * timeLabel = [[UILabel alloc] init];
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-//                timeLabel.text = dict[@"time"];
+                timeLabel.text = part.duration;
                 [timeLabel sizeToFit];
                 timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
                 timeLabel.centerY = button.centerY;
@@ -794,7 +831,7 @@
                 timeLabel.textAlignment = NSTextAlignmentRight;
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-//                timeLabel.text = dict[@"time"];
+                timeLabel.text = part.duration;
                 [itemView addSubview:timeLabel];
                 
                 UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -816,7 +853,7 @@
                 timeLabel.textAlignment = NSTextAlignmentRight;
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-//                timeLabel.text = dict[@"time"];
+                timeLabel.text = part.duration;
                 [itemView addSubview:timeLabel];
                 
                 UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -847,7 +884,7 @@
                     UILabel * timeLabel = [[UILabel alloc] init];
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-//                    timeLabel.text = dict[@"time"];
+                    timeLabel.text = part.duration;
                     [timeLabel sizeToFit];
                     timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
                     timeLabel.centerY = button.centerY;
@@ -863,7 +900,7 @@
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-//                    timeLabel.text = dict[@"time"];
+                    timeLabel.text = part.duration;
                     [itemView addSubview:timeLabel];
                     
                     UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -885,7 +922,7 @@
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-//                    timeLabel.text = dict[@"time"];
+                    timeLabel.text = part.duration;
                     [itemView addSubview:timeLabel];
                     
                     UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -941,7 +978,7 @@
                 UILabel * timeLabel = [[UILabel alloc] init];
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-//                timeLabel.text = dict[@"time"];
+                timeLabel.text = part.duration;
                 [timeLabel sizeToFit];
                 timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
                 timeLabel.centerY = button.centerY;
@@ -960,7 +997,7 @@
                 timeLabel.textAlignment = NSTextAlignmentRight;
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-//                timeLabel.text = dict[@"time"];
+                timeLabel.text = part.duration;
                 [itemView addSubview:timeLabel];
                 
                 UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -985,7 +1022,7 @@
                 timeLabel.textAlignment = NSTextAlignmentRight;
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-//                timeLabel.text = dict[@"time"];
+                timeLabel.text = part.duration;
                 [itemView addSubview:timeLabel];
                 
                 UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -1018,7 +1055,7 @@
                     UILabel * timeLabel = [[UILabel alloc] init];
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-//                    timeLabel.text = dict[@"time"];
+                    timeLabel.text = part.duration;
                     [timeLabel sizeToFit];
                     timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
                     timeLabel.centerY = button.centerY;
@@ -1037,7 +1074,7 @@
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-//                    timeLabel.text = dict[@"time"];
+                    timeLabel.text = part.duration;
                     [itemView addSubview:timeLabel];
                     
                     UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -1062,7 +1099,7 @@
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-//                    timeLabel.text = dict[@"time"];
+                    timeLabel.text = part.duration;
                     [itemView addSubview:timeLabel];
                     
                     UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
