@@ -106,9 +106,22 @@
 }
 - (NSURL *) saveToSandboxWithPath:(NSString *)resourcePath suffixType:(NSString *)suffixName{
     
-    CocoaSecurityResult *result = [CocoaSecurity md5:[[NSDate date] description]];
-    NSString *storePath = [NSString stringWithFormat:@""""];
-    return nil;
+    CocoaSecurityResult * result = [CocoaSecurity md5:[[NSDate date] description]];
+    
+    //获取Data路径
+    NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:dataPath]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:dataPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    //获取Data 子文件夹下文件夹路径
+    NSString *subFolderPath = [dataPath stringByAppendingPathComponent:resourcePath];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:subFolderPath]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:subFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    
+    NSString *outputPath = [NSString stringWithFormat:@"%@/%@%@",subFolderPath,result.hex,suffixName];
+    NSURL *outPutUrl = [NSURL fileURLWithPath:outputPath];
+    return outPutUrl;
 }
 - (NSURL *) saveToSandboxWithFolderType:(NSSearchPathDirectory)sandboxFolderType subfolderName:(NSString *)subfolderName suffixType:(NSString *)suffixName{
     

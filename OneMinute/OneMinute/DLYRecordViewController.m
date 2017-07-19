@@ -12,6 +12,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 //#import "FLEXManager.h"
 #import "DLYPlayVideoViewController.h"
+#import "DLYResource.h"
 
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);

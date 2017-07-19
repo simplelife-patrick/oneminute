@@ -9,6 +9,7 @@
 
 #import "DLYCaptureManager.h"
 #import "DLYMobileDevice.h"
+#import "DLYResource.h"
 
 @interface DLYCaptureManager()<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,AVCaptureFileOutputRecordingDelegate,CAAnimationDelegate>
 {
@@ -667,14 +668,17 @@
                 referenceOrientation = (AVCaptureVideoOrientation)orientation;
             }
             
-            int fileNamePostfix = 0;
-            NSString *filePath = nil;
-            
-            do
-                filePath =[NSString stringWithFormat:@"/%@/%@-%i.mp4", documentsDirectory, dateTimePrefix, fileNamePostfix++];
-            while ([[NSFileManager defaultManager] fileExistsAtPath:filePath]);
-            
-            self.fileURL = [NSURL URLWithString:[@"file://" stringByAppendingString:filePath]];
+//            int fileNamePostfix = 0;
+//            NSString *filePath = nil;
+//            
+//            do
+//                filePath =[NSString stringWithFormat:@"/%@/%@-%i.mp4", documentsDirectory, dateTimePrefix, fileNamePostfix++];
+//            while ([[NSFileManager defaultManager] fileExistsAtPath:filePath]);
+//            
+//            self.fileURL = [NSURL URLWithString:[@"file://" stringByAppendingString:filePath]];
+//            
+            DLYResource *resource = [[DLYResource alloc] init];
+            self.fileURL = [resource saveToSandboxWithPath:kDraftFolder suffixType:@".mp4"];
             
             NSError *error;
             self.assetWriter = [[AVAssetWriter alloc] initWithURL:self.fileURL fileType:AVFileTypeMPEG4 error:&error];
