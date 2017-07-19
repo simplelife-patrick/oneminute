@@ -346,6 +346,13 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		6F5E5D261F1EF7A700D857C9 /* RecordView */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = RecordView;
+			sourceTree = "<group>";
+		};
 		6F8925991F1B128F00256093 /* ExportController */ = {
 			isa = PBXGroup;
 			children = (
@@ -367,6 +374,7 @@
 		6F8925B01F1B136200256093 /* RecordController */ = {
 			isa = PBXGroup;
 			children = (
+				6F5E5D261F1EF7A700D857C9 /* RecordView */,
 				6F8925B11F1B137000256093 /* DLYRecordViewController.h */,
 				6F8925B21F1B137000256093 /* DLYRecordViewController.m */,
 			);
@@ -561,7 +569,7 @@
 				TargetAttributes = {
 					1C7E617E1EE7DF4F0088F33F = {
 						CreatedOnToolsVersion = 8.3.2;
-						DevelopmentTeam = 3QC6PDN9W4;
+						DevelopmentTeam = 3545373A7R;
 						ProvisioningStyle = Automatic;
 					};
 					1C7E61971EE7DF4F0088F33F = {
@@ -867,7 +875,7 @@
 			baseConfigurationReference = 7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 3QC6PDN9W4;
+				DEVELOPMENT_TEAM = 3545373A7R;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/OneMinute/DLYPrefixHeader.pch";
 				INFOPLIST_FILE = OneMinute/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -882,7 +890,7 @@
 			baseConfigurationReference = FC05C70FE4A35674CFB74552 /* Pods-OneMinute.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 3QC6PDN9W4;
+				DEVELOPMENT_TEAM = 3545373A7R;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/OneMinute/DLYPrefixHeader.pch";
 				INFOPLIST_FILE = OneMinute/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;

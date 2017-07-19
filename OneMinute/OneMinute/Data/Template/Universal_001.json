@@ -48,7 +48,7 @@
       "stopTime": "01:00:00",
       "recordType": 2,
       "soundType": 0,
-      "transitionType":""
+      "transitionType":0
     }
   ],
   "BGM": "BGM001",
