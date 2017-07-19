@@ -102,7 +102,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 }
 - (void) initializationRecorder{
     
-//    self.captureManager = [[DLYCaptureManager alloc] initWithPreviewView:self.previewView outputMode:DLYOutputModeVideoData];
+//    self.captureManager = [[DLYCaptureManager alloc] initWithPreviewView:self.previewView];
 //    
 //    self.captureManager.delegate = self;
 }

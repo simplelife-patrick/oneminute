@@ -10,8 +10,22 @@
 #import "DLYMiniVlogTemplate.h"
 #import "DLYResource.h"
 
+#define kDEFAULTTEMPLATENAME  @"Universal_001.json"
+
 @implementation DLYSession
 
+-(DLYMiniVlogTemplate *)currentTemplate{
+    if (!_currentTemplate) {
+        if ([self draftExitAtFile]) {
+        }else{
+            DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:kDEFAULTTEMPLATENAME];
+            _currentTemplate = template;
+        }
+        [[NSUserDefaults standardUserDefaults] setObject:kDEFAULTTEMPLATENAME forKey:@"currentTemplate"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    return _currentTemplate;
+}
 - (BOOL) draftExitAtFile{
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -19,8 +33,8 @@
     NSArray *homeDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
     NSString *documentPath = [homeDir objectAtIndex:0];
     
-    NSString *dataPath = [documentPath stringByAppendingPathComponent:@"Data"];
-    NSString *draftPath = [dataPath stringByAppendingPathComponent:@"Draft"];
+    NSString *dataPath = [documentPath stringByAppendingPathComponent:kDataFolder];
+    NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
     
     if ([fileManager fileExistsAtPath:dataPath] && [fileManager fileExistsAtPath:draftPath]) {
         
