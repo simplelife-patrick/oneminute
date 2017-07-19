@@ -70,4 +70,12 @@ typedef void (^OnBufferBlock)(CMSampleBufferRef sampleBuffer);
 - (void)changeCameraInputDeviceisFront:(BOOL)isFront;
 
 
+/**
+ 合并片段
+
+ @param successBlock 成功回调
+ @param failureBlcok 失败回调
+ */
+- (void) mergeVideoWithsuccess:(void (^)(long long finishTime))successBlock failure:(void (^)(void))failureBlcok;
+
 @end

@@ -69,6 +69,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 @property (nonatomic, strong) UIImagePickerController       *moviePicker;
 @property (nonatomic, copy)   NSMutableArray                *videoPathArray;
 
+@property (nonatomic, strong) DLYResource                   *resource;
+
+
 @end
 
 @implementation DLYAVEngine
@@ -92,6 +95,13 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     _videoOutput      = nil;
     _audioConnection  = nil;
     _videoConnection  = nil;
+}
+
+-(DLYResource *)resource{
+    if (!_resource) {
+        _resource = [[DLYResource alloc] init];
+    }
+    return _resource;
 }
 
 -(NSMutableArray *)imageArray{
@@ -837,8 +847,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     return (image);
 }
 #pragma mark - 合并 -
-
--(void)mergeVideoToOneVideo:(NSArray *)videoArray outputUrl:(NSURL *)storeUrl success:(void (^)(long long finishTime))successBlock failure:(void (^)(void))failureBlcok{
+- (void) mergeVideoWithsuccess:(void (^)(long long finishTime))successBlock failure:(void (^)(void))failureBlcok{
+    
+    NSArray *videoArray = [self.resource loadBDraftParts];
     
     AVMutableComposition* mixComposition = [AVMutableComposition composition];
     
@@ -866,6 +877,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         tmpDuration += CMTimeGetSeconds(videoAssetTrack.timeRange.duration);
     }
     
+    NSURL *storeUrl = [self.resource saveToSandboxWithPath:kProductFolder suffixType:@".mp4"];
     AVAssetExportSession *exporter = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1920x1080];
     exporter.outputURL = storeUrl;
     exporter.outputFileType = AVFileTypeMPEG4;
@@ -874,39 +886,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         UISaveVideoAtPathToSavedPhotosAlbum([storeUrl path], self, nil, nil);
         
         _finishTime = [self getDateTimeTOMilliSeconds:[NSDate date]];
-        successBlock(_finishTime);
+        DLYLog(@"The operation of merger takes %@ s",_finishTime);
     }];
-}
-
--(AVMutableComposition *)mergeVideostoOnevideo:(NSArray*)array
-{
-    DLYLog(@"array:%@",array);
-    AVMutableComposition* mixComposition = [AVMutableComposition composition];
     
-    AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-    AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-    
-    Float64 tmpDuration =0.0f;
-    for (int i=0; i<array.count; i++)
-    {
-        AVURLAsset *videoAsset = [[AVURLAsset alloc]initWithURL:array[i] options:nil];
-        
-        NSError *error;
-        AVAssetTrack *videoAssetTrack = nil;
-        AVAssetTrack *audioAssetTrack = nil;
-        if ([videoAsset tracksWithMediaType:AVMediaTypeVideo].count != 0) {
-            videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-        }
-        if ([videoAsset tracksWithMediaType:AVMediaTypeAudio].count!= 0) {
-            audioAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
-        }
-        
-        CMTimeRange video_timeRange = CMTimeRangeMake(kCMTimeZero,videoAssetTrack.timeRange.duration);
-        [compositionVideoTrack insertTimeRange:video_timeRange ofTrack:videoAssetTrack atTime:CMTimeMakeWithSeconds(tmpDuration, 0) error:&error];
-        [compositionAudioTrack insertTimeRange:video_timeRange ofTrack:audioAssetTrack atTime:CMTimeMakeWithSeconds(tmpDuration, 0) error:nil];
-        tmpDuration += CMTimeGetSeconds(videoAssetTrack.timeRange.duration);
-    }
-    return mixComposition;
 }
 
 -(long long)getDateTimeTOMilliSeconds:(NSDate *)datetime

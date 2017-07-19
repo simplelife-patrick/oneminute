@@ -54,9 +54,9 @@
     return NO;
 }
 
-+ (DLYMiniVlogTemplate *)loadTemplateWithTemplateId:(NSString *)templateId{
++ (DLYMiniVlogTemplate *)loadTemplateWithTemplateName:(NSString *)templateName{
     
-    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:templateId];
+    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:templateName];
     
     return template;
 }
