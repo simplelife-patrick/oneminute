@@ -44,16 +44,9 @@
 @property (nonatomic, strong) UIView * sceneView; //选择场景的view
 @property (nonatomic, strong) UIView * shootView; //拍摄界面
 
-//进度条
 @property (nonatomic, strong) UIView * timeView;
-//计时器
-//准备的计时器
-@property (nonatomic, strong) NSTimer *timer;
-//拍摄读秒计时器
-@property (nonatomic, strong) NSTimer *shootTimer;
+@property (nonatomic, strong) NSTimer *shootTimer;          //拍摄读秒计时器
 @property (nonatomic, assign) NSInteger prepareTime;
-//@property (nonatomic, assign)float shootTime;
-
 @property (nonatomic, strong) NSTimer * prepareShootTimer; //准备拍摄片段闪烁的计时器
 @property (nonatomic, strong) DLYAnnularProgress * progressView;    //环形进度条
 @property (nonatomic, strong) UIImageView *imageView;
@@ -70,7 +63,7 @@
 @property (nonatomic, strong) UIView *playView;             //单个片段编辑页面
 @property (nonatomic, strong) UIButton *playButton;         //播放单个视频
 @property (nonatomic, strong) UIButton *deletePartButton;   //删除单个视频
-@property (nonatomic, strong) UIView *prepareView;          //拍摄准备页面
+@property (nonatomic, strong) UIView *prepareView;          //光标
 @property (nonatomic, strong) UIImageView *warningIcon;     //拍摄指导
 @property (nonatomic, strong) UILabel *shootGuide;          //拍摄指导
 @property (nonatomic, strong) UIButton *cancelButton;       //取消拍摄
@@ -100,7 +93,6 @@
     [self initData];
     [self setupUI];
 }
-
 - (void)initData {
     
     DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];
@@ -133,7 +125,6 @@
     _prepareTime = 0;
     selectPartTag = 0;
 }
-
 - (NSString *)getDurationwithStartTime:(NSString *)startTime andStopTime:(NSString *)stopTime {
     
     int startDuration = 0;
@@ -164,11 +155,10 @@
         }
     }
     
-    int duration = (stopDuation - startDuration) / 1000;
-    NSString *duraStr = [NSString stringWithFormat:@"%d%@", duration, @"''"];
+    float duration = (stopDuation - startDuration) * 0.001;
+    NSString *duraStr = [NSString stringWithFormat:@"%.3f", duration];
     return duraStr;
 }
-
 - (void)viewWillAppear:(BOOL)animated {
     
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
@@ -183,6 +173,20 @@
         
         [self initData];
         self.isExport = NO;
+    }
+
+    
+    if (!self.deleteButton.isHidden && self.deleteButton) {
+        self.deleteButton.hidden = YES;
+    }
+    if (!self.nextButton.isHidden && self.nextButton) {
+        self.nextButton.hidden = YES;
+    }
+    if (self.recordBtn.isHidden && self.recordBtn) {
+        self.recordBtn.hidden = NO;
+    }
+    if (!self.playView.isHidden && self.playView) {
+        self.playView.hidden = YES;
     }
     
     [self createPartViewLayout];
@@ -214,7 +218,6 @@
     self.chooseSceneLabel.textColor = RGBA(255, 255, 255, 1);
     self.chooseSceneLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:self.chooseSceneLabel];
-    
     
     //切换前置摄像头
     self.toggleCameraBtn = [[UIButton alloc]initWithFrame:CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40)];
@@ -273,7 +276,8 @@
     float episodeHeight = (self.vedioEpisode.height - 10)/6;
     self.backScrollView.contentSize = CGSizeMake(15, episodeHeight * partModelArray.count + (partModelArray.count - 1) * 2);
     _prepareShootTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(prepareShootAction) userInfo:nil repeats:YES];
-    [[NSRunLoop mainRunLoop] addTimer:_prepareShootTimer forMode:NSRunLoopCommonModes];
+    [[NSRunLoop currentRunLoop] addTimer:_prepareShootTimer forMode:NSRunLoopCommonModes];
+
     [_prepareShootTimer setFireDate:[NSDate distantFuture]];
     
     //右侧编辑页面
@@ -580,7 +584,7 @@
             self.shootView.hidden = NO;
             self.shootView.alpha = 1;
         } completion:^(BOOL finished) {
-            [_timer setFireDate:[NSDate distantPast]];
+//            [_timer setFireDate:[NSDate distantPast]];
             
         }];
         // timer start
@@ -617,6 +621,12 @@
     __weak typeof(self) weakSelf = self;
     self.alert.sureButtonAction = ^{
         //数组初始化，view布局
+        if (!weakSelf.playView.isHidden && weakSelf.playView) {
+            weakSelf.playView.hidden = YES;
+        }
+        if (weakSelf.recordBtn.isHidden && weakSelf.recordBtn) {
+            weakSelf.recordBtn.hidden = NO;
+        }
         weakSelf.nextButton.hidden = YES;
         weakSelf.deleteButton.hidden = YES;
         [weakSelf initData];
@@ -816,7 +826,8 @@
                 UILabel * timeLabel = [[UILabel alloc] init];
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-                timeLabel.text = part.duration;
+                NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                 [timeLabel sizeToFit];
                 timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
                 timeLabel.centerY = button.centerY;
@@ -832,7 +843,8 @@
                 timeLabel.textAlignment = NSTextAlignmentRight;
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-                timeLabel.text = part.duration;
+                NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                 [itemView addSubview:timeLabel];
                 
                 UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -854,7 +866,8 @@
                 timeLabel.textAlignment = NSTextAlignmentRight;
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-                timeLabel.text = part.duration;
+                NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                 [itemView addSubview:timeLabel];
                 
                 UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -885,7 +898,8 @@
                     UILabel * timeLabel = [[UILabel alloc] init];
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-                    timeLabel.text = part.duration;
+                    NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                    timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                     [timeLabel sizeToFit];
                     timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
                     timeLabel.centerY = button.centerY;
@@ -901,7 +915,8 @@
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-                    timeLabel.text = part.duration;
+                    NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                    timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                     [itemView addSubview:timeLabel];
                     
                     UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -923,7 +938,8 @@
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-                    timeLabel.text = part.duration;
+                    NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                    timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                     [itemView addSubview:timeLabel];
                     
                     UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -979,7 +995,8 @@
                 UILabel * timeLabel = [[UILabel alloc] init];
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-                timeLabel.text = part.duration;
+                NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                 [timeLabel sizeToFit];
                 timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
                 timeLabel.centerY = button.centerY;
@@ -998,7 +1015,8 @@
                 timeLabel.textAlignment = NSTextAlignmentRight;
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-                timeLabel.text = part.duration;
+                NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                 [itemView addSubview:timeLabel];
                 
                 UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -1023,7 +1041,8 @@
                 timeLabel.textAlignment = NSTextAlignmentRight;
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-                timeLabel.text = part.duration;
+                NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                 [itemView addSubview:timeLabel];
                 
                 UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -1056,7 +1075,8 @@
                     UILabel * timeLabel = [[UILabel alloc] init];
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-                    timeLabel.text = part.duration;
+                    NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                    timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                     [timeLabel sizeToFit];
                     timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
                     timeLabel.centerY = button.centerY;
@@ -1075,7 +1095,8 @@
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-                    timeLabel.text = part.duration;
+                    NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                    timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                     [itemView addSubview:timeLabel];
                     
                     UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -1100,7 +1121,8 @@
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-                    timeLabel.text = part.duration;
+                    NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                    timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                     [itemView addSubview:timeLabel];
                     
                     UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
@@ -1399,7 +1421,9 @@
         self.timeNumber.transform = CGAffineTransformMakeRotation(M_PI);
     }
     self.timeNumber.textColor = RGB(51, 51, 51);
-    self.timeNumber.text = @"10";
+    DLYMiniVlogPart *part = partModelArray[selectVedioPart];
+    NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+    self.timeNumber.text = timeArr[0];
     self.timeNumber.font = FONT_SYSTEM(20);
     self.timeNumber.textAlignment = NSTextAlignmentCenter;
     self.timeNumber.backgroundColor = RGBA(0, 0, 0, 0.3);
@@ -1409,6 +1433,7 @@
     [_timeView addSubview:self.timeNumber];
     
     _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:_shootTimer forMode:NSRunLoopCommonModes];
     if (self.newState == 1) {
         self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 10, 30, 15);
         self.cancelButton.centerX = _timeView.centerX;
@@ -1426,15 +1451,17 @@
 #pragma mark ==== 拍摄视频
 - (void)shootAction {
     
+    DLYMiniVlogPart *part = partModelArray[selectVedioPart];
     _shootTime += 0.01;
     
     if((int)(_shootTime * 100) % 100 == 0)
     {
-        self.timeNumber.text = [NSString stringWithFormat:@"%.0f",10 - _shootTime];
+        self.timeNumber.text = [NSString stringWithFormat:@"%.0f",[part.duration intValue] - _shootTime];
     }
     
-    [_progressView drawProgress:0.1 * _shootTime];
-    if(_shootTime > 2)
+    double partDuration = [part.duration doubleValue];
+    [_progressView drawProgress:_shootTime / partDuration];
+    if(_shootTime > partDuration)
     {
         [self.captureManager stopRecording];
         self.cancelButton.hidden = YES;

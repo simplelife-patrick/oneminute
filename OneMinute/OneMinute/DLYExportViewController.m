@@ -78,11 +78,11 @@
     self.successButton.hidden = YES;
     [self.centerView addSubview:self.successButton];
     
-    //测试定时器button，要删掉
-    UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-    btn.backgroundColor = [UIColor purpleColor];
-    [self.syntheticView addSubview:btn];
-    [btn addTarget:self action:@selector(onClickTimer) forControlEvents:UIControlEventTouchUpInside];
+//    //测试定时器button，要删掉
+//    UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+//    btn.backgroundColor = [UIColor purpleColor];
+//    [self.syntheticView addSubview:btn];
+//    [btn addTarget:self action:@selector(onClickTimer) forControlEvents:UIControlEventTouchUpInside];
     
     //提示label
     self.remindLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 217, 120, 44)];
@@ -96,15 +96,15 @@
     
 }
 
-- (void)onClickTimer {
-    
-    _shootTime = 0.0;
-    _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
-    [[NSRunLoop mainRunLoop] addTimer:_shootTimer forMode:NSRunLoopCommonModes];
-    
-}
+//- (void)onClickTimer {
+//    
+//    _shootTime = 0.0;
+//    _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
+//    [[NSRunLoop mainRunLoop] addTimer:_shootTimer forMode:NSRunLoopCommonModes];
+//    
+//}
 
-- (void)shootAction {
+- (void)exportAction {
     _shootTime += 0.01;
     
     [_progressView drawProgress:0.1 * _shootTime withColor:RGB(255, 0, 0)];
@@ -186,6 +186,10 @@
     self.skipLabel.hidden = YES;
     //显示导出UI
     self.syntheticView.hidden = NO;
+    
+    _shootTime = 0.0;
+    _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(exportAction) userInfo:nil repeats:YES];
+    [[NSRunLoop mainRunLoop] addTimer:_shootTimer forMode:NSRunLoopCommonModes];
 
 }
 
