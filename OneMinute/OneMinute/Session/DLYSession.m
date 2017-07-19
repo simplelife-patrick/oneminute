@@ -11,17 +11,23 @@
 #import "DLYResource.h"
 
 #define kDEFAULTTEMPLATENAME  @"Universal_001.json"
+#define kCURRENTTEMPLATEKEY  @"CURRENTTEMPLATEKEY"
 
 @implementation DLYSession
 
 -(DLYMiniVlogTemplate *)currentTemplate{
     if (!_currentTemplate) {
-        if ([self draftExitAtFile]) {
+        
+        if ([self draftExitAtFile] && [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY]) {
+        
+            NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY];
+            _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:savedCurrentTemplateName];
+            
         }else{
-            DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:kDEFAULTTEMPLATENAME];
-            _currentTemplate = template;
+            
+            _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:kDEFAULTTEMPLATENAME];
         }
-        [[NSUserDefaults standardUserDefaults] setObject:kDEFAULTTEMPLATENAME forKey:@"currentTemplate"];
+        [[NSUserDefaults standardUserDefaults] setObject:kDEFAULTTEMPLATENAME forKey:kCURRENTTEMPLATEKEY];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     return _currentTemplate;
