@@ -38,6 +38,7 @@
         NSDictionary *dic = (NSDictionary *)_parts[i];
         
         DLYMiniVlogPart *part = [[DLYMiniVlogPart alloc]init];
+        part.partNum = [[dic objectForKey:@"partNum"] integerValue];
         part.starTime = [dic objectForKey:@"startTime"];
         part.stopTime = [dic objectForKey:@"stopTime"];
         part.recordType = [[dic objectForKey:@"recordType"] integerValue];
