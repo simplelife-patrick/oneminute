@@ -157,7 +157,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         NSUInteger trackIndex = i % 2;                                      // 3
         
         AVURLAsset *asset = [AVURLAsset URLAssetWithURL:self.videoPathArray[i] options:nil];
-        NSLog(@"self.videoPathArray[%lu]: %@",(unsigned long)i,self.videoPathArray[i]);
+        DLYLog(@"self.videoPathArray[%lu]: %@",(unsigned long)i,self.videoPathArray[i]);
         
         AVAssetTrack *assetVideoTrack = nil;
         AVAssetTrack *assetAudioTrack = nil;
@@ -353,11 +353,11 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     [assetExportSession exportAsynchronouslyWithCompletionHandler:^{
         switch ([assetExportSession status]) {
             case AVAssetExportSessionStatusFailed:{
-                NSLog(@"合成失败: %@",[[assetExportSession error] description]);
+                DLYLog(@"合成失败: %@",[[assetExportSession error] description]);
             }break;
             case AVAssetExportSessionStatusCompleted:{
                 UISaveVideoAtPathToSavedPhotosAlbum([outPutUrl path], self, nil, nil);
-                NSLog(@"合成成功");
+                DLYLog(@"合成成功");
             }break;
             default:
                 break;
