@@ -19,9 +19,6 @@
 		1C7E61BE1EE7E4AC0088F33F /* DLYModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61B91EE7E4AC0088F33F /* DLYModule.m */; };
 		1C7E61BF1EE7E4AC0088F33F /* DLYModuleManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61BB1EE7E4AC0088F33F /* DLYModuleManager.m */; };
 		1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61C21EE7E6730088F33F /* DLYLogModule.m */; };
-		6F5E5D291F1EFA1F00D857C9 /* RecordControlView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F5E5D281F1EFA1F00D857C9 /* RecordControlView.m */; };
-		6F5E5D2C1F1F09EB00D857C9 /* SceneView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F5E5D2B1F1F09EB00D857C9 /* SceneView.m */; };
-		6F5E5D2F1F1F111200D857C9 /* ShootView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F5E5D2E1F1F111200D857C9 /* ShootView.m */; };
 		6F8925961F1B11A800256093 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6F8925931F1B11A800256093 /* iconfont.ttf */; };
 		6F8925971F1B11A800256093 /* demo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 6F8925941F1B11A800256093 /* demo.mp4 */; };
 		6F8925981F1B11A800256093 /* launch.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 6F8925951F1B11A800256093 /* launch.mp4 */; };
@@ -102,12 +99,6 @@
 		1C7E61BC1EE7E4AC0088F33F /* DLYSharedInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DLYSharedInstance.h; path = Common/DLYSharedInstance.h; sourceTree = "<group>"; };
 		1C7E61C11EE7E6730088F33F /* DLYLogModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DLYLogModule.h; path = Log/DLYLogModule.h; sourceTree = "<group>"; };
 		1C7E61C21EE7E6730088F33F /* DLYLogModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DLYLogModule.m; path = Log/DLYLogModule.m; sourceTree = "<group>"; };
-		6F5E5D271F1EFA1F00D857C9 /* RecordControlView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordControlView.h; sourceTree = "<group>"; };
-		6F5E5D281F1EFA1F00D857C9 /* RecordControlView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecordControlView.m; sourceTree = "<group>"; };
-		6F5E5D2A1F1F09EB00D857C9 /* SceneView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneView.h; sourceTree = "<group>"; };
-		6F5E5D2B1F1F09EB00D857C9 /* SceneView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SceneView.m; sourceTree = "<group>"; };
-		6F5E5D2D1F1F111200D857C9 /* ShootView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShootView.h; sourceTree = "<group>"; };
-		6F5E5D2E1F1F111200D857C9 /* ShootView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShootView.m; sourceTree = "<group>"; };
 		6F8925931F1B11A800256093 /* iconfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = iconfont.ttf; sourceTree = "<group>"; };
 		6F8925941F1B11A800256093 /* demo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = demo.mp4; sourceTree = "<group>"; };
 		6F8925951F1B11A800256093 /* launch.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = launch.mp4; sourceTree = "<group>"; };
@@ -355,12 +346,6 @@
 		6F5E5D261F1EF7A700D857C9 /* RecordView */ = {
 			isa = PBXGroup;
 			children = (
-				6F5E5D271F1EFA1F00D857C9 /* RecordControlView.h */,
-				6F5E5D281F1EFA1F00D857C9 /* RecordControlView.m */,
-				6F5E5D2A1F1F09EB00D857C9 /* SceneView.h */,
-				6F5E5D2B1F1F09EB00D857C9 /* SceneView.m */,
-				6F5E5D2D1F1F111200D857C9 /* ShootView.h */,
-				6F5E5D2E1F1F111200D857C9 /* ShootView.m */,
 			);
 			name = RecordView;
 			sourceTree = "<group>";
@@ -711,8 +696,6 @@
 				1C7E61BD1EE7E4AC0088F33F /* DLYAsyncQueue.m in Sources */,
 				ADFFF19E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m in Sources */,
 				ADFFF19A1F18A33000FB5BF7 /* DLYVolumeAutomation.m in Sources */,
-				6F5E5D291F1EFA1F00D857C9 /* RecordControlView.m in Sources */,
-				6F5E5D2F1F1F111200D857C9 /* ShootView.m in Sources */,
 				6F8925BF1F1B139500256093 /* UIImage+iconfont.m in Sources */,
 				1C7E61841EE7DF4F0088F33F /* main.m in Sources */,
 				ADFFF1AE1F18C04400FB5BF7 /* DLYVideoTransition.m in Sources */,
@@ -725,7 +708,6 @@
 				6F8925CD1F1B13CA00256093 /* DLYBaseViewController.m in Sources */,
 				6F8925C11F1B139500256093 /* UIView+Utility.m in Sources */,
 				6F8925C21F1B139500256093 /* UIButton+LargerHitArea.m in Sources */,
-				6F5E5D2C1F1F09EB00D857C9 /* SceneView.m in Sources */,
 				ADFFF1A81F18BFAC00FB5BF7 /* DLYTransitionComposition.m in Sources */,
 				6F8925AF1F1B135100256093 /* DLYPlayVideoViewController.m in Sources */,
 				6F89259C1F1B12A100256093 /* DLYExportViewController.m in Sources */,

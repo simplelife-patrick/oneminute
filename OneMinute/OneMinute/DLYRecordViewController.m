@@ -8,11 +8,12 @@
 
 #import "DLYRecordViewController.h"
 #import "DLYCaptureManager.h"
+#import "DLYAnnularProgress.h"
 //#import "FLEXManager.h"
 #import "DLYPlayVideoViewController.h"
 #import "DLYMiniVlogTemplate.h"
 
-@interface DLYRecordViewController ()
+@interface DLYRecordViewController ()<DLYCaptureManagerDelegate>
 {
     //    //记录选中的拍摄模式 10003 延时 10004 普通 10005 慢动作
     //    NSInteger selectModel;
@@ -43,7 +44,8 @@
 @property (nonatomic, strong) UIView * sceneView; //选择场景的view
 @property (nonatomic, strong) UIView * shootView; //拍摄界面
 
-
+//进度条
+@property (nonatomic, strong) UIView * timeView;
 //计时器
 //准备的计时器
 @property (nonatomic, strong) NSTimer *timer;
@@ -53,13 +55,27 @@
 //@property (nonatomic, assign)float shootTime;
 
 @property (nonatomic, strong) NSTimer * prepareShootTimer; //准备拍摄片段闪烁的计时器
+@property (nonatomic, strong) DLYAnnularProgress * progressView;    //环形进度条
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) DLYAlertView *alert;          //警告框
 @property (nonatomic, strong) UIButton *chooseScene;        //选择场景
 @property (nonatomic, strong) UILabel *chooseSceneLabel;    //选择场景文字
 @property (nonatomic, strong) UIButton *toggleCameraBtn;    //切换摄像头
+@property (nonatomic, strong) UIView *backView;             //控制页面底层
+@property (nonatomic, strong) UIButton *recordBtn;          //拍摄按钮
 @property (nonatomic, strong) UIButton *nextButton;         //下一步按钮
 @property (nonatomic, strong) UIButton *deleteButton;       //删除全部按钮
+@property (nonatomic, strong) UIView *vedioEpisode;         //片段展示底部
+@property (nonatomic, strong) UIScrollView *backScrollView; //片段展示滚图
+@property (nonatomic, strong) UIView *playView;             //单个片段编辑页面
+@property (nonatomic, strong) UIButton *playButton;         //播放单个视频
+@property (nonatomic, strong) UIButton *deletePartButton;   //删除单个视频
+@property (nonatomic, strong) UIView *prepareView;          //拍摄准备页面
+@property (nonatomic, strong) UIImageView *warningIcon;     //拍摄指导
+@property (nonatomic, strong) UILabel *shootGuide;          //拍摄指导
+@property (nonatomic, strong) UIButton *cancelButton;       //取消拍摄
+@property (nonatomic, strong) UIButton *completeButton;     //拍摄单个片段完成
+@property (nonatomic, strong) UILabel *timeNumber;          //倒计时显示label
 
 @end
 
@@ -80,28 +96,28 @@
     
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-
+    
     [self initData];
     [self setupUI];
 }
 
 - (void)initData {
-
+    
     DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];
     partModelArray = [NSMutableArray arrayWithArray:template.parts];
     
     for (int i = 0; i < 6; i++) {
         DLYMiniVlogPart *part = partModelArray[i];
         if (i == 0) {
-            part.prepareShoot = @"1";
+            part.prepareRecord = @"1";
         }else {
-            part.prepareShoot = @"0";
+            part.prepareRecord = @"0";
         }
-        part.shootStatus = @"0";
+        part.recordStatus = @"0";
         
         part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
     }
-
+    
     typeModelArray = [[NSMutableArray alloc]init];
     NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"运动",@"风景",@"人文",nil];
     for(int i = 0; i < 5; i ++)
@@ -209,12 +225,21 @@
     [self.toggleCameraBtn addTarget:self action:@selector(toggleCameraAction) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.toggleCameraBtn];
     
-    //这里要加的是 靠近home键的控制view RecordControlView
-//    self.backView = [[UIView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH - 180 * SCALE_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT)];
-//    self.backView.backgroundColor = RGBA(0, 0, 0, 0.7);
-//    [self.view addSubview:self.backView];
+    //右边的view
+    self.backView = [[UIView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH - 180 * SCALE_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT)];
     
-
+    self.backView.backgroundColor = RGBA(0, 0, 0, 0.7);
+    [self.view addSubview:self.backView];
+    
+    //拍摄按钮
+    self.recordBtn = [[UIButton alloc]initWithFrame:CGRectMake(43 * SCALE_WIDTH, 0, 60*SCALE_WIDTH, 60 * SCALE_WIDTH)];
+    self.recordBtn.centerY = self.backView.centerY;
+    [self.recordBtn setImage:[UIImage imageWithIcon:@"\U0000e664" inFont:ICONFONT size:20 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+    self.recordBtn.backgroundColor = RGB(255, 0, 0);
+    self.recordBtn.layer.cornerRadius = 30 * SCALE_WIDTH;
+    self.recordBtn.clipsToBounds = YES;
+    [self.recordBtn addTarget:self action:@selector(startRecordBtn:) forControlEvents:UIControlEventTouchUpInside];
+    [self.backView addSubview:self.recordBtn];
     
     //跳转成片播放界面
     self.nextButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 60, 60)];
@@ -237,18 +262,45 @@
     [self.deleteButton addTarget:self action:@selector(onClickDelete:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.deleteButton];
     
+    //片段view
+    self.vedioEpisode = [[UIView alloc]initWithFrame:CGRectMake(self.recordBtn.right, 15 * SCALE_HEIGHT, 53, SCREEN_HEIGHT - 30  * SCALE_HEIGHT)];
+    [self.backView addSubview:self.vedioEpisode];
+    self.backScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, 53, self.vedioEpisode.height)];
+    self.backScrollView.showsVerticalScrollIndicator = NO;
+    self.backScrollView.showsHorizontalScrollIndicator = NO;
+    self.backScrollView.bounces = NO;
+    [self.vedioEpisode addSubview:self.backScrollView];
+    float episodeHeight = (self.vedioEpisode.height - 10)/6;
+    self.backScrollView.contentSize = CGSizeMake(15, episodeHeight * partModelArray.count + (partModelArray.count - 1) * 2);
+    _prepareShootTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(prepareShootAction) userInfo:nil repeats:YES];
+    [[NSRunLoop mainRunLoop] addTimer:_prepareShootTimer forMode:NSRunLoopCommonModes];
+    [_prepareShootTimer setFireDate:[NSDate distantFuture]];
+    
+    //右侧编辑页面
+    self.playView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.recordBtn.x + self.recordBtn.width, SCREEN_HEIGHT)];
+    self.playView.hidden = YES;
+    [self.backView addSubview:self.playView];
+    //右侧：播放某个片段的button
+    self.playButton = [[UIButton alloc]initWithFrame:CGRectMake(self.playView.width - 60 * SCALE_WIDTH, (SCREEN_HEIGHT - 152)/2, 60* SCALE_WIDTH, 60* SCALE_WIDTH)];
+    [self.playButton addTarget:self action:@selector(onClickPlayPartVideo:) forControlEvents:UIControlEventTouchUpInside];
+    [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:15 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+    self.playButton.layer.cornerRadius = 30* SCALE_WIDTH;
+    self.playButton.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
+    self.playButton.layer.borderWidth = 1;
+    [self.playView addSubview:self.playButton];
+    //右侧：删除某个片段的button
+    self.deletePartButton = [[UIButton alloc]initWithFrame:CGRectMake(self.playView.width - 60* SCALE_WIDTH, self.playButton.bottom + 32, 60* SCALE_WIDTH, 60* SCALE_WIDTH)];
+    [self.deletePartButton addTarget:self action:@selector(onClickDeletePartVideo:) forControlEvents:UIControlEventTouchUpInside];
+    [self.deletePartButton setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+    self.deletePartButton.layer.cornerRadius = 30* SCALE_WIDTH;
+    self.deletePartButton.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
+    self.deletePartButton.layer.borderWidth = 1;
+    [self.playView addSubview:self.deletePartButton];
+    
     //创建片段界面
     [self createPartView];
     //创建场景页面
     [self createSceneView];
-    //////////////////////////////////////////////
-    //创建场景选择界面，在开始的时候需要隐藏掉
-    //隐藏
-    //隐藏
-    //隐藏
-    //////////////////////////////////////////////
-    
-    
     [self.view addSubview:[self shootView]];
 }
 - (void)initializationRecorder {
@@ -266,17 +318,6 @@
     
     [self.captureManager toggleContentsGravity];
 }
-//切换摄像头
-- (void)toggleCameraAction{
-    
-    self.toggleCameraBtn.selected = !self.toggleCameraBtn.selected;
-    if (self.toggleCameraBtn.selected) {
-        [self.captureManager changeCameraInputDeviceisFront:YES];
-    }else{
-        [self.captureManager changeCameraInputDeviceisFront:NO];
-    }
-}
-
 #pragma mark -触屏自动调整曝光-
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
@@ -303,7 +344,10 @@
 //后面改变的状态
 - (void)deviceChangeAndHomeOnTheLeft {
     
-    [self deviceChangeAndHomeOnTheLeftNewLayout];
+    NSArray *viewArr = self.navigationController.viewControllers;
+    if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
+        [self deviceChangeAndHomeOnTheLeftNewLayout];
+    }
 
 }
 
@@ -318,7 +362,7 @@
     }
     
     [self changeDirectionOfView:M_PI];
-
+    
 }
 
 - (void)changeDirectionOfView:(CGFloat)num {
@@ -362,7 +406,7 @@
         self.playButton.transform = CGAffineTransformMakeRotation(num);
         self.deletePartButton.transform = CGAffineTransformMakeRotation(num);
     }
-
+    
     if (!self.deleteButton.isHidden && self.deleteButton) {
         self.deleteButton.transform = CGAffineTransformMakeRotation(num);
     }
@@ -380,7 +424,7 @@
     }
     
     if (!self.sceneView.isHidden) {
-    
+        
         for(int i = 0; i < typeModelArray.count; i++)
         {
             UIView *view = (UIView *)[self.view viewWithTag:101 + i];
@@ -397,7 +441,11 @@
 //home在右 初始状态
 - (void)deviceChangeAndHomeOnTheRight {
     
-    [self deviceChangeAndHomeOnTheRightNewLayout];
+    NSArray *viewArr = self.navigationController.viewControllers;
+    if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
+        [self deviceChangeAndHomeOnTheRightNewLayout];
+
+    }
 }
 
 - (void)deviceChangeAndHomeOnTheRightNewLayout{
@@ -413,16 +461,26 @@
 }
 
 #pragma mark ==== button点击事件
+//切换摄像头
+- (void)toggleCameraAction {
+    
+    self.toggleCameraBtn.selected = !self.toggleCameraBtn.selected;
+    if (self.toggleCameraBtn.selected) {
+        [self.captureManager changeCameraInputDeviceisFront:YES];
+    }else{
+        [self.captureManager changeCameraInputDeviceisFront:NO];
+    }
+}
 //选择场景
 - (void)onClickChooseScene:(UIButton *)sender {
     // 测试FLEX框架
-//#if DEBUG
-//    [[FLEXManager sharedManager] showExplorer];
-//#endif
-
+    //#if DEBUG
+    //    [[FLEXManager sharedManager] showExplorer];
+    //#endif
+    
     //在这里添加选择提醒
     for (DLYMiniVlogPart *part in partModelArray) {
-        if ([part.shootStatus isEqualToString:@"1"]) {
+        if ([part.recordStatus isEqualToString:@"1"]) {
             
             __weak typeof(self) weakSelf = self;
             self.alert = [[DLYAlertView alloc] initWithMessage:@"切换模板后已经拍摄的视频会清空，确定吗?" andCancelButton:@"取消" andSureButton:@"确定"];
@@ -443,7 +501,7 @@
             return;
         }
     }
-
+    
     
     [self showChooseSceneView];
 }
@@ -473,12 +531,8 @@
     } completion:^(BOOL finished) {
         
     }];
-
-
-}
-//切换摄像头
-- (void)onClicktoggleCameraBtn:(UIButton *)sender {
-
+    
+    
 }
 //拍摄按键
 - (void)startRecordBtn:(UIButton *)sender {
@@ -493,7 +547,7 @@
         _shootTime = 0;
         _prepareTime = 0;
         for (DLYMiniVlogPart *part in partModelArray) {
-            if([part.prepareShoot isEqualToString:@"1"])
+            if([part.prepareRecord isEqualToString:@"1"])
             {
                 if(part.recordType != DLYMiniVlogRecordTypeNormal)
                 {
@@ -533,16 +587,16 @@
         [self.captureManager startRecording];
     }
     /*else{
->>>>>>> 18efe88d97137515a27b2c565b9af783e20dd861
-        
-        isNeededToSave = YES;
-        [self.captureManager stopRecording];
-        
-        [self.timer invalidate];
-        self.timer = nil;
-        
-        // change UI
-    }*/
+     >>>>>>> 18efe88d97137515a27b2c565b9af783e20dd861
+     
+     isNeededToSave = YES;
+     [self.captureManager stopRecording];
+     
+     [self.timer invalidate];
+     self.timer = nil;
+     
+      change UI
+     }*/
     
 }
 //跳转至下一个界面按键
@@ -642,7 +696,7 @@
         
     }
 }
-//取消按键
+//取消拍摄按键
 - (void)onClickCancelClick:(UIButton *)sender {
     [self.captureManager stopRecording];
     [_shootTimer invalidate];
@@ -654,7 +708,7 @@
         }else {
             self.chooseScene.transform = CGAffineTransformMakeRotation(M_PI);
         }
-
+        
         self.chooseScene.hidden = NO;
         self.toggleCameraBtn .hidden = NO;
         if (self.newState == 1) {
@@ -671,7 +725,6 @@
     }];
     
 }
-
 //删除某个片段的具体操作
 - (void)deleteSelectPartVideo {
     
@@ -689,10 +742,10 @@
     for(int i = 0; i < partModelArray.count; i++)
     {
         DLYMiniVlogPart *part1 = partModelArray[i];
-        part1.prepareShoot = @"0";
+        part1.prepareRecord = @"0";
     }
-    part.prepareShoot = @"0";
-    part.shootStatus = @"0";
+    part.prepareRecord = @"0";
+    part.recordStatus = @"0";
     selectVedioPart = i - 1;
     
     NSInteger n = 0;
@@ -700,10 +753,10 @@
     {
         DLYMiniVlogPart *part2 = partModelArray[i];
         
-        if([part2.shootStatus isEqualToString:@"0"])
+        if([part2.recordStatus isEqualToString:@"0"])
         {
             selectVedioPart = i;
-            part2.prepareShoot = @"1";
+            part2.prepareRecord = @"1";
             break;
         }else
         {
@@ -713,29 +766,30 @@
     
     //判断
     for (DLYMiniVlogPart *part3 in partModelArray) {
-        if ([part3.shootStatus isEqualToString:@"0"]) {
+        if ([part3.recordStatus isEqualToString:@"0"]) {
             self.nextButton.hidden = YES;
             self.deleteButton.hidden = YES;
         }
     }
     
-//    [self createPartView];
+    //    [self createPartView];
     [self createPartViewLayout];
-
-
+    
+    
 }
 
 - (void)createPartViewLayout {
-
+    
     if (self.newState == 1) {
         [self createPartView];
     }else if (self.newState == 2){
         [self createLeftPartView];
     }
-
+    
 }
 
 #pragma mark === 拍摄片段的view 暂定6个item
+//需要重写一个相似的 只改变颜色,透明度等.显隐
 - (void)createPartView {
     
     [self.backScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
@@ -753,7 +807,7 @@
         UIEdgeInsets edgeInsets = {0, -43, 0, -5};
         [button setHitEdgeInsets:edgeInsets];
         //辨别改变段是否已经拍摄
-        if([part.shootStatus isEqualToString:@"1"])
+        if([part.recordStatus isEqualToString:@"1"])
         {
             button.backgroundColor = RGB(255, 0, 0);
             //显示标注
@@ -817,7 +871,7 @@
         {
             button.backgroundColor = RGBA_HEX(0xc9c9c9, 0.1);
             // 辨别该片段是否是默认准备拍摄片段
-            if([part.prepareShoot isEqualToString:@"1"]){
+            if([part.prepareRecord isEqualToString:@"1"]){
                 //光标
                 self.prepareView = [[UIView alloc]initWithFrame:CGRectMake(button.x, button.y, 10, 2)];
                 self.prepareView.backgroundColor = [UIColor whiteColor];
@@ -842,7 +896,7 @@
                     UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
                     itemView.centerY = button.centerY;
                     [self.backScrollView addSubview:itemView];
-
+                    
                     UILabel * timeLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 39, 12)];
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
@@ -916,7 +970,7 @@
         UIEdgeInsets edgeInsets = {0, -43, 0, -20};
         [button setHitEdgeInsets:edgeInsets];
         //辨别改变段是否已经拍摄
-        if([part.shootStatus isEqualToString:@"1"])
+        if([part.recordStatus isEqualToString:@"1"])
         {
             button.backgroundColor = RGB(255, 0, 0);
             //显示标注
@@ -982,12 +1036,12 @@
                 icon.image = [UIImage imageWithIcon:@"\U0000e66f" inFont:ICONFONT size:19 color:[UIColor whiteColor]];
                 [itemView addSubview:icon];
             }
-
+            
         }else
         {
             button.backgroundColor = RGBA_HEX(0xc9c9c9, 0.1);
             // 辨别该片段是否是默认准备拍摄片段
-            if([part.prepareShoot isEqualToString:@"1"])
+            if([part.prepareRecord isEqualToString:@"1"])
             {
                 //光标
                 self.prepareView = [[UIView alloc]initWithFrame:CGRectMake(button.x, button.y + button.height - 2, 10, 2)];
@@ -1033,7 +1087,7 @@
                     UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
                     icon.image = [UIImage imageWithIcon:@"\U0000e670" inFont:ICONFONT size:19 color:[UIColor whiteColor]];
                     [itemView addSubview:icon];
-
+                    
                 }else
                 {//延时
                     
@@ -1061,7 +1115,7 @@
                 }
             }
         }
-//        button.tag = 10000 + i;
+        //        button.tag = 10000 + i;
         button.tag = 10000 + (7 - i);
         [button addTarget:self action:@selector(vedioEpisodeClick:) forControlEvents:UIControlEventTouchUpInside];
         
@@ -1109,8 +1163,7 @@
         [self.backScrollView insertSubview:button belowSubview:self.prepareView];
     }
     
-    
-    if([part.shootStatus isEqualToString:@"1"])
+    if([part.recordStatus isEqualToString:@"1"])
     {//说明时已拍摄片段
         DDLogInfo(@"点击了已拍摄片段");
         [UIView animateWithDuration:0.5f animations:^{
@@ -1133,17 +1186,93 @@
         for(int i = 0; i < partModelArray.count; i++)
         {
             DLYMiniVlogPart *part1 = partModelArray[i];
-            part1.prepareShoot = @"0";
+            part1.prepareRecord = @"0";
         }
-        part.prepareShoot = @"1";
+        part.prepareRecord = @"1";
         selectVedioPart = i - 1;
         
-//        [self createPartView];
+        //        [self createPartView];
         [self createPartViewLayout];
-
+        
     }
     
 }
+#pragma mark ==创建选择场景view
+- (void)createSceneView {
+    [self.view addSubview:[self sceneView]];
+    UIButton * scenceDisapper = [[UIButton alloc]initWithFrame:CGRectMake(20, 20, 14, 14)];
+    UIEdgeInsets edgeInsets = {-20, -20, -20, -20};
+    [scenceDisapper setHitEdgeInsets:edgeInsets];
+    [scenceDisapper setImage:[UIImage imageWithIcon:@"\U0000e666" inFont:ICONFONT size:14 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [scenceDisapper addTarget:self action:@selector(onClickCancelSelect:) forControlEvents:UIControlEventTouchUpInside];
+    [self.sceneView addSubview:scenceDisapper];
+    
+    UIView * typeView = [[UIView alloc]initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH - 80, 162 * SCALE_HEIGHT)];
+    typeView.centerY = self.sceneView.centerY;
+    [self.sceneView addSubview:typeView];
+    UIScrollView * typeScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, typeView.width, typeView.height)];
+    typeScrollView.showsVerticalScrollIndicator = NO;
+    typeScrollView.showsHorizontalScrollIndicator = NO;
+    typeScrollView.bounces = NO;
+    [typeView addSubview:typeScrollView];
+    
+    float width = (typeView.width - 40)/5;
+    typeScrollView.contentSize = CGSizeMake(width * typeModelArray.count + 10 * (typeModelArray.count - 1), typeScrollView.height);
+    for(int i = 0; i < typeModelArray.count; i ++)
+    {
+        NSDictionary * dcitModel = typeModelArray[i];
+        UIView * view = [[UIView alloc]initWithFrame:CGRectMake((width + 10) * i, 0, width, typeView.height)];
+        view.layer.cornerRadius = 5;
+        view.clipsToBounds = YES;
+        view.tag = 101 + i;
+        [typeScrollView addSubview:view];
+        
+        UILabel * typeName = [[UILabel alloc]initWithFrame:CGRectMake(12, 19, 42, 21)];
+        typeName.text = dcitModel[@"typeName"];
+        typeName.textColor = RGB(255, 255, 255);
+        typeName.font = FONT_BOLD(20);
+        [view addSubview:typeName];
+        
+        UIImageView * selectImage = [[UIImageView alloc]initWithFrame:CGRectMake(view.width - 31, 20, 20, 16)];
+        selectImage.image = [UIImage imageWithIcon:@"\U0000e66b" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)];
+        selectImage.tag = 10 + i;
+        [view addSubview:selectImage];
+        
+        UILabel * detailLabel = [[UILabel alloc]initWithFrame:CGRectMake(11, typeName.bottom + 15, view.width - 26, 34)];
+        detailLabel.text = dcitModel[@"typeIntroduce"];
+        detailLabel.font = FONT_SYSTEM(14);
+        detailLabel.textColor = RGBA(255, 255, 255, 0.6);
+        detailLabel.numberOfLines = 2;
+        [view addSubview:detailLabel];
+        
+        UIButton * button = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, view.width, view.height)];
+        button.tag = 300 + i;
+        [button addTarget:self action:@selector(sceneViewClick:) forControlEvents:UIControlEventTouchUpInside];
+        [view addSubview:button];
+        
+        UIButton * seeRush = [[UIButton alloc]initWithFrame:CGRectMake(0, view.height - 30, view.width - 10 * SCALE_WIDTH, 15)];
+        [seeRush setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:12 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+        [seeRush setTitle:@"观看样片" forState:UIControlStateNormal];
+        [seeRush setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
+        seeRush.titleLabel.font = FONT_SYSTEM(12);
+        seeRush.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
+        seeRush.tag = 400 + i;
+        [seeRush addTarget:self action:@selector(sceneViewClick:) forControlEvents:UIControlEventTouchUpInside];
+        [view addSubview:seeRush];
+        
+        
+        if(i == selectType)
+        {
+            view.backgroundColor = RGB(24, 160, 230);
+            selectImage.hidden = NO;
+        }else
+        {
+            view.backgroundColor = RGBA(0, 0, 0, 0.5);
+            selectImage.hidden = YES;
+        }
+    }
+}
+
 #pragma mark ===更改样片选中状态
 - (void)changeTypeStatusWithTag : (NSInteger)num {
     if(num == selectType)
@@ -1173,7 +1302,7 @@
         }else {
             self.chooseScene.transform = CGAffineTransformMakeRotation(M_PI);
         }
-
+        
         self.chooseScene.hidden = NO;
         if (self.newState == 1) {
             self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(0);
@@ -1229,7 +1358,7 @@
         self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 10, 30, 15);
         self.cancelButton.centerX = _timeView.centerX;
         self.cancelButton.transform = CGAffineTransformMakeRotation(0);
-
+        
     }else {
         self.cancelButton.frame = CGRectMake(0, _timeView.top - 25, 30, 15);
         self.cancelButton.centerX = _timeView.centerX;
@@ -1291,12 +1420,12 @@
         self.cancelButton.transform = CGAffineTransformMakeRotation(M_PI);
     }
     self.cancelButton.hidden = NO;
-
+    
 }
 
 #pragma mark ==== 拍摄视频
 - (void)shootAction {
-
+    
     _shootTime += 0.01;
     
     if((int)(_shootTime * 100) % 100 == 0)
@@ -1310,24 +1439,24 @@
         [self.captureManager stopRecording];
         self.cancelButton.hidden = YES;
         [_shootTimer invalidate];
-
+        
         DLYMiniVlogPart *part = partModelArray[selectVedioPart];
         for(int i = 0; i < partModelArray.count; i++)
         {
             DLYMiniVlogPart *part1 = partModelArray[i];
-            part1.prepareShoot = @"0";
+            part1.prepareRecord = @"0";
         }
-        part.prepareShoot = @"0";
-        part.shootStatus = @"1";
+        part.prepareRecord = @"0";
+        part.recordStatus = @"1";
         
         NSInteger n = 0;
         for(int i = 0; i < partModelArray.count; i++)
         {
             DLYMiniVlogPart *part2 = partModelArray[i];
-            if([part2.shootStatus isEqualToString:@"0"])
+            if([part2.recordStatus isEqualToString:@"0"])
             {
                 selectVedioPart = i;
-                part2.prepareShoot = @"1";
+                part2.prepareRecord = @"1";
                 break;
             }else
             {
@@ -1335,7 +1464,7 @@
                 
             }
         }
-//        [self createPartView];
+        //        [self createPartView];
         //在这里添加完成页面
         self.progressView.hidden = YES;
         self.timeNumber.hidden = YES;

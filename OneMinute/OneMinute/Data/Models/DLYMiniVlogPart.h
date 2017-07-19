@@ -65,12 +65,12 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTransitionType)
 /**
  拍摄状态
  */
-@property (nonatomic, copy)   NSString                      *shootStatus;
+@property (nonatomic, copy)   NSString                      *recordStatus;
 
 /**
  准备拍摄
  */
-@property (nonatomic, copy)   NSString                      *prepareShoot;
+@property (nonatomic, copy)   NSString                      *prepareRecord;
 
 /**
  片段序号
