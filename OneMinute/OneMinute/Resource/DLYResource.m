@@ -40,6 +40,12 @@
     }
     return _resourceFolderPath;
 }
+- (void) getSubFolderPathWithSubFolderName:(NSString *)subFolderName{
+    NSString *subFolderPath = [kPathDocument stringByAppendingPathComponent:subFolderName];
+    if ([_fileManager fileExistsAtPath:subFolderPath]) {
+        
+    }
+}
 
 - (NSURL *) loadResourceWithType:(DLYResourceType)resourceType fileName:(NSString *)fileName{
     
@@ -82,10 +88,7 @@
 }
 -(NSArray *)loadBDraftParts{
     
-    NSArray *homeDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
-    NSString *documentPath = [homeDir objectAtIndex:0];
-    
-    NSString *dataPath = [documentPath stringByAppendingPathComponent:kDataFolder];
+    NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
     if ([_fileManager fileExistsAtPath:dataPath]) {
         
         NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
@@ -103,6 +106,20 @@
         }
     }
     return nil;
+}
+- (NSURL *) saveDraftPartWithPartNum:(NSInteger)partNum{
+    //获取Data路径
+    NSURL *outPutUrl = nil;
+    NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:dataPath]) {
+        NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
+            
+            NSString *outputPath = [NSString stringWithFormat:@"%@/part%lu%@",draftPath,partNum,@"mp4"];
+            outPutUrl = [NSURL fileURLWithPath:outputPath];
+        }
+    }
+    return outPutUrl;
 }
 - (NSURL *) saveToSandboxWithPath:(NSString *)resourcePath suffixType:(NSString *)suffixName{
     
@@ -142,5 +159,19 @@
         [[NSFileManager defaultManager] removeItemAtPath:outputPath error:nil];
     }
     return outPutUrl;
+}
+- (void) removePartWithPartNum:(NSInteger)partNum{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
+    BOOL isDelete =  [fileManager removeItemAtPath:dataPath error:nil];
+    DLYLog(@"%@",isDelete ? @"成功第 %lu 个片段":@"删除第 %lu 个片段失败",partNum);
+}
+- (void) removeCurrentAllPart{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    NSString *draftFolderPath = [kPathDocument stringByAppendingPathComponent:kDraftFolder];
+    BOOL isDelete = [fileManager removeItemAtPath:draftFolderPath error:nil];
+    DLYLog(@"%@",isDelete ? @"成功删除所有片段":@"删除所有片段失败");
 }
 @end

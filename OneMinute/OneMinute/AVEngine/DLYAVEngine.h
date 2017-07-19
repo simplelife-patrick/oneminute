@@ -8,6 +8,7 @@
 
 #import "DLYModule.h"
 #import <CoreMedia/CoreMedia.h>
+#import "DLYMiniVlogPart.h"
 
 typedef NS_ENUM(NSUInteger, DLYCameraType) {
     DLYCameraTypeBack,
@@ -47,10 +48,13 @@ typedef void (^OnBufferBlock)(CMSampleBufferRef sampleBuffer);
  初始化相机
  */
 - (void) initializationRecorder;
+
 /**
- 开始录制
+ 按传入的片段信息开始录制
+
+ @param part info
  */
-- (void)startRecording;
+- (void)startRecordingWithPart:(DLYMiniVlogPart *)part;
 
 /**
  停止录制
@@ -68,7 +72,6 @@ typedef void (^OnBufferBlock)(CMSampleBufferRef sampleBuffer);
  @param isFront 是否是前置摄像头
  */
 - (void)changeCameraInputDeviceisFront:(BOOL)isFront;
-
 
 /**
  合并片段

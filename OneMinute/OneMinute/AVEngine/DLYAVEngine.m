@@ -39,37 +39,37 @@ typedef void(^FailureBlock)(NSError *error);
     CGSize videoSize;
 }
 
-@property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;//视频输出
-@property (nonatomic, strong) AVCaptureAudioDataOutput          *audioOutput;//音频输出
+@property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;
+@property (nonatomic, strong) AVCaptureAudioDataOutput          *audioOutput;
 @property (nonatomic, strong) AVCaptureMovieFileOutput          *movieFileOutput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *currentVideoDeviceInput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *backCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *frontCameraInput;
-@property (nonatomic, strong) AVCaptureDeviceInput              *audioMicInput;//麦克风输入
+@property (nonatomic, strong) AVCaptureDeviceInput              *audioMicInput;
 @property (nonatomic, strong) AVCaptureDeviceFormat             *defaultFormat;
 @property (nonatomic, strong) NSURL                             *fileURL;
 @property (nonatomic, strong) AVCaptureDevice                   *videoDevice;
 @property (nonatomic, strong) AVCaptureConnection               *audioConnection;
 
-// for video data output
+// For video data output
 @property (nonatomic, strong) AVAssetWriter                     *assetWriter;
 @property (nonatomic, strong) AVAssetWriterInput                *assetWriterVideoInput;
 @property (nonatomic, strong) AVAssetWriterInput                *assetWriterAudioInput;
 @property (nonatomic, copy)   NSMutableArray                    *imageArray;
 
-@property (nonatomic, strong) GPUImageMovie *alphaMovie;
-@property (nonatomic, strong) GPUImageMovie *bodyMovie;
-@property (nonatomic, strong) GPUImageMovieWriter *movieWriter;
-@property (nonatomic, strong) GPUImageChromaKeyBlendFilter *filter;
+@property (nonatomic, strong) GPUImageMovie                     *alphaMovie;
+@property (nonatomic, strong) GPUImageMovie                     *bodyMovie;
+@property (nonatomic, strong) GPUImageMovieWriter               *movieWriter;
+@property (nonatomic, strong) GPUImageChromaKeyBlendFilter      *filter;
 typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 
-@property (nonatomic, strong) AVMutableComposition          *composition;
-@property (nonatomic, strong) NSMutableArray                *passThroughTimeRanges;
-@property (nonatomic, strong) NSMutableArray                *transitionTimeRanges;
-@property (nonatomic, strong) UIImagePickerController       *moviePicker;
-@property (nonatomic, copy)   NSMutableArray                *videoPathArray;
+@property (nonatomic, strong) AVMutableComposition              *composition;
+@property (nonatomic, strong) NSMutableArray                    *passThroughTimeRanges;
+@property (nonatomic, strong) NSMutableArray                    *transitionTimeRanges;
+@property (nonatomic, strong) UIImagePickerController           *moviePicker;
+@property (nonatomic, copy)   NSMutableArray                    *videoPathArray;
 
-@property (nonatomic, strong) DLYResource                   *resource;
+@property (nonatomic, strong) DLYResource                       *resource;
 
 
 @end
@@ -663,7 +663,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     if (isRunning) [self.captureSession startRunning];
 }
 #pragma mark - 开始录制 -
-- (void)startRecording {
+- (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
         
     dispatch_async(movieWritingQueue, ^{
         
