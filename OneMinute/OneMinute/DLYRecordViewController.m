@@ -9,10 +9,15 @@
 #import "DLYRecordViewController.h"
 #import "DLYCaptureManager.h"
 #import "DLYAnnularProgress.h"
+#import <AssetsLibrary/AssetsLibrary.h>
 //#import "FLEXManager.h"
 #import "DLYPlayVideoViewController.h"
+#import "DLYResource.h"
 
-@interface DLYRecordViewController ()
+typedef void(^CompCompletedBlock)(BOOL success);
+typedef void(^CompProgressBlcok)(CGFloat progress);
+
+@interface DLYRecordViewController ()<DLYCaptureManagerDelegate>
 {
     //    //记录选中的拍摄模式 10003 延时 10004 普通 10005 慢动作
     //    NSInteger selectModel;
@@ -35,13 +40,16 @@
     NSMutableArray * typeModelArray; //模拟选择样式的模型数组
     
     BOOL isNeededToSave;
+    BOOL isTime;
     
 }
 @property (nonatomic, strong) DLYCaptureManager                 *captureManager;
 @property (nonatomic, strong) UIView                            *previewView;
 @property (nonatomic, strong) UIImageView                       *focusCursorImageView;
+@property (nonatomic, strong) NSURL                             *TimeLapseUrl;
 @property (nonatomic, strong) UIView * sceneView; //选择场景的view
 @property (nonatomic, strong) UIView * shootView; //拍摄界面
+@property (nonatomic, copy)   NSMutableArray                    *imageArray;
 
 //进度条
 @property (nonatomic, strong) UIView * timeView;
@@ -185,6 +193,12 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
+    //According to the preview center focus after launch
+    CGPoint point = self.previewView.center;
+    CGPoint cameraPoint = [self.captureManager.previewLayer captureDevicePointOfInterestForPoint:point];
+    [self setFocusCursorWithPoint:point];
+    [self.captureManager focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure atPoint:cameraPoint];
+    
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
     if (self.newState == 1) {
@@ -317,14 +331,14 @@
     [self createSceneView];
     [self.view addSubview:[self shootView]];
 }
+#pragma mark - 初始化相机 -
 - (void) initializationRecorder{
     
     self.captureManager = [[DLYCaptureManager alloc] initWithPreviewView:self.previewView outputMode:DLYOutputModeVideoData];
     
     self.captureManager.delegate = self;
     
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                                 action:@selector(handleDoubleTap:)];
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
     tapGesture.numberOfTapsRequired = 2;
     [self.previewView addGestureRecognizer:tapGesture];
 }
@@ -332,7 +346,7 @@
     
     [self.captureManager toggleContentsGravity];
 }
-//切换摄像头
+#pragma mark - 切换摄像头 -
 - (void) toggleCameraAction{
     
     self.toggleCameraBtn.selected = !self.toggleCameraBtn.selected;
@@ -364,6 +378,242 @@
         self.focusCursorImageView.alpha=0;
         
     }];
+}
+#pragma mark - AVCaptureManagerDelegate
+
+- (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL error:(NSError *)error {
+    
+    NSLog(@"%@/%@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    
+    if (error) {
+        NSLog(@"error:%@", error);
+        return;
+    }
+    if (!isNeededToSave) {
+        return;
+    }
+    
+    [self saveRecordedFile:outputFileURL];
+}
+
+/**
+ 延时拍摄抽取image
+ 
+ @param assetUrl 延时拍摄模式生成的图片
+ @param intervalTime keyFrame间隔时间
+ @return 返回image
+ */
+-(UIImage*)getKeyImage:(NSURL *)assetUrl intervalTime:(NSInteger)intervalTime{
+    
+    AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:assetUrl options:nil];
+    NSParameterAssert(asset);
+    if (!asset) {
+        return nil;
+    }
+    AVAssetImageGenerator *assetImageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+    assetImageGenerator.appliesPreferredTrackTransform = YES;
+    assetImageGenerator.apertureMode = AVAssetImageGeneratorApertureModeEncodedPixels;
+    NSArray *videoTracks = [asset tracksWithMediaType:AVMediaTypeVideo];
+    for (AVAssetTrack *track in videoTracks) {
+        if (track.naturalSize.width > 0 && track.naturalSize.height > 0) {
+            assetImageGenerator.maximumSize = CGSizeMake(track.naturalSize.width, track.naturalSize.height);
+        }else{
+            assetImageGenerator.maximumSize = CGSizeMake(480, 853);
+        }
+    }
+    CGImageRef thumbnailImageRef = NULL;
+    NSError *thumbnailImageGenerationError = nil;
+    thumbnailImageRef = [assetImageGenerator copyCGImageAtTime:CMTimeMake(intervalTime, 2) actualTime:NULL error:&thumbnailImageGenerationError];
+    
+    if (!thumbnailImageRef)
+        NSLog(@"thumbnailImageGenerationError %@", thumbnailImageGenerationError);
+    
+    UIImage *thumbnailImage = thumbnailImageRef ? [[UIImage alloc] initWithCGImage:thumbnailImageRef] : nil;
+    return thumbnailImage;
+}
+
+//image转pixelBuffer
+- (CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef)image {
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
+                             [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
+                             [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey,
+                             nil];
+    
+    CVPixelBufferRef pxbuffer = NULL;
+    
+    CGFloat frameWidth = CGImageGetWidth(image);
+    CGFloat frameHeight = CGImageGetHeight(image);
+    
+    CVReturn status = CVPixelBufferCreate(kCFAllocatorDefault,frameWidth,frameHeight,kCVPixelFormatType_32ARGB,(__bridge CFDictionaryRef) options, &pxbuffer);
+    
+    NSParameterAssert(status == kCVReturnSuccess && pxbuffer != NULL);
+    
+    CVPixelBufferLockBaseAddress(pxbuffer, 0);
+    void *pxdata = CVPixelBufferGetBaseAddress(pxbuffer);
+    NSParameterAssert(pxdata != NULL);
+    
+    CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context = CGBitmapContextCreate(pxdata, frameWidth, frameHeight, 8,CVPixelBufferGetBytesPerRow(pxbuffer),rgbColorSpace,(CGBitmapInfo)kCGImageAlphaNoneSkipFirst);
+    
+    NSParameterAssert(context);
+    CGContextConcatCTM(context, CGAffineTransformIdentity);
+    CGContextDrawImage(context, CGRectMake(0, 0,frameWidth,frameHeight),  image);
+    CGColorSpaceRelease(rgbColorSpace);
+    CGContextRelease(context);
+    
+    CVPixelBufferUnlockBaseAddress(pxbuffer, 0);
+    
+    return pxbuffer;
+}
+
+/**
+ 重新组帧延时视频
+ 
+ @param videoUrl 正常录制的视频
+ @param frameImgs 抽取的图片组
+ @param fps 设置播放帧率
+ @param progressImageBlock 合成进度
+ @param completedBlock 完成回调
+ */
+- (void)composesVideoUrl:(NSURL *)videoUrl
+               frameImgs:(NSArray<UIImage *> *)frameImgs
+                     fps:(int32_t)fps
+      progressImageBlock:(CompProgressBlcok)progressImageBlock
+          completedBlock:(CompCompletedBlock)completedBlock {
+    
+    AVAssetWriter *videoWriter = [[AVAssetWriter alloc] initWithURL:videoUrl
+                                                           fileType:AVFileTypeMPEG4
+                                                              error:nil];
+    NSParameterAssert(videoWriter);
+    
+    //获取原视频尺寸
+    UIImage *image = frameImgs.firstObject;
+    CGFloat frameWidth = CGImageGetWidth(image.CGImage);
+    CGFloat frameHeight = CGImageGetHeight(image.CGImage);
+    
+    NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                   AVVideoCodecH264, AVVideoCodecKey,
+                                   [NSNumber numberWithInt:frameWidth], AVVideoWidthKey,
+                                   [NSNumber numberWithInt:frameHeight], AVVideoHeightKey,
+                                   nil];
+    
+    AVAssetWriterInput *writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings];
+    
+    NSDictionary *sourcePixelBufferAttributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:kCVPixelFormatType_32ARGB], kCVPixelBufferPixelFormatTypeKey,nil];
+    
+    AVAssetWriterInputPixelBufferAdaptor *adaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput sourcePixelBufferAttributes:sourcePixelBufferAttributesDictionary];
+    NSParameterAssert(writerInput);
+    NSParameterAssert([videoWriter canAddInput:writerInput]);
+    
+    if ([videoWriter canAddInput:writerInput]) {
+        [videoWriter addInput:writerInput];
+    }
+    
+    [videoWriter startWriting];
+    [videoWriter startSessionAtSourceTime:kCMTimeZero];
+    
+    dispatch_queue_t dispatchQueue = dispatch_queue_create("mediaInputQueue", DISPATCH_QUEUE_SERIAL);
+    __block int frame = -1;
+    NSInteger count = frameImgs.count;
+    [writerInput requestMediaDataWhenReadyOnQueue:dispatchQueue usingBlock:^{
+        while ([writerInput isReadyForMoreMediaData]) {
+            if(++frame >= count) {
+                [writerInput markAsFinished];
+                [videoWriter finishWriting];
+                NSLog(@"comp completed !");
+                if (completedBlock) {
+                    completedBlock(YES);
+                }
+                break;
+            }
+            
+            CVPixelBufferRef buffer = NULL;
+            UIImage *currentFrameImg = frameImgs[frame];
+            buffer = (CVPixelBufferRef)[self pixelBufferFromCGImage:[currentFrameImg CGImage]];
+            if (progressImageBlock) {
+                CGFloat progress = frame * 1.0 / count;
+                progressImageBlock(progress);
+            }
+            if (buffer) {
+                if(![adaptor appendPixelBuffer:buffer withPresentationTime:CMTimeMake(frame, fps)]) {
+                    NSLog(@"FAIL");
+                    if (completedBlock) {
+                        completedBlock(NO);
+                    }
+                } else {
+                    CFRelease(buffer);
+                }
+            }
+        }
+    }];
+}
+- (void)saveRecordedFile:(NSURL *)recordedFile {
+    
+    DLYLog(@"Saving...");
+    
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(queue, ^{
+        
+        if (isTime) {
+            isTime = NO;
+            _TimeLapseUrl = recordedFile;
+            AVAsset  *asset = [AVAsset assetWithURL:recordedFile];
+            Duration duration =(UInt32)asset.duration.value / asset.duration.timescale;
+            
+            for (int i=0; i<(int)duration; i++) {
+                UIImage *tempImage = [self getKeyImage:_TimeLapseUrl intervalTime:i];
+                [self.imageArray addObject:tempImage];
+            }
+            NSLog(@"取到 %lu 张图片",_imageArray.count);
+            
+            CocoaSecurityResult * result = [CocoaSecurity md5:[[NSDate date] description]];
+            
+            NSArray *homeDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
+            NSString *documentsDir = [homeDir objectAtIndex:0];
+            NSString *filePath = [documentsDir stringByAppendingPathComponent:@"TimeLapseVideos"];
+            if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+                [[NSFileManager defaultManager] createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:nil];
+            }
+            
+            NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",filePath, result.hex];
+            
+            NSURL *outPutUrl = [NSURL fileURLWithPath:outputPath];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:outputPath])
+            {
+                [[NSFileManager defaultManager] removeItemAtPath:outputPath error:nil];
+            }
+            [self composesVideoUrl:outPutUrl frameImgs:_imageArray fps:30 progressImageBlock:^(CGFloat progress) {
+                
+            } completedBlock:^(BOOL success) {
+                NSLog(@"已完成");
+                
+                UISaveVideoAtPathToSavedPhotosAlbum(outputPath, self, nil, nil);
+            }];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                DLYLog(@"Saved!");
+            });
+        }else{
+            
+            ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
+            [assetLibrary writeVideoAtPathToSavedPhotosAlbum:recordedFile
+                                             completionBlock:
+             ^(NSURL *assetURL, NSError *error) {
+                 
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     
+                     if (error != nil) {
+                         
+                         DLYLog(@"Failed to save video");
+                         DLYLog(@"%@",[error localizedDescription]);
+                     }
+                     else {
+                         DLYLog(@"Saved!");
+                     }
+                 });
+             }];
+        }
+    });
 }
 #pragma mark ==== 左手模式重新布局
 //设备方向改变后调用的方法
@@ -542,10 +792,6 @@
 
 
 }
-//切换摄像头
-- (void)onClicktoggleCameraBtn:(UIButton *)sender {
-
-}
 //拍摄按键
 - (void)startRecordBtn:(UIButton *)sender {
     
@@ -553,6 +799,7 @@
     // REC START
     if (!self.captureManager.isRecording) {
         
+        [self.captureManager startRecording];
         // change UI
         [self.shootView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         [self createShootView];
@@ -591,20 +838,7 @@
             [_timer setFireDate:[NSDate distantPast]];
             
         }];
-        // timer start
-        [self.captureManager startRecording];
     }
-    /*else{
-        
-        isNeededToSave = YES;
-        [self.captureManager stopRecording];
-        
-        [self.timer invalidate];
-        self.timer = nil;
-        
-        // change UI
-    }*/
-    
 }
 //跳转至下一个界面按键
 - (void)onClickNextStep:(UIButton *)sender {
@@ -1437,7 +1671,7 @@
 
 }
 
-#pragma mark ==== 拍摄视频
+#pragma mark ==== 拍摄计时操作
 - (void)shootAction {
     _shootTime += 0.01;
     
@@ -1449,6 +1683,7 @@
     [_progressView drawProgress:0.1 * _shootTime];
     if(_shootTime > 2)
     {
+        isNeededToSave = YES;
         [self.captureManager stopRecording];
         self.cancelButton.hidden = YES;
         [[self shootStatusArray] replaceObjectAtIndex:selectVedioPart withObject:@"1"];

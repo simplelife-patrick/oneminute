@@ -88,14 +88,14 @@
     }
     _motionManager.deviceMotionUpdateInterval = 1/15.0;
     if (_motionManager.deviceMotionAvailable) {
-        NSLog(@"Device Motion Available");
+        DLYLog(@"Device Motion Available");
         [_motionManager startDeviceMotionUpdatesToQueue:[NSOperationQueue currentQueue]
                                             withHandler: ^(CMDeviceMotion *motion, NSError *error){
                                                 [self performSelectorOnMainThread:@selector(handleDeviceMotion:) withObject:motion waitUntilDone:YES];
                                                 
                                             }];
     } else {
-        NSLog(@"No device motion on device.");
+        DLYLog(@"No device motion on device.");
         [self setMotionManager:nil];
     }
 }
