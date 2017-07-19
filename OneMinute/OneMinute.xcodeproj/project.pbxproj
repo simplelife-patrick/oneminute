@@ -38,6 +38,7 @@
 		6F8925DF1F1B142300256093 /* DLYPopupMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DA1F1B142300256093 /* DLYPopupMenu.m */; };
 		6F8925E01F1B142300256093 /* DLYPopupMenuPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DC1F1B142300256093 /* DLYPopupMenuPath.m */; };
 		6F8925E11F1B142300256093 /* DLYRectConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DE1F1B142300256093 /* DLYRectConst.m */; };
+		AD387F631F1F227C00126D52 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AD387F621F1F227C00126D52 /* DLYAVEngine.m */; };
 		ADFFF1971F18A33000FB5BF7 /* DLYCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF17E1F18A33000FB5BF7 /* DLYCaptureManager.m */; };
 		ADFFF1981F18A33000FB5BF7 /* DLYMediaEditManage.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1801F18A33000FB5BF7 /* DLYMediaEditManage.m */; };
 		ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */; };
@@ -135,6 +136,8 @@
 		6F8925DD1F1B142300256093 /* DLYRectConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRectConst.h; sourceTree = "<group>"; };
 		6F8925DE1F1B142300256093 /* DLYRectConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRectConst.m; sourceTree = "<group>"; };
 		7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneMinute.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute.debug.xcconfig"; sourceTree = "<group>"; };
+		AD387F611F1F227C00126D52 /* DLYAVEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAVEngine.h; sourceTree = "<group>"; };
+		AD387F621F1F227C00126D52 /* DLYAVEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAVEngine.m; sourceTree = "<group>"; };
 		ADFFF17D1F18A33000FB5BF7 /* DLYCaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYCaptureManager.h; sourceTree = "<group>"; };
 		ADFFF17E1F18A33000FB5BF7 /* DLYCaptureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYCaptureManager.m; sourceTree = "<group>"; };
 		ADFFF17F1F18A33000FB5BF7 /* DLYMediaEditManage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMediaEditManage.h; sourceTree = "<group>"; };
@@ -432,6 +435,8 @@
 				ADFFF1AA1F18C00200FB5BF7 /* DLYTransitionInstructions.m */,
 				ADFFF1AC1F18C04400FB5BF7 /* DLYVideoTransition.h */,
 				ADFFF1AD1F18C04400FB5BF7 /* DLYVideoTransition.m */,
+				AD387F611F1F227C00126D52 /* DLYAVEngine.h */,
+				AD387F621F1F227C00126D52 /* DLYAVEngine.m */,
 			);
 			path = AVEngine;
 			sourceTree = "<group>";
@@ -685,6 +690,7 @@
 				6F8925E01F1B142300256093 /* DLYPopupMenuPath.m in Sources */,
 				1C7E61BE1EE7E4AC0088F33F /* DLYModule.m in Sources */,
 				6F8925C61F1B13B400256093 /* DLYLaunchPlayerViewController.m in Sources */,
+				AD387F631F1F227C00126D52 /* DLYAVEngine.m in Sources */,
 				1C7E61BD1EE7E4AC0088F33F /* DLYAsyncQueue.m in Sources */,
 				ADFFF19E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m in Sources */,
 				ADFFF19A1F18A33000FB5BF7 /* DLYVolumeAutomation.m in Sources */,

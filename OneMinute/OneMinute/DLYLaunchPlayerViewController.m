@@ -105,8 +105,8 @@
         UIImage *thumb = [[UIImage alloc] initWithCGImage:image];
         self.pausePlayerImageView.image = thumb;
     }
-    NSLog(@"%f , %f",CMTimeGetSeconds(now),CMTimeGetSeconds(actualTime));
-    NSLog(@"%@",error);
+    DLYLog(@"%f , %f",CMTimeGetSeconds(now),CMTimeGetSeconds(actualTime));
+    DLYLog(@"%@",error);
     //视频播放结束
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self moviePlaybackComplete];
@@ -155,7 +155,7 @@
 }
 //即将进入前台
 - (void)viewWillEnterForeground {
-    NSLog(@"app enter foreground");
+    DLYLog(@"app enter foreground");
     if (!self.player) {
         [self prepareMovie];
     }
