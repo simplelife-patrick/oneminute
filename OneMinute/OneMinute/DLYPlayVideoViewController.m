@@ -165,12 +165,19 @@
 }
 #pragma mark - 重写父类方法
 - (void)deviceChangeAndHomeOnTheLeft {
-    NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeRight];
-    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+    NSArray *viewArr = self.navigationController.viewControllers;
+    if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYPlayVideoViewController class]]) {
+        NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeRight];
+        [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+    }
+
 }
 - (void)deviceChangeAndHomeOnTheRight {
-    NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
-    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+    NSArray *viewArr = self.navigationController.viewControllers;
+    if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYPlayVideoViewController class]]) {
+        NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
+        [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+    }
 }
 
 #pragma mark - 播放完成通知
