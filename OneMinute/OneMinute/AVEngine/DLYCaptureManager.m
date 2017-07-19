@@ -668,15 +668,6 @@
                 referenceOrientation = (AVCaptureVideoOrientation)orientation;
             }
             
-//            int fileNamePostfix = 0;
-//            NSString *filePath = nil;
-//            
-//            do
-//                filePath =[NSString stringWithFormat:@"/%@/%@-%i.mp4", documentsDirectory, dateTimePrefix, fileNamePostfix++];
-//            while ([[NSFileManager defaultManager] fileExistsAtPath:filePath]);
-//            
-//            self.fileURL = [NSURL URLWithString:[@"file://" stringByAppendingString:filePath]];
-//            
             DLYResource *resource = [[DLYResource alloc] init];
             self.fileURL = [resource saveToSandboxWithPath:kDraftFolder suffixType:@".mp4"];
             
@@ -686,8 +677,8 @@
             
             recordingWillBeStarted = YES;
             
-            //        [self.assetWriter startWriting];
-            //        [self.assetWriter startSessionAtSourceTime:kCMTimeZero];
+    //        [self.assetWriter startWriting];
+    //        [self.assetWriter startSessionAtSourceTime:kCMTimeZero];
         });
     }
 }

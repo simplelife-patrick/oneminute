@@ -591,9 +591,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }];
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Saved!" message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                [alert show];
+                DLYLog(@"Saved!");
             });
         }else{
             
@@ -604,21 +602,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                  
                  dispatch_async(dispatch_get_main_queue(), ^{
                      
-                     NSString *title;
-                     NSString *message;
-                     
                      if (error != nil) {
                          
-                         title = @"Failed to save video";
-                         message = [error localizedDescription];
+                         DLYLog(@"Failed to save video");
+                         DLYLog(@"%@",[error localizedDescription]);
                      }
                      else {
-                         title = @"Saved!";
-                         message = nil;
+                         DLYLog(@"Saved!");
                      }
-                     
-                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                     [alert show];
                  });
              }];
         }
