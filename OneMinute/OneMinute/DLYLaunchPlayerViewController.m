@@ -48,12 +48,13 @@
     [self.contentOverlayView addSubview:_startPlayerImageView];
     
     //进入应用button
-    self.enterMainButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    _enterMainButton.frame = CGRectMake(24, kScreenHeight - 32 - 48, kScreenWidth - 48, 48);
-    _enterMainButton.layer.borderWidth =1;
-    _enterMainButton.layer.cornerRadius = 24;
-    _enterMainButton.layer.borderColor = [UIColor whiteColor].CGColor;
-    [_enterMainButton setTitle:@"进入应用" forState:UIControlStateNormal];
+    self.enterMainButton = [[UIButton alloc] init];
+    _enterMainButton.frame = CGRectMake((kScreenWidth - 190) /2, kScreenHeight - 32 - 50, 190, 50);
+    _enterMainButton.layer.cornerRadius = 25;
+    _enterMainButton.clipsToBounds = YES;
+    _enterMainButton.backgroundColor = RGBA(0, 0, 0, 0.7);
+    [_enterMainButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [_enterMainButton setTitle:@"开启Vlog" forState:UIControlStateNormal];
     [self.view addSubview:_enterMainButton];
     [_enterMainButton addTarget:self action:@selector(enterMainAction:) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -75,6 +76,8 @@
     NSString *filePath = [[NSBundle mainBundle] pathForResource:@"launch.mp4" ofType:nil];
     //初始化player
     self.player = [AVPlayer playerWithURL:[NSURL fileURLWithPath:filePath]];
+    //视频填充模式 充满
+//    self.videoGravity = AVLayerVideoGravityResize;
     self.showsPlaybackControls = NO;
     //播放视频
     [self.player play];

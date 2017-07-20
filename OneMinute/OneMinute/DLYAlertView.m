@@ -62,7 +62,7 @@
         [popView addSubview:messageLabel];
         
         UIView * line = [[UIView alloc]initWithFrame:CGRectMake(0, messageLabel.bottom + 16, popView.width, 1)];
-        line.backgroundColor = [UIColor whiteColor];
+        line.backgroundColor = RGB(247, 247, 247);
         [popView addSubview:line];
         
         UIButton * canelButton = [[UIButton alloc]initWithFrame:CGRectMake(0, line.bottom, popView.width/2, 40)];
@@ -73,8 +73,8 @@
         [canelButton addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
         [popView addSubview:canelButton];
         
-        UIView * centerLine = [[UIView alloc]initWithFrame:CGRectMake(popView.width/2, line.bottom, 1, 40)];
-        centerLine.backgroundColor = [UIColor whiteColor];
+        UIView * centerLine = [[UIView alloc]initWithFrame:CGRectMake(popView.width/2, line.bottom, 1, 44)];
+        centerLine.backgroundColor = RGB(247, 247, 247);
         [popView addSubview:centerLine];
         
         
