@@ -13,5 +13,6 @@
 
 @property (strong, nonatomic) void (^DismissBlock)();
 @property (nonatomic, assign) BOOL isAll;
+@property (nonatomic, strong) NSURL *playUrl;
 
 @end

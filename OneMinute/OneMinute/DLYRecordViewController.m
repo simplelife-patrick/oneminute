@@ -77,11 +77,18 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIButton *cancelButton;       //取消拍摄
 @property (nonatomic, strong) UIButton *completeButton;     //拍摄单个片段完成
 @property (nonatomic, strong) UILabel *timeNumber;          //倒计时显示label
+@property (nonatomic, strong) DLYResource  *resource;          //资源管理类
 
 @end
 
 @implementation DLYRecordViewController
 
+-(DLYResource *)resource{
+    if (!_resource) {
+        _resource = [[DLYResource alloc] init];
+    }
+    return _resource;
+}
 - (UIImageView *)focusCursorImageView {
     if (_focusCursorImageView == nil) {
         UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"focusIcon"]];
@@ -132,7 +139,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     _shootTime = 0;
     selectType = 0;
     _prepareTime = 0;
-    selectPartTag = 0;
+    selectPartTag = 10001;
 }
 - (NSString *)getDurationwithStartTime:(NSString *)startTime andStopTime:(NSString *)stopTime {
     
@@ -539,7 +546,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 UIImage *tempImage = [self getKeyImage:_TimeLapseUrl intervalTime:i];
                 [self.imageArray addObject:tempImage];
             }
-            NSLog(@"取到 %lu 张图片",_imageArray.count);
+//            NSLog(@"取到 %lu 张图片",_imageArray.count);
             
             CocoaSecurityResult * result = [CocoaSecurity md5:[[NSDate date] description]];
             
@@ -558,8 +565,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 [[NSFileManager defaultManager] removeItemAtPath:outputPath error:nil];
             }
             
-            DLYResource *resource = [[DLYResource alloc] init];
-            [resource saveDraftPartWithPartNum:self.AVEngine.currentPart.partNum];
+            [self.resource saveDraftPartWithPartNum:self.AVEngine.currentPart.partNum];
             
             [self composesVideoUrl:outPutUrl frameImgs:_imageArray fps:30 progressImageBlock:^(CGFloat progress) {
                 
@@ -795,7 +801,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     // REC START
     if (!self.AVEngine.isRecording) {
         
-        [self.AVEngine startRecordingWithPart:nil];
+        NSInteger i = selectPartTag - 10000;
+        DLYMiniVlogPart *part = partModelArray[i-1];
+        [self.AVEngine startRecordingWithPart:part];
         // change UI
         [self.shootView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         [self createShootView];
@@ -842,13 +850,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //跳转至下一个界面按键
 - (void)onClickNextStep:(UIButton *)sender {
+
     DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
     fvc.isAll = YES;
     [self.navigationController pushViewController:fvc animated:YES];
 }
 //删除全部视频
 - (void)onClickDelete:(UIButton *)sender {
-    
+    [self.resource removeCurrentAllPart];
     self.alert = [[DLYAlertView alloc] initWithMessage:@"确定删除全部片段?" andCancelButton:@"取消" andSureButton:@"确定"];
     if (self.newState == 1) {
         self.alert.transform = CGAffineTransformMakeRotation(0);
@@ -874,15 +883,17 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //播放某个片段
 - (void)onClickPlayPartVideo:(UIButton *)sender{
-    
+    NSInteger partNum = selectPartTag - 10000 - 1;
     DLYPlayVideoViewController *playVC = [[DLYPlayVideoViewController alloc] init];
+    playVC.playUrl = [self.resource getPartUrlWithPartNum:partNum];
     playVC.isAll = NO;
     [self.navigationController pushViewController:playVC animated:YES];
     
 }
 //删除某个片段
 - (void)onClickDeletePartVideo:(UIButton *)sender {
-    
+    NSInteger partNum = selectPartTag - 10000 - 1;
+    [self.resource removePartWithPartNum:partNum];
     __weak typeof(self) weakSelf = self;
     self.alert = [[DLYAlertView alloc] initWithMessage:@"确定删除此片段?" andCancelButton:@"取消" andSureButton:@"确定"];
     if (self.newState == 1) {
@@ -1769,7 +1780,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.shootView.hidden = YES;
                 if(n == partModelArray.count)
                 {//视频自动播放
+                    __weak typeof(self) weakSelf = self;
                     DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
+                    [self.AVEngine mergeVideoWithsuccess:^(long long finishTime) {
+                        fvc.playUrl = weakSelf.AVEngine.currentProductUrl;
+                    } failure:^{
+                        //
+                    }];
                     fvc.isAll = YES;
                     fvc.DismissBlock = ^{
                         self.recordBtn.hidden = YES;
