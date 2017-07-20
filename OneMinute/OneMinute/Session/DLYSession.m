@@ -10,8 +10,28 @@
 #import "DLYMiniVlogTemplate.h"
 #import "DLYResource.h"
 
+#define kDEFAULTTEMPLATENAME  @"Universal_001.json"
+#define kCURRENTTEMPLATEKEY  @"CURRENTTEMPLATEKEY"
+
 @implementation DLYSession
 
+-(DLYMiniVlogTemplate *)currentTemplate{
+    if (!_currentTemplate) {
+        
+        if ([self draftExitAtFile] && [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY]) {
+        
+            NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY];
+            _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:savedCurrentTemplateName];
+            
+        }else{
+            
+            _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:kDEFAULTTEMPLATENAME];
+        }
+        [[NSUserDefaults standardUserDefaults] setObject:kDEFAULTTEMPLATENAME forKey:kCURRENTTEMPLATEKEY];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    return _currentTemplate;
+}
 - (BOOL) draftExitAtFile{
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -19,8 +39,8 @@
     NSArray *homeDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
     NSString *documentPath = [homeDir objectAtIndex:0];
     
-    NSString *dataPath = [documentPath stringByAppendingPathComponent:@"Data"];
-    NSString *draftPath = [dataPath stringByAppendingPathComponent:@"Draft"];
+    NSString *dataPath = [documentPath stringByAppendingPathComponent:kDataFolder];
+    NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
     
     if ([fileManager fileExistsAtPath:dataPath] && [fileManager fileExistsAtPath:draftPath]) {
         
@@ -34,9 +54,9 @@
     return NO;
 }
 
-+ (DLYMiniVlogTemplate *)loadTemplateWithTemplateId:(NSString *)templateId{
++ (DLYMiniVlogTemplate *)loadTemplateWithTemplateName:(NSString *)templateName{
     
-    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:templateId];
+    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:templateName];
     
     return template;
 }

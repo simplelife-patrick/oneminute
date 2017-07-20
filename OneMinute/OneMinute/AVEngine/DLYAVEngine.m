@@ -37,37 +37,42 @@ typedef void(^FailureBlock)(NSError *error);
     long long _startTime;
     long long _finishTime;
     CGSize videoSize;
+    CGFloat desiredFps;
 }
 
-@property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;//视频输出
-@property (nonatomic, strong) AVCaptureAudioDataOutput          *audioOutput;//音频输出
+@property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;
+@property (nonatomic, strong) AVCaptureAudioDataOutput          *audioOutput;
 @property (nonatomic, strong) AVCaptureMovieFileOutput          *movieFileOutput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *currentVideoDeviceInput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *backCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *frontCameraInput;
-@property (nonatomic, strong) AVCaptureDeviceInput              *audioMicInput;//麦克风输入
+@property (nonatomic, strong) AVCaptureDeviceInput              *audioMicInput;
 @property (nonatomic, strong) AVCaptureDeviceFormat             *defaultFormat;
 @property (nonatomic, strong) NSURL                             *fileURL;
 @property (nonatomic, strong) AVCaptureDevice                   *videoDevice;
 @property (nonatomic, strong) AVCaptureConnection               *audioConnection;
 
-// for video data output
+// For video data output
 @property (nonatomic, strong) AVAssetWriter                     *assetWriter;
 @property (nonatomic, strong) AVAssetWriterInput                *assetWriterVideoInput;
 @property (nonatomic, strong) AVAssetWriterInput                *assetWriterAudioInput;
 @property (nonatomic, copy)   NSMutableArray                    *imageArray;
 
-@property (nonatomic, strong) GPUImageMovie *alphaMovie;
-@property (nonatomic, strong) GPUImageMovie *bodyMovie;
-@property (nonatomic, strong) GPUImageMovieWriter *movieWriter;
-@property (nonatomic, strong) GPUImageChromaKeyBlendFilter *filter;
+@property (nonatomic, strong) GPUImageMovie                     *alphaMovie;
+@property (nonatomic, strong) GPUImageMovie                     *bodyMovie;
+@property (nonatomic, strong) GPUImageMovieWriter               *movieWriter;
+@property (nonatomic, strong) GPUImageChromaKeyBlendFilter      *filter;
 typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 
-@property (nonatomic, strong) AVMutableComposition          *composition;
-@property (nonatomic, strong) NSMutableArray                *passThroughTimeRanges;
-@property (nonatomic, strong) NSMutableArray                *transitionTimeRanges;
-@property (nonatomic, strong) UIImagePickerController       *moviePicker;
-@property (nonatomic, copy)   NSMutableArray                *videoPathArray;
+@property (nonatomic, strong) AVMutableComposition              *composition;
+@property (nonatomic, strong) NSMutableArray                    *passThroughTimeRanges;
+@property (nonatomic, strong) NSMutableArray                    *transitionTimeRanges;
+@property (nonatomic, strong) UIImagePickerController           *moviePicker;
+@property (nonatomic, copy)   NSMutableArray                    *videoPathArray;
+
+@property (nonatomic, strong) DLYResource                       *resource;
+@property (nonatomic, assign) BOOL                              isTime;
+
 
 @end
 
@@ -94,15 +99,28 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     _videoConnection  = nil;
 }
 
+-(DLYResource *)resource{
+    if (!_resource) {
+        _resource = [[DLYResource alloc] init];
+    }
+    return _resource;
+}
+
 -(NSMutableArray *)imageArray{
     if (_imageArray) {
         _imageArray = [NSMutableArray array];
     }
     return _imageArray;
 }
+-(DLYMiniVlogPart *)currentPart{
+    if (!_currentPart) {
+        _currentPart = [[DLYMiniVlogPart alloc] init];
+    }
+    return _currentPart;
+}
 - (void) initializationRecorder{
     
-//    self.captureManager = [[DLYCaptureManager alloc] initWithPreviewView:self.previewView outputMode:DLYOutputModeVideoData];
+//    self.captureManager = [[DLYCaptureManager alloc] initWithPreviewView:self.previewView];
 //    
 //    self.captureManager.delegate = self;
 }
@@ -235,6 +253,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     [self.captureSession startRunning];
 }
+#pragma mark - Recorder初始化相关懒加载 -
 //后置摄像头输入
 - (AVCaptureDeviceInput *)backCameraInput {
     if (_backCameraInput == nil) {
@@ -653,9 +672,32 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     if (isRunning) [self.captureSession startRunning];
 }
 #pragma mark - 开始录制 -
-- (void)startRecording {
-        
+- (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
+    
+    self.currentPart = part;
+    
     dispatch_async(movieWritingQueue, ^{
+        
+        if (part.recordType == DLYRecordSlomoMode) {
+            
+            DLYLog(@"The record type is Solomo");
+            desiredFps = 240.0;
+        }else if(part.recordType == DLYRecordTimeLapseMode){
+            
+            DLYLog(@"The record type is TimeLapse");
+            _isTime = YES;
+        }else{
+            
+            DLYLog(@"The record type is Normal");
+        }
+        
+        
+        if (desiredFps > 0.0) {
+            [self switchFormatWithDesiredFPS:desiredFps];
+        }
+        else {
+            [self resetFormat];
+        }
         
         UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
         
@@ -665,16 +707,13 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         }
         
         DLYResource *resource = [[DLYResource alloc] init];
-        self.fileURL = [resource saveToSandboxWithPath:kDraftFolder suffixType:@".mp4"];
+        self.fileURL = [resource saveDraftPartWithPartNum:part.partNum];
         
         NSError *error;
         self.assetWriter = [[AVAssetWriter alloc] initWithURL:self.fileURL fileType:AVFileTypeMPEG4 error:&error];
         DLYLog(@"AVAssetWriter error:%@", error);
         
         recordingWillBeStarted = YES;
-        
-        //        [self.assetWriter startWriting];
-        //        [self.assetWriter startSessionAtSourceTime:kCMTimeZero];
     });
 }
 #pragma mark - 停止录制 -
@@ -837,8 +876,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     return (image);
 }
 #pragma mark - 合并 -
-
--(void)mergeVideoToOneVideo:(NSArray *)videoArray outputUrl:(NSURL *)storeUrl success:(void (^)(long long finishTime))successBlock failure:(void (^)(void))failureBlcok{
+- (void) mergeVideoWithsuccess:(void (^)(long long finishTime))successBlock failure:(void (^)(void))failureBlcok{
+    
+    NSArray *videoArray = [self.resource loadBDraftParts];
     
     AVMutableComposition* mixComposition = [AVMutableComposition composition];
     
@@ -866,47 +906,20 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         tmpDuration += CMTimeGetSeconds(videoAssetTrack.timeRange.duration);
     }
     
+    DLYResource *resource = [[DLYResource alloc]init];
+    NSURL *outputUrl = [resource saveProductToSandbox];
+
     AVAssetExportSession *exporter = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1920x1080];
-    exporter.outputURL = storeUrl;
+    exporter.outputURL = outputUrl;
     exporter.outputFileType = AVFileTypeMPEG4;
     exporter.shouldOptimizeForNetworkUse = YES;
     [exporter exportAsynchronouslyWithCompletionHandler:^{
-        UISaveVideoAtPathToSavedPhotosAlbum([storeUrl path], self, nil, nil);
+        UISaveVideoAtPathToSavedPhotosAlbum([outputUrl path], self, nil, nil);
         
         _finishTime = [self getDateTimeTOMilliSeconds:[NSDate date]];
-        successBlock(_finishTime);
+        DLYLog(@"The operation of merger takes %@ s",_finishTime);
     }];
-}
-
--(AVMutableComposition *)mergeVideostoOnevideo:(NSArray*)array
-{
-    DLYLog(@"array:%@",array);
-    AVMutableComposition* mixComposition = [AVMutableComposition composition];
     
-    AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-    AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-    
-    Float64 tmpDuration =0.0f;
-    for (int i=0; i<array.count; i++)
-    {
-        AVURLAsset *videoAsset = [[AVURLAsset alloc]initWithURL:array[i] options:nil];
-        
-        NSError *error;
-        AVAssetTrack *videoAssetTrack = nil;
-        AVAssetTrack *audioAssetTrack = nil;
-        if ([videoAsset tracksWithMediaType:AVMediaTypeVideo].count != 0) {
-            videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-        }
-        if ([videoAsset tracksWithMediaType:AVMediaTypeAudio].count!= 0) {
-            audioAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
-        }
-        
-        CMTimeRange video_timeRange = CMTimeRangeMake(kCMTimeZero,videoAssetTrack.timeRange.duration);
-        [compositionVideoTrack insertTimeRange:video_timeRange ofTrack:videoAssetTrack atTime:CMTimeMakeWithSeconds(tmpDuration, 0) error:&error];
-        [compositionAudioTrack insertTimeRange:video_timeRange ofTrack:audioAssetTrack atTime:CMTimeMakeWithSeconds(tmpDuration, 0) error:nil];
-        tmpDuration += CMTimeGetSeconds(videoAssetTrack.timeRange.duration);
-    }
-    return mixComposition;
 }
 
 -(long long)getDateTimeTOMilliSeconds:(NSDate *)datetime
@@ -1177,8 +1190,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     [self.bodyMovie addTarget:self.filter];
     
     DLYResource *resource = [[DLYResource alloc]init];
-    NSURL *outputUrl = [resource saveToSandboxWithPath:kVideoHeaderFolder suffixType:@".mp4"];
-    
+    NSURL *outputUrl = [resource saveToSandboxFolderType:NSDocumentDirectory subfolderName:@"HeaderVideos" suffixType:@".mp4"];
     self.movieWriter =  [[GPUImageMovieWriter alloc] initWithMovieURL:outputUrl size:videoSize];
     
     [self.filter addTarget:self.movieWriter];

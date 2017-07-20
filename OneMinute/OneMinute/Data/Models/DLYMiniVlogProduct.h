@@ -26,9 +26,5 @@
  */
 @property (nonatomic, strong) DLYMiniVlogTemplate    *templateName;
 
-/**
- 是否发布(草稿 or 已发布)
- */
-@property (nonatomic, assign) BOOL                   isRelease;
 
 @end
