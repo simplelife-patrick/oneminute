@@ -167,6 +167,9 @@
 - (BOOL)shouldAutorotate {
     return NO;
 }
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskLandscapeRight;
+}
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self.timer invalidate];
