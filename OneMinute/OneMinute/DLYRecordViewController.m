@@ -14,6 +14,7 @@
 #import "DLYMiniVlogTemplate.h"
 #import "DLYResource.h"
 #import "DLYAVEngine.h"
+#import "DLYSession.h"
 
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
@@ -111,9 +112,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 - (void)initData {
     
-    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];
-    partModelArray = [NSMutableArray arrayWithArray:template.parts];
+    //草稿
+//    DLYSession *session = [[DLYSession alloc] init];
+//    session.currentTemplate = @"";
+//    DLYMiniVlogTemplate *temple1 = session.currentTemplate;
+//    NSLog(@"%@", temple1);
     
+    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];
+    
+    partModelArray = [NSMutableArray arrayWithArray:template.parts];
     for (int i = 0; i < 6; i++) {
         DLYMiniVlogPart *part = partModelArray[i];
         if (i == 0) {
@@ -194,21 +201,19 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (self.isExport) {
         
         [self initData];
+        if (!self.deleteButton.isHidden && self.deleteButton) {
+            self.deleteButton.hidden = YES;
+        }
+        if (!self.nextButton.isHidden && self.nextButton) {
+            self.nextButton.hidden = YES;
+        }
+        if (self.recordBtn.isHidden && self.recordBtn) {
+            self.recordBtn.hidden = NO;
+        }
+        if (!self.playView.isHidden && self.playView) {
+            self.playView.hidden = YES;
+        }
         self.isExport = NO;
-    }
-
-    
-    if (!self.deleteButton.isHidden && self.deleteButton) {
-        self.deleteButton.hidden = YES;
-    }
-    if (!self.nextButton.isHidden && self.nextButton) {
-        self.nextButton.hidden = YES;
-    }
-    if (self.recordBtn.isHidden && self.recordBtn) {
-        self.recordBtn.hidden = NO;
-    }
-    if (!self.playView.isHidden && self.playView) {
-        self.playView.hidden = YES;
     }
     
     [self createPartViewLayout];
@@ -752,6 +757,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }
             self.alert.sureButtonAction = ^{
                 //数组初始化，view布局 弹出选择
+                [weakSelf.resource removeCurrentAllPart];
                 [weakSelf initData];
                 [weakSelf createPartViewLayout];
                 [weakSelf showChooseSceneView];
@@ -852,12 +858,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)onClickNextStep:(UIButton *)sender {
 
     DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
+    fvc.playUrl = self.AVEngine.currentProductUrl;
     fvc.isAll = YES;
     [self.navigationController pushViewController:fvc animated:YES];
 }
 //删除全部视频
 - (void)onClickDelete:(UIButton *)sender {
-    [self.resource removeCurrentAllPart];
     self.alert = [[DLYAlertView alloc] initWithMessage:@"确定删除全部片段?" andCancelButton:@"取消" andSureButton:@"确定"];
     if (self.newState == 1) {
         self.alert.transform = CGAffineTransformMakeRotation(0);
@@ -866,6 +872,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     __weak typeof(self) weakSelf = self;
     self.alert.sureButtonAction = ^{
+        [weakSelf.resource removeCurrentAllPart];
         //数组初始化，view布局
         if (!weakSelf.playView.isHidden && weakSelf.playView) {
             weakSelf.playView.hidden = YES;
@@ -892,8 +899,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //删除某个片段
 - (void)onClickDeletePartVideo:(UIButton *)sender {
-    NSInteger partNum = selectPartTag - 10000 - 1;
-    [self.resource removePartWithPartNum:partNum];
     __weak typeof(self) weakSelf = self;
     self.alert = [[DLYAlertView alloc] initWithMessage:@"确定删除此片段?" andCancelButton:@"取消" andSureButton:@"确定"];
     if (self.newState == 1) {
@@ -902,6 +907,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.alert.transform = CGAffineTransformMakeRotation(M_PI);
     }
     self.alert.sureButtonAction = ^{
+        NSInteger partNum = selectPartTag - 10000 - 1;
+        [weakSelf.resource removePartWithPartNum:partNum];
         [weakSelf deleteSelectPartVideo];
     };
     self.alert.cancelButtonAction = ^{
