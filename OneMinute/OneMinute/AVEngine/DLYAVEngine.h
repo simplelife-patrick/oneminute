@@ -9,6 +9,7 @@
 #import "DLYModule.h"
 #import <CoreMedia/CoreMedia.h>
 #import "DLYMiniVlogPart.h"
+#import "DLYMiniVlogProduct.h"
 
 typedef NS_ENUM(NSUInteger, DLYCameraType) {
     DLYCameraTypeBack,
@@ -43,6 +44,7 @@ typedef void (^OnBufferBlock)(CMSampleBufferRef sampleBuffer);
 @property (nonatomic, strong) AVCaptureConnection                   *videoConnection;
 @property (nonatomic, strong) AVCaptureSession                      *captureSession;;
 @property (nonatomic, strong) DLYMiniVlogPart                       *currentPart;
+@property (nonatomic, strong) NSURL                                 *currentProductUrl;
 
 
 /**
