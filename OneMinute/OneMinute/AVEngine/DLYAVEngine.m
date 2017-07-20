@@ -73,6 +73,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 @property (nonatomic, strong) DLYResource                       *resource;
 @property (nonatomic, assign) BOOL                              isTime;
 
+
 @end
 
 @implementation DLYAVEngine
@@ -110,6 +111,12 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         _imageArray = [NSMutableArray array];
     }
     return _imageArray;
+}
+-(DLYMiniVlogPart *)currentPart{
+    if (!_currentPart) {
+        _currentPart = [[DLYMiniVlogPart alloc] init];
+    }
+    return _currentPart;
 }
 - (void) initializationRecorder{
     
@@ -666,6 +673,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 }
 #pragma mark - 开始录制 -
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
+    
+    self.currentPart = part;
     
     dispatch_async(movieWritingQueue, ^{
         

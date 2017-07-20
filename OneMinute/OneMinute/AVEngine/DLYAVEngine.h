@@ -42,13 +42,14 @@ typedef void (^OnBufferBlock)(CMSampleBufferRef sampleBuffer);
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer            *previewLayer;
 @property (nonatomic, strong) AVCaptureConnection                   *videoConnection;
 @property (nonatomic, strong) AVCaptureSession                      *captureSession;;
+@property (nonatomic, strong) DLYMiniVlogPart                       *currentPart;
 
 
 /**
  初始化相机
  */
 - (void) initializationRecorder;
-
+- (instancetype)initWithPreviewView:(UIView *)previewView;
 /**
  按传入的片段信息开始录制
 
@@ -80,5 +81,6 @@ typedef void (^OnBufferBlock)(CMSampleBufferRef sampleBuffer);
  @param failureBlcok 失败回调
  */
 - (void) mergeVideoWithsuccess:(void (^)(long long finishTime))successBlock failure:(void (^)(void))failureBlcok;
-
+- (void)toggleContentsGravity;
+-(void)focusWithMode:(AVCaptureFocusMode)focusMode exposureMode:(AVCaptureExposureMode)exposureMode atPoint:(CGPoint)point;
 @end

@@ -64,6 +64,14 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
  */
 - (NSURL *) saveToSandboxWithPath:(NSString *)resourcePath suffixType:(NSString *)suffixName;
 
+/**
+ 通用文件保存API
+
+ @param sandboxFolderType 沙盒文件夹类型 (Document/Libray/tmp)
+ @param subfolderName 子文件夹名称
+ @param suffixName 文件后缀名
+ @return 返回保存URL
+ */
 - (NSURL *) saveToSandboxFolderType:(NSSearchPathDirectory)sandboxFolderType subfolderName:(NSString *)subfolderName suffixType:(NSString *)suffixName;
 /**
  按片段序号删除草稿片段

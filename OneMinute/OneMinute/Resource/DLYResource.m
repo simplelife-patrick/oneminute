@@ -99,16 +99,17 @@
 -(NSArray *)loadBDraftParts{
     
     NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
-    if ([_fileManager fileExistsAtPath:dataPath]) {
+    if ([self.fileManager fileExistsAtPath:dataPath]) {
         
         NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
-        if ([_fileManager fileExistsAtPath:draftPath]) {
-            NSArray *draftArray = [_fileManager contentsOfDirectoryAtPath:draftPath error:nil];
+        if ([self.fileManager fileExistsAtPath:draftPath]) {
+            NSArray *draftArray = [self.fileManager contentsOfDirectoryAtPath:draftPath error:nil];
             
             NSMutableArray *mArray = [NSMutableArray array];
             for (NSString *path in draftArray) {
                 if ([path hasSuffix:@"mp4"]) {
-                    NSURL *url = [NSURL fileURLWithPath: [[NSBundle mainBundle] pathForResource:path ofType:nil]];
+                    NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
+                    NSURL *url= [NSURL fileURLWithPath:allPath];
                     [mArray addObject:url];
                 }
             }
