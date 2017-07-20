@@ -37,6 +37,7 @@ typedef void(^FailureBlock)(NSError *error);
     long long _startTime;
     long long _finishTime;
     CGSize videoSize;
+    CGFloat desiredFps;
 }
 
 @property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;
@@ -70,7 +71,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 @property (nonatomic, copy)   NSMutableArray                    *videoPathArray;
 
 @property (nonatomic, strong) DLYResource                       *resource;
-
+@property (nonatomic, assign) BOOL                              isTime;
 
 @end
 
@@ -665,8 +666,29 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 }
 #pragma mark - 开始录制 -
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
-        
+    
     dispatch_async(movieWritingQueue, ^{
+        
+        if (part.recordType == DLYRecordSlomoMode) {
+            
+            DLYLog(@"The record type is Solomo");
+            desiredFps = 240.0;
+        }else if(part.recordType == DLYRecordTimeLapseMode){
+            
+            DLYLog(@"The record type is TimeLapse");
+            _isTime = YES;
+        }else{
+            
+            DLYLog(@"The record type is Normal");
+        }
+        
+        
+        if (desiredFps > 0.0) {
+            [self switchFormatWithDesiredFPS:desiredFps];
+        }
+        else {
+            [self resetFormat];
+        }
         
         UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
         
