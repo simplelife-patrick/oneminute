@@ -678,11 +678,11 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     dispatch_async(movieWritingQueue, ^{
         
-        if (part.recordType == DLYRecordSlomoMode) {
+        if (self.currentPart.recordType == DLYRecordSlomoMode) {
             
             DLYLog(@"The record type is Solomo");
             desiredFps = 240.0;
-        }else if(part.recordType == DLYRecordTimeLapseMode){
+        }else if(self.currentPart.recordType == DLYRecordTimeLapseMode){
             
             DLYLog(@"The record type is TimeLapse");
             _isTime = YES;
@@ -707,7 +707,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         }
         
         DLYResource *resource = [[DLYResource alloc] init];
-        self.fileURL = [resource saveDraftPartWithPartNum:part.partNum];
+        self.fileURL = [resource saveDraftPartWithPartNum:self.currentPart.partNum];
         
         NSError *error;
         self.assetWriter = [[AVAssetWriter alloc] initWithURL:self.fileURL fileType:AVFileTypeMPEG4 error:&error];
@@ -908,6 +908,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     DLYResource *resource = [[DLYResource alloc]init];
     NSURL *outputUrl = [resource saveProductToSandbox];
+    self.currentProductUrl = outputUrl;
 
     AVAssetExportSession *exporter = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1920x1080];
     exporter.outputURL = outputUrl;
