@@ -7,13 +7,13 @@
 //
 
 #import "DLYRecordViewController.h"
-#import "DLYCaptureManager.h"
 #import "DLYAnnularProgress.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 //#import "FLEXManager.h"
 #import "DLYPlayVideoViewController.h"
 #import "DLYMiniVlogTemplate.h"
 #import "DLYResource.h"
+#import "DLYAVEngine.h"
 
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
@@ -44,7 +44,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     BOOL isTime;
     
 }
-@property (nonatomic, strong) DLYCaptureManager                 *captureManager;
+@property (nonatomic, strong) DLYAVEngine                       *AVEngine;
 @property (nonatomic, strong) UIView                            *previewView;
 @property (nonatomic, strong) UIImageView                       *focusCursorImageView;
 @property (nonatomic, strong) NSURL                             *TimeLapseUrl;
@@ -100,6 +100,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     [self initData];
     [self setupUI];
+    [self initializationRecorder];
 }
 - (void)initData {
     
@@ -171,9 +172,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     //According to the preview center focus after launch
     CGPoint point = self.previewView.center;
-    CGPoint cameraPoint = [self.captureManager.previewLayer captureDevicePointOfInterestForPoint:point];
+    CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
     [self setFocusCursorWithPoint:point];
-    [self.captureManager focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure atPoint:cameraPoint];
+    [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure atPoint:cameraPoint];
     
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
@@ -213,7 +214,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     _previewView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     _previewView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_previewView];
-    [self initializationRecorder];
     
     //通用button 选择场景button
     self.chooseScene = [[UIButton alloc]initWithFrame:CGRectMake(11, 16, 40, 40)];
@@ -255,7 +255,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.recordBtn.backgroundColor = RGB(255, 0, 0);
     self.recordBtn.layer.cornerRadius = 30 * SCALE_WIDTH;
     self.recordBtn.clipsToBounds = YES;
-    [self.recordBtn addTarget:self action:@selector(startRecordBtn:) forControlEvents:UIControlEventTouchUpInside];
+    [self.recordBtn addTarget:self action:@selector(startRecordBtnAction) forControlEvents:UIControlEventTouchUpInside];
     [self.backView addSubview:self.recordBtn];
     
     //跳转成片播放界面
@@ -325,17 +325,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark - 初始化相机
 - (void) initializationRecorder{
     
-    self.captureManager = [[DLYCaptureManager alloc] initWithPreviewView:self.previewView outputMode:DLYOutputModeVideoData];
-    
-    self.captureManager.delegate = self;
-    
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
-    tapGesture.numberOfTapsRequired = 2;
-    [self.previewView addGestureRecognizer:tapGesture];
+    self.AVEngine = [[DLYAVEngine alloc] initWithPreviewView:self.previewView];
+    self.AVEngine.delegate = self;
 }
 - (void)handleDoubleTap:(UITapGestureRecognizer *)sender {
     
-    [self.captureManager toggleContentsGravity];
+    [self.AVEngine toggleContentsGravity];
 }
 
 #pragma mark -触屏自动调整曝光-
@@ -343,10 +338,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     UITouch *touch = [touches anyObject];
     CGPoint point = [touch locationInView:self.previewView];
     
-    CGPoint cameraPoint = [self.captureManager.previewLayer captureDevicePointOfInterestForPoint:point];
+    CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
     
     [self setFocusCursorWithPoint:point];
-    [self.captureManager focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure atPoint:cameraPoint];
+    [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure atPoint:cameraPoint];
 }
 - (void)setFocusCursorWithPoint:(CGPoint)point {
     self.focusCursorImageView.center=point;
@@ -562,6 +557,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             {
                 [[NSFileManager defaultManager] removeItemAtPath:outputPath error:nil];
             }
+            
+            DLYResource *resource = [[DLYResource alloc] init];
+            [resource saveDraftPartWithPartNum:self.AVEngine.currentPart.partNum];
+            
             [self composesVideoUrl:outPutUrl frameImgs:_imageArray fps:30 progressImageBlock:^(CGFloat progress) {
                 
             } completedBlock:^(BOOL success) {
@@ -722,9 +721,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     self.toggleCameraBtn.selected = !self.toggleCameraBtn.selected;
     if (self.toggleCameraBtn.selected) {
-        [self.captureManager changeCameraInputDeviceisFront:YES];
+        [self.AVEngine changeCameraInputDeviceisFront:YES];
     }else{
-        [self.captureManager changeCameraInputDeviceisFront:NO];
+        [self.AVEngine changeCameraInputDeviceisFront:NO];
     }
 }
 //选择场景
@@ -790,13 +789,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 }
 //拍摄按键
-- (void)startRecordBtn:(UIButton *)sender {
+- (void)startRecordBtnAction {
     
     DDLogInfo(@"拍摄按钮");
     // REC START
-    if (!self.captureManager.isRecording) {
+    if (!self.AVEngine.isRecording) {
         
-        [self.captureManager startRecording];
+        [self.AVEngine startRecordingWithPart:nil];
         // change UI
         [self.shootView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         [self createShootView];
@@ -840,15 +839,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             
         }];
     }
-    /*else{     
-     isNeededToSave = YES;
-     [self.captureManager stopRecording];
-     
-     [self.timer invalidate];
-     self.timer = nil;
-     
-      change UI
-     }*/
 }
 //跳转至下一个界面按键
 - (void)onClickNextStep:(UIButton *)sender {
@@ -955,7 +945,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //取消拍摄按键
 - (void)onClickCancelClick:(UIButton *)sender {
-    [self.captureManager stopRecording];
+    [self.AVEngine stopRecording];
     [_shootTimer invalidate];
     [UIView animateWithDuration:0.5f animations:^{
         self.progressView.hidden = YES;
@@ -1711,7 +1701,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if(_shootTime > partDuration)
     {
         isNeededToSave = YES;
-        [self.captureManager stopRecording];
+        [self.AVEngine stopRecording];
         self.cancelButton.hidden = YES;
         [_shootTimer invalidate];
         

@@ -26,11 +26,11 @@
 /**
  传入模板编号返回模板数据
 
- @param templateId 模板编号
+ @param templateName 模板名称
  @return 加载好的模板数据
  */
 
-+ (DLYMiniVlogTemplate *)loadTemplateWithTemplateId:(NSString *)templateId;
++ (DLYMiniVlogTemplate *)loadTemplateWithTemplateName:(NSString *)templateName;
 /**
  重置sesion
  */

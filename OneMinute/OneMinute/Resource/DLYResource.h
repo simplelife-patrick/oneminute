@@ -21,6 +21,8 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
 @property (nonatomic, strong) NSFileManager                *fileManager;
 @property (nonatomic, strong) NSString                     *resourceFolderPath;
 @property (nonatomic, strong) NSString                     *resourcePath;
+@property (nonatomic, strong) NSString                     *currentProductPath;
+
 
 /**
  加载资源文件
@@ -39,6 +41,21 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
 -(NSArray *)loadBDraftParts;
 
 /**
+ 保存草稿片段到沙盒中
+
+ @param partNum 片段序号
+ @return 返回片段保存地址
+ */
+- (NSURL *) saveDraftPartWithPartNum:(NSInteger)partNum;
+
+/**
+ 保存成片视频到沙盒中
+
+ @return 返回保存地址
+ */
+- (NSURL *) saveProductToSandbox;
+
+/**
  保存文件到沙盒文件夹
  
  @param resourcePath 文件夹路径
@@ -48,13 +65,36 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
 - (NSURL *) saveToSandboxWithPath:(NSString *)resourcePath suffixType:(NSString *)suffixName;
 
 /**
- 保存到沙盒文件夹
+ 通用文件保存API
 
- @param sandboxFolderType 保存文件夹类型
+ @param sandboxFolderType 沙盒文件夹类型 (Document/Libray/tmp)
  @param subfolderName 子文件夹名称
- @param suffixName 文件后缀
- @return 返回保存后的URL
+ @param suffixName 文件后缀名
+ @return 返回保存URL
  */
-- (NSURL *) saveToSandboxWithFolderType:(NSSearchPathDirectory)sandboxFolderType subfolderName:(NSString *)subfolderName suffixType:(NSString *)suffixName;
+- (NSURL *) saveToSandboxFolderType:(NSSearchPathDirectory)sandboxFolderType subfolderName:(NSString *)subfolderName suffixType:(NSString *)suffixName;
+/**
+ 按片段序号删除草稿片段
+
+ @param partNum 草稿片段序号
+ */
+- (void) removePartWithPartNum:(NSInteger)partNum;
+
+/**
+ 删除所有草稿片段
+ */
+- (void) removeCurrentAllPart;
+
+/**
+ 获取单个片段的播放地址
+
+ @param partNum 片段序号
+ */
+- (NSURL *) getPartUrlWithPartNum:(NSInteger)partNum;
+
+/**
+ 获取成片视频的播放地址
+ */
+- (NSURL *) getProductWithProductName:(NSString *)productName;
 
 @end
