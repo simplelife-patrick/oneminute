@@ -662,23 +662,30 @@
         dispatch_async(movieWritingQueue, ^{
             
             UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-            
             // Don't update the reference orientation when the device orientation is face up/down or unknown.
             if (UIDeviceOrientationIsPortrait(orientation) || UIDeviceOrientationIsLandscape(orientation)) {
                 referenceOrientation = (AVCaptureVideoOrientation)orientation;
             }
             
-            DLYResource *resource = [[DLYResource alloc] init];
-            self.fileURL = [resource saveToSandboxWithPath:kDraftFolder suffixType:@".mp4"];
+            int fileNamePostfix = 0;
+            NSString *filePath = nil;
+            
+            do
+                filePath =[NSString stringWithFormat:@"/%@/%@-%i.mp4", documentsDirectory, dateTimePrefix, fileNamePostfix++];
+            while ([[NSFileManager defaultManager] fileExistsAtPath:filePath]);
+            
+            self.fileURL = [NSURL URLWithString:[@"file://" stringByAppendingString:filePath]];
             
             NSError *error;
-            self.assetWriter = [[AVAssetWriter alloc] initWithURL:self.fileURL fileType:AVFileTypeMPEG4 error:&error];
-            DLYLog(@"AVAssetWriter error:%@", error);
+            self.assetWriter = [[AVAssetWriter alloc] initWithURL:self.fileURL
+                                                         fileType:AVFileTypeMPEG4
+                                                            error:&error];
+            NSLog(@"AVAssetWriter error:%@", error);
             
             recordingWillBeStarted = YES;
             
-    //        [self.assetWriter startWriting];
-    //        [self.assetWriter startSessionAtSourceTime:kCMTimeZero];
+            //        [self.assetWriter startWriting];
+            //        [self.assetWriter startSessionAtSourceTime:kCMTimeZero];
         });
     }
 }

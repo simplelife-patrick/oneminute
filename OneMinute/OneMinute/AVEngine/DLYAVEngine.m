@@ -245,6 +245,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     [self.captureSession startRunning];
 }
+#pragma mark - Recorder初始化相关懒加载 -
 //后置摄像头输入
 - (AVCaptureDeviceInput *)backCameraInput {
     if (_backCameraInput == nil) {
@@ -675,16 +676,13 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         }
         
         DLYResource *resource = [[DLYResource alloc] init];
-        self.fileURL = [resource saveToSandboxWithPath:kDraftFolder suffixType:@".mp4"];
+        self.fileURL = [resource saveDraftPartWithPartNum:part.partNum];
         
         NSError *error;
         self.assetWriter = [[AVAssetWriter alloc] initWithURL:self.fileURL fileType:AVFileTypeMPEG4 error:&error];
         DLYLog(@"AVAssetWriter error:%@", error);
         
         recordingWillBeStarted = YES;
-        
-        //        [self.assetWriter startWriting];
-        //        [self.assetWriter startSessionAtSourceTime:kCMTimeZero];
     });
 }
 #pragma mark - 停止录制 -
@@ -877,13 +875,15 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         tmpDuration += CMTimeGetSeconds(videoAssetTrack.timeRange.duration);
     }
     
-    NSURL *storeUrl = [self.resource saveToSandboxWithPath:kProductFolder suffixType:@".mp4"];
+    DLYResource *resource = [[DLYResource alloc]init];
+    NSURL *outputUrl = [resource saveProductToSandbox];
+
     AVAssetExportSession *exporter = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1920x1080];
-    exporter.outputURL = storeUrl;
+    exporter.outputURL = outputUrl;
     exporter.outputFileType = AVFileTypeMPEG4;
     exporter.shouldOptimizeForNetworkUse = YES;
     [exporter exportAsynchronouslyWithCompletionHandler:^{
-        UISaveVideoAtPathToSavedPhotosAlbum([storeUrl path], self, nil, nil);
+        UISaveVideoAtPathToSavedPhotosAlbum([outputUrl path], self, nil, nil);
         
         _finishTime = [self getDateTimeTOMilliSeconds:[NSDate date]];
         DLYLog(@"The operation of merger takes %@ s",_finishTime);
@@ -1159,8 +1159,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     [self.bodyMovie addTarget:self.filter];
     
     DLYResource *resource = [[DLYResource alloc]init];
-    NSURL *outputUrl = [resource saveToSandboxWithPath:kVideoHeaderFolder suffixType:@".mp4"];
-    
+    NSURL *outputUrl = [resource saveToSandboxFolderType:NSDocumentDirectory subfolderName:@"HeaderVideos" suffixType:@".mp4"];
     self.movieWriter =  [[GPUImageMovieWriter alloc] initWithMovieURL:outputUrl size:videoSize];
     
     [self.filter addTarget:self.movieWriter];

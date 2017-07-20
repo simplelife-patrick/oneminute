@@ -40,11 +40,21 @@
     }
     return _resourceFolderPath;
 }
-- (void) getSubFolderPathWithSubFolderName:(NSString *)subFolderName{
-    NSString *subFolderPath = [kPathDocument stringByAppendingPathComponent:subFolderName];
-    if ([_fileManager fileExistsAtPath:subFolderPath]) {
-        
+- (NSString *) getSubFolderPathWithFolderName:(NSString *)folderName{
+    
+    //拼接Data文件夹路径
+    NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
+    //判断最后Data路径是否存在
+    if ([_fileManager fileExistsAtPath:dataPath]) {
+        //拼接子文件夹路径
+        NSString *folderPath = [dataPath stringByAppendingPathComponent:folderName];
+        //判断子文件夹是否存在
+        if ([_fileManager fileExistsAtPath:folderPath]) {
+            //存在就把子文件夹返回
+            return folderPath;
+        }
     }
+    return nil;
 }
 
 - (NSURL *) loadResourceWithType:(DLYResourceType)resourceType fileName:(NSString *)fileName{
@@ -108,15 +118,35 @@
     return nil;
 }
 - (NSURL *) saveDraftPartWithPartNum:(NSInteger)partNum{
-    //获取Data路径
+    
     NSURL *outPutUrl = nil;
     NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
     if ([[NSFileManager defaultManager] fileExistsAtPath:dataPath]) {
         NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
         if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
             
-            NSString *outputPath = [NSString stringWithFormat:@"%@/part%lu%@",draftPath,partNum,@"mp4"];
+            NSString *outputPath = [NSString stringWithFormat:@"%@/part%lu%@",draftPath,partNum,@".mp4"];
             outPutUrl = [NSURL fileURLWithPath:outputPath];
+        }
+    }
+    return outPutUrl;
+}
+- (NSURL *) saveProductToSandbox{
+    
+    NSURL *outPutUrl = nil;
+    
+    NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:dataPath]) {
+        
+        NSString *productPath = [dataPath stringByAppendingPathComponent:kProductFolder];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
+            
+            CocoaSecurityResult * result = [CocoaSecurity md5:[[NSDate date] description]];
+            
+            NSString *outputPath = [NSString stringWithFormat:@"%@/%@%@",productPath,result.hex,@".mp4"];
+            _currentProductPath = outputPath;
+            NSURL *outPutUrl = [NSURL fileURLWithPath:outputPath];
+            return outPutUrl;
         }
     }
     return outPutUrl;
@@ -140,20 +170,18 @@
     NSURL *outPutUrl = [NSURL fileURLWithPath:outputPath];
     return outPutUrl;
 }
-- (NSURL *) saveToSandboxWithFolderType:(NSSearchPathDirectory)sandboxFolderType subfolderName:(NSString *)subfolderName suffixType:(NSString *)suffixName{
+- (NSURL *) saveToSandboxFolderType:(NSSearchPathDirectory)sandboxFolderType subfolderName:(NSString *)subfolderName suffixType:(NSString *)suffixName{
     
     CocoaSecurityResult * result = [CocoaSecurity md5:[[NSDate date] description]];
     
     NSArray *homeDir = NSSearchPathForDirectoriesInDomains(sandboxFolderType, NSUserDomainMask,YES);
     NSString *documentsDir = [homeDir objectAtIndex:0];
     NSString *filePath = [documentsDir stringByAppendingPathComponent:subfolderName];
-    
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
         [[NSFileManager defaultManager] createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     NSString *outputPath = [NSString stringWithFormat:@"%@/%@%@",filePath,result.hex,suffixName];
     NSURL *outPutUrl = [NSURL fileURLWithPath:outputPath];
-    
     if ([[NSFileManager defaultManager] fileExistsAtPath:outputPath])
     {
         [[NSFileManager defaultManager] removeItemAtPath:outputPath error:nil];
@@ -161,17 +189,53 @@
     return outPutUrl;
 }
 - (void) removePartWithPartNum:(NSInteger)partNum{
+    
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
-    NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
-    BOOL isDelete =  [fileManager removeItemAtPath:dataPath error:nil];
-    DLYLog(@"%@",isDelete ? @"成功第 %lu 个片段":@"删除第 %lu 个片段失败",partNum);
+    NSString *draftPath = [self getSubFolderPathWithFolderName:kDraftFolder];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
+        
+        NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mp4",partNum];
+        NSURL *targetUrl = [NSURL URLWithString:targetPath];
+        
+        BOOL isDelete = [fileManager removeItemAtURL:targetUrl error:nil];
+        DLYLog(@"%@",isDelete ? @"成功第 %lu 个片段":@"删除第 %lu 个片段失败",partNum);
+    }
 }
 - (void) removeCurrentAllPart{
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
-    NSString *draftFolderPath = [kPathDocument stringByAppendingPathComponent:kDraftFolder];
-    BOOL isDelete = [fileManager removeItemAtPath:draftFolderPath error:nil];
-    DLYLog(@"%@",isDelete ? @"成功删除所有片段":@"删除所有片段失败");
+    NSString *draftPath = [self getSubFolderPathWithFolderName:kDraftFolder];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
+        BOOL isDelete = [fileManager removeItemAtPath:draftPath error:nil];
+        DLYLog(@"%@",isDelete ? @"成功删除所有片段":@"删除所有片段失败");
+    }
+}
+- (NSURL *) getPartUrlWithPartNum:(NSInteger)partNum{
+    
+    NSString *draftPath = [self getSubFolderPathWithFolderName:kDraftFolder];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
+        
+        NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mp4",partNum];
+        NSURL *targetUrl = [NSURL URLWithString:targetPath];
+        return targetUrl;
+    }
+    return nil;
+}
+
+- (NSURL *) getProductWithProductName:(NSString *)productName{
+    
+    NSString *productPath = [self getSubFolderPathWithFolderName:kProductFolder];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
+        
+        NSString *targetPath = [productPath stringByAppendingFormat:@"/%@.mp4",productName];
+        NSURL *targetUrl = [NSURL URLWithString:targetPath];
+        return targetUrl;
+    }
+    return nil;
 }
 @end
