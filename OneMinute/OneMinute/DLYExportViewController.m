@@ -31,9 +31,8 @@
 @property (nonatomic, strong) UIView *centerView;
 
 @property (nonatomic, strong) NSTimer *shootTimer;//定时器
-
 @property (nonatomic, strong) UIButton *successButton;
-
+@property (nonatomic, strong) UIView *backView;
 
 @end
 
@@ -107,8 +106,8 @@
 - (void)exportAction {
     _shootTime += 0.01;
     
-    [_progressView drawProgress:0.1 * _shootTime withColor:RGB(255, 0, 0)];
-    if(_shootTime > 9.99)
+    [_progressView drawProgress: _shootTime / 3.0 withColor:RGB(255, 0, 0)];
+    if(_shootTime >= 3.0)
     {
         [_shootTimer invalidate];
         [self finishExportVideo];
@@ -144,6 +143,10 @@
     UIImageView * videoImage = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SWitdh, SHeight)];
     videoImage.image = [UIImage imageNamed:@"timg"];
     [self.view addSubview:videoImage];
+    
+    self.backView = [[UIView alloc] initWithFrame:self.view.frame];
+    self.backView.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:self.backView];
     
     //标题输入框
     self.titleField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 300, 42)];
@@ -236,7 +239,7 @@
     CGFloat min = a < b ? a : b;
     rect.origin.y = (min - height - rect.size.height) / 2;
     [UIView animateWithDuration:duration.doubleValue animations:^{
-        
+        self.backView.backgroundColor = RGBA(0, 0, 0, 0.5);
         self.titleField.frame = rect;
     }];
 }
@@ -247,7 +250,7 @@
     NSNumber *duration = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
     //回归位置
     [UIView animateWithDuration:duration.doubleValue animations:^{
-        //        self.titleField.frame = CGRectMake(0, Main_Screen_Height - 49, Main_Screen_Width, 49);
+        self.backView.backgroundColor = [UIColor clearColor];
         self.titleField.center = self.view.center;
         
     }];

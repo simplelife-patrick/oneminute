@@ -45,11 +45,11 @@
     //拼接Data文件夹路径
     NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
     //判断最后Data路径是否存在
-    if ([_fileManager fileExistsAtPath:dataPath]) {
+    if ([self.fileManager fileExistsAtPath:dataPath]) {
         //拼接子文件夹路径
         NSString *folderPath = [dataPath stringByAppendingPathComponent:folderName];
         //判断子文件夹是否存在
-        if ([_fileManager fileExistsAtPath:folderPath]) {
+        if ([self.fileManager fileExistsAtPath:folderPath]) {
             //存在就把子文件夹返回
             return folderPath;
         }
@@ -221,7 +221,7 @@
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
         
         NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mp4",partNum];
-        NSURL *targetUrl = [NSURL URLWithString:targetPath];
+        NSURL *targetUrl = [NSURL fileURLWithPath:targetPath];
         return targetUrl;
     }
     return nil;

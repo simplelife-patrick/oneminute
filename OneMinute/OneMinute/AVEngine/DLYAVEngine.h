@@ -43,7 +43,7 @@ typedef void (^OnBufferBlock)(CMSampleBufferRef sampleBuffer);
 @property (nonatomic, strong) AVCaptureConnection                   *videoConnection;
 @property (nonatomic, strong) AVCaptureSession                      *captureSession;;
 @property (nonatomic, strong) DLYMiniVlogPart                       *currentPart;
-
+@property (nonatomic, strong) NSURL                                 *currentProductUrl;
 
 /**
  初始化相机

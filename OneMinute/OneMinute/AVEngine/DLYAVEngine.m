@@ -908,6 +908,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     DLYResource *resource = [[DLYResource alloc]init];
     NSURL *outputUrl = [resource saveProductToSandbox];
+    self.currentProductUrl = outputUrl;
 
     AVAssetExportSession *exporter = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1920x1080];
     exporter.outputURL = outputUrl;
@@ -917,7 +918,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         UISaveVideoAtPathToSavedPhotosAlbum([outputUrl path], self, nil, nil);
         
         _finishTime = [self getDateTimeTOMilliSeconds:[NSDate date]];
-        DLYLog(@"The operation of merger takes %@ s",_finishTime);
+//        DLYLog(@"The operation of merger takes %@ s",_finishTime);
     }];
     
 }

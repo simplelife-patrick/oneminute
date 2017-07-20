@@ -32,9 +32,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    NSLog(@"我他妈到底进了几次");
-    
+        
     [self setupUI];
     
     //即将进入后台
@@ -43,9 +41,12 @@
 - (void)setupUI{
     
     //创建播放器层
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"demo" ofType:@"mp4"];
-    NSURL *url = [NSURL fileURLWithPath:path];
-    self.playerItem = [AVPlayerItem playerItemWithURL:url];
+//    NSString *path = [[NSBundle mainBundle] pathForResource:@"demo" ofType:@"mp4"];
+//    NSURL *url = [NSURL fileURLWithPath:path];
+//    self.playerItem = [AVPlayerItem playerItemWithURL:url];
+    
+    self.playerItem = [AVPlayerItem playerItemWithURL:self.playUrl];
+
     
     [self addObserverToPlayItem:self.playerItem];
     
