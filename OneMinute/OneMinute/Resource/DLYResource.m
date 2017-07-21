@@ -198,9 +198,8 @@
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
         
         NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mp4",partNum];
-        NSURL *targetUrl = [NSURL URLWithString:targetPath];
         
-        BOOL isDelete = [fileManager removeItemAtURL:targetUrl error:nil];
+        BOOL isDelete = [fileManager removeItemAtPath:targetPath error:nil];
         DLYLog(@"%@",isDelete ? @"成功第 %lu 个片段":@"删除第 %lu 个片段失败",partNum);
     }
 }
