@@ -39,6 +39,8 @@
 		6F8925E11F1B142300256093 /* DLYRectConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DE1F1B142300256093 /* DLYRectConst.m */; };
 		ADA7C2841F21FF3F0002A4E5 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA7C2831F21FF3F0002A4E5 /* DLYRecordViewController.m */; };
 		ADA7C2871F21FF5A0002A4E5 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA7C2861F21FF5A0002A4E5 /* DLYAVEngine.m */; };
+		ADA7C28A1F22050D0002A4E5 /* BGM001.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADA7C2891F22050D0002A4E5 /* BGM001.m4a */; };
+		ADA7C28C1F22056A0002A4E5 /* header001.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = ADA7C28B1F22056A0002A4E5 /* header001.mp4 */; };
 		ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */; };
 		ADFFF19A1F18A33000FB5BF7 /* DLYVolumeAutomation.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1841F18A33000FB5BF7 /* DLYVolumeAutomation.m */; };
 		ADFFF19B1F18A33000FB5BF7 /* DLYMiniVlogDraft.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1881F18A33000FB5BF7 /* DLYMiniVlogDraft.m */; };
@@ -136,6 +138,8 @@
 		ADA7C2831F21FF3F0002A4E5 /* DLYRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRecordViewController.m; sourceTree = "<group>"; };
 		ADA7C2851F21FF590002A4E5 /* DLYAVEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAVEngine.h; sourceTree = "<group>"; };
 		ADA7C2861F21FF5A0002A4E5 /* DLYAVEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAVEngine.m; sourceTree = "<group>"; };
+		ADA7C2891F22050D0002A4E5 /* BGM001.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = BGM001.m4a; sourceTree = "<group>"; };
+		ADA7C28B1F22056A0002A4E5 /* header001.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = header001.mp4; sourceTree = "<group>"; };
 		ADFFF1811F18A33000FB5BF7 /* DLYMobileDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMobileDevice.h; sourceTree = "<group>"; };
 		ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMobileDevice.m; sourceTree = "<group>"; };
 		ADFFF1831F18A33000FB5BF7 /* DLYVolumeAutomation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYVolumeAutomation.h; sourceTree = "<group>"; };
@@ -420,6 +424,14 @@
 			name = PopupMenu;
 			sourceTree = "<group>";
 		};
+		ADA7C2881F2203500002A4E5 /* resources */ = {
+			isa = PBXGroup;
+			children = (
+				ADA7C2891F22050D0002A4E5 /* BGM001.m4a */,
+			);
+			path = resources;
+			sourceTree = "<group>";
+		};
 		ADFFF17C1F18A33000FB5BF7 /* AVEngine */ = {
 			isa = PBXGroup;
 			children = (
@@ -467,6 +479,7 @@
 			isa = PBXGroup;
 			children = (
 				ADFFF1901F18A33000FB5BF7 /* Universal_001.json */,
+				ADA7C28B1F22056A0002A4E5 /* header001.mp4 */,
 			);
 			path = Template;
 			sourceTree = "<group>";
@@ -474,6 +487,7 @@
 		ADFFF1911F18A33000FB5BF7 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				ADA7C2881F2203500002A4E5 /* resources */,
 				ADFFF1921F18A33000FB5BF7 /* DLYResource.h */,
 				ADFFF1931F18A33000FB5BF7 /* DLYResource.m */,
 			);
@@ -559,7 +573,7 @@
 				TargetAttributes = {
 					1C7E617E1EE7DF4F0088F33F = {
 						CreatedOnToolsVersion = 8.3.2;
-						DevelopmentTeam = 3545373A7R;
+						DevelopmentTeam = 3QC6PDN9W4;
 						ProvisioningStyle = Automatic;
 					};
 					1C7E61971EE7DF4F0088F33F = {
@@ -600,6 +614,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
+				ADA7C28A1F22050D0002A4E5 /* BGM001.m4a in Resources */,
+				ADA7C28C1F22056A0002A4E5 /* header001.mp4 in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				6F8925981F1B11A800256093 /* launch.mp4 in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
@@ -863,7 +879,7 @@
 			baseConfigurationReference = 7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 3545373A7R;
+				DEVELOPMENT_TEAM = 3QC6PDN9W4;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/OneMinute/DLYPrefixHeader.pch";
 				INFOPLIST_FILE = OneMinute/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -878,7 +894,7 @@
 			baseConfigurationReference = FC05C70FE4A35674CFB74552 /* Pods-OneMinute.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 3545373A7R;
+				DEVELOPMENT_TEAM = 3QC6PDN9W4;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/OneMinute/DLYPrefixHeader.pch";
 				INFOPLIST_FILE = OneMinute/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;

@@ -797,6 +797,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //拍摄按键
 - (void)startRecordBtnAction {
     
+    //According to the preview center focus after launch
+    CGPoint point = self.previewView.center;
+    CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
+    [self setFocusCursorWithPoint:point];
+    [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure atPoint:cameraPoint];
+    
     DDLogInfo(@"拍摄按钮");
     // REC START
     if (!self.AVEngine.isRecording) {
