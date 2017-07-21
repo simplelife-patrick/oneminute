@@ -1127,15 +1127,22 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         DLYMiniVlogPart *part = partArray[i];
         
         NSArray *startArr = [part.starTime componentsSeparatedByString:@":"];
-        NSString *timeStr = startArr[1];
-        float startTime = [timeStr floatValue];
+        NSString *startTimeStr = startArr[1];
+        float startTime = [startTimeStr floatValue];
+        CMTime _startTime = CMTimeMake(startTime, 1);
+        
+        NSArray *stopArr = [part.stopTime componentsSeparatedByString:@":"];
+        NSString *stopTimeStr = stopArr[1];
+        float stopTime = [stopTimeStr floatValue];
+        CMTime _stopTime = CMTimeMake(stopTime, 1);
+        
         if (part.soundType == DLYMiniVlogAudioTypeMusic) {//空镜
-            [BGMParameters setVolume:5  atTime:CMTimeMake(startTime, 1)];
-            [videoParameters setVolume:0  atTime:CMTimeMake(startTime, 1)];
+            [BGMParameters setVolume:5  atTime:_startTime];
+            [videoParameters setVolume:0  atTime:_startTime];
             
         }else if(part.soundType == DLYMiniVlogAudioTypeNarrate){//人声
-            [BGMParameters setVolume:0  atTime:CMTimeMake(startTime, 1)];
-            [videoParameters setVolume:5  atTime:CMTimeMake(startTime, 1)];
+            [videoParameters setVolume:5  atTime:_startTime];
+            [BGMParameters setVolume:0  atTime:_startTime];
         }
     }
     audioMix.inputParameters = @[videoParameters,BGMParameters];
