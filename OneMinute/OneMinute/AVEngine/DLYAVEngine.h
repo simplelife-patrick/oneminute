@@ -47,7 +47,6 @@ typedef void(^FailureBlock)(NSError *error);
 @property (nonatomic, strong) AVCaptureSession                      *captureSession;;
 @property (nonatomic, strong) DLYMiniVlogPart                       *currentPart;
 @property (nonatomic, strong) NSURL                                 *currentProductUrl;
-@property (nonatomic, strong) SuccessBlock                          successBlock;
 
 
 /**
@@ -85,7 +84,14 @@ typedef void(^FailureBlock)(NSError *error);
  @param successBlock 成功回调
  @param failureBlcok 失败回调
  */
-- (void) mergeVideoWithsuccess:(void (^)(long long finishTime))successBlock failure:(void (^)(void))failureBlcok;
+
+/**
+ 合并片段
+
+ @param successBlock 成功回
+ @param failureBlcok 失败回调
+ */
+- (void) mergeVideoWithSuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
 - (void)toggleContentsGravity;
 -(void)focusWithMode:(AVCaptureFocusMode)focusMode exposureMode:(AVCaptureExposureMode)exposureMode atPoint:(CGPoint)point;
 @end
