@@ -77,7 +77,7 @@
     //初始化player
     self.player = [AVPlayer playerWithURL:[NSURL fileURLWithPath:filePath]];
     //视频填充模式 充满
-//    self.videoGravity = AVLayerVideoGravityResize;
+    self.videoGravity = AVLayerVideoGravityResize;
     self.showsPlaybackControls = NO;
     //播放视频
     [self.player play];
@@ -91,7 +91,7 @@
     self.pausePlayerImageView = [[UIImageView alloc] init];
     _pausePlayerImageView.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeight);
     [self.contentOverlayView addSubview:_pausePlayerImageView];
-    self.pausePlayerImageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.pausePlayerImageView.contentMode = UIViewContentModeScaleToFill;
     //获取当前暂停时的截图
     [self getoverPlayerImage];
 }

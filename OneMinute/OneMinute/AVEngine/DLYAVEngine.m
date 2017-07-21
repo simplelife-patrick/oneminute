@@ -881,7 +881,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     return (image);
 }
 #pragma mark - 合并 -
-- (void) mergeVideoWithsuccess:(void (^)(long long finishTime))successBlock failure:(void (^)(void))failureBlcok{
+- (void) mergeVideoWithSuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
     
     NSArray *videoArray = [self.resource loadBDraftParts];
     
@@ -921,13 +921,16 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     exporter.shouldOptimizeForNetworkUse = YES;
     [exporter exportAsynchronouslyWithCompletionHandler:^{
         UISaveVideoAtPathToSavedPhotosAlbum([outputUrl path], self, nil, nil);
-        _finishTime = [self getDateTimeTOMilliSeconds:[NSDate date]];
         DLYLog(@"合成成功");
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"BGM001.m4a" ofType:nil];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
          [self addMusicToVideo:outputUrl audioUrl:BGMUrl completion:^(NSURL *outputUrl) {
             DLYLog(@"音乐合成成功");
         }];
+        _finishTime = [self getDateTimeTOMilliSeconds:[NSDate date]];
+        if (successBlock) {
+            successBlock();
+        }
     }];
 }
 

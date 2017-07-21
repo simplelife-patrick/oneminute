@@ -14,6 +14,7 @@
 #import "DLYMiniVlogTemplate.h"
 #import "DLYResource.h"
 #import "DLYAVEngine.h"
+#import "DLYSession.h"
 
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
@@ -83,7 +84,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 @implementation DLYRecordViewController
 
--(DLYResource *)resource{
+- (DLYResource *)resource{
     if (!_resource) {
         _resource = [[DLYResource alloc] init];
     }
@@ -99,6 +100,42 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     return _focusCursorImageView;
 }
+- (void)viewWillAppear:(BOOL)animated {
+    
+    //According to the preview center focus after launch
+    CGPoint point = self.previewView.center;
+    CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
+    [self setFocusCursorWithPoint:point];
+    [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure atPoint:cameraPoint];
+    
+    NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
+    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+    if (self.newState == 1) {
+        [self deviceChangeAndHomeOnTheRightNewLayout];
+    }else {
+        [self deviceChangeAndHomeOnTheLeftNewLayout];
+    }
+    
+    if (self.isExport) {
+        
+        [self initData];
+        if (!self.deleteButton.isHidden && self.deleteButton) {
+            self.deleteButton.hidden = YES;
+        }
+        if (!self.nextButton.isHidden && self.nextButton) {
+            self.nextButton.hidden = YES;
+        }
+        if (self.recordBtn.isHidden && self.recordBtn) {
+            self.recordBtn.hidden = NO;
+        }
+        if (!self.playView.isHidden && self.playView) {
+            self.playView.hidden = YES;
+        }
+        self.isExport = NO;
+    }
+    
+    [self createPartViewLayout];
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -112,8 +149,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)initData {
     
     DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];
-    partModelArray = [NSMutableArray arrayWithArray:template.parts];
     
+    partModelArray = [NSMutableArray arrayWithArray:template.parts];
     for (int i = 0; i < 6; i++) {
         DLYMiniVlogPart *part = partModelArray[i];
         if (i == 0) {
@@ -125,6 +162,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
     }
+
     
     typeModelArray = [[NSMutableArray alloc]init];
     NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"运动",@"风景",@"人文",nil];
@@ -174,44 +212,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     float duration = (stopDuation - startDuration) * 0.001;
     NSString *duraStr = [NSString stringWithFormat:@"%.3f", duration];
     return duraStr;
-}
-- (void)viewWillAppear:(BOOL)animated {
-    
-    //According to the preview center focus after launch
-    CGPoint point = self.previewView.center;
-    CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
-    [self setFocusCursorWithPoint:point];
-    [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure atPoint:cameraPoint];
-    
-    NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
-    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-    if (self.newState == 1) {
-        [self deviceChangeAndHomeOnTheRightNewLayout];
-    }else {
-        [self deviceChangeAndHomeOnTheLeftNewLayout];
-    }
-    
-    if (self.isExport) {
-        
-        [self initData];
-        self.isExport = NO;
-    }
-
-    
-    if (!self.deleteButton.isHidden && self.deleteButton) {
-        self.deleteButton.hidden = YES;
-    }
-    if (!self.nextButton.isHidden && self.nextButton) {
-        self.nextButton.hidden = YES;
-    }
-    if (self.recordBtn.isHidden && self.recordBtn) {
-        self.recordBtn.hidden = NO;
-    }
-    if (!self.playView.isHidden && self.playView) {
-        self.playView.hidden = YES;
-    }
-    
-    [self createPartViewLayout];
 }
 
 #pragma mark ==== 主界面
@@ -298,7 +298,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.backScrollView.contentSize = CGSizeMake(15, episodeHeight * partModelArray.count + (partModelArray.count - 1) * 2);
     _prepareShootTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(prepareShootAction) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:_prepareShootTimer forMode:NSRunLoopCommonModes];
-
     [_prepareShootTimer setFireDate:[NSDate distantFuture]];
     
     //右侧编辑页面
@@ -330,7 +329,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 #pragma mark - 初始化相机
-- (void) initializationRecorder{
+- (void)initializationRecorder{
     
     self.AVEngine = [[DLYAVEngine alloc] initWithPreviewView:self.previewView];
     self.AVEngine.delegate = self;
@@ -752,6 +751,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }
             self.alert.sureButtonAction = ^{
                 //数组初始化，view布局 弹出选择
+                [weakSelf.resource removeCurrentAllPart];
                 [weakSelf initData];
                 [weakSelf createPartViewLayout];
                 [weakSelf showChooseSceneView];
@@ -858,12 +858,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)onClickNextStep:(UIButton *)sender {
 
     DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
+    fvc.playUrl = self.AVEngine.currentProductUrl;
     fvc.isAll = YES;
     [self.navigationController pushViewController:fvc animated:YES];
 }
 //删除全部视频
 - (void)onClickDelete:(UIButton *)sender {
-    [self.resource removeCurrentAllPart];
     self.alert = [[DLYAlertView alloc] initWithMessage:@"确定删除全部片段?" andCancelButton:@"取消" andSureButton:@"确定"];
     if (self.newState == 1) {
         self.alert.transform = CGAffineTransformMakeRotation(0);
@@ -872,6 +872,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     __weak typeof(self) weakSelf = self;
     self.alert.sureButtonAction = ^{
+        [weakSelf.resource removeCurrentAllPart];
         //数组初始化，view布局
         if (!weakSelf.playView.isHidden && weakSelf.playView) {
             weakSelf.playView.hidden = YES;
@@ -898,8 +899,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //删除某个片段
 - (void)onClickDeletePartVideo:(UIButton *)sender {
-    NSInteger partNum = selectPartTag - 10000 - 1;
-    [self.resource removePartWithPartNum:partNum];
     __weak typeof(self) weakSelf = self;
     self.alert = [[DLYAlertView alloc] initWithMessage:@"确定删除此片段?" andCancelButton:@"取消" andSureButton:@"确定"];
     if (self.newState == 1) {
@@ -908,6 +907,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.alert.transform = CGAffineTransformMakeRotation(M_PI);
     }
     self.alert.sureButtonAction = ^{
+        NSInteger partNum = selectPartTag - 10000 - 1;
+        [weakSelf.resource removePartWithPartNum:partNum];
         [weakSelf deleteSelectPartVideo];
     };
     self.alert.cancelButtonAction = ^{
@@ -963,6 +964,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //取消拍摄按键
 - (void)onClickCancelClick:(UIButton *)sender {
     [self.AVEngine stopRecording];
+
+    NSInteger partNum = selectPartTag - 10000 - 1;
+    [self.resource removePartWithPartNum:partNum];
+    
     [_shootTimer invalidate];
     [UIView animateWithDuration:0.5f animations:^{
         self.progressView.hidden = YES;
@@ -1535,7 +1540,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [seeRush addTarget:self action:@selector(sceneViewClick:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:seeRush];
         
-        
         if(i == selectType)
         {
             view.backgroundColor = RGB(24, 160, 230);
@@ -1673,7 +1677,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }else {
         self.timeNumber.transform = CGAffineTransformMakeRotation(M_PI);
     }
-    self.timeNumber.textColor = RGB(51, 51, 51);
+    self.timeNumber.textColor = RGB(255, 255, 255);
     DLYMiniVlogPart *part = partModelArray[selectVedioPart];
     NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
     self.timeNumber.text = timeArr[0];
@@ -1709,7 +1713,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     if((int)(_shootTime * 100) % 100 == 0)
     {
-        self.timeNumber.text = [NSString stringWithFormat:@"%.0f",[part.duration intValue] - _shootTime];
+        if (![self.timeNumber.text isEqualToString:@"1"]) {
+            self.timeNumber.text = [NSString stringWithFormat:@"%.0f",[part.duration intValue] - _shootTime];
+        }
     }
     
     double partDuration = [part.duration doubleValue];
@@ -1745,7 +1751,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 
             }
         }
-        //        [self createPartView];
         //在这里添加完成页面
         self.progressView.hidden = YES;
         self.timeNumber.hidden = YES;
@@ -1787,11 +1792,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 {//视频自动播放
                     __weak typeof(self) weakSelf = self;
                     DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
-                    [self.AVEngine mergeVideoWithsuccess:^(long long finishTime) {
-                        fvc.playUrl = weakSelf.AVEngine.currentProductUrl;
-                    } failure:^{
-                        //
-                    }];
                     fvc.isAll = YES;
                     fvc.DismissBlock = ^{
                         self.recordBtn.hidden = YES;
@@ -1808,7 +1808,17 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         }
                         self.deleteButton.hidden = NO;
                     };
-                    [self.navigationController pushViewController:fvc animated:YES];
+
+                    [self.AVEngine mergeVideoWithSuccessBlock:^{
+                        
+                        GCD_MAIN(^{
+                            fvc.playUrl = weakSelf.AVEngine.currentProductUrl;
+                            [weakSelf.navigationController pushViewController:fvc animated:YES];
+                        });
+                        
+                    } failure:^(NSError *error) {
+                        
+                    }];
                 }
             }];
         });
