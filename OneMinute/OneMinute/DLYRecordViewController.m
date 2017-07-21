@@ -153,6 +153,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     DLYMiniVlogTemplate *oldTemple = session.currentTemplate;
     int num = 0;
     for (int i = 0; i< oldTemple.parts.count; i++){
+        //获取草稿纸 selectType
+        
         DLYMiniVlogPart *part = oldTemple.parts[i];
         if ([part.recordStatus isEqualToString:@"1"]){
             partModelArray = [NSMutableArray arrayWithArray:oldTemple.parts];
@@ -160,7 +162,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             break;
         }
         if (i == oldTemple.parts.count - 1){
-            
+            selectType = 0;
             DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];
             
             partModelArray = [NSMutableArray arrayWithArray:template.parts];
@@ -192,8 +194,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         if (self.playView.isHidden && self.playView) {
             self.playView.hidden = NO;
         }
-
-        
     }
     
     typeModelArray = [[NSMutableArray alloc]init];
@@ -207,7 +207,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     _shootTime = 0;
-    selectType = 0;
     _prepareTime = 0;
     selectPartTag = 10001;
 }
@@ -1582,6 +1581,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         return;
     }
     selectType = num;
+    //更新草稿值
+    
     for(int i = 0; i < typeModelArray.count; i++)
     {
         UIView * view = (UIView *)[self.view viewWithTag:101 + i];
