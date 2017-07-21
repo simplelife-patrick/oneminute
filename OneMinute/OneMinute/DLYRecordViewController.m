@@ -84,7 +84,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 @implementation DLYRecordViewController
 
--(DLYResource *)resource{
+- (DLYResource *)resource{
     if (!_resource) {
         _resource = [[DLYResource alloc] init];
     }
@@ -113,24 +113,32 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)initData {
     
     //草稿
-//    DLYSession *session = [[DLYSession alloc] init];
-//    session.currentTemplate = @"";
-//    DLYMiniVlogTemplate *temple1 = session.currentTemplate;
-//    NSLog(@"%@", temple1);
+    DLYSession *session = [[DLYSession alloc] init];
+    DLYMiniVlogTemplate *oldTemple = session.currentTemplate;
     
-    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];
-    
-    partModelArray = [NSMutableArray arrayWithArray:template.parts];
-    for (int i = 0; i < 6; i++) {
-        DLYMiniVlogPart *part = partModelArray[i];
-        if (i == 0) {
-            part.prepareRecord = @"1";
-        }else {
-            part.prepareRecord = @"0";
+    for (int i = 0; i< oldTemple.parts.count; i++){
+        DLYMiniVlogPart *part = oldTemple.parts[i];
+        if ([part.recordStatus isEqualToString:@"1"]){
+            partModelArray = [NSMutableArray arrayWithArray:oldTemple.parts];
+            break;
         }
-        part.recordStatus = @"0";
-        
-        part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
+        if (i == oldTemple.parts.count - 1){
+            
+            DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];
+            
+            partModelArray = [NSMutableArray arrayWithArray:template.parts];
+            for (int i = 0; i < 6; i++) {
+                DLYMiniVlogPart *part = partModelArray[i];
+                if (i == 0) {
+                    part.prepareRecord = @"1";
+                }else {
+                    part.prepareRecord = @"0";
+                }
+                part.recordStatus = @"0";
+                
+                part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
+            }
+        }
     }
     
     typeModelArray = [[NSMutableArray alloc]init];
@@ -303,7 +311,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.backScrollView.contentSize = CGSizeMake(15, episodeHeight * partModelArray.count + (partModelArray.count - 1) * 2);
     _prepareShootTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(prepareShootAction) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:_prepareShootTimer forMode:NSRunLoopCommonModes];
-
     [_prepareShootTimer setFireDate:[NSDate distantFuture]];
     
     //右侧编辑页面
@@ -335,7 +342,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 #pragma mark - 初始化相机
-- (void) initializationRecorder{
+- (void)initializationRecorder{
     
     self.AVEngine = [[DLYAVEngine alloc] initWithPreviewView:self.previewView];
     self.AVEngine.delegate = self;
@@ -1711,7 +1718,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     if((int)(_shootTime * 100) % 100 == 0)
     {
-        self.timeNumber.text = [NSString stringWithFormat:@"%.0f",[part.duration intValue] - _shootTime];
+        if (![self.timeNumber.text isEqualToString:@"1"]) {
+            self.timeNumber.text = [NSString stringWithFormat:@"%.0f",[part.duration intValue] - _shootTime];
+        }
     }
     
     double partDuration = [part.duration doubleValue];
@@ -1789,11 +1798,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 {//视频自动播放
                     __weak typeof(self) weakSelf = self;
                     DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
-                    [self.AVEngine mergeVideoWithsuccess:^(long long finishTime) {
-                        fvc.playUrl = weakSelf.AVEngine.currentProductUrl;
-                    } failure:^{
-                        //
-                    }];
                     fvc.isAll = YES;
                     fvc.DismissBlock = ^{
                         self.recordBtn.hidden = YES;
@@ -1810,7 +1814,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         }
                         self.deleteButton.hidden = NO;
                     };
-                    [self.navigationController pushViewController:fvc animated:YES];
+                    [self.AVEngine mergeVideoWithsuccess:^(long long finishTime) {
+                        fvc.playUrl = weakSelf.AVEngine.currentProductUrl;
+                        [weakSelf.navigationController pushViewController:fvc animated:YES];
+
+                    } failure:^{
+                        //
+                    }];
                 }
             }];
         });
