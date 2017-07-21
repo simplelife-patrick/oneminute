@@ -210,8 +210,17 @@
     NSString *draftPath = [self getSubFolderPathWithFolderName:kDraftFolder];
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
-        BOOL isDelete = [fileManager removeItemAtPath:draftPath error:nil];
-        DLYLog(@"%@",isDelete ? @"成功删除所有片段":@"删除所有片段失败");
+        
+        NSArray *draftArray = [self.fileManager contentsOfDirectoryAtPath:draftPath error:nil];
+        
+        for (NSString *path in draftArray) {
+            if ([path hasSuffix:@"mp4"]) {
+                NSString *targetPath = [draftPath stringByAppendingFormat:@"/%@",path];
+                NSURL *targetUrl = [NSURL URLWithString:targetPath];
+                [fileManager removeItemAtURL:targetUrl error:nil];
+            }
+        }
+        DLYLog(@"成功删除所有片段");
     }
 }
 - (NSURL *) getPartUrlWithPartNum:(NSInteger)partNum{
