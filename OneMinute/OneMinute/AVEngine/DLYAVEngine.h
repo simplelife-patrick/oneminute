@@ -28,6 +28,9 @@ typedef NS_ENUM(NSUInteger, DLYRecordModelType) {
 typedef void (^TimeLapseSamplebufferBlock)(CMSampleBufferRef sampleBuffer);
 typedef void (^OnBufferBlock)(CMSampleBufferRef sampleBuffer);
 
+typedef void(^SuccessBlock)(void);
+typedef void(^FailureBlock)(NSError *error);
+
 @protocol DLYCaptureManagerDelegate <NSObject>
 - (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
                                       error:(NSError *)error;
@@ -44,6 +47,8 @@ typedef void (^OnBufferBlock)(CMSampleBufferRef sampleBuffer);
 @property (nonatomic, strong) AVCaptureSession                      *captureSession;;
 @property (nonatomic, strong) DLYMiniVlogPart                       *currentPart;
 @property (nonatomic, strong) NSURL                                 *currentProductUrl;
+@property (nonatomic, strong) SuccessBlock                          successBlock;
+
 
 /**
  初始化相机

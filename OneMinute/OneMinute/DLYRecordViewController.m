@@ -1061,7 +1061,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     {
         DLYMiniVlogPart *part = partModelArray[i - 1];
         UIButton * button = [[UIButton alloc]initWithFrame:CGRectMake(43, (episodeHeight + 2) * (i - 1), 10, episodeHeight)];
-        
+        button.tag = 10000 + i;
         UIEdgeInsets edgeInsets = {0, -43, 0, -5};
         [button setHitEdgeInsets:edgeInsets];
         //辨别改变段是否已经拍摄
@@ -1134,6 +1134,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             // 辨别该片段是否是默认准备拍摄片段
             if([part.prepareRecord isEqualToString:@"1"]){
                 //光标
+                selectPartTag = button.tag;
                 self.prepareView = [[UIView alloc]initWithFrame:CGRectMake(button.x, button.y, 10, 2)];
                 self.prepareView.backgroundColor = [UIColor whiteColor];
                 [self.backScrollView addSubview:self.prepareView];
@@ -1203,8 +1204,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }
         }
         
-        
-        button.tag = 10000 + i;
         [button addTarget:self action:@selector(vedioEpisodeClick:) forControlEvents:UIControlEventTouchUpInside];
         
         button.clipsToBounds = YES;
@@ -1230,7 +1229,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     {
         DLYMiniVlogPart *part = leftModelArray[i - 1];
         UIButton * button = [[UIButton alloc]initWithFrame:CGRectMake(43, (episodeHeight + 2) * (i - 1), 10, episodeHeight)];
-        
+        button.tag = 10000 + (7 - i);
         UIEdgeInsets edgeInsets = {0, -43, 0, -20};
         [button setHitEdgeInsets:edgeInsets];
         //辨别改变段是否已经拍摄
@@ -1310,6 +1309,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             // 辨别该片段是否是默认准备拍摄片段
             if([part.prepareRecord isEqualToString:@"1"])
             {
+                selectPartTag = button.tag;
                 //光标
                 self.prepareView = [[UIView alloc]initWithFrame:CGRectMake(button.x, button.y + button.height - 2, 10, 2)];
                 self.prepareView.backgroundColor = [UIColor whiteColor];
@@ -1386,7 +1386,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }
         }
         //        button.tag = 10000 + i;
-        button.tag = 10000 + (7 - i);
         [button addTarget:self action:@selector(vedioEpisodeClick:) forControlEvents:UIControlEventTouchUpInside];
         
         button.clipsToBounds = YES;
