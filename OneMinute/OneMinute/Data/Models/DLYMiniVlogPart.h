@@ -25,15 +25,13 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogRecordType)
 /**
  音轨方案
 
- - DLYMiniVlogAudioTypeNormal: 空镜
+ - DLYMiniVlogAudioTypeMusic: 空镜
  - DLYMiniVlogAudioTypeNarrate: 人声
- - DLYMiniVlogAudioTypeMusic: 配乐
  */
 typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
 {
-    DLYMiniVlogAudioTypeNormal = 0,
+    DLYMiniVlogAudioTypeMusic = 0,
     DLYMiniVlogAudioTypeNarrate,
-    DLYMiniVlogAudioTypeMusic
 };
 
 /**

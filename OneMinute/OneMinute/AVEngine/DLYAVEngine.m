@@ -18,6 +18,7 @@
 #import "DLYTransitionInstructions.h"
 #import "DLYVideoTransition.h"
 #import "DLYResource.h"
+#import "DLYSession.h"
 
 @interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,AVCaptureFileOutputRecordingDelegate,CAAnimationDelegate>
 {
@@ -68,6 +69,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 
 @property (nonatomic, strong) DLYResource                       *resource;
 @property (nonatomic, assign) BOOL                              isTime;
+@property (nonatomic, strong) DLYSession                        *session;
+
 
 
 @end
@@ -113,6 +116,12 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         _currentPart = [[DLYMiniVlogPart alloc] init];
     }
     return _currentPart;
+}
+-(DLYSession *)session{
+    if (!_session) {
+        _session = [[DLYSession alloc] init];
+    }
+    return _session;
 }
 - (void) initializationRecorder{
     
@@ -914,6 +923,11 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         UISaveVideoAtPathToSavedPhotosAlbum([outputUrl path], self, nil, nil);
         _finishTime = [self getDateTimeTOMilliSeconds:[NSDate date]];
         DLYLog(@"合成成功");
+        NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"BGM001.m4a" ofType:nil];
+        NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
+         [self addMusicToVideo:outputUrl audioUrl:BGMUrl completion:^(NSURL *outputUrl) {
+            DLYLog(@"音乐合成成功");
+        }];
     }];
 }
 
@@ -1092,21 +1106,10 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     //AVAssetExportSession用于合并文件，导出合并后文件，presetName文件的输出类型
     AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
     
-    //混合后的视频输出路径
-    CocoaSecurityResult * result = [CocoaSecurity md5:[[NSDate date] description]];
-    
-    NSArray *homeDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
-    NSString *documentsDir = [homeDir objectAtIndex:0];
-    NSString *filePath = [documentsDir stringByAppendingPathComponent:@"DubbedVideos"];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:nil];
-    }
-    NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",filePath, result.hex];
-    
-    NSURL *outPutUrl = [NSURL fileURLWithPath:outputPath];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:outputPath])
+    NSURL *outPutUrl = [self.resource saveProductToSandbox];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:outPutUrl.absoluteString])
     {
-        [[NSFileManager defaultManager] removeItemAtPath:outputPath error:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:outPutUrl.absoluteString error:nil];
     }
     
     //控制音量
@@ -1117,27 +1120,24 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     AVMutableAudioMixInputParameters *videoParameters = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:originalAudioCompositionTrack];
     AVMutableAudioMixInputParameters *BGMParameters = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:audioCompositionTrack];
     
-    [BGMParameters setVolume:5  atTime:kCMTimeZero];
-    [BGMParameters setVolume:0  atTime:CMTimeMake(15, 1)];
+    NSArray *partArray = self.session.currentTemplate.parts;
     
-    [videoParameters setVolume:5  atTime:CMTimeMake(15, 1)];
-    [videoParameters setVolume:0  atTime:CMTimeMake(30, 1)];
-    
-    [BGMParameters setVolume:5  atTime:CMTimeMake(30, 1)];
-    [BGMParameters setVolume:0  atTime:CMTimeMake(45, 1)];
-    
-    [videoParameters setVolume:5  atTime:CMTimeMake(45, 1)];
-    [videoParameters setVolume:0  atTime:CMTimeMake(60, 1)];
-    
-    [BGMParameters setVolume:5  atTime:CMTimeMake(60, 1)];
-    
-    
-    //    [BGMParameters setVolumeRampFromStartVolume:0 toEndVolume:5 timeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(15, 1))];//BGM
-    //    [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:5 timeRange:CMTimeRangeMake(CMTimeMake(15, 1), CMTimeMake(30, 1))];//original
-    //
-    //    [BGMParameters setVolumeRampFromStartVolume:0 toEndVolume:5 timeRange:CMTimeRangeMake(CMTimeMake(30, 1), CMTimeMake(45, 1))];//BGM
-    //    [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:5 timeRange:CMTimeRangeMake(CMTimeMake(45, 1), CMTimeMake(60, 1))];//original
-    
+    for (NSInteger i = 0; i < partArray.count; i++) {
+        
+        DLYMiniVlogPart *part = partArray[i];
+        
+        NSArray *startArr = [part.starTime componentsSeparatedByString:@":"];
+        NSString *timeStr = startArr[1];
+        float startTime = [timeStr floatValue];
+        if (part.soundType == DLYMiniVlogAudioTypeMusic) {//空镜
+            [BGMParameters setVolume:5  atTime:CMTimeMake(startTime, 1)];
+            [videoParameters setVolume:0  atTime:CMTimeMake(startTime, 1)];
+            
+        }else if(part.soundType == DLYMiniVlogAudioTypeNarrate){//人声
+            [BGMParameters setVolume:0  atTime:CMTimeMake(startTime, 1)];
+            [videoParameters setVolume:5  atTime:CMTimeMake(startTime, 1)];
+        }
+    }
     audioMix.inputParameters = @[videoParameters,BGMParameters];
     
     //输出设置
