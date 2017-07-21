@@ -19,9 +19,6 @@
 #import "DLYVideoTransition.h"
 #import "DLYResource.h"
 
-typedef void(^SuccessBlock)(void);
-typedef void(^FailureBlock)(NSError *error);
-
 @interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,AVCaptureFileOutputRecordingDelegate,CAAnimationDelegate>
 {
     CMTime defaultVideoMaxFrameDuration;
@@ -37,7 +34,7 @@ typedef void(^FailureBlock)(NSError *error);
     long long _startTime;
     long long _finishTime;
     CGSize videoSize;
-    CGFloat desiredFps;
+    NSURL *fileUrl;
 }
 
 @property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;
@@ -48,7 +45,6 @@ typedef void(^FailureBlock)(NSError *error);
 @property (nonatomic, strong) AVCaptureDeviceInput              *frontCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *audioMicInput;
 @property (nonatomic, strong) AVCaptureDeviceFormat             *defaultFormat;
-@property (nonatomic, strong) NSURL                             *fileURL;
 @property (nonatomic, strong) AVCaptureDevice                   *videoDevice;
 @property (nonatomic, strong) AVCaptureConnection               *audioConnection;
 
@@ -412,8 +408,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         default:
             break;
     }
-    DLYLog(@"当前旋转角度 :%f",angle);
-    
     return angle;
 }
 - (void)updateOrientationWithPreviewView:(UIView *)previewView {
@@ -675,22 +669,25 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
     
     self.currentPart = part;
+    CGFloat desiredFps = 0.0;
     
-    dispatch_async(movieWritingQueue, ^{
+    if (part.recordType == DLYRecordSlomoMode) {
         
-        if (part.recordType == DLYRecordSlomoMode) {
-            
-            DLYLog(@"The record type is Solomo");
-            desiredFps = 240.0;
-        }else if(part.recordType == DLYRecordTimeLapseMode){
-            
-            DLYLog(@"The record type is TimeLapse");
-            _isTime = YES;
-        }else{
-            
-            DLYLog(@"The record type is Normal");
-        }
+        DLYLog(@"The record type is Solomo");
+        desiredFps = 240.0;
+    }else if(part.recordType == DLYRecordTimeLapseMode){
         
+        DLYLog(@"The record type is TimeLapse");
+        desiredFps = 60.0;
+        _isTime = YES;
+    }else{
+        
+        DLYLog(@"The record type is Normal");
+        desiredFps = 60.0;
+    }
+    
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(queue, ^{
         
         if (desiredFps > 0.0) {
             [self switchFormatWithDesiredFPS:desiredFps];
@@ -698,27 +695,26 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         else {
             [self resetFormat];
         }
-        
-        UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-        
-        // Don't update the reference orientation when the device orientation is face up/down or unknown.
-        if (UIDeviceOrientationIsPortrait(orientation) || UIDeviceOrientationIsLandscape(orientation)) {
-            referenceOrientation = (AVCaptureVideoOrientation)orientation;
-        }
-        
-        DLYResource *resource = [[DLYResource alloc] init];
-        self.fileURL = [resource saveDraftPartWithPartNum:part.partNum];
-        
-        NSError *error;
-        self.assetWriter = [[AVAssetWriter alloc] initWithURL:self.fileURL fileType:AVFileTypeMPEG4 error:&error];
-        DLYLog(@"AVAssetWriter error:%@", error);
-        
-        recordingWillBeStarted = YES;
     });
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    
+    // Don't update the reference orientation when the device orientation is face up/down or unknown.
+    if (UIDeviceOrientationIsPortrait(orientation) || UIDeviceOrientationIsLandscape(orientation)) {
+        referenceOrientation = (AVCaptureVideoOrientation)orientation;
+    }
+    
+    DLYResource *resource = [[DLYResource alloc] init];
+    fileUrl = [resource saveDraftPartWithPartNum:part.partNum];
+    
+    NSError *error;
+    self.assetWriter = [[AVAssetWriter alloc] initWithURL:fileUrl fileType:AVFileTypeMPEG4 error:&error];
+    DLYLog(@"AVAssetWriter error:%@", error);
+    
+    recordingWillBeStarted = YES;
 }
 #pragma mark - 停止录制 -
 - (void)stopRecording {
-        
+    
     dispatch_async(movieWritingQueue, ^{
         
         _isRecording = NO;
@@ -734,7 +730,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 if ([self.delegate respondsToSelector:@selector(didFinishRecordingToOutputFileAtURL:error:)]) {
-                    [self.delegate didFinishRecordingToOutputFileAtURL:self.fileURL error:nil];
+                    [self.delegate didFinishRecordingToOutputFileAtURL:fileUrl error:nil];
                 }
             });
         }];
@@ -916,11 +912,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     exporter.shouldOptimizeForNetworkUse = YES;
     [exporter exportAsynchronouslyWithCompletionHandler:^{
         UISaveVideoAtPathToSavedPhotosAlbum([outputUrl path], self, nil, nil);
-        
         _finishTime = [self getDateTimeTOMilliSeconds:[NSDate date]];
-//        DLYLog(@"The operation of merger takes %@ s",_finishTime);
+        DLYLog(@"合成成功");
     }];
-    
 }
 
 -(long long)getDateTimeTOMilliSeconds:(NSDate *)datetime
@@ -936,16 +930,13 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     CMPersistentTrackID trackID = kCMPersistentTrackID_Invalid;
     
-    AVMutableCompositionTrack *compositionTrackA =                          // 1
-    [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo
+    AVMutableCompositionTrack *compositionTrackA = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo
                                   preferredTrackID:trackID];
     
-    AVMutableCompositionTrack *compositionTrackB =
-    [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo
+    AVMutableCompositionTrack *compositionTrackB = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo
                                   preferredTrackID:trackID];
     
-    AVMutableCompositionTrack *compositionTrackAudio =
-    [self.composition addMutableTrackWithMediaType:AVMediaTypeAudio
+    AVMutableCompositionTrack *compositionTrackAudio = [self.composition addMutableTrackWithMediaType:AVMediaTypeAudio
                                   preferredTrackID:trackID];
     
     NSArray *videoTracks = @[compositionTrackA, compositionTrackB];
@@ -1039,21 +1030,19 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     int layerInstructionIndex = 1;
     
-    NSArray *compositionInstructions = vc.instructions;                     // 1
+    NSArray *compositionInstructions = vc.instructions;
     
     for (AVMutableVideoCompositionInstruction *vci in compositionInstructions) {
         
-        if (vci.layerInstructions.count == 2) {                             // 2
+        if (vci.layerInstructions.count == 2) {
             
             DLYTransitionInstructions *instructions = [[DLYTransitionInstructions alloc] init];
             
             instructions.compositionInstruction = vci;
             
-            instructions.fromLayerInstruction =                             // 3
-            (AVMutableVideoCompositionLayerInstruction *)vci.layerInstructions[1 - layerInstructionIndex];
+            instructions.fromLayerInstruction = (AVMutableVideoCompositionLayerInstruction *)vci.layerInstructions[1 - layerInstructionIndex];
             
-            instructions.toLayerInstruction =
-            (AVMutableVideoCompositionLayerInstruction *)vci.layerInstructions[layerInstructionIndex];
+            instructions.toLayerInstruction = (AVMutableVideoCompositionLayerInstruction *)vci.layerInstructions[layerInstructionIndex];
             
             [transitionInstructions addObject:instructions];
             
@@ -1062,8 +1051,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     
     for (NSUInteger i = 0; i < transitionInstructions.count; i++) {
-        DLYTransitionInstructions *tis = transitionInstructions[i];
         
+        DLYTransitionInstructions *tis = transitionInstructions[i];
         DLYVideoTransition *transition = [DLYVideoTransition videoTransition];
         transition.type = DLYVideoTransitionTypePush;
         transition.direction = DLYPushTransitionDirectionLeftToRight;
