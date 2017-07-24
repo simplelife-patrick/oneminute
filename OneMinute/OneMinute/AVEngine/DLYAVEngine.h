@@ -92,6 +92,5 @@ typedef void(^FailureBlock)(NSError *error);
  @param failureBlcok 失败回调
  */
 - (void) mergeVideoWithSuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
-- (void)toggleContentsGravity;
 -(void)focusWithMode:(AVCaptureFocusMode)focusMode exposureMode:(AVCaptureExposureMode)exposureMode atPoint:(CGPoint)point;
 @end

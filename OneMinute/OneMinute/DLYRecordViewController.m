@@ -19,7 +19,7 @@
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
 
-@interface DLYRecordViewController ()<DLYCaptureManagerDelegate>
+@interface DLYRecordViewController ()<DLYCaptureManagerDelegate,UIAlertViewDelegate>
 {
     //    //记录选中的拍摄模式 10003 延时 10004 普通 10005 慢动作
     //    NSInteger selectModel;
@@ -44,6 +44,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     BOOL isNeededToSave;
     BOOL isTime;
     
+    BOOL isMicGranted;//麦克风权限是否被允许
 }
 @property (nonatomic, strong) DLYAVEngine                       *AVEngine;
 @property (nonatomic, strong) UIView                            *previewView;
@@ -331,12 +332,67 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark - 初始化相机
 - (void)initializationRecorder{
     
+//    AVAuthorizationStatus videoAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+//    if(videoAuthStatus != AVAuthorizationStatusAuthorized){//如果摄像头未开启一直去走检测方法
+//        [self examinePhotoAuth];
+//    }
+//    
+//    [[AVAudioSession sharedInstance]requestRecordPermission:^(BOOL granted) {
+//        if (!granted)
+//        {
+//            isMicGranted = NO;
+//            [self examineMicroPhoneAuth];
+//        }
+//    }];
+//    
+//    if(videoAuthStatus == AVAuthorizationStatusAuthorized && isMicGranted){//如果摄像头和麦克风权限都是打开状态才能去请求开播数据
+//        //摄像头和麦克风都是打开的
+//    }
     self.AVEngine = [[DLYAVEngine alloc] initWithPreviewView:self.previewView];
     self.AVEngine.delegate = self;
-}
-- (void)handleDoubleTap:(UITapGestureRecognizer *)sender {
     
-    [self.AVEngine toggleContentsGravity];
+}
+#pragma mark- 检测相机权限
+-(void)examinePhotoAuth{
+    NSString *mediaType = AVMediaTypeVideo;// Or AVMediaTypeAudio
+    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:mediaType];
+    if(authStatus ==AVAuthorizationStatusRestricted){//受限制的
+        NSLog(@"Restricted");
+    }else if(authStatus == AVAuthorizationStatusDenied){//未允许
+        
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请在设备的设置-隐私-相机中允许访问相机。" delegate:self cancelButtonTitle:nil otherButtonTitles:@"去设置", nil];
+        [alertView show];
+        return;
+    }else if(authStatus == AVAuthorizationStatusAuthorized){//允许访问
+        
+    }else if(authStatus == AVAuthorizationStatusNotDetermined){//确定
+        [AVCaptureDevice requestAccessForMediaType:mediaType completionHandler:^(BOOL granted) {
+            if(granted){//点击允许访问时调用
+                //用户明确许可与否，媒体需要捕获，但用户尚未授予或拒绝许可。
+                NSLog(@"Granted access to %@", mediaType);
+            }
+            else {
+                NSLog(@"Not granted access to %@", mediaType);
+            }
+        }];
+    }else {
+        NSLog(@"Unknown authorization status");
+    }
+}
+#pragma mark- 检测麦克风权限
+-(void)examineMicroPhoneAuth{
+    [[AVAudioSession sharedInstance]requestRecordPermission:^(BOOL granted) {
+        if (!granted)
+        {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请在设备的设置-隐私-麦克风中允许访问麦克风。" delegate:self cancelButtonTitle:nil otherButtonTitles:@"去设置", nil];
+            [alertView show];
+        }
+        else
+        {
+            isMicGranted = YES;
+            
+        }
+    }];
 }
 
 #pragma mark -触屏自动调整曝光-
@@ -545,7 +601,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 UIImage *tempImage = [self getKeyImage:_TimeLapseUrl intervalTime:i];
                 [self.imageArray addObject:tempImage];
             }
-//            NSLog(@"取到 %lu 张图片",_imageArray.count);
+            DLYLog(@"取到 %lu 张图片",_imageArray.count);
             
             CocoaSecurityResult * result = [CocoaSecurity md5:[[NSDate date] description]];
             

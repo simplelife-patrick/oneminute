@@ -32,10 +32,12 @@
     BOOL recordingWillBeStarted;
     DLYOutputModeType currentOutputMode;
     
-    long long _startTime;
-    long long _finishTime;
+    CMTime _startTime;
+    CMTime _stopTime;
     CGSize videoSize;
     NSURL *fileUrl;
+    
+    BOOL isMicGranted;//麦克风权限是否被允许
 }
 
 @property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;
@@ -604,17 +606,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 
 #pragma mark - Public
 
-- (void)toggleContentsGravity {
-    
-    if ([self.previewLayer.videoGravity isEqualToString:AVLayerVideoGravityResizeAspectFill]) {
-        
-        self.previewLayer.videoGravity = AVLayerVideoGravityResizeAspect;
-    }
-    else {
-        self.previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-    }
-}
-
 - (void)resetFormat {
     
     BOOL isRunning = self.captureSession.isRunning;
@@ -682,7 +673,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     if (part.recordType == DLYRecordSlomoMode) {
         
-        DLYLog(@"The record type is Solomo");
+        DLYLog(@"The record type is Slomo");
         desiredFps = 240.0;
     }else if(part.recordType == DLYRecordTimeLapseMode){
         
@@ -921,13 +912,13 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     exporter.shouldOptimizeForNetworkUse = YES;
     [exporter exportAsynchronouslyWithCompletionHandler:^{
         UISaveVideoAtPathToSavedPhotosAlbum([outputUrl path], self, nil, nil);
-        DLYLog(@"合成成功");
+        DLYLog(@"草稿片段合成成功");
+        [self.resource removeCurrentAllPart];
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"BGM001.m4a" ofType:nil];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
          [self addMusicToVideo:outputUrl audioUrl:BGMUrl completion:^(NSURL *outputUrl) {
             DLYLog(@"音乐合成成功");
         }];
-        _finishTime = [self getDateTimeTOMilliSeconds:[NSDate date]];
         if (successBlock) {
             successBlock();
         }
@@ -1132,12 +1123,12 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         NSArray *startArr = [part.starTime componentsSeparatedByString:@":"];
         NSString *startTimeStr = startArr[1];
         float startTime = [startTimeStr floatValue];
-        CMTime _startTime = CMTimeMake(startTime, 1);
+        _startTime = CMTimeMake(startTime, 1);
         
         NSArray *stopArr = [part.stopTime componentsSeparatedByString:@":"];
         NSString *stopTimeStr = stopArr[1];
         float stopTime = [stopTimeStr floatValue];
-        CMTime _stopTime = CMTimeMake(stopTime, 1);
+        _stopTime = CMTimeMake(stopTime, 1);
         
         if (part.soundType == DLYMiniVlogAudioTypeMusic) {//空镜
             [BGMParameters setVolume:5  atTime:_startTime];
