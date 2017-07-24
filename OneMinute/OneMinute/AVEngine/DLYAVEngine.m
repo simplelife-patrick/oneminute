@@ -425,7 +425,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
     // Don't update the reference orientation when the device orientation is face up/down or unknown.
-    if (UIDeviceOrientationIsPortrait(orientation) || UIDeviceOrientationIsLandscape(orientation)) {
+    if (UIDeviceOrientationIsLandscape(orientation)) {
         referenceOrientation = (AVCaptureVideoOrientation)orientation;
     }
     
@@ -699,7 +699,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
     
     // Don't update the reference orientation when the device orientation is face up/down or unknown.
-    if (UIDeviceOrientationIsPortrait(orientation) || UIDeviceOrientationIsLandscape(orientation)) {
+    if (UIDeviceOrientationIsLandscape(orientation)) {
         referenceOrientation = (AVCaptureVideoOrientation)orientation;
     }
     
@@ -913,7 +913,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     [exporter exportAsynchronouslyWithCompletionHandler:^{
         UISaveVideoAtPathToSavedPhotosAlbum([outputUrl path], self, nil, nil);
         DLYLog(@"草稿片段合成成功");
-        [self.resource removeCurrentAllPart];
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"BGM001.m4a" ofType:nil];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
          [self addMusicToVideo:outputUrl audioUrl:BGMUrl completion:^(NSURL *outputUrl) {
