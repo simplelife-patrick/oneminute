@@ -183,6 +183,7 @@
 //跳过按钮点击事件
 - (void)onClickSkip {
     
+    [MobClick event:@"Skip"];
     //隐藏所有控件
     self.titleField.hidden = YES;
     self.skipButton.hidden = YES;
@@ -198,6 +199,8 @@
 
 #pragma mark - 页面将要显示
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [MobClick beginLogPageView:@"ExportView"];
     if (self.newState == 1) {
         NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
         [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
@@ -205,6 +208,12 @@
         NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
         [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
     }
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [MobClick endLogPageView:@"ExportView"];
 }
 #pragma mark - 重写父类方法
 - (void)deviceChangeAndHomeOnTheLeft {
