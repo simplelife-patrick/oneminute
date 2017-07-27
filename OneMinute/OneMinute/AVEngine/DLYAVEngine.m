@@ -20,7 +20,7 @@
 #import "DLYResource.h"
 #import "DLYSession.h"
 
-@interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,AVCaptureFileOutputRecordingDelegate,CAAnimationDelegate>
+@interface DLYAVEngine ()
 {
     CMTime defaultVideoMaxFrameDuration;
     BOOL readyToRecordAudio;
@@ -30,17 +30,19 @@
     dispatch_queue_t movieWritingQueue;
     CMBufferQueueRef previewBufferQueue;
     BOOL recordingWillBeStarted;
-    DLYOutputModeType currentOutputMode;
     
-    long long _startTime;
-    long long _finishTime;
+    CMTime _startTime;
+    CMTime _stopTime;
     CGSize videoSize;
     NSURL *fileUrl;
+    
+    BOOL isMicGranted;//麦克风权限是否被允许
 }
 
 @property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;
 @property (nonatomic, strong) AVCaptureAudioDataOutput          *audioOutput;
 @property (nonatomic, strong) AVCaptureMovieFileOutput          *movieFileOutput;
+@property (nonatomic, strong) AVCaptureFileOutput               *captureFileOutput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *currentVideoDeviceInput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *backCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *frontCameraInput;
@@ -53,7 +55,6 @@
 @property (nonatomic, strong) AVAssetWriter                     *assetWriter;
 @property (nonatomic, strong) AVAssetWriterInput                *assetWriterVideoInput;
 @property (nonatomic, strong) AVAssetWriterInput                *assetWriterAudioInput;
-@property (nonatomic, copy)   NSMutableArray                    *imageArray;
 
 @property (nonatomic, strong) GPUImageMovie                     *alphaMovie;
 @property (nonatomic, strong) GPUImageMovie                     *bodyMovie;
@@ -63,12 +64,10 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 
 @property (nonatomic, strong) AVMutableComposition              *composition;
 @property (nonatomic, strong) NSMutableArray                    *passThroughTimeRanges;
-@property (nonatomic, strong) NSMutableArray                    *transitionTimeRanges;
+@property (nonatomic, strong) NSMutableArray                    *transitionTimeRangeArray;
 @property (nonatomic, strong) UIImagePickerController           *moviePicker;
-@property (nonatomic, copy)   NSMutableArray                    *videoPathArray;
 
 @property (nonatomic, strong) DLYResource                       *resource;
-@property (nonatomic, assign) BOOL                              isTime;
 @property (nonatomic, strong) DLYSession                        *session;
 
 
@@ -97,6 +96,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     _audioConnection  = nil;
     _videoConnection  = nil;
 }
+#pragma mark - lazy load -
 
 -(DLYResource *)resource{
     if (!_resource) {
@@ -123,12 +123,21 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     return _session;
 }
-- (void) initializationRecorder{
-    
-//    self.captureManager = [[DLYCaptureManager alloc] initWithPreviewView:self.previewView];
-//    
-//    self.captureManager.delegate = self;
+
+-(AVMutableComposition *)composition{
+    if (!_composition) {
+        _composition = [AVMutableComposition composition];
+    }
+    return _composition;
 }
+
+-(NSMutableArray *)transitionTimeRangeArray{
+    if (!_transitionTimeRangeArray) {
+        _transitionTimeRangeArray = [NSMutableArray array];
+    }
+    return _transitionTimeRangeArray;
+}
+
 -(AVCaptureSession *)captureSession{
     if (_captureSession == nil) {
         _captureSession = [[AVCaptureSession alloc] init];
@@ -300,6 +309,12 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     return _movieFileOutput;
 }
+-(AVCaptureFileOutput *)captureFileOutput{
+    if (_captureFileOutput) {
+        _captureFileOutput = [[AVCaptureFileOutput alloc] init];
+    }
+    return _captureFileOutput;
+}
 //视频输出
 - (AVCaptureVideoDataOutput *)videoOutput {
     if (_videoOutput == nil) {
@@ -423,7 +438,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
     // Don't update the reference orientation when the device orientation is face up/down or unknown.
-    if (UIDeviceOrientationIsPortrait(orientation) || UIDeviceOrientationIsLandscape(orientation)) {
+    if (UIDeviceOrientationIsLandscape(orientation)) {
         referenceOrientation = (AVCaptureVideoOrientation)orientation;
     }
     
@@ -484,7 +499,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
                                               [NSNumber numberWithInteger:dimensions.height], AVVideoHeightKey,
                                               [NSDictionary dictionaryWithObjectsAndKeys:
                                                [NSNumber numberWithInteger:bitsPerSecond], AVVideoAverageBitRateKey,
-                                               [NSNumber numberWithInteger:30], AVVideoMaxKeyFrameIntervalKey,
+                                               [NSNumber numberWithInteger:90], AVVideoMaxKeyFrameIntervalKey,
                                                nil], AVVideoCompressionPropertiesKey,
                                               nil];
     
@@ -538,7 +553,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     if ([self.assetWriter canApplyOutputSettings:audioCompressionSettings forMediaType:AVMediaTypeAudio]) {
         
         self.assetWriterAudioInput = [[AVAssetWriterInput alloc] initWithMediaType:AVMediaTypeAudio
-                                                                    outputSettings:audioCompressionSettings];
+outputSettings:audioCompressionSettings];
         
         self.assetWriterAudioInput.expectsMediaDataInRealTime = YES;
         
@@ -585,7 +600,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
                 if (![self.assetWriterVideoInput appendSampleBuffer:sampleBuffer]) {
                     
                     DLYLog(@"isRecording:%d, willBeStarted:%d", self.isRecording, recordingWillBeStarted);
-                    DLYLog(@"AVAssetWriterInput video appendSapleBuffer error:%@", self.assetWriter.error);
+                    DLYLog(@"AVAssetWriterInput video appendSampleBuffer error:%@", self.assetWriter.error);
                 }
             }
         }
@@ -603,17 +618,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 }
 
 #pragma mark - Public
-
-- (void)toggleContentsGravity {
-    
-    if ([self.previewLayer.videoGravity isEqualToString:AVLayerVideoGravityResizeAspectFill]) {
-        
-        self.previewLayer.videoGravity = AVLayerVideoGravityResizeAspect;
-    }
-    else {
-        self.previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-    }
-}
 
 - (void)resetFormat {
     
@@ -652,7 +656,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             int32_t width = dimensions.width;
             
             if (range.minFrameRate <= desiredFPS && desiredFPS <= range.maxFrameRate && width >= maxWidth) {
-                
+                DLYLog(@"最终设定的最佳帧率: %f",desiredFPS);
                 selectedFormat = format;
                 frameRateRange = range;
                 maxWidth = width;
@@ -680,35 +684,44 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     self.currentPart = part;
     CGFloat desiredFps = 0.0;
     
-    if (part.recordType == DLYRecordSlomoMode) {
+    if (part.recordType == DLYMiniVlogRecordTypeSlomo) {
         
-        DLYLog(@"The record type is Solomo");
+        DLYLog(@"The record type is Slomo");
         desiredFps = 240.0;
-    }else if(part.recordType == DLYRecordTimeLapseMode){
+    }else if(part.recordType == DLYMiniVlogRecordTypeTimelapse){
         
         DLYLog(@"The record type is TimeLapse");
         desiredFps = 60.0;
         _isTime = YES;
     }else{
-        
-        DLYLog(@"The record type is Normal");
         desiredFps = 60.0;
+        DLYLog(@"The record type is Normal");
     }
-    
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(queue, ^{
-        
-        if (desiredFps > 0.0) {
-            [self switchFormatWithDesiredFPS:desiredFps];
-        }
-        else {
-            [self resetFormat];
-        }
-    });
+    [self switchFormatWithDesiredFPS:desiredFps];
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        if (desiredFps > 0.0) {
+//            [self switchFormatWithDesiredFPS:desiredFps];
+//        }
+//        else {
+//            [self resetFormat];
+//        }
+//        
+//    });
+//    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+//    dispatch_async(queue, ^{
+//    
+//        if (desiredFps > 0.0) {
+//            [self switchFormatWithDesiredFPS:desiredFps];
+//        }
+//        else {
+//            [self resetFormat];
+//        }
+//    
+//    });
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
     
     // Don't update the reference orientation when the device orientation is face up/down or unknown.
-    if (UIDeviceOrientationIsPortrait(orientation) || UIDeviceOrientationIsLandscape(orientation)) {
+    if (UIDeviceOrientationIsLandscape(orientation)) {
         referenceOrientation = (AVCaptureVideoOrientation)orientation;
     }
     
@@ -735,7 +748,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             self.assetWriterVideoInput = nil;
             self.assetWriterAudioInput = nil;
             self.assetWriter = nil;
-            
+
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 if ([self.delegate respondsToSelector:@selector(didFinishRecordingToOutputFileAtURL:error:)]) {
@@ -760,19 +773,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             self.assetWriter = nil;
         }];
     });
-}
-#pragma mark - AVCaptureFileOutputRecordingDelegate
-- (void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections{
-    _isRecording = YES;
-}
-
-- (void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error{
-    //    [self saveRecordedFile:outputFileURL];
-    _isRecording = NO;
-    
-    if ([self.delegate respondsToSelector:@selector(didFinishRecordingToOutputFileAtURL:error:)]) {
-        [self.delegate didFinishRecordingToOutputFileAtURL:outputFileURL error:error];
-    }
 }
 
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
@@ -891,6 +891,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     
     Float64 tmpDuration =0.0f;
+    
     for (int i=0; i < videoArray.count; i++)
     {
         AVURLAsset *videoAsset = [[AVURLAsset alloc]initWithURL:videoArray[i] options:nil];
@@ -901,7 +902,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([videoAsset tracksWithMediaType:AVMediaTypeVideo].count != 0) {
             videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
         }
-        if ([videoAsset tracksWithMediaType:AVMediaTypeAudio].count!= 0) {
+        if ([videoAsset tracksWithMediaType:AVMediaTypeAudio].count != 0) {
             audioAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
         }
         
@@ -920,14 +921,13 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     exporter.outputFileType = AVFileTypeMPEG4;
     exporter.shouldOptimizeForNetworkUse = YES;
     [exporter exportAsynchronouslyWithCompletionHandler:^{
-        UISaveVideoAtPathToSavedPhotosAlbum([outputUrl path], self, nil, nil);
-        DLYLog(@"合成成功");
+        DLYLog(@"草稿片段mgerge成功");
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"BGM001.m4a" ofType:nil];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
-         [self addMusicToVideo:outputUrl audioUrl:BGMUrl completion:^(NSURL *outputUrl) {
-            DLYLog(@"音乐合成成功");
+        
+        [self addMusicToVideo:outputUrl audioUrl:BGMUrl completion:^(NSURL *outputUrl) {
+            DLYLog(@"合并配音流程结束!");
         }];
-        _finishTime = [self getDateTimeTOMilliSeconds:[NSDate date]];
         if (successBlock) {
             successBlock();
         }
@@ -937,42 +937,57 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 -(long long)getDateTimeTOMilliSeconds:(NSDate *)datetime
 {
     NSTimeInterval interval = [datetime timeIntervalSince1970];
-    long long totalMilliseconds = interval*1000 ;
+    long long totalMilliseconds = interval*1000;
     return totalMilliseconds;
 }
 #pragma mark - 转场 -
-- (void)buildCompositionTracks {
+
+- (void) addTransitionEffectSuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
     
-    self.composition = [AVMutableComposition composition];
+    [self buildCompositionTracks];
+    
+    AVVideoComposition *videoComposition = [self buildVideoComposition];
+    [self transitionInstructionsInVideoComposition:videoComposition];
+    
+    NSURL *outPutUrl = [self.resource saveProductToSandbox];
+    
+    AVAssetExportSession *exporter = [[AVAssetExportSession alloc] initWithAsset:self.composition presetName:AVAssetExportPresetHighestQuality];
+    exporter.outputURL = outPutUrl;
+    exporter.outputFileType = AVFileTypeMPEG4;
+    exporter.shouldOptimizeForNetworkUse = YES;
+    [exporter exportAsynchronouslyWithCompletionHandler:^{
+        UISaveVideoAtPathToSavedPhotosAlbum([outPutUrl path], self, nil, nil);
+        NSLog(@"过渡动画合成完毕");
+        if (successBlock) {
+            successBlock();
+        }
+    }];
+    
+}
+- (void)buildCompositionTracks {
     
     CMPersistentTrackID trackID = kCMPersistentTrackID_Invalid;
     
-    AVMutableCompositionTrack *compositionTrackA = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo
-                                  preferredTrackID:trackID];
+    AVMutableCompositionTrack *compositionTrackA = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
     
-    AVMutableCompositionTrack *compositionTrackB = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo
-                                  preferredTrackID:trackID];
+    AVMutableCompositionTrack *compositionTrackB = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
     
-    AVMutableCompositionTrack *compositionTrackAudio = [self.composition addMutableTrackWithMediaType:AVMediaTypeAudio
-                                  preferredTrackID:trackID];
+    AVMutableCompositionTrack *compositionTrackAudio = [self.composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:trackID];
     
     NSArray *videoTracks = @[compositionTrackA, compositionTrackB];
-    
-    //    AVURLAsset *asetA = [[AVURLAsset alloc]initWithURL:[NSURL URLWithString:[[NSBundle mainBundle]  pathForResource:@"01_nebula.mp4" ofType:nil]] options:nil];
-    //    AVURLAsset *assetB = [[AVURLAsset alloc]initWithURL:[NSURL URLWithString:[[NSBundle mainBundle]  pathForResource:@"02_blackhole.mp4" ofType:nil]] options:nil];
-    
-    //    NSArray *videos = @[asetA,assetB];
     
     CMTime videoCursorTime = kCMTimeZero;
     CMTime transitionDuration = CMTimeMake(2, 1);
     CMTime audioCursorTime = kCMTimeZero;
     
-    for (NSUInteger i = 0; i < self.videoPathArray.count; i++) {
+    NSArray *videoArray = [self.resource loadBDraftParts];
+    
+    for (NSUInteger i = 0; i < videoArray.count; i++) {
         
-        NSUInteger trackIndex = i % 2;                                      // 3
+        NSUInteger trackIndex = i % 2;
         
-        AVURLAsset *asset = [AVURLAsset URLAssetWithURL:self.videoPathArray[i] options:nil];
-        DLYLog(@"self.videoPathArray[%lu]: %@",(unsigned long)i,self.videoPathArray[i]);
+        AVURLAsset *asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
+        DLYLog(@"self.videoPathArray[%lu]: %@",(unsigned long)i,videoArray[i]);
         
         AVAssetTrack *assetVideoTrack = nil;
         AVAssetTrack *assetAudioTrack = nil;
@@ -993,16 +1008,19 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         [compositionTrackAudio insertTimeRange:timeRange
                                        ofTrack:assetAudioTrack
                                         atTime:audioCursorTime error:nil];
-        // Overlap clips by transition duration                             // 4
+        
+        // Overlap clips by transition duration
         videoCursorTime = CMTimeAdd(videoCursorTime, timeRange.duration);
         videoCursorTime = CMTimeSubtract(videoCursorTime, transitionDuration);
         audioCursorTime = CMTimeAdd(audioCursorTime, timeRange.duration);
         
-        if (i + 1 < self.videoPathArray.count) {
+        if (i + 1 < videoArray.count) {
             timeRange = CMTimeRangeMake(videoCursorTime, transitionDuration);
             NSValue *timeRangeValue = [NSValue valueWithCMTimeRange:timeRange];
-            [self.transitionTimeRanges addObject:timeRangeValue];
+            [self.transitionTimeRangeArray addObject:timeRangeValue];
         }
+        DLYLog(@"%@",self.transitionTimeRangeArray);
+        
     }
     
 }
@@ -1020,22 +1038,74 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         
         AVMutableVideoCompositionLayerInstruction *toLayer = instructions.toLayerInstruction;
         
-        //        DLYVideoTransitionType type = instructions.transition.type;
+        DLYVideoTransitionType type = instructions.transition.type;
         
-        //        if (type == DLYVideoTransitionTypeDissolve) {//溶解
-        //
-        [fromLayer setOpacityRampFromStartOpacity:1.0
-                                     toEndOpacity:0.0
-                                        timeRange:timeRange];
-        //        }
-        
-        CGAffineTransform identityTransform = CGAffineTransformIdentity;
-        
-        CGFloat videoWidth = videoComposition.renderSize.width;
-        
-        CGAffineTransform toStartTransform = CGAffineTransformMakeRotation(-M_PI_2);
-        
-        CGAffineTransform fromDestTransform =CGAffineTransformInvert(CGAffineTransformMakeScale(2, 2));
+        if (type == DLYVideoTransitionTypeDissolve) {
+            
+            [fromLayer setOpacityRampFromStartOpacity:1.0
+                                         toEndOpacity:0.0
+                                            timeRange:timeRange];
+            
+        }else if (type == DLYVideoTransitionTypePush) {
+            
+            // Define starting and ending transforms
+            CGAffineTransform identityTransform = CGAffineTransformIdentity;
+            
+            CGFloat videoWidth = videoComposition.renderSize.width;
+            
+            CGAffineTransform fromDestTransform =
+            CGAffineTransformMakeTranslation(-videoWidth, 0.0);
+            
+            CGAffineTransform toStartTransform =
+            CGAffineTransformMakeTranslation(videoWidth, 0.0);
+            
+            [fromLayer setTransformRampFromStartTransform:identityTransform
+                                           toEndTransform:fromDestTransform
+                                                timeRange:timeRange];
+            
+            [toLayer setTransformRampFromStartTransform:toStartTransform
+                                         toEndTransform:identityTransform
+                                              timeRange:timeRange];
+            
+        }else if (type == DLYVideoTransitionTypeWipe) {
+            
+            CGFloat videoWidth = videoComposition.renderSize.width;
+            CGFloat videoHeight = videoComposition.renderSize.height;
+            
+            CGRect startRect = CGRectMake(0.0f, 0.0f, videoWidth, videoHeight);
+            CGRect endRect = CGRectMake(0.0f, videoHeight, videoWidth, 0.0f);
+            
+            [fromLayer setCropRectangleRampFromStartCropRectangle:startRect
+                                               toEndCropRectangle:endRect
+                                                        timeRange:timeRange];
+        }else if (type == DLYVideoTransitionTypeClockwiseRotate){
+
+            [fromLayer setCropRectangleRampFromStartCropRectangle:CGRectMake(0, 0, 300, 300)
+                                               toEndCropRectangle:CGRectMake(50, 50, 500, 300)
+                                                        timeRange:timeRange];
+            [toLayer setCropRectangleRampFromStartCropRectangle:CGRectMake(100, 100, 200, 300)
+                                               toEndCropRectangle:CGRectMake(0, 0, 500, 500)
+                                                        timeRange:timeRange];
+        }else if (type == DLYVideoTransitionTypeZoom){
+            
+            
+            // Define starting and ending transforms
+            CGAffineTransform identityTransform = CGAffineTransformIdentity;
+            
+            CGFloat videoWidth = videoComposition.renderSize.width;
+            
+            CGAffineTransform fromDestTransform = CGAffineTransformMakeTranslation(-videoWidth, 0.0);
+
+            CGAffineTransform toStartTransform = CGAffineTransformMakeTranslation(videoWidth, 0.0);
+
+            [fromLayer setTransformRampFromStartTransform:identityTransform
+                                           toEndTransform:fromDestTransform
+                                                timeRange:timeRange];
+
+            [toLayer setTransformRampFromStartTransform:toStartTransform
+                                         toEndTransform:identityTransform
+                                              timeRange:timeRange];
+        }
         
         instructions.compositionInstruction.layerInstructions = @[fromLayer,toLayer];
     }
@@ -1069,13 +1139,18 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     for (NSUInteger i = 0; i < transitionInstructions.count; i++) {
         
-        DLYTransitionInstructions *tis = transitionInstructions[i];
-        DLYVideoTransition *transition = [DLYVideoTransition videoTransition];
-        transition.type = DLYVideoTransitionTypePush;
-        transition.direction = DLYPushTransitionDirectionLeftToRight;
-        tis.transition = transition;
+        
+        DLYMiniVlogTemplate *currentTemplate = self.session.currentTemplate;
+        NSArray *array = currentTemplate.parts;
+        
+        for (int i = 0; i < array.count; i++) {
+            DLYMiniVlogPart *part = array[i];
+            DLYTransitionInstructions *tis = transitionInstructions[i];
+            DLYVideoTransition *videoTransition = [DLYVideoTransition videoTransition];
+            videoTransition.type = part.transitionType;
+            tis.transition = videoTransition;
+        }
     }
-    
     return transitionInstructions;
 }
 #pragma mark - 配音 -
@@ -1132,20 +1207,23 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         NSArray *startArr = [part.starTime componentsSeparatedByString:@":"];
         NSString *startTimeStr = startArr[1];
         float startTime = [startTimeStr floatValue];
-        CMTime _startTime = CMTimeMake(startTime, 1);
+        _startTime = CMTimeMake(startTime, 1);
         
         NSArray *stopArr = [part.stopTime componentsSeparatedByString:@":"];
         NSString *stopTimeStr = stopArr[1];
         float stopTime = [stopTimeStr floatValue];
-        CMTime _stopTime = CMTimeMake(stopTime, 1);
+        _stopTime = CMTimeMake(stopTime, 1);
+        
+        CMTime duration = CMTimeSubtract(_stopTime, _startTime);
+        
         
         if (part.soundType == DLYMiniVlogAudioTypeMusic) {//空镜
-            [BGMParameters setVolume:5  atTime:_startTime];
-            [videoParameters setVolume:0  atTime:_startTime];
+            [BGMParameters setVolumeRampFromStartVolume:0.8 toEndVolume:0.8 timeRange:CMTimeRangeMake(_startTime, duration)];
+            [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:CMTimeRangeMake(_startTime, duration)];
             
         }else if(part.soundType == DLYMiniVlogAudioTypeNarrate){//人声
-            [videoParameters setVolume:5  atTime:_startTime];
-            [BGMParameters setVolume:0  atTime:_startTime];
+            [videoParameters setVolumeRampFromStartVolume:0.8 toEndVolume:0.8 timeRange:CMTimeRangeMake(_startTime, duration)];
+            [BGMParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:CMTimeRangeMake(_startTime, duration)];
         }
     }
     audioMix.inputParameters = @[videoParameters,BGMParameters];
@@ -1159,11 +1237,11 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     [assetExportSession exportAsynchronouslyWithCompletionHandler:^{
         switch ([assetExportSession status]) {
             case AVAssetExportSessionStatusFailed:{
-                DLYLog(@"合成失败: %@",[[assetExportSession error] description]);
+                DLYLog(@"配音失败: %@",[[assetExportSession error] description]);
             }break;
             case AVAssetExportSessionStatusCompleted:{
-                UISaveVideoAtPathToSavedPhotosAlbum([outPutUrl path], self, nil, nil);
-                DLYLog(@"合成成功");
+                UISaveVideoAtPathToSavedPhotosAlbum([outPutUrl path], nil, nil, nil);
+                DLYLog(@"配音完成后保存在手机相册");
             }break;
             default:
                 break;

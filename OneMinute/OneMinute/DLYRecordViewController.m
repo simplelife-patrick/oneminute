@@ -19,7 +19,7 @@
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
 
-@interface DLYRecordViewController ()<DLYCaptureManagerDelegate>
+@interface DLYRecordViewController ()<DLYCaptureManagerDelegate,UIAlertViewDelegate>
 {
     //    //记录选中的拍摄模式 10003 延时 10004 普通 10005 慢动作
     //    NSInteger selectModel;
@@ -42,16 +42,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSMutableArray * typeModelArray; //模拟选择样式的模型数组
     
     BOOL isNeededToSave;
-    BOOL isTime;
     
+    BOOL isMicGranted;//麦克风权限是否被允许
 }
 @property (nonatomic, strong) DLYAVEngine                       *AVEngine;
 @property (nonatomic, strong) UIView                            *previewView;
 @property (nonatomic, strong) UIImageView                       *focusCursorImageView;
-@property (nonatomic, strong) NSURL                             *TimeLapseUrl;
 @property (nonatomic, strong) UIView * sceneView; //选择场景的view
 @property (nonatomic, strong) UIView * shootView; //拍摄界面
-@property (nonatomic, copy)   NSMutableArray                    *imageArray;
 
 @property (nonatomic, strong) UIView * timeView;
 @property (nonatomic, strong) NSTimer *shootTimer;          //拍摄读秒计时器
@@ -106,7 +104,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     CGPoint point = self.previewView.center;
     CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
     [self setFocusCursorWithPoint:point];
-    [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure atPoint:cameraPoint];
+    [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeAutoExpose atPoint:cameraPoint];
     
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
@@ -335,12 +333,67 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark - 初始化相机
 - (void)initializationRecorder{
     
+//    AVAuthorizationStatus videoAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+//    if(videoAuthStatus != AVAuthorizationStatusAuthorized){//如果摄像头未开启一直去走检测方法
+//        [self examinePhotoAuth];
+//    }
+//    
+//    [[AVAudioSession sharedInstance]requestRecordPermission:^(BOOL granted) {
+//        if (!granted)
+//        {
+//            isMicGranted = NO;
+//            [self examineMicroPhoneAuth];
+//        }
+//    }];
+//    
+//    if(videoAuthStatus == AVAuthorizationStatusAuthorized && isMicGranted){//如果摄像头和麦克风权限都是打开状态才能去请求开播数据
+//        //摄像头和麦克风都是打开的
+//    }
     self.AVEngine = [[DLYAVEngine alloc] initWithPreviewView:self.previewView];
     self.AVEngine.delegate = self;
-}
-- (void)handleDoubleTap:(UITapGestureRecognizer *)sender {
     
-    [self.AVEngine toggleContentsGravity];
+}
+#pragma mark- 检测相机权限
+-(void)examinePhotoAuth{
+    NSString *mediaType = AVMediaTypeVideo;// Or AVMediaTypeAudio
+    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:mediaType];
+    if(authStatus ==AVAuthorizationStatusRestricted){//受限制的
+        NSLog(@"Restricted");
+    }else if(authStatus == AVAuthorizationStatusDenied){//未允许
+        
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请在设备的设置-隐私-相机中允许访问相机。" delegate:self cancelButtonTitle:nil otherButtonTitles:@"去设置", nil];
+        [alertView show];
+        return;
+    }else if(authStatus == AVAuthorizationStatusAuthorized){//允许访问
+        
+    }else if(authStatus == AVAuthorizationStatusNotDetermined){//确定
+        [AVCaptureDevice requestAccessForMediaType:mediaType completionHandler:^(BOOL granted) {
+            if(granted){//点击允许访问时调用
+                //用户明确许可与否，媒体需要捕获，但用户尚未授予或拒绝许可。
+                NSLog(@"Granted access to %@", mediaType);
+            }
+            else {
+                NSLog(@"Not granted access to %@", mediaType);
+            }
+        }];
+    }else {
+        NSLog(@"Unknown authorization status");
+    }
+}
+#pragma mark- 检测麦克风权限
+-(void)examineMicroPhoneAuth{
+    [[AVAudioSession sharedInstance]requestRecordPermission:^(BOOL granted) {
+        if (!granted)
+        {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"提示" message:@"请在设备的设置-隐私-麦克风中允许访问麦克风。" delegate:self cancelButtonTitle:nil otherButtonTitles:@"去设置", nil];
+            [alertView show];
+        }
+        else
+        {
+            isMicGranted = YES;
+            
+        }
+    }];
 }
 
 #pragma mark -触屏自动调整曝光-
@@ -378,7 +431,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         return;
     }
     
-    [self saveRecordedFile:outputFileURL];
+    [self saveRecordedFileByUrl:outputFileURL];
 }
 
 /**
@@ -532,62 +585,48 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
     }];
 }
-- (void)saveRecordedFile:(NSURL *)recordedFile {
+- (void)saveRecordedFileByUrl:(NSURL *)recordedFileUrl {
     
     DLYLog(@"Saving...");
-    
+    NSURL *outputURL = recordedFileUrl;
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
         
-        if (isTime) {
-            isTime = NO;
-            _TimeLapseUrl = recordedFile;
-            AVAsset  *asset = [AVAsset assetWithURL:recordedFile];
+        NSMutableArray *imageArray = [NSMutableArray array];
+        if (self.AVEngine.isTime) {
+            self.AVEngine.isTime = NO;
+            AVAsset  *asset = [AVAsset assetWithURL:recordedFileUrl];
             Duration duration =(UInt32)asset.duration.value / asset.duration.timescale;
             
             for (int i=0; i<(int)duration; i++) {
-                UIImage *tempImage = [self getKeyImage:_TimeLapseUrl intervalTime:i];
-                [self.imageArray addObject:tempImage];
+                UIImage *tempImage = [self getKeyImage:recordedFileUrl intervalTime:i];
+                [imageArray addObject:tempImage];
             }
-//            NSLog(@"取到 %lu 张图片",_imageArray.count);
+            DLYLog(@"取到 %lu 张图片",imageArray.count);
             
-            CocoaSecurityResult * result = [CocoaSecurity md5:[[NSDate date] description]];
+            NSInteger partNum = self.AVEngine.currentPart.partNum;
             
-            NSArray *homeDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
-            NSString *documentsDir = [homeDir objectAtIndex:0];
-            NSString *filePath = [documentsDir stringByAppendingPathComponent:@"TimeLapseVideos"];
-            if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
-                [[NSFileManager defaultManager] createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:nil];
-            }
+            NSURL *partUrl = [self.resource getPartUrlWithPartNum:partNum];
             
-            NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",filePath, result.hex];
+            UISaveVideoAtPathToSavedPhotosAlbum([partUrl path], self, nil, nil);
             
-            NSURL *outPutUrl = [NSURL fileURLWithPath:outputPath];
-            if ([[NSFileManager defaultManager] fileExistsAtPath:outputPath])
-            {
-                [[NSFileManager defaultManager] removeItemAtPath:outputPath error:nil];
-            }
             
-            [self.resource saveDraftPartWithPartNum:self.AVEngine.currentPart.partNum];
-            
-            [self composesVideoUrl:outPutUrl frameImgs:_imageArray fps:30 progressImageBlock:^(CGFloat progress) {
+            [self composesVideoUrl:partUrl frameImgs:imageArray fps:30 progressImageBlock:^(CGFloat progress) {
                 
             } completedBlock:^(BOOL success) {
                 NSLog(@"已完成");
                 
-                UISaveVideoAtPathToSavedPhotosAlbum(outputPath, self, nil, nil);
             }];
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                DLYLog(@"Saved!");
+                DLYLog(@"");
             });
         }else{
             
             ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
-            [assetLibrary writeVideoAtPathToSavedPhotosAlbum:recordedFile
-                                             completionBlock:
-             ^(NSURL *assetURL, NSError *error) {
-                 
+            
+            [assetLibrary writeVideoAtPathToSavedPhotosAlbum:recordedFileUrl completionBlock:^(NSURL *assetURL, NSError *error) {
+                
                  dispatch_async(dispatch_get_main_queue(), ^{
                      
                      if (error != nil) {
@@ -1826,6 +1865,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     } failure:^(NSError *error) {
                         //失败
                     }];
+//                    [self.AVEngine addTransitionEffectSuccessBlock:^{
+//                        GCD_MAIN(^{
+//                            fvc.playUrl = weakSelf.AVEngine.currentProductUrl;
+//                            [weakSelf.navigationController pushViewController:fvc animated:YES];
+//                        });
+//                    } failure:^(NSError *error) {
+//                        
+//                    }];
                 }
             } completion:^(BOOL finished) {
             }];

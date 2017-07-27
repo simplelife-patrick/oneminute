@@ -200,7 +200,7 @@
         NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mp4",partNum];
         
         BOOL isDelete = [fileManager removeItemAtPath:targetPath error:nil];
-        DLYLog(@"%@",isDelete ? @"成功第 %lu 个片段":@"删除第 %lu 个片段失败",partNum);
+        DLYLog(@"%@",isDelete ? @"成功删除第 %lu 个片段":@"删除第 %lu 个片段失败",partNum + 1);
     }
 }
 - (void) removeCurrentAllPart{
@@ -215,11 +215,11 @@
         for (NSString *path in draftArray) {
             if ([path hasSuffix:@"mp4"]) {
                 NSString *targetPath = [draftPath stringByAppendingFormat:@"/%@",path];
-                NSURL *targetUrl = [NSURL URLWithString:targetPath];
-                [fileManager removeItemAtURL:targetUrl error:nil];
+                BOOL isDelete = [fileManager removeItemAtPath:targetPath error:nil];
+                DLYLog(@"%@",isDelete ? @"删除片段成功":@"删除片段失败");
             }
         }
-        DLYLog(@"成功删除所有片段");
+        DLYLog(@"成功删除所有草稿片段");
     }
 }
 - (NSURL *) getPartUrlWithPartNum:(NSInteger)partNum{

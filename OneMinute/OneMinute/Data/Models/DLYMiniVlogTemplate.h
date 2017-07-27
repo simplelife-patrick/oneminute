@@ -30,9 +30,9 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTemplateType)
 @interface DLYMiniVlogTemplate : DLYModule
 
 /**
- 模板编号
+ 模板名称
  */
-@property (nonatomic, strong) NSString                        *templateId;
+@property (nonatomic, strong) NSString                        *templateName;
 
 /**
  模板类型

@@ -15,16 +15,6 @@ typedef NS_ENUM(NSUInteger, DLYCameraType) {
     DLYCameraTypeFront,
 };
 
-typedef NS_ENUM(NSUInteger, DLYOutputModeType) {
-    DLYOutputModeVideoData,
-    DLYOutputModeMovieFile,
-};
-typedef NS_ENUM(NSUInteger, DLYRecordModelType) {
-    DLYRecordNormalMode,
-    DLYRecordSlomoMode,
-    DLYRecordTimeLapseMode,
-};
-
 typedef void (^TimeLapseSamplebufferBlock)(CMSampleBufferRef sampleBuffer);
 typedef void (^OnBufferBlock)(CMSampleBufferRef sampleBuffer);
 
@@ -36,18 +26,19 @@ typedef void(^FailureBlock)(NSError *error);
                                       error:(NSError *)error;
 @end
 
-@interface DLYAVEngine : DLYModule
+@interface DLYAVEngine : DLYModule<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate>
 
-@property (nonatomic, assign) id<DLYCaptureManagerDelegate>          delegate;
-@property (nonatomic, readonly) BOOL                                isRecording;
-@property (nonatomic, copy) OnBufferBlock                           onBuffer;
-@property (nonatomic, copy) TimeLapseSamplebufferBlock              timeLapseSamplebufferBlock;
-@property (nonatomic, strong) AVCaptureVideoPreviewLayer            *previewLayer;
-@property (nonatomic, strong) AVCaptureConnection                   *videoConnection;
-@property (nonatomic, strong) AVCaptureSession                      *captureSession;;
-@property (nonatomic, strong) DLYMiniVlogPart                       *currentPart;
-@property (nonatomic, strong) NSURL                                 *currentProductUrl;
-
+@property (nonatomic, assign) id                                                      delegate;
+@property (nonatomic, readonly) BOOL                                                  isRecording;
+@property (nonatomic, copy) OnBufferBlock                                             onBuffer;
+@property (nonatomic, copy) TimeLapseSamplebufferBlock                                timeLapseSamplebufferBlock;
+@property (nonatomic, strong) AVCaptureVideoPreviewLayer                              *previewLayer;
+@property (nonatomic, strong) AVCaptureConnection                                     *videoConnection;
+@property (nonatomic, strong) AVCaptureSession                                        *captureSession;
+@property (nonatomic, strong) DLYMiniVlogPart                                         *currentPart;
+@property (nonatomic, strong) NSURL                                                   *currentProductUrl;
+@property (nonatomic, assign) BOOL                                                     isTime;
+@property (nonatomic, strong) NSMutableArray                                          *imageArray;
 
 /**
  初始化相机
@@ -92,6 +83,13 @@ typedef void(^FailureBlock)(NSError *error);
  @param failureBlcok 失败回调
  */
 - (void) mergeVideoWithSuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
-- (void)toggleContentsGravity;
+
+/**
+ 添加转场效果
+
+ @param successBlock 成功回调
+ @param failureBlcok 失败回调
+ */
+- (void) addTransitionEffectSuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
 -(void)focusWithMode:(AVCaptureFocusMode)focusMode exposureMode:(AVCaptureExposureMode)exposureMode atPoint:(CGPoint)point;
 @end

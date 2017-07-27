@@ -9,6 +9,7 @@
 #import "DLYPlayVideoViewController.h"
 #import <AVFoundation/AVFoundation.h>
 #import "DLYExportViewController.h"
+#import "DLYResource.h"
 
 #define SWitdh [UIScreen mainScreen].bounds.size.width
 #define SHeight [UIScreen mainScreen].bounds.size.height
@@ -140,7 +141,8 @@
 
 - (void)onClickNext {
     
-    [MobClick event:@"NextView"];
+    DLYResource *resource = [[DLYResource alloc] init];
+    [resource removeCurrentAllPart];
     //跳转下一步填写标题
     [self.player pause];
     [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
