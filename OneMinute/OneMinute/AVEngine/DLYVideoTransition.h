@@ -12,7 +12,9 @@ typedef NS_ENUM(NSInteger,DLYVideoTransitionType) {
     DLYVideoTransitionTypeNone = 0,
     DLYVideoTransitionTypeDissolve,
     DLYVideoTransitionTypePush,
-    DLYVideoTransitionTypeWipe
+    DLYVideoTransitionTypeWipe,
+    DLYVideoTransitionTypeClockwiseRotate,
+    DLYVideoTransitionTypeZoom
 };
 
 typedef NS_ENUM(NSInteger,DLYPushTransitionDirection) {

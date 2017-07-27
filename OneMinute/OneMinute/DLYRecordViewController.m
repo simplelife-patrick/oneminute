@@ -42,17 +42,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSMutableArray * typeModelArray; //模拟选择样式的模型数组
     
     BOOL isNeededToSave;
-    BOOL isTime;
     
     BOOL isMicGranted;//麦克风权限是否被允许
 }
 @property (nonatomic, strong) DLYAVEngine                       *AVEngine;
 @property (nonatomic, strong) UIView                            *previewView;
 @property (nonatomic, strong) UIImageView                       *focusCursorImageView;
-@property (nonatomic, strong) NSURL                             *TimeLapseUrl;
 @property (nonatomic, strong) UIView * sceneView; //选择场景的view
 @property (nonatomic, strong) UIView * shootView; //拍摄界面
-@property (nonatomic, copy)   NSMutableArray                    *imageArray;
 
 @property (nonatomic, strong) UIView * timeView;
 @property (nonatomic, strong) NSTimer *shootTimer;          //拍摄读秒计时器
@@ -107,7 +104,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     CGPoint point = self.previewView.center;
     CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
     [self setFocusCursorWithPoint:point];
-    [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure atPoint:cameraPoint];
+    [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeAutoExpose atPoint:cameraPoint];
     
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
@@ -430,7 +427,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         return;
     }
     
-    [self saveRecordedFile:outputFileURL];
+    [self saveRecordedFileByUrl:outputFileURL];
 }
 
 /**
@@ -584,62 +581,48 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
     }];
 }
-- (void)saveRecordedFile:(NSURL *)recordedFile {
+- (void)saveRecordedFileByUrl:(NSURL *)recordedFileUrl {
     
     DLYLog(@"Saving...");
-    
+    NSURL *outputURL = recordedFileUrl;
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
         
-        if (isTime) {
-            isTime = NO;
-            _TimeLapseUrl = recordedFile;
-            AVAsset  *asset = [AVAsset assetWithURL:recordedFile];
+        NSMutableArray *imageArray = [NSMutableArray array];
+        if (self.AVEngine.isTime) {
+            self.AVEngine.isTime = NO;
+            AVAsset  *asset = [AVAsset assetWithURL:recordedFileUrl];
             Duration duration =(UInt32)asset.duration.value / asset.duration.timescale;
             
             for (int i=0; i<(int)duration; i++) {
-                UIImage *tempImage = [self getKeyImage:_TimeLapseUrl intervalTime:i];
-                [self.imageArray addObject:tempImage];
+                UIImage *tempImage = [self getKeyImage:recordedFileUrl intervalTime:i];
+                [imageArray addObject:tempImage];
             }
-            DLYLog(@"取到 %lu 张图片",_imageArray.count);
+            DLYLog(@"取到 %lu 张图片",imageArray.count);
             
-            CocoaSecurityResult * result = [CocoaSecurity md5:[[NSDate date] description]];
+            NSInteger partNum = self.AVEngine.currentPart.partNum;
             
-            NSArray *homeDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
-            NSString *documentsDir = [homeDir objectAtIndex:0];
-            NSString *filePath = [documentsDir stringByAppendingPathComponent:@"TimeLapseVideos"];
-            if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
-                [[NSFileManager defaultManager] createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:nil];
-            }
+            NSURL *partUrl = [self.resource getPartUrlWithPartNum:partNum];
             
-            NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",filePath, result.hex];
+            UISaveVideoAtPathToSavedPhotosAlbum([partUrl path], self, nil, nil);
             
-            NSURL *outPutUrl = [NSURL fileURLWithPath:outputPath];
-            if ([[NSFileManager defaultManager] fileExistsAtPath:outputPath])
-            {
-                [[NSFileManager defaultManager] removeItemAtPath:outputPath error:nil];
-            }
             
-            [self.resource saveDraftPartWithPartNum:self.AVEngine.currentPart.partNum];
-            
-            [self composesVideoUrl:outPutUrl frameImgs:_imageArray fps:30 progressImageBlock:^(CGFloat progress) {
+            [self composesVideoUrl:partUrl frameImgs:imageArray fps:30 progressImageBlock:^(CGFloat progress) {
                 
             } completedBlock:^(BOOL success) {
                 NSLog(@"已完成");
                 
-                UISaveVideoAtPathToSavedPhotosAlbum(outputPath, self, nil, nil);
             }];
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                DLYLog(@"Saved!");
+                DLYLog(@"");
             });
         }else{
             
             ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
-            [assetLibrary writeVideoAtPathToSavedPhotosAlbum:recordedFile
-                                             completionBlock:
-             ^(NSURL *assetURL, NSError *error) {
-                 
+            
+            [assetLibrary writeVideoAtPathToSavedPhotosAlbum:recordedFileUrl completionBlock:^(NSURL *assetURL, NSError *error) {
+                
                  dispatch_async(dispatch_get_main_queue(), ^{
                      
                      if (error != nil) {
@@ -1875,6 +1858,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     } failure:^(NSError *error) {
                         
                     }];
+//                    [self.AVEngine addTransitionEffectSuccessBlock:^{
+//                        GCD_MAIN(^{
+//                            fvc.playUrl = weakSelf.AVEngine.currentProductUrl;
+//                            [weakSelf.navigationController pushViewController:fvc animated:YES];
+//                        });
+//                    } failure:^(NSError *error) {
+//                        
+//                    }];
                 }
             }];
         });

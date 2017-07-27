@@ -7,6 +7,7 @@
 //
 
 #import "DLYModule.h"
+#import "DLYVideoTransition.h"
 
 /**
  拍摄类型
@@ -34,23 +35,6 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
     DLYMiniVlogAudioTypeNarrate,
 };
 
-/**
- 转场动画效果
-
- - DLYMiniVlogTransitionTypeDissolve: 溶解
- - DLYMiniVlogTransitionTypePush: 推出
- - DLYMiniVlogTransitionTypeClockwiseRotate: 顺时针旋转
- - DLYMiniVlogTransitionTypeZoomIn: 由大缩放到小
- - DLYMiniVlogTransitionTypeZoomOut: 由小缩放到大
- */
-typedef NS_ENUM(NSInteger,DLYMiniVlogTransitionType)
-{
-    DLYMiniVlogTransitionTypeDissolve = 0,
-    DLYMiniVlogTransitionTypePush,
-    DLYMiniVlogTransitionTypeClockwiseRotate,
-    DLYMiniVlogTransitionTypeZoomIn,
-    DLYMiniVlogTransitionTypeZoomOut
-};
 
 @interface DLYMiniVlogPart : DLYModule
 
@@ -98,7 +82,7 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTransitionType)
 /**
  转场效果类型
  */
-@property (nonatomic, assign) DLYMiniVlogTransitionType     transitionType;
+@property (nonatomic, assign) DLYVideoTransitionType     transitionType;
 
 /**
  字幕

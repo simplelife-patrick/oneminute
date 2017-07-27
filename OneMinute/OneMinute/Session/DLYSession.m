@@ -64,10 +64,14 @@
 - (void)resetSession{
     
     if ([self draftExitAtFile]) {
+        
         DLYResource *resouece = [[DLYResource alloc] init];
         NSArray *draftArray = [resouece loadBDraftParts];
+        DLYMiniVlogTemplate *currentTemplate = [self currentTemplate];
+        
+        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:currentTemplate.templateName];
     }else{
-        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"001"];
+        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];
     }
 }
 
