@@ -99,7 +99,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     return _focusCursorImageView;
 }
 - (void)viewWillAppear:(BOOL)animated {
-    
+    [MobClick beginLogPageView:@"RecordView"];
     //According to the preview center focus after launch
     CGPoint point = self.previewView.center;
     CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
@@ -133,6 +133,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     [self createPartViewLayout];
+}
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [MobClick endLogPageView:@"RecordView"];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -763,6 +767,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //切换摄像头
 - (void)toggleCameraAction {
     
+    [MobClick event:@"toggleCamera"];
     self.toggleCameraBtn.selected = !self.toggleCameraBtn.selected;
     if (self.toggleCameraBtn.selected) {
         [self.AVEngine changeCameraInputDeviceisFront:YES];
@@ -776,7 +781,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //#if DEBUG
     //    [[FLEXManager sharedManager] showExplorer];
     //#endif
-    
+    [MobClick event:@"ChooseScene"];
     //在这里添加选择提醒
     for (DLYMiniVlogPart *part in partModelArray) {
         if ([part.recordStatus isEqualToString:@"1"]) {
@@ -835,7 +840,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //拍摄按键
 - (void)startRecordBtnAction {
-    
+    [MobClick event:@"StartRecord"];
     //According to the preview center focus after launch
     CGPoint point = self.previewView.center;
     CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
@@ -895,7 +900,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //跳转至下一个界面按键
 - (void)onClickNextStep:(UIButton *)sender {
-
+    [MobClick event:@"NextStep"];
     DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
     fvc.playUrl = self.AVEngine.currentProductUrl;
     fvc.isAll = YES;
@@ -903,6 +908,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //删除全部视频
 - (void)onClickDelete:(UIButton *)sender {
+    [MobClick event:@"DeleteAll"];
     self.alert = [[DLYAlertView alloc] initWithMessage:@"确定删除全部片段?" andCancelButton:@"取消" andSureButton:@"确定"];
     if (self.newState == 1) {
         self.alert.transform = CGAffineTransformMakeRotation(0);
@@ -929,6 +935,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //播放某个片段
 - (void)onClickPlayPartVideo:(UIButton *)sender{
+    [MobClick event:@"PlayPart"];
     NSInteger partNum = selectPartTag - 10000 - 1;
     DLYPlayVideoViewController *playVC = [[DLYPlayVideoViewController alloc] init];
     playVC.playUrl = [self.resource getPartUrlWithPartNum:partNum];
@@ -938,6 +945,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //删除某个片段
 - (void)onClickDeletePartVideo:(UIButton *)sender {
+    [MobClick event:@"DeletePart"];
     __weak typeof(self) weakSelf = self;
     self.alert = [[DLYAlertView alloc] initWithMessage:@"确定删除此片段?" andCancelButton:@"取消" andSureButton:@"确定"];
     if (self.newState == 1) {
@@ -956,7 +964,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //取消选择场景
 - (void)onClickCancelSelect:(UIButton *)sender {
-    
+    [MobClick event:@"CancelSelect"];
     [UIView animateWithDuration:0.5f animations:^{
         if (self.newState == 1) {
             self.chooseScene.transform = CGAffineTransformMakeRotation(0);
@@ -1002,6 +1010,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //取消拍摄按键
 - (void)onClickCancelClick:(UIButton *)sender {
+    [MobClick event:@"CancelRecord"];
     [self.AVEngine stopRecording];
 
     NSInteger partNum = selectPartTag - 10000 - 1;
@@ -1803,7 +1812,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             
             [self createPartViewLayout];
             
-            [UIView animateWithDuration:0.5f animations:^{
+            [UIView animateWithDuration:0.1f animations:^{
                 self.completeButton.hidden = YES;
                 if (self.newState == 1) {
                     self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(0);
@@ -1825,29 +1834,27 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.chooseSceneLabel.hidden = NO;
                 self.backView.hidden = NO;
                 self.shootView.alpha = 0;
-            } completion:^(BOOL finished) {
+                
                 self.shootView.hidden = YES;
-                if(n == partModelArray.count)
-                {//视频自动播放
+                if(n == partModelArray.count) {//视频自动播放
+                    self.recordBtn.hidden = YES;
+                    if (self.newState == 1) {
+                        self.nextButton.transform = CGAffineTransformMakeRotation(0);
+                    }else {
+                        self.nextButton.transform = CGAffineTransformMakeRotation(M_PI);
+                    }
+                    self.nextButton.hidden = NO;
+                    if (self.newState == 1) {
+                        self.deleteButton.transform = CGAffineTransformMakeRotation(0);
+                    }else {
+                        self.deleteButton.transform = CGAffineTransformMakeRotation(M_PI);
+                    }
+                    self.deleteButton.hidden = NO;
                     __weak typeof(self) weakSelf = self;
                     DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
                     fvc.isAll = YES;
                     fvc.DismissBlock = ^{
-                        self.recordBtn.hidden = YES;
-                        if (self.newState == 1) {
-                            self.nextButton.transform = CGAffineTransformMakeRotation(0);
-                        }else {
-                            self.nextButton.transform = CGAffineTransformMakeRotation(M_PI);
-                        }
-                        self.nextButton.hidden = NO;
-                        if (self.newState == 1) {
-                            self.deleteButton.transform = CGAffineTransformMakeRotation(0);
-                        }else {
-                            self.deleteButton.transform = CGAffineTransformMakeRotation(M_PI);
-                        }
-                        self.deleteButton.hidden = NO;
                     };
-
                     [self.AVEngine mergeVideoWithSuccessBlock:^{
                         
                         GCD_MAIN(^{
@@ -1856,7 +1863,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         });
                         
                     } failure:^(NSError *error) {
-                        
+                        //失败
                     }];
 //                    [self.AVEngine addTransitionEffectSuccessBlock:^{
 //                        GCD_MAIN(^{
@@ -1867,6 +1874,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //                        
 //                    }];
                 }
+            } completion:^(BOOL finished) {
             }];
         });
     }

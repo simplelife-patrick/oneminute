@@ -110,9 +110,9 @@
     [self.view addSubview:self.progress];
 }
 
--(void)onClickBack:(UIButton *)sender{
+- (void)onClickBack:(UIButton *)sender{
     
-    
+    [MobClick event:@"BackView"];
     //返回
     if(self.DismissBlock){
         self.DismissBlock();
@@ -124,7 +124,7 @@
 
 - (void)onClickPlayOrPause:(UIButton *)sender {
     
-    
+    [MobClick event:@"PlayOrPause"];
     if(isPlay)
     {//暂停
         
@@ -203,6 +203,8 @@
 }
 #pragma mark - 页面将要显示
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [MobClick beginLogPageView:@"PlayVideoView"];
     if (self.newState == 1) {
         NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
         [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
@@ -255,7 +257,7 @@
 - (void)viewWillDisappear:(BOOL)animated {
 
     [super viewWillDisappear:animated];
-    
+    [MobClick endLogPageView:@"PlayVideoView"];
     [self.player pause];
     [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
 
