@@ -152,7 +152,6 @@
 
 }
 
-
 - (void)stopMotionManager {
     
     [_motionManager stopDeviceMotionUpdates];
@@ -167,5 +166,6 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 
 @end

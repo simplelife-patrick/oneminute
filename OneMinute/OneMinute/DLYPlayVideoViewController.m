@@ -151,11 +151,6 @@
     [self.navigationController pushViewController:exportVC animated:YES];
 }
 
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskLandscape;
-    
-}
-
 - (void)addObserverToPlayItem:(AVPlayerItem *)playerItem {
     //监控状态属性: 注意AVPlayer也有一个status属性,通过监控它的status也可以获得播放状态
     [playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
@@ -173,6 +168,7 @@
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYPlayVideoViewController class]]) {
         NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeRight];
         [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+        NSLog(@"视频播放左转");
     }
 
 }
@@ -181,6 +177,7 @@
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYPlayVideoViewController class]]) {
         NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
         [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+        NSLog(@"视频播放右转");
     }
 }
 
@@ -199,7 +196,21 @@
 
 - (void)playbackFinished:(NSNotification *)notification {
 
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.player pause];
+    [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+    
+    if (self.isAll) {
+        DLYResource *resource = [[DLYResource alloc] init];
+        [resource removeCurrentAllPart];
+        //跳转下一步填写标题
+        DLYExportViewController *exportVC = [[DLYExportViewController alloc] init];
+        [self.navigationController pushViewController:exportVC animated:YES];
+
+    }else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    
+
 }
 #pragma mark - 页面将要显示
 - (void)viewWillAppear:(BOOL)animated {
@@ -260,7 +271,7 @@
     [MobClick endLogPageView:@"PlayVideoView"];
     [self.player pause];
     [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
-
+    
 }
 
 - (void)dealloc {
