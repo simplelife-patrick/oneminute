@@ -89,6 +89,9 @@
         self.window.rootViewController = nvc;
         [self.window makeKeyAndVisible];
     }
+    
+    [NSThread sleepForTimeInterval:3]; // 设置启动页面停留时间
+    
     return YES;
 }
 - (void)applicationWillResignActive:(UIApplication *)application {

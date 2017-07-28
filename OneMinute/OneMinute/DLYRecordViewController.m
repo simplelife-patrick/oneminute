@@ -70,13 +70,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIView *playView;             //单个片段编辑页面
 @property (nonatomic, strong) UIButton *playButton;         //播放单个视频
 @property (nonatomic, strong) UIButton *deletePartButton;   //删除单个视频
+@property (nonatomic, strong) UIButton *scenceDisapper;     //取消选择模板
 @property (nonatomic, strong) UIView *prepareView;          //光标
 @property (nonatomic, strong) UIImageView *warningIcon;     //拍摄指导
 @property (nonatomic, strong) UILabel *shootGuide;          //拍摄指导
 @property (nonatomic, strong) UIButton *cancelButton;       //取消拍摄
 @property (nonatomic, strong) UIButton *completeButton;     //拍摄单个片段完成
 @property (nonatomic, strong) UILabel *timeNumber;          //倒计时显示label
-@property (nonatomic, strong) DLYResource  *resource;          //资源管理类
+@property (nonatomic, strong) DLYResource  *resource;       //资源管理类
 
 @end
 
@@ -105,9 +106,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
     [self setFocusCursorWithPoint:point];
     [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeAutoExpose atPoint:cameraPoint];
-    
+    self.isAppear = YES;
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+    self.isAppear = NO;
     if (self.newState == 1) {
         [self deviceChangeAndHomeOnTheRightNewLayout];
     }else {
@@ -131,7 +133,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         self.isExport = NO;
     }
-    
+
     [self createPartViewLayout];
 }
 - (void)viewWillDisappear:(BOOL)animated {
@@ -141,9 +143,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.isAppear = YES;
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-    
+    self.isAppear = NO;
     [self initData];
     [self setupUI];
     [self initializationRecorder];
@@ -253,7 +256,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     //右边的view
     self.backView = [[UIView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH - 180 * SCALE_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT)];
-    
     self.backView.backgroundColor = RGBA(0, 0, 0, 0.7);
     [self.view addSubview:self.backView];
     
@@ -354,7 +356,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
 }
 #pragma mark- 检测相机权限
--(void)examinePhotoAuth{
+- (void)examinePhotoAuth{
     NSString *mediaType = AVMediaTypeVideo;// Or AVMediaTypeAudio
     AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:mediaType];
     if(authStatus ==AVAuthorizationStatusRestricted){//受限制的
@@ -381,7 +383,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
 }
 #pragma mark- 检测麦克风权限
--(void)examineMicroPhoneAuth{
+- (void)examineMicroPhoneAuth{
     [[AVAudioSession sharedInstance]requestRecordPermission:^(BOOL granted) {
         if (!granted)
         {
@@ -398,13 +400,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 #pragma mark -触屏自动调整曝光-
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    
     UITouch *touch = [touches anyObject];
-    CGPoint point = [touch locationInView:self.previewView];
-    
-    CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
-    
-    [self setFocusCursorWithPoint:point];
-    [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure atPoint:cameraPoint];
+    if (touch.view != self.backView && touch.view != self.sceneView) {
+        CGPoint point = [touch locationInView:self.previewView];
+        CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
+        [self setFocusCursorWithPoint:point];
+        [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure atPoint:cameraPoint];
+    }
 }
 - (void)setFocusCursorWithPoint:(CGPoint)point {
     self.focusCursorImageView.center=point;
@@ -650,6 +653,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSArray *viewArr = self.navigationController.viewControllers;
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
         [self deviceChangeAndHomeOnTheLeftNewLayout];
+        NSLog(@"首页左转");
     }
 
 }
@@ -697,12 +701,27 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.completeButton.transform = CGAffineTransformMakeRotation(num);
     }
     if (!self.chooseScene.isHidden && self.chooseScene) {
+        if (num == 0) {
+            self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
+        }else {
+            self.chooseScene.frame = CGRectMake(11, SCREEN_HEIGHT - 56, 40, 40);
+        }
         self.chooseScene.transform = CGAffineTransformMakeRotation(num);
     }
     if (!self.chooseSceneLabel.isHidden && self.chooseSceneLabel) {
+        if (num == 0) {
+            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.bottom + 2, 40, 13);
+        }else {
+            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.top - 15, 40, 13);
+        }
         self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(num);
     }
     if (!self.toggleCameraBtn.isHidden && self.toggleCameraBtn) {
+        if (num == 0) {
+            self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
+        }else {
+            self.toggleCameraBtn.frame = CGRectMake(11, 11, 40, 40);
+        }
         self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(num);
     }
     if (!self.playView.isHidden && self.playView) {
@@ -728,6 +747,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     if (!self.sceneView.isHidden) {
         
+        if (!self.scenceDisapper.isHidden && self.scenceDisapper) {
+            if (num == 0) {
+                self.scenceDisapper.frame = CGRectMake(20, 20, 14, 14);
+            }else {
+                self.scenceDisapper.frame = CGRectMake(20, SCREEN_HEIGHT - 34, 14, 14);
+            }
+            self.scenceDisapper.transform = CGAffineTransformMakeRotation(num);
+        }
+        
         for(int i = 0; i < typeModelArray.count; i++)
         {
             UIView *view = (UIView *)[self.view viewWithTag:101 + i];
@@ -747,6 +775,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSArray *viewArr = self.navigationController.viewControllers;
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
         [self deviceChangeAndHomeOnTheRightNewLayout];
+        NSLog(@"首页右转");
 
     }
 }
@@ -777,37 +806,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //选择场景
 - (void)onClickChooseScene:(UIButton *)sender {
-    // 测试FLEX框架
-    //#if DEBUG
-    //    [[FLEXManager sharedManager] showExplorer];
-    //#endif
+    
     [MobClick event:@"ChooseScene"];
-    //在这里添加选择提醒
-    for (DLYMiniVlogPart *part in partModelArray) {
-        if ([part.recordStatus isEqualToString:@"1"]) {
-            
-            __weak typeof(self) weakSelf = self;
-            self.alert = [[DLYAlertView alloc] initWithMessage:@"切换模板后已经拍摄的视频会清空，确定吗?" andCancelButton:@"取消" andSureButton:@"确定"];
-            if (self.newState == 1) {
-                self.alert.transform = CGAffineTransformMakeRotation(0);
-            }else {
-                self.alert.transform = CGAffineTransformMakeRotation(M_PI);
-            }
-            self.alert.sureButtonAction = ^{
-                //数组初始化，view布局 弹出选择
-                [weakSelf.resource removeCurrentAllPart];
-                [weakSelf initData];
-                [weakSelf createPartViewLayout];
-                [weakSelf showChooseSceneView];
-            };
-            self.alert.cancelButtonAction = ^{
-            };
-            
-            return;
-        }
-    }
-    
-    
     [self showChooseSceneView];
 }
 //显示模板页面
@@ -815,16 +815,20 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     [UIView animateWithDuration:0.5f animations:^{
         self.chooseScene.hidden = YES;
-        self.toggleCameraBtn .hidden = YES;
+        self.toggleCameraBtn.hidden = YES;
         self.chooseSceneLabel.hidden = YES;
         self.backView.hidden = YES;
         if (self.newState == 1) {
+            self.scenceDisapper.frame = CGRectMake(20, 20, 14, 14);
+            self.scenceDisapper.transform = CGAffineTransformMakeRotation(0);
             for(int i = 0; i < typeModelArray.count; i++)
             {
                 UIView *view = (UIView *)[self.view viewWithTag:101 + i];
                 view.transform = CGAffineTransformMakeRotation(0);
             }
         }else {
+            self.scenceDisapper.frame = CGRectMake(20, SCREEN_HEIGHT - 34, 14, 14);
+            self.scenceDisapper.transform = CGAffineTransformMakeRotation(M_PI);
             for(int i = 0; i < typeModelArray.count; i++)
             {
                 UIView *view = (UIView *)[self.view viewWithTag:101 + i];
@@ -967,20 +971,26 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [MobClick event:@"CancelSelect"];
     [UIView animateWithDuration:0.5f animations:^{
         if (self.newState == 1) {
+            self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
             self.chooseScene.transform = CGAffineTransformMakeRotation(0);
         }else {
+            self.chooseScene.frame = CGRectMake(11, SCREEN_HEIGHT - 56, 40, 40);
             self.chooseScene.transform = CGAffineTransformMakeRotation(M_PI);
         }
         self.chooseScene.hidden = NO;
         if (self.newState == 1) {
+            self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
             self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(0);
         }else {
+            self.toggleCameraBtn.frame = CGRectMake(11, 11, 40, 40);
             self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(M_PI);
         }
         self.toggleCameraBtn.hidden = NO;
         if (self.newState == 1) {
+            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.bottom + 2, 40, 13);
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
         }else {
+            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.top - 15, 40, 13);
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(M_PI);
         }
         self.chooseSceneLabel.hidden = NO;
@@ -1002,8 +1012,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
     }else if(selectNum == 3)
     {//点击的事某个片段
-        NSDictionary * dict = typeModelArray[button.tag - 300];
-        self.chooseSceneLabel.text = dict[@"typeName"];
         [self changeTypeStatusWithTag:button.tag -300];
         
     }
@@ -1021,16 +1029,26 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.progressView.hidden = YES;
         self.timeNumber.hidden = YES;
         if (self.newState == 1) {
+            self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
             self.chooseScene.transform = CGAffineTransformMakeRotation(0);
         }else {
+            self.chooseScene.frame = CGRectMake(11, SCREEN_HEIGHT - 56, 40, 40);
             self.chooseScene.transform = CGAffineTransformMakeRotation(M_PI);
         }
-        
         self.chooseScene.hidden = NO;
-        self.toggleCameraBtn .hidden = NO;
         if (self.newState == 1) {
+            self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
+            self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.toggleCameraBtn.frame = CGRectMake(11, 11, 40, 40);
+            self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+        self.toggleCameraBtn.hidden = NO;
+        if (self.newState == 1) {
+            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.bottom + 2, 40, 13);
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
         }else {
+            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.top - 15, 40, 13);
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(M_PI);
         }
         self.chooseSceneLabel.hidden = NO;
@@ -1528,12 +1546,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark ==创建选择场景view
 - (void)createSceneView {
     [self.view addSubview:[self sceneView]];
-    UIButton * scenceDisapper = [[UIButton alloc]initWithFrame:CGRectMake(20, 20, 14, 14)];
+    self.scenceDisapper = [[UIButton alloc]initWithFrame:CGRectMake(20, 20, 14, 14)];
     UIEdgeInsets edgeInsets = {-20, -20, -20, -20};
-    [scenceDisapper setHitEdgeInsets:edgeInsets];
-    [scenceDisapper setImage:[UIImage imageWithIcon:@"\U0000e666" inFont:ICONFONT size:14 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
-    [scenceDisapper addTarget:self action:@selector(onClickCancelSelect:) forControlEvents:UIControlEventTouchUpInside];
-    [self.sceneView addSubview:scenceDisapper];
+    [self.scenceDisapper setHitEdgeInsets:edgeInsets];
+    [self.scenceDisapper setImage:[UIImage imageWithIcon:@"\U0000e666" inFont:ICONFONT size:14 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.scenceDisapper addTarget:self action:@selector(onClickCancelSelect:) forControlEvents:UIControlEventTouchUpInside];
+    [self.sceneView addSubview:self.scenceDisapper];
     
     UIView * typeView = [[UIView alloc]initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH - 80, 162 * SCALE_HEIGHT)];
     typeView.centerY = self.sceneView.centerY;
@@ -1602,13 +1620,37 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 #pragma mark ===更改样片选中状态
 - (void)changeTypeStatusWithTag : (NSInteger)num {
-    if(num == selectType)
-    {
+    if(num == selectType) {
         return;
     }
+
+    __weak typeof(self) weakSelf = self;
+    self.alert = [[DLYAlertView alloc] initWithMessage:@"切换模板后已经拍摄的视频会清空，确定吗?" andCancelButton:@"取消" andSureButton:@"确定"];
+    if (self.newState == 1) {
+        self.alert.transform = CGAffineTransformMakeRotation(0);
+    }else {
+        self.alert.transform = CGAffineTransformMakeRotation(M_PI);
+    }
+    self.alert.sureButtonAction = ^{
+        //数组初始化，view布局 弹出选择
+        [weakSelf.resource removeCurrentAllPart];
+        [weakSelf initData];
+        [weakSelf changeSceneWithSelectNum:num];
+        [weakSelf createPartViewLayout];
+    };
+    self.alert.cancelButtonAction = ^{
+        return;
+    };
+    
+}
+
+- (void)changeSceneWithSelectNum:(NSInteger)num {
+    
     selectType = num;
-    for(int i = 0; i < typeModelArray.count; i++)
-    {
+    
+    NSDictionary * dict = typeModelArray[num];
+    self.chooseSceneLabel.text = dict[@"typeName"];
+    for(int i = 0; i < typeModelArray.count; i++) {
         UIView * view = (UIView *)[self.view viewWithTag:101 + i];
         UIImageView * imageView = (UIImageView *)[self.view viewWithTag:10 + i];
         if(num == i)
@@ -1621,25 +1663,30 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             imageView.hidden = YES;
         }
     }
-    
     [UIView animateWithDuration:0.5f animations:^{
         self.sceneView.alpha = 0;
         if (self.newState == 1) {
+            self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
             self.chooseScene.transform = CGAffineTransformMakeRotation(0);
         }else {
+            self.chooseScene.frame = CGRectMake(11, SCREEN_HEIGHT - 56, 40, 40);
             self.chooseScene.transform = CGAffineTransformMakeRotation(M_PI);
         }
         
         self.chooseScene.hidden = NO;
         if (self.newState == 1) {
+            self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
             self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(0);
         }else {
+            self.toggleCameraBtn.frame = CGRectMake(11, 11, 40, 40);
             self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(M_PI);
         }
         self.toggleCameraBtn.hidden = NO;
         if (self.newState == 1) {
+            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.bottom + 2, 40, 13);
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
         }else {
+            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.top - 15, 40, 13);
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(M_PI);
         }
         self.chooseSceneLabel.hidden = NO;
@@ -1815,20 +1862,26 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             [UIView animateWithDuration:0.1f animations:^{
                 self.completeButton.hidden = YES;
                 if (self.newState == 1) {
+                    self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
                     self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(0);
                 }else {
+                    self.toggleCameraBtn.frame = CGRectMake(11, 11, 40, 40);
                     self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(M_PI);
                 }
                 self.toggleCameraBtn.hidden = NO;
                 if (self.newState == 1) {
+                    self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
                     self.chooseScene.transform = CGAffineTransformMakeRotation(0);
                 }else {
+                    self.chooseScene.frame = CGRectMake(11, SCREEN_HEIGHT - 56, 40, 40);
                     self.chooseScene.transform = CGAffineTransformMakeRotation(M_PI);
                 }
                 self.chooseScene.hidden = NO;
                 if (self.newState == 1) {
+                    self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.bottom + 2, 40, 13);
                     self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
                 }else {
+                    self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.top - 15, 40, 13);
                     self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(M_PI);
                 }
                 self.chooseSceneLabel.hidden = NO;
@@ -1838,22 +1891,24 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.shootView.hidden = YES;
                 if(n == partModelArray.count) {//视频自动播放
                     self.recordBtn.hidden = YES;
-                    if (self.newState == 1) {
-                        self.nextButton.transform = CGAffineTransformMakeRotation(0);
-                    }else {
-                        self.nextButton.transform = CGAffineTransformMakeRotation(M_PI);
-                    }
-                    self.nextButton.hidden = NO;
-                    if (self.newState == 1) {
-                        self.deleteButton.transform = CGAffineTransformMakeRotation(0);
-                    }else {
-                        self.deleteButton.transform = CGAffineTransformMakeRotation(M_PI);
-                    }
-                    self.deleteButton.hidden = NO;
+
                     __weak typeof(self) weakSelf = self;
                     DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
                     fvc.isAll = YES;
                     fvc.DismissBlock = ^{
+                        if (self.newState == 1) {
+                            self.nextButton.transform = CGAffineTransformMakeRotation(0);
+                        }else {
+                            self.nextButton.transform = CGAffineTransformMakeRotation(M_PI);
+                        }
+                        self.nextButton.hidden = NO;
+                        if (self.newState == 1) {
+                            self.deleteButton.transform = CGAffineTransformMakeRotation(0);
+                        }else {
+                            self.deleteButton.transform = CGAffineTransformMakeRotation(M_PI);
+                        }
+                        self.deleteButton.hidden = NO;
+                        
                     };
                     [self.AVEngine mergeVideoWithSuccessBlock:^{
                         
