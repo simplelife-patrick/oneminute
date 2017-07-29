@@ -95,6 +95,6 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
 /**
  获取成片视频的播放地址
  */
-- (NSURL *) getProductWithProductUrl:(NSURL *)productName;
+- (NSURL *) getProductWithProductName:(NSString *)productName;
 
 @end

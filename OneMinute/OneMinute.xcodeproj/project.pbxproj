@@ -37,8 +37,9 @@
 		6F8925DF1F1B142300256093 /* DLYPopupMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DA1F1B142300256093 /* DLYPopupMenu.m */; };
 		6F8925E01F1B142300256093 /* DLYPopupMenuPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DC1F1B142300256093 /* DLYPopupMenuPath.m */; };
 		6F8925E11F1B142300256093 /* DLYRectConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DE1F1B142300256093 /* DLYRectConst.m */; };
-		ADA7C2841F21FF3F0002A4E5 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA7C2831F21FF3F0002A4E5 /* DLYRecordViewController.m */; };
-		ADA7C2871F21FF5A0002A4E5 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA7C2861F21FF5A0002A4E5 /* DLYAVEngine.m */; };
+		ADA370961F2D11300082AEC6 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA370951F2D11300082AEC6 /* DLYAVEngine.m */; };
+		ADA370991F2D11500082AEC6 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA370981F2D11500082AEC6 /* DLYRecordViewController.m */; };
+		ADA3709C1F2D11780082AEC6 /* DLYResource.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA3709B1F2D11780082AEC6 /* DLYResource.m */; };
 		ADA7C28A1F22050D0002A4E5 /* BGM001.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADA7C2891F22050D0002A4E5 /* BGM001.m4a */; };
 		ADA7C28C1F22056A0002A4E5 /* header001.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = ADA7C28B1F22056A0002A4E5 /* header001.mp4 */; };
 		ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */; };
@@ -48,7 +49,6 @@
 		ADFFF19D1F18A33000FB5BF7 /* DLYMiniVlogProduct.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF18C1F18A33000FB5BF7 /* DLYMiniVlogProduct.m */; };
 		ADFFF19E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF18E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m */; };
 		ADFFF19F1F18A33000FB5BF7 /* Universal_001.json in Resources */ = {isa = PBXBuildFile; fileRef = ADFFF1901F18A33000FB5BF7 /* Universal_001.json */; };
-		ADFFF1A01F18A33000FB5BF7 /* DLYResource.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1931F18A33000FB5BF7 /* DLYResource.m */; };
 		ADFFF1A11F18A33000FB5BF7 /* DLYSession.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1961F18A33000FB5BF7 /* DLYSession.m */; };
 		ADFFF1A41F18A33C00FB5BF7 /* DLYCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1A31F18A33C00FB5BF7 /* DLYCommon.m */; };
 		ADFFF1A81F18BFAC00FB5BF7 /* DLYTransitionComposition.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1A71F18BFAC00FB5BF7 /* DLYTransitionComposition.m */; };
@@ -134,10 +134,12 @@
 		6F8925DD1F1B142300256093 /* DLYRectConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRectConst.h; sourceTree = "<group>"; };
 		6F8925DE1F1B142300256093 /* DLYRectConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRectConst.m; sourceTree = "<group>"; };
 		7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneMinute.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute.debug.xcconfig"; sourceTree = "<group>"; };
-		ADA7C2821F21FF3F0002A4E5 /* DLYRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRecordViewController.h; sourceTree = "<group>"; };
-		ADA7C2831F21FF3F0002A4E5 /* DLYRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRecordViewController.m; sourceTree = "<group>"; };
-		ADA7C2851F21FF590002A4E5 /* DLYAVEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAVEngine.h; sourceTree = "<group>"; };
-		ADA7C2861F21FF5A0002A4E5 /* DLYAVEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAVEngine.m; sourceTree = "<group>"; };
+		ADA370941F2D11300082AEC6 /* DLYAVEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAVEngine.h; sourceTree = "<group>"; };
+		ADA370951F2D11300082AEC6 /* DLYAVEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAVEngine.m; sourceTree = "<group>"; };
+		ADA370971F2D11500082AEC6 /* DLYRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRecordViewController.h; sourceTree = "<group>"; };
+		ADA370981F2D11500082AEC6 /* DLYRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRecordViewController.m; sourceTree = "<group>"; };
+		ADA3709A1F2D11780082AEC6 /* DLYResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYResource.h; sourceTree = "<group>"; };
+		ADA3709B1F2D11780082AEC6 /* DLYResource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYResource.m; sourceTree = "<group>"; };
 		ADA7C2891F22050D0002A4E5 /* BGM001.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = BGM001.m4a; sourceTree = "<group>"; };
 		ADA7C28B1F22056A0002A4E5 /* header001.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = header001.mp4; sourceTree = "<group>"; };
 		ADFFF1811F18A33000FB5BF7 /* DLYMobileDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMobileDevice.h; sourceTree = "<group>"; };
@@ -153,8 +155,6 @@
 		ADFFF18D1F18A33000FB5BF7 /* DLYMiniVlogTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMiniVlogTemplate.h; sourceTree = "<group>"; };
 		ADFFF18E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMiniVlogTemplate.m; sourceTree = "<group>"; };
 		ADFFF1901F18A33000FB5BF7 /* Universal_001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Universal_001.json; sourceTree = "<group>"; };
-		ADFFF1921F18A33000FB5BF7 /* DLYResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYResource.h; sourceTree = "<group>"; };
-		ADFFF1931F18A33000FB5BF7 /* DLYResource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYResource.m; sourceTree = "<group>"; };
 		ADFFF1951F18A33000FB5BF7 /* DLYSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYSession.h; sourceTree = "<group>"; };
 		ADFFF1961F18A33000FB5BF7 /* DLYSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYSession.m; sourceTree = "<group>"; };
 		ADFFF1A21F18A33C00FB5BF7 /* DLYCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DLYCommon.h; path = Common/DLYCommon.h; sourceTree = "<group>"; };
@@ -372,8 +372,8 @@
 		6F8925B01F1B136200256093 /* RecordController */ = {
 			isa = PBXGroup;
 			children = (
-				ADA7C2821F21FF3F0002A4E5 /* DLYRecordViewController.h */,
-				ADA7C2831F21FF3F0002A4E5 /* DLYRecordViewController.m */,
+				ADA370971F2D11500082AEC6 /* DLYRecordViewController.h */,
+				ADA370981F2D11500082AEC6 /* DLYRecordViewController.m */,
 				6F5E5D261F1EF7A700D857C9 /* RecordView */,
 			);
 			name = RecordController;
@@ -435,8 +435,8 @@
 		ADFFF17C1F18A33000FB5BF7 /* AVEngine */ = {
 			isa = PBXGroup;
 			children = (
-				ADA7C2851F21FF590002A4E5 /* DLYAVEngine.h */,
-				ADA7C2861F21FF5A0002A4E5 /* DLYAVEngine.m */,
+				ADA370941F2D11300082AEC6 /* DLYAVEngine.h */,
+				ADA370951F2D11300082AEC6 /* DLYAVEngine.m */,
 				ADFFF1811F18A33000FB5BF7 /* DLYMobileDevice.h */,
 				ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */,
 				ADFFF1831F18A33000FB5BF7 /* DLYVolumeAutomation.h */,
@@ -487,9 +487,9 @@
 		ADFFF1911F18A33000FB5BF7 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				ADA3709A1F2D11780082AEC6 /* DLYResource.h */,
+				ADA3709B1F2D11780082AEC6 /* DLYResource.m */,
 				ADA7C2881F2203500002A4E5 /* resources */,
-				ADFFF1921F18A33000FB5BF7 /* DLYResource.h */,
-				ADFFF1931F18A33000FB5BF7 /* DLYResource.m */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -707,10 +707,10 @@
 				ADFFF19E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m in Sources */,
 				ADFFF19A1F18A33000FB5BF7 /* DLYVolumeAutomation.m in Sources */,
 				6F8925BF1F1B139500256093 /* UIImage+iconfont.m in Sources */,
+				ADA3709C1F2D11780082AEC6 /* DLYResource.m in Sources */,
 				1C7E61841EE7DF4F0088F33F /* main.m in Sources */,
 				ADFFF1AE1F18C04400FB5BF7 /* DLYVideoTransition.m in Sources */,
-				ADA7C2841F21FF3F0002A4E5 /* DLYRecordViewController.m in Sources */,
-				ADFFF1A01F18A33000FB5BF7 /* DLYResource.m in Sources */,
+				ADA370991F2D11500082AEC6 /* DLYRecordViewController.m in Sources */,
 				ADFFF1A11F18A33000FB5BF7 /* DLYSession.m in Sources */,
 				6F8925CC1F1B13CA00256093 /* DLYBaseNavigationController.m in Sources */,
 				ADFFF19D1F18A33000FB5BF7 /* DLYMiniVlogProduct.m in Sources */,
@@ -728,7 +728,7 @@
 				ADFFF19B1F18A33000FB5BF7 /* DLYMiniVlogDraft.m in Sources */,
 				ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */,
 				1C7E61BF1EE7E4AC0088F33F /* DLYModuleManager.m in Sources */,
-				ADA7C2871F21FF5A0002A4E5 /* DLYAVEngine.m in Sources */,
+				ADA370961F2D11300082AEC6 /* DLYAVEngine.m in Sources */,
 				6F8925DF1F1B142300256093 /* DLYPopupMenu.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -101,11 +101,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 - (void)viewWillAppear:(BOOL)animated {
     [MobClick beginLogPageView:@"RecordView"];
+    
     //According to the preview center focus after launch
     CGPoint point = self.previewView.center;
     CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
     [self setFocusCursorWithPoint:point];
-    [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeAutoExpose atPoint:cameraPoint];
+    [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus atPoint:cameraPoint];
+
     self.isAppear = YES;
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
@@ -223,9 +225,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)setupUI {
     self.view.backgroundColor = RGB(247, 247, 247);
     //PreviewView
-    _previewView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-    _previewView.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:_previewView];
+    self.previewView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    self.previewView.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:self.previewView];
     
     //通用button 选择场景button
     self.chooseScene = [[UIButton alloc]initWithFrame:CGRectMake(11, 16, 40, 40)];
@@ -335,11 +337,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark - 初始化相机
 - (void)initializationRecorder{
     
+    self.AVEngine = [[DLYAVEngine alloc] initWithPreviewView:self.previewView];
+    self.AVEngine.delegate = self;
+    
 //    AVAuthorizationStatus videoAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
 //    if(videoAuthStatus != AVAuthorizationStatusAuthorized){//如果摄像头未开启一直去走检测方法
 //        [self examinePhotoAuth];
 //    }
-//    
+//
 //    [[AVAudioSession sharedInstance]requestRecordPermission:^(BOOL granted) {
 //        if (!granted)
 //        {
@@ -347,12 +352,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //            [self examineMicroPhoneAuth];
 //        }
 //    }];
-//    
-//    if(videoAuthStatus == AVAuthorizationStatusAuthorized && isMicGranted){//如果摄像头和麦克风权限都是打开状态才能去请求开播数据
-//        //摄像头和麦克风都是打开的
+//
+//    if(videoAuthStatus == AVAuthorizationStatusAuthorized && isMicGranted){
+//        //摄像头和麦克风都是打开状态
 //    }
-    self.AVEngine = [[DLYAVEngine alloc] initWithPreviewView:self.previewView];
-    self.AVEngine.delegate = self;
     
 }
 #pragma mark- 检测相机权限
@@ -406,20 +409,21 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         CGPoint point = [touch locationInView:self.previewView];
         CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
         [self setFocusCursorWithPoint:point];
-        [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure atPoint:cameraPoint];
+        [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus atPoint:cameraPoint];
     }
 }
 - (void)setFocusCursorWithPoint:(CGPoint)point {
-    self.focusCursorImageView.center=point;
-    self.focusCursorImageView.transform=CGAffineTransformMakeScale(2.0, 2.0);
-    self.focusCursorImageView.alpha=1.0;
-    [UIView animateWithDuration:1.0 animations:^{
-        self.focusCursorImageView.transform=CGAffineTransformIdentity;
+    self.focusCursorImageView.center = point;
+    self.focusCursorImageView.transform=CGAffineTransformMakeScale(1.5, 1.5);
+    self.focusCursorImageView.alpha = 1.0;
+    [UIView animateWithDuration:0.8 animations:^{
+        self.focusCursorImageView.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished) {
         self.focusCursorImageView.alpha=0;
         
     }];
 }
+
 #pragma mark - AVCaptureManagerDelegate
 
 - (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL error:(NSError *)error {
@@ -845,13 +849,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //拍摄按键
 - (void)startRecordBtnAction {
     [MobClick event:@"StartRecord"];
-    //According to the preview center focus after launch
-    CGPoint point = self.previewView.center;
-    CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
-    [self setFocusCursorWithPoint:point];
-    [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure atPoint:cameraPoint];
     
-    DDLogInfo(@"拍摄按钮");
+    DDLogInfo(@"拍摄按钮点击了");
     // REC START
     if (!self.AVEngine.isRecording) {
         
@@ -1911,7 +1910,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         
                     };
                     [self.AVEngine mergeVideoWithSuccessBlock:^{
-                        
+                        [self.resource removeCurrentAllPart];
                         GCD_MAIN(^{
                             fvc.playUrl = weakSelf.AVEngine.currentProductUrl;
                             [weakSelf.navigationController pushViewController:fvc animated:YES];
