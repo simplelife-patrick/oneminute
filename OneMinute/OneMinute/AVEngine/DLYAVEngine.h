@@ -28,6 +28,8 @@ typedef void(^FailureBlock)(NSError *error);
 
 @interface DLYAVEngine : DLYModule<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate>
 
+@property (nonatomic, strong) AVCaptureDeviceInput                                    *currentVideoDeviceInput;
+@property (nonatomic, strong) AVCaptureDevice                                         *videoDevice;
 @property (nonatomic, assign) id                                                      delegate;
 @property (nonatomic, readonly) BOOL                                                  isRecording;
 @property (nonatomic, copy) OnBufferBlock                                             onBuffer;
@@ -37,14 +39,17 @@ typedef void(^FailureBlock)(NSError *error);
 @property (nonatomic, strong) AVCaptureSession                                        *captureSession;
 @property (nonatomic, strong) DLYMiniVlogPart                                         *currentPart;
 @property (nonatomic, strong) NSURL                                                   *currentProductUrl;
-@property (nonatomic, assign) BOOL                                                     isTime;
+@property (nonatomic, assign) BOOL                                                    isTime;
 @property (nonatomic, strong) NSMutableArray                                          *imageArray;
 
 /**
- 初始化相机
+ 初始化录制组件
+
+ @param previewView 预览视图
+ @return 返回加载好的Recorder component
  */
-- (void) initializationRecorder;
 - (instancetype)initWithPreviewView:(UIView *)previewView;
+
 /**
  按传入的片段信息开始录制
 
@@ -91,5 +96,5 @@ typedef void(^FailureBlock)(NSError *error);
  @param failureBlcok 失败回调
  */
 - (void) addTransitionEffectSuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
--(void)focusWithMode:(AVCaptureFocusMode)focusMode exposureMode:(AVCaptureExposureMode)exposureMode atPoint:(CGPoint)point;
+-(void)focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point;
 @end

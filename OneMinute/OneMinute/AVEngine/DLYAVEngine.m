@@ -19,6 +19,7 @@
 #import "DLYVideoTransition.h"
 #import "DLYResource.h"
 #import "DLYSession.h"
+#import <math.h>
 
 @interface DLYAVEngine ()
 {
@@ -42,13 +43,10 @@
 @property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;
 @property (nonatomic, strong) AVCaptureAudioDataOutput          *audioOutput;
 @property (nonatomic, strong) AVCaptureMovieFileOutput          *movieFileOutput;
-@property (nonatomic, strong) AVCaptureFileOutput               *captureFileOutput;
-@property (nonatomic, strong) AVCaptureDeviceInput              *currentVideoDeviceInput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *backCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *frontCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *audioMicInput;
 @property (nonatomic, strong) AVCaptureDeviceFormat             *defaultFormat;
-@property (nonatomic, strong) AVCaptureDevice                   *videoDevice;
 @property (nonatomic, strong) AVCaptureConnection               *audioConnection;
 
 // For video data output
@@ -64,7 +62,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 
 @property (nonatomic, strong) AVMutableComposition              *composition;
 @property (nonatomic, strong) NSMutableArray                    *passThroughTimeRanges;
-@property (nonatomic, strong) NSMutableArray                    *transitionTimeRangeArray;
+@property (nonatomic, copy) NSMutableArray                    *transitionTimeRangeArray;
 @property (nonatomic, strong) UIImagePickerController           *moviePicker;
 
 @property (nonatomic, strong) DLYResource                       *resource;
@@ -86,6 +84,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 }
 
 - (void)dealloc {
+    
     [_captureSession stopRunning];
     _captureSession   = nil;
     _previewLayer     = nil;
@@ -309,12 +308,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     return _movieFileOutput;
 }
--(AVCaptureFileOutput *)captureFileOutput{
-    if (_captureFileOutput) {
-        _captureFileOutput = [[AVCaptureFileOutput alloc] init];
-    }
-    return _captureFileOutput;
-}
 //视频输出
 - (AVCaptureVideoDataOutput *)videoOutput {
     if (_videoOutput == nil) {
@@ -447,33 +440,92 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     readyToRecordVideo = NO;
 }
 #pragma mark - 点触设置曝光 -
--(void)focusWithMode:(AVCaptureFocusMode)focusMode exposureMode:(AVCaptureExposureMode)exposureMode atPoint:(CGPoint)point{
+
+CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
+    CGFloat deltaX = second.x - first.x;
+    NSLog(@"deltaX = %f",deltaX);
+    CGFloat deltaY = second.y - first.y;
+    NSLog(@"deltaY = %f",deltaY);
+    return sqrt(deltaX*deltaX + deltaY*deltaY);
+};
+
+-(void)focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point{
     
     AVCaptureDevice *captureDevice = _currentVideoDeviceInput.device;
+    CGPoint currentPoint = CGPointZero;
     
-    [_currentVideoDeviceInput.device lockForConfiguration:nil];
+    if ([_currentVideoDeviceInput.device lockForConfiguration:nil]) {
+        
+        CGFloat distance = distanceBetweenPoints(currentPoint, point);
+        NSLog(@"distance = %f",distance);
+        // 设置对焦
+        if ([captureDevice isFocusModeSupported:AVCaptureFocusModeAutoFocus] && distance > 0.1 && distance != 0) {
+            [captureDevice setFocusMode:AVCaptureFocusModeAutoFocus];
+        }
+        if ([captureDevice isFocusPointOfInterestSupported]) {
+            [captureDevice setFocusPointOfInterest:point];
+        }
+        
+        // 设置曝光
+        if ([captureDevice isExposureModeSupported:AVCaptureExposureModeContinuousAutoExposure] && distance > 0.1 && distance != 0) {
+            [captureDevice setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
+        }
+        if ([captureDevice isExposurePointOfInterestSupported]) {
+            [captureDevice setExposurePointOfInterest:point];
+        }
+        
+        //设置白平衡
+        if ([captureDevice isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeAutoWhiteBalance] && distance > 0.1 && distance != 0) {
+            [captureDevice setWhiteBalanceMode:AVCaptureWhiteBalanceModeAutoWhiteBalance];
+        }
+        [_currentVideoDeviceInput.device unlockForConfiguration];
+        currentPoint = point;
+        NSLog(@"current point is :x = %f,y = %f",currentPoint.x,currentPoint.y);
+    }
     
-    // 设置聚焦
-    if ([captureDevice isFocusModeSupported:AVCaptureFocusModeAutoFocus]) {
-        [captureDevice setFocusMode:AVCaptureFocusModeContinuousAutoFocus];
-    }
-    if ([captureDevice isFocusPointOfInterestSupported]) {
-        [captureDevice setFocusPointOfInterest:point];
-    }
+}
+
+-(void)focusAtPoint:(CGPoint)point{
     
-    // 设置曝光
-    if ([captureDevice isExposureModeSupported:AVCaptureExposureModeContinuousAutoExposure]) {
-        [captureDevice setExposureMode:AVCaptureExposureModeAutoExpose];
-    }
-    if ([captureDevice isExposurePointOfInterestSupported]) {
-        [captureDevice setExposurePointOfInterest:point];
-    }
+    [self changeDeviceProperty:^(AVCaptureDevice *captureDevice) {
+        
+        // 设置对焦
+        if ([captureDevice isFocusModeSupported:AVCaptureFocusModeAutoFocus]) {
+            [captureDevice setFocusMode:AVCaptureFocusModeAutoFocus];
+        }
+        if ([captureDevice isFocusPointOfInterestSupported]) {
+            [captureDevice setFocusPointOfInterest:point];
+        }
+        
+        // 设置曝光
+        if ([captureDevice isExposureModeSupported:AVCaptureExposureModeContinuousAutoExposure]) {
+            [captureDevice setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
+        }
+        if ([captureDevice isExposurePointOfInterestSupported]) {
+            [captureDevice setExposurePointOfInterest:point];
+        }
+        
+        //设置白平衡
+        if ([captureDevice isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeAutoWhiteBalance]) {
+            [captureDevice setWhiteBalanceMode:AVCaptureWhiteBalanceModeAutoWhiteBalance];
+        }
+    }];
+}
+
+-(void)changeDeviceProperty:(void(^)(AVCaptureDevice *captureDevice))propertyChange{
     
-    //设置白平衡
-    if ([captureDevice isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeContinuousAutoWhiteBalance]) {
-        [captureDevice setWhiteBalanceMode:AVCaptureWhiteBalanceModeContinuousAutoWhiteBalance];
+    AVCaptureDevice *captureDevice= [self.currentVideoDeviceInput device];
+    NSError *error;
+    
+    //注意改变设备属性前一定要首先调用lockForConfiguration:调用完之后使用unlockForConfiguration方法解锁
+    if ([captureDevice lockForConfiguration:&error]) {
+        
+        propertyChange(captureDevice);
+        [captureDevice unlockForConfiguration];
+        
+    }else{
+        NSLog(@"设置设备属性过程发生错误，错误信息：%@",error.localizedDescription);
     }
-    [_currentVideoDeviceInput.device unlockForConfiguration];
 }
 
 #pragma mark -视频数据输出设置-
@@ -682,22 +734,22 @@ outputSettings:audioCompressionSettings];
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
     
     self.currentPart = part;
-    CGFloat desiredFps = 0.0;
-    
-    if (part.recordType == DLYMiniVlogRecordTypeSlomo) {
-        
-        DLYLog(@"The record type is Slomo");
-        desiredFps = 240.0;
-    }else if(part.recordType == DLYMiniVlogRecordTypeTimelapse){
-        
-        DLYLog(@"The record type is TimeLapse");
-        desiredFps = 60.0;
-        _isTime = YES;
-    }else{
-        desiredFps = 60.0;
-        DLYLog(@"The record type is Normal");
-    }
-    [self switchFormatWithDesiredFPS:desiredFps];
+//    CGFloat desiredFps = 0.0;
+//    
+//    if (part.recordType == DLYMiniVlogRecordTypeSlomo) {
+//        
+//        DLYLog(@"The record type is Slomo");
+//        desiredFps = 240.0;
+//    }else if(part.recordType == DLYMiniVlogRecordTypeTimelapse){
+//        
+//        DLYLog(@"The record type is TimeLapse");
+//        desiredFps = 60.0;
+//        _isTime = YES;
+//    }else{
+//        desiredFps = 60.0;
+//        DLYLog(@"The record type is Normal");
+//    }
+//    [self switchFormatWithDesiredFPS:desiredFps];
 //    dispatch_async(dispatch_get_main_queue(), ^{
 //        if (desiredFps > 0.0) {
 //            [self switchFormatWithDesiredFPS:desiredFps];
@@ -907,8 +959,13 @@ outputSettings:audioCompressionSettings];
         }
         
         CMTimeRange video_timeRange = CMTimeRangeMake(kCMTimeZero,videoAssetTrack.timeRange.duration);
+        
+//        NSUInteger second = 0;
+//        second = videoAsset.duration.value / videoAsset.duration.timescale; // 获取视频总时长,单位秒
+//        Float64 dur = CMTimeGetSeconds(videoAsset.duration);
+        
         [compositionVideoTrack insertTimeRange:video_timeRange ofTrack:videoAssetTrack atTime:CMTimeMakeWithSeconds(tmpDuration, 0) error:&error];
-        [compositionAudioTrack insertTimeRange:video_timeRange ofTrack:audioAssetTrack atTime:CMTimeMakeWithSeconds(tmpDuration, 0) error:nil];
+        [compositionAudioTrack insertTimeRange:video_timeRange ofTrack:audioAssetTrack atTime:CMTimeMakeWithSeconds(tmpDuration, 0) error:&error];
         tmpDuration += CMTimeGetSeconds(videoAssetTrack.timeRange.duration);
     }
     
@@ -947,7 +1004,6 @@ outputSettings:audioCompressionSettings];
     [self buildCompositionTracks];
     
     AVVideoComposition *videoComposition = [self buildVideoComposition];
-    [self transitionInstructionsInVideoComposition:videoComposition];
     
     NSURL *outPutUrl = [self.resource saveProductToSandbox];
     
@@ -959,6 +1015,13 @@ outputSettings:audioCompressionSettings];
         UISaveVideoAtPathToSavedPhotosAlbum([outPutUrl path], self, nil, nil);
         NSLog(@"过渡动画合成完毕");
         if (successBlock) {
+            NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"BGM001.m4a" ofType:nil];
+            NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
+            self.currentProductUrl = outPutUrl;
+            
+            [self addMusicToVideo:self.currentProductUrl audioUrl:BGMUrl completion:^(NSURL *outputUrl) {
+                DLYLog(@"合并配音流程结束!");
+            }];
             successBlock();
         }
     }];
@@ -1019,8 +1082,6 @@ outputSettings:audioCompressionSettings];
             NSValue *timeRangeValue = [NSValue valueWithCMTimeRange:timeRange];
             [self.transitionTimeRangeArray addObject:timeRangeValue];
         }
-        DLYLog(@"%@",self.transitionTimeRangeArray);
-        
     }
     
 }
@@ -1111,25 +1172,27 @@ outputSettings:audioCompressionSettings];
     }
     return videoComposition;
 }
-- (NSArray *)transitionInstructionsInVideoComposition:(AVVideoComposition *)vc {
+- (NSArray *)transitionInstructionsInVideoComposition:(AVVideoComposition *)videoComposition {
     
     NSMutableArray *transitionInstructions = [NSMutableArray array];
     
     int layerInstructionIndex = 1;
     
-    NSArray *compositionInstructions = vc.instructions;
+    //拿到videoComposition的指令集
+    NSArray *compositionInstructions = videoComposition.instructions;
     
-    for (AVMutableVideoCompositionInstruction *vci in compositionInstructions) {
+    // 遍历指令集
+    for (AVMutableVideoCompositionInstruction *videoCompositionInstruction in compositionInstructions) {
         
-        if (vci.layerInstructions.count == 2) {
+        if (videoCompositionInstruction.layerInstructions.count == 2) {
             
             DLYTransitionInstructions *instructions = [[DLYTransitionInstructions alloc] init];
             
-            instructions.compositionInstruction = vci;
+            instructions.compositionInstruction = videoCompositionInstruction;
             
-            instructions.fromLayerInstruction = (AVMutableVideoCompositionLayerInstruction *)vci.layerInstructions[1 - layerInstructionIndex];
+            instructions.fromLayerInstruction = (AVMutableVideoCompositionLayerInstruction *)videoCompositionInstruction.layerInstructions[1 - layerInstructionIndex];
             
-            instructions.toLayerInstruction = (AVMutableVideoCompositionLayerInstruction *)vci.layerInstructions[layerInstructionIndex];
+            instructions.toLayerInstruction = (AVMutableVideoCompositionLayerInstruction *)videoCompositionInstruction.layerInstructions[layerInstructionIndex];
             
             [transitionInstructions addObject:instructions];
             
@@ -1144,11 +1207,13 @@ outputSettings:audioCompressionSettings];
         NSArray *array = currentTemplate.parts;
         
         for (int i = 0; i < array.count; i++) {
-            DLYMiniVlogPart *part = array[i];
+            DLYMiniVlogPart *part = [[DLYMiniVlogPart alloc] init];
+            part = array[i];
             DLYTransitionInstructions *tis = transitionInstructions[i];
             DLYVideoTransition *videoTransition = [DLYVideoTransition videoTransition];
             videoTransition.type = part.transitionType;
             tis.transition = videoTransition;
+            transitionInstructions[i] = tis;
         }
     }
     return transitionInstructions;
@@ -1215,15 +1280,17 @@ outputSettings:audioCompressionSettings];
         _stopTime = CMTimeMake(stopTime, 1);
         
         CMTime duration = CMTimeSubtract(_stopTime, _startTime);
-        
+        CMTimeRange timeRange = CMTimeRangeMake(_startTime, duration);
+        DLYLog(@"第 %lu 个part的timeRange",i);
+        CMTimeShow(_startTime);
+        CMTimeShow(duration);
         
         if (part.soundType == DLYMiniVlogAudioTypeMusic) {//空镜
-            [BGMParameters setVolumeRampFromStartVolume:0.8 toEndVolume:0.8 timeRange:CMTimeRangeMake(_startTime, duration)];
-            [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:CMTimeRangeMake(_startTime, duration)];
-            
+            [BGMParameters setVolumeRampFromStartVolume:5.0 toEndVolume:5.0 timeRange:timeRange];
+            [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:timeRange];
         }else if(part.soundType == DLYMiniVlogAudioTypeNarrate){//人声
-            [videoParameters setVolumeRampFromStartVolume:0.8 toEndVolume:0.8 timeRange:CMTimeRangeMake(_startTime, duration)];
-            [BGMParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:CMTimeRangeMake(_startTime, duration)];
+            [videoParameters setVolumeRampFromStartVolume:5.0 toEndVolume:5.0 timeRange:timeRange];
+            [BGMParameters setVolumeRampFromStartVolume:0.4 toEndVolume:0.4 timeRange:timeRange];
         }
     }
     audioMix.inputParameters = @[videoParameters,BGMParameters];
@@ -1338,5 +1405,4 @@ outputSettings:audioCompressionSettings];
     inst.layerInstructions = [NSArray arrayWithObject:layerInst];
     videoComposition.instructions = [NSArray arrayWithObject:inst];
 }
-
 @end
