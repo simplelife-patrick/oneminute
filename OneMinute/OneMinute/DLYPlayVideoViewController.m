@@ -232,7 +232,7 @@
     AVPlayerItem *playerItem = self.player.currentItem;
     //这里每秒执行一次
     __weak typeof(self) weakSelf = self;
-    _progressObserver = [self.player addPeriodicTimeObserverForInterval:CMTimeMake(1.0, 1.0) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
+    _progressObserver = [self.player addPeriodicTimeObserverForInterval:CMTimeMake(1.0, 30.0) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
         float current = CMTimeGetSeconds(time);
         float total = CMTimeGetSeconds(playerItem.duration);
 //        NSLog(@"当前已经播放了%.2f",current);

@@ -893,10 +893,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.chooseScene.hidden = YES;
             self.chooseSceneLabel.hidden = YES;
             self.toggleCameraBtn.hidden = YES;
+            self.backView.transform = CGAffineTransformMakeTranslation(self.backView.width, 0);
+        } completion:^(BOOL finished) {
             self.backView.hidden = YES;
             self.shootView.hidden = NO;
             self.shootView.alpha = 1;
-        } completion:^(BOOL finished) {
 //            [_timer setFireDate:[NSDate distantPast]];
             
         }];
@@ -1053,6 +1054,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         self.chooseSceneLabel.hidden = NO;
         self.backView.hidden = NO;
+        self.backView.transform = CGAffineTransformMakeTranslation(0, 0);
         self.shootView.alpha = 0;
     } completion:^(BOOL finished) {
         self.shootView.hidden = YES;
@@ -1859,7 +1861,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             
             [self createPartViewLayout];
             
-            [UIView animateWithDuration:0.1f animations:^{
+            [UIView animateWithDuration:0.5f animations:^{
                 self.completeButton.hidden = YES;
                 if (self.newState == 1) {
                     self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
@@ -1886,6 +1888,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 }
                 self.chooseSceneLabel.hidden = NO;
                 self.backView.hidden = NO;
+                self.backView.transform = CGAffineTransformMakeTranslation(0, 0);
                 self.shootView.alpha = 0;
                 
                 self.shootView.hidden = YES;
