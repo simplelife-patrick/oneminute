@@ -15,24 +15,26 @@
 
 @implementation DLYSession
 
--(DLYMiniVlogTemplate *)currentTemplate{
+- (DLYMiniVlogTemplate *)currentTemplate{
+    
     if (!_currentTemplate) {
-        
-        if ([self draftExitAtFile] && [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY]) {
-        
-            NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY];
-            _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:savedCurrentTemplateName];
-            
-        }else{
-            
-            _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:kDEFAULTTEMPLATENAME];
-        }
-        [[NSUserDefaults standardUserDefaults] setObject:kDEFAULTTEMPLATENAME forKey:kCURRENTTEMPLATEKEY];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        _currentTemplate = [[DLYMiniVlogTemplate alloc] init];
     }
     return _currentTemplate;
 }
-- (BOOL) draftExitAtFile{
+
+- (void)saveCurrentTemplateWithName:(NSString *)currentTemplateName{
+    
+    NSUserDefaults *defaults = [[NSUserDefaults standardUserDefaults] init];
+    [defaults setObject:currentTemplateName forKey:kCURRENTTEMPLATEKEY];
+}
+- (DLYMiniVlogTemplate *)getCurrentTemplate{
+    NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY];
+    DLYMiniVlogTemplate *currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:savedCurrentTemplateName];
+    return currentTemplate;
+
+}
+- (BOOL) isExitdraftAtFile{
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
@@ -63,7 +65,7 @@
 
 - (void)resetSession{
     
-    if ([self draftExitAtFile]) {
+    if ([self isExitdraftAtFile]) {
         
         DLYResource *resouece = [[DLYResource alloc] init];
         NSArray *draftArray = [resouece loadBDraftParts];
