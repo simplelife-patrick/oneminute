@@ -43,6 +43,7 @@
 		ADA7C28A1F22050D0002A4E5 /* BGM001.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADA7C2891F22050D0002A4E5 /* BGM001.m4a */; };
 		ADA7C28C1F22056A0002A4E5 /* header001.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = ADA7C28B1F22056A0002A4E5 /* header001.mp4 */; };
 		ADD0E7D41F2D9F3500996BD6 /* UIImage+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD0E7D31F2D9F3500996BD6 /* UIImage+Extension.m */; };
+		ADD0E7D61F2DFD8100996BD6 /* BGM003.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADD0E7D51F2DFD8100996BD6 /* BGM003.m4a */; };
 		ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */; };
 		ADFFF19A1F18A33000FB5BF7 /* DLYVolumeAutomation.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1841F18A33000FB5BF7 /* DLYVolumeAutomation.m */; };
 		ADFFF19B1F18A33000FB5BF7 /* DLYMiniVlogDraft.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1881F18A33000FB5BF7 /* DLYMiniVlogDraft.m */; };
@@ -145,6 +146,7 @@
 		ADA7C28B1F22056A0002A4E5 /* header001.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = header001.mp4; sourceTree = "<group>"; };
 		ADD0E7D21F2D9F3500996BD6 /* UIImage+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Extension.h"; sourceTree = "<group>"; };
 		ADD0E7D31F2D9F3500996BD6 /* UIImage+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Extension.m"; sourceTree = "<group>"; };
+		ADD0E7D51F2DFD8100996BD6 /* BGM003.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = BGM003.m4a; sourceTree = "<group>"; };
 		ADFFF1811F18A33000FB5BF7 /* DLYMobileDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMobileDevice.h; sourceTree = "<group>"; };
 		ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMobileDevice.m; sourceTree = "<group>"; };
 		ADFFF1831F18A33000FB5BF7 /* DLYVolumeAutomation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYVolumeAutomation.h; sourceTree = "<group>"; };
@@ -431,6 +433,7 @@
 		ADA7C2881F2203500002A4E5 /* resources */ = {
 			isa = PBXGroup;
 			children = (
+				ADD0E7D51F2DFD8100996BD6 /* BGM003.m4a */,
 				ADA7C2891F22050D0002A4E5 /* BGM001.m4a */,
 			);
 			path = resources;
@@ -631,6 +634,7 @@
 				ADA7C28C1F22056A0002A4E5 /* header001.mp4 in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				6F8925981F1B11A800256093 /* launch.mp4 in Resources */,
+				ADD0E7D61F2DFD8100996BD6 /* BGM003.m4a in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
 				6F8925961F1B11A800256093 /* iconfont.ttf in Resources */,
 				6F8925971F1B11A800256093 /* demo.mp4 in Resources */,
