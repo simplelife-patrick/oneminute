@@ -18,7 +18,7 @@
 -(DLYMiniVlogTemplate *)currentTemplate{
     if (!_currentTemplate) {
         
-        if ([self draftExitAtFile] && [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY]) {
+        if ([self isExitdraftAtFile] && [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY]) {
         
             NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY];
             _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:savedCurrentTemplateName];
@@ -32,7 +32,7 @@
     }
     return _currentTemplate;
 }
-- (BOOL) draftExitAtFile{
+- (BOOL) isExitdraftAtFile{
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
@@ -63,7 +63,7 @@
 
 - (void)resetSession{
     
-    if ([self draftExitAtFile]) {
+    if ([self isExitdraftAtFile]) {
         
         DLYResource *resouece = [[DLYResource alloc] init];
         NSArray *draftArray = [resouece loadBDraftParts];

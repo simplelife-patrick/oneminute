@@ -78,6 +78,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIButton *completeButton;     //拍摄单个片段完成
 @property (nonatomic, strong) UILabel *timeNumber;          //倒计时显示label
 @property (nonatomic, strong) DLYResource  *resource;       //资源管理类
+@property (nonatomic, strong) DLYSession   *session;        //流程控制
+
 
 @end
 
@@ -89,6 +91,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     return _resource;
 }
+
+-(DLYSession *)session{
+    if (!_session) {
+        _session = [[DLYSession alloc] init];
+    }
+    return _session;
+}
+
 - (UIImageView *)focusCursorImageView {
     if (_focusCursorImageView == nil) {
         UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"focusIcon"]];
@@ -155,19 +165,49 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 - (void)initData {
     
-    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];
-    
-    partModelArray = [NSMutableArray arrayWithArray:template.parts];
-    for (int i = 0; i < 6; i++) {
-        DLYMiniVlogPart *part = partModelArray[i];
-        if (i == 0) {
-            part.prepareRecord = @"1";
-        }else {
-            part.prepareRecord = @"0";
-        }
-        part.recordStatus = @"0";
+    //存在草稿有未完成的创作
+    if ([self.session isExitdraftAtFile]) {
         
-        part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
+        NSArray *savedDraftArray = [self.resource loadBDraftParts];
+        
+        NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY];
+        DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:savedCurrentTemplateName];
+
+        partModelArray = [NSMutableArray arrayWithArray:template.parts];
+        
+        for (int i = 0; i < partModelArray.count; i++) {
+            DLYMiniVlogPart *part = partModelArray[i];
+            
+            //此处判断哪些片段已经完成拍摄
+            for (NSURL *partUrl in savedDraftArray) {
+                NSInteger recordedPaNum = [partUrl.absoluteString substringFromIndex:5].integerValue;
+                DLYMiniVlogPart *recordedpPart = partModelArray[recordedPaNum];
+                recordedpPart.prepareRecord = @"1";
+            }
+            if (i == 0) {
+                part.prepareRecord = @"1";
+            }else {
+                part.prepareRecord = @"0";
+            }
+            part.recordStatus = @"0";
+            
+            part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
+        }
+    }else{//无草稿
+        
+        DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];
+        partModelArray = [NSMutableArray arrayWithArray:template.parts];
+        for (int i = 0; i < 6; i++) {
+            DLYMiniVlogPart *part = partModelArray[i];
+            if (i == 0) {
+                part.prepareRecord = @"1";
+            }else {
+                part.prepareRecord = @"0";
+            }
+            part.recordStatus = @"0";
+            
+            part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
+        }
     }
 
     

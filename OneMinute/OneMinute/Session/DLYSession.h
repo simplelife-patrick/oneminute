@@ -17,11 +17,11 @@
 @property (nonatomic, strong) DLYMiniVlogTemplate                *currentTemplate;
 
 /**
- 判断是否存在未完成的草稿
+ 判断是否存在草稿
 
  @return 返回结果
  */
-- (BOOL) draftExitAtFile;
+- (BOOL) isExitdraftAtFile;
 
 /**
  传入模板编号返回模板数据

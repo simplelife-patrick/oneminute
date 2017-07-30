@@ -31,7 +31,7 @@
     NSArray *viewArr = self.viewControllers;
     DLYRecordViewController *vc = viewArr[viewArr.count - 1];
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]] && vc.isAppear == NO) {
-            return NO;
+        return NO;
     }else {
         return YES;
     }

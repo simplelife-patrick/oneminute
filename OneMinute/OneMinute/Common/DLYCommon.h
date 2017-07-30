@@ -38,6 +38,11 @@ static const int ddLogLevel = DDLogLevelError;
 #define kVideoTailerFolder @"VideoTailer"
 #define kSoundEffectFolder @"SoundEffect"
 
+//默认模板
+#define kDEFAULTTEMPLATENAME  @"Universal_001.json"
+//全局当前模板
+#define kCURRENTTEMPLATEKEY  @"CURRENTTEMPLATEKEY"
+
 
 #define DLog(format, ...) DDLogError((@"[文件名:%s]" "[函数名:%s]" "[行号:%d]" format), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__);
 
