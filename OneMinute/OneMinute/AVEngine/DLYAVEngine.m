@@ -982,12 +982,7 @@ outputSettings:audioCompressionSettings];
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"BGM001.m4a" ofType:nil];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
         
-        [self addMusicToVideo:outputUrl audioUrl:BGMUrl completion:^(NSURL *outputUrl) {
-            DLYLog(@"合并配音流程结束!");
-        }];
-        if (successBlock) {
-            successBlock();
-        }
+        [self addMusicToVideo:outputUrl audioUrl:BGMUrl successBlock:successBlock failure:failureBlcok];
     }];
 }
 
@@ -1015,14 +1010,12 @@ outputSettings:audioCompressionSettings];
         UISaveVideoAtPathToSavedPhotosAlbum([outPutUrl path], self, nil, nil);
         NSLog(@"过渡动画合成完毕");
         if (successBlock) {
+            
             NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"BGM001.m4a" ofType:nil];
             NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
             self.currentProductUrl = outPutUrl;
             
-            [self addMusicToVideo:self.currentProductUrl audioUrl:BGMUrl completion:^(NSURL *outputUrl) {
-                DLYLog(@"合并配音流程结束!");
-            }];
-            successBlock();
+            [self addMusicToVideo:self.currentProductUrl audioUrl:BGMUrl successBlock:successBlock failure:failureBlcok];
         }
     }];
     
@@ -1039,7 +1032,9 @@ outputSettings:audioCompressionSettings];
     
     NSArray *videoTracks = @[compositionTrackA, compositionTrackB];
     
-    CMTime videoCursorTime = kCMTimeZero;
+    CMTime videoCursorTimeBefor = kCMTimeZero;
+    CMTime videoCursorTimeAfter = kCMTimeZero;
+    
     CMTime transitionDuration = CMTimeMake(2, 1);
     CMTime audioCursorTime = kCMTimeZero;
     
@@ -1061,24 +1056,34 @@ outputSettings:audioCompressionSettings];
         if ([asset tracksWithMediaType:AVMediaTypeAudio].count != 0) {
             assetAudioTrack = [[asset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
         }
+        DLYLog(@"当前compositiontrack :%lu",trackIndex);
         AVMutableCompositionTrack *currentTrack = videoTracks[trackIndex];
         
         CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero, assetVideoTrack.timeRange.duration);
         
+        // Overlap clips by transition duration
+        videoCursorTimeBefor = CMTimeAdd(videoCursorTimeBefor, timeRange.duration);
+        DLYLog(@"正常cursor时间");
+        CMTimeShow(videoCursorTimeBefor);
+        
+        videoCursorTimeAfter = CMTimeSubtract(videoCursorTimeBefor, transitionDuration);
+        DLYLog(@"重叠插入cursor时间");
+        CMTimeShow(videoCursorTimeAfter);
+        
+        audioCursorTime = CMTimeAdd(videoCursorTimeAfter, timeRange.duration);
+        DLYLog(@"音频插入cursor时间");
+        CMTimeShow(audioCursorTime);
+        
         [currentTrack insertTimeRange:timeRange
                               ofTrack:assetVideoTrack
-                               atTime:videoCursorTime error:nil];
+                               atTime:videoCursorTimeAfter error:nil];
         [compositionTrackAudio insertTimeRange:timeRange
                                        ofTrack:assetAudioTrack
                                         atTime:audioCursorTime error:nil];
         
-        // Overlap clips by transition duration
-        videoCursorTime = CMTimeAdd(videoCursorTime, timeRange.duration);
-        videoCursorTime = CMTimeSubtract(videoCursorTime, transitionDuration);
-        audioCursorTime = CMTimeAdd(audioCursorTime, timeRange.duration);
         
         if (i + 1 < videoArray.count) {
-            timeRange = CMTimeRangeMake(videoCursorTime, transitionDuration);
+            timeRange = CMTimeRangeMake(videoCursorTimeAfter, transitionDuration);
             NSValue *timeRangeValue = [NSValue valueWithCMTimeRange:timeRange];
             [self.transitionTimeRangeArray addObject:timeRangeValue];
         }
@@ -1219,8 +1224,7 @@ outputSettings:audioCompressionSettings];
     return transitionInstructions;
 }
 #pragma mark - 配音 -
-- (void) addMusicToVideo:(NSURL *)videoUrl audioUrl:(NSURL *)audioUrl completion:(MixcompletionBlock)completionHandle
-{
+- (void) addMusicToVideo:(NSURL *)videoUrl audioUrl:(NSURL *)audioUrl successBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
     //加载素材
     AVAsset *videoAsset = [AVAsset assetWithURL:videoUrl];
     AVAsset *audioAsset = [AVAsset assetWithURL:audioUrl];
@@ -1250,6 +1254,7 @@ outputSettings:audioCompressionSettings];
     AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
     
     NSURL *outPutUrl = [self.resource saveProductToSandbox];
+    self.currentProductUrl = outPutUrl;
     if ([[NSFileManager defaultManager] fileExistsAtPath:outPutUrl.absoluteString])
     {
         [[NSFileManager defaultManager] removeItemAtPath:outPutUrl.absoluteString error:nil];
@@ -1313,7 +1318,10 @@ outputSettings:audioCompressionSettings];
             default:
                 break;
         }
-        completionHandle(outPutUrl);
+        if (successBlock) {
+            DLYLog(@"合并配音流程结束!");
+            successBlock();
+        }
     }];
 }
 #pragma mark - 叠加 -
