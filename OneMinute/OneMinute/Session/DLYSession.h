@@ -25,9 +25,9 @@
 - (void) saveCurrentTemplateWithName:(NSString *)currentTemplateName;
 
 /**
- 获取当前模板名称
+ 获取当前模板
 
- @return 返回模板名称
+ @return 返回模板
  */
 - (DLYMiniVlogTemplate *)getCurrentTemplate;
 
