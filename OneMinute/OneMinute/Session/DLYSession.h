@@ -16,6 +16,21 @@
  */
 @property (nonatomic, strong) DLYMiniVlogTemplate                *currentTemplate;
 
+
+/**
+ 保存当前拍摄模板
+
+ @param currentTemplateName 当前模板名称
+ */
+- (void) saveCurrentTemplateWithName:(NSString *)currentTemplateName;
+
+/**
+ 获取当前模板名称
+
+ @return 返回模板名称
+ */
+- (DLYMiniVlogTemplate *)getCurrentTemplate;
+
 /**
  判断是否存在草稿
 
