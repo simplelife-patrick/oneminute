@@ -9,7 +9,6 @@
 #import "DLYRecordViewController.h"
 #import "DLYAnnularProgress.h"
 #import <AssetsLibrary/AssetsLibrary.h>
-//#import "FLEXManager.h"
 #import "DLYPlayVideoViewController.h"
 #import "DLYMiniVlogTemplate.h"
 #import "DLYResource.h"
