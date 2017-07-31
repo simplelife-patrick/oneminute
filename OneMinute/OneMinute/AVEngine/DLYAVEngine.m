@@ -160,7 +160,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             [_captureSession addOutput:self.audioOutput];
         }
         //设置视频录制的方向
-        self.videoConnection.videoOrientation = AVCaptureVideoOrientationPortrait;
+//        self.videoConnection.videoOrientation = AVCaptureVideoOrientationPortrait;
     }
     return _captureSession;
 }
@@ -193,6 +193,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         }else{
             DLYLog(@"Back camera intput add faild");
         }
+        
         //添加麦克风的输入
         if ([_captureSession canAddInput:self.audioMicInput]) {
             [_captureSession addInput:self.audioMicInput];
@@ -249,14 +250,18 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 }
 #pragma mark - 切换摄像头 -
 - (void)changeCameraInputDeviceisFront:(BOOL)isFront {
+    
     if (isFront) {
+        
         [self.captureSession stopRunning];
         [self.captureSession removeInput:self.backCameraInput];
+        
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.frontCameraInput];
         }
     }else {
+        
         [self.captureSession stopRunning];
         [self.captureSession removeInput:self.frontCameraInput];
         if ([self.captureSession canAddInput:self.backCameraInput]) {
@@ -480,7 +485,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }
         [_currentVideoDeviceInput.device unlockForConfiguration];
         currentPoint = point;
-        NSLog(@"current point is :x = %f,y = %f",currentPoint.x,currentPoint.y);
+        NSLog(@"current point of the capture device is :x = %f,y = %f",currentPoint.x,currentPoint.y);
     }
     
 }

@@ -112,6 +112,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
     self.isAppear = NO;
+    
     if (self.newState == 1) {
         [self deviceChangeAndHomeOnTheRightNewLayout];
     }else {
@@ -406,6 +407,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     UITouch *touch = [touches anyObject];
     if (touch.view != self.backView && touch.view != self.sceneView) {
+        
         CGPoint point = [touch locationInView:self.previewView];
         CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
         [self setFocusCursorWithPoint:point];
@@ -658,6 +660,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
         [self deviceChangeAndHomeOnTheLeftNewLayout];
         NSLog(@"首页左转");
+        [[self.AVEngine videoConnection] setVideoOrientation:AVCaptureVideoOrientationLandscapeLeft];
     }
 
 }
@@ -780,6 +783,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
         [self deviceChangeAndHomeOnTheRightNewLayout];
         NSLog(@"首页右转");
+        [[self.AVEngine videoConnection] setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
 
     }
 }

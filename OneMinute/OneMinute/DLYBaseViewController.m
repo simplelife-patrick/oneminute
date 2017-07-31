@@ -92,8 +92,7 @@
         [_motionManager startDeviceMotionUpdatesToQueue:[NSOperationQueue currentQueue]
                                             withHandler: ^(CMDeviceMotion *motion, NSError *error){
                                                 [self performSelectorOnMainThread:@selector(handleDeviceMotion:) withObject:motion waitUntilDone:YES];
-                                                
-                                            }];
+        }];
     } else {
         DLYLog(@"No device motion on device.");
         [self setMotionManager:nil];
