@@ -204,18 +204,22 @@
 - (void)deviceChangeAndHomeOnTheLeft {
     NSArray *viewArr = self.navigationController.viewControllers;
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYExportViewController class]]) {
-        NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeRight];
-        [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-        NSLog(@"导出页面左转");
+        [UIView animateWithDuration:0.5 animations:^{
+            NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeRight];
+            [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+            NSLog(@"导出页面左转");
+        }];
     }
 }
 - (void)deviceChangeAndHomeOnTheRight {
     
     NSArray *viewArr = self.navigationController.viewControllers;
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYExportViewController class]]) {
-        NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
-        [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-        NSLog(@"导出页面右转");
+        [UIView animateWithDuration:0.5 animations:^{
+            NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
+            [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+            NSLog(@"导出页面右转");
+        }];
     }
 }
 

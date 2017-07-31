@@ -9,7 +9,6 @@
 #import "DLYRecordViewController.h"
 #import "DLYAnnularProgress.h"
 #import <AssetsLibrary/AssetsLibrary.h>
-//#import "FLEXManager.h"
 #import "DLYPlayVideoViewController.h"
 #import "DLYMiniVlogTemplate.h"
 #import "DLYResource.h"
@@ -21,15 +20,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 @interface DLYRecordViewController ()<DLYCaptureManagerDelegate,UIAlertViewDelegate>
 {
-    //    //记录选中的拍摄模式 10003 延时 10004 普通 10005 慢动作
-    //    NSInteger selectModel;
-    
-    //记录选中的拍摄片段
-    NSInteger selectVedioPart;
-    
     //记录选中的样片类型
     NSInteger selectType;
-    
     //记录白色闪动条的透明度
     NSInteger prepareAlpha;
     //选择的片段
@@ -1086,7 +1078,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     part.prepareRecord = @"0";
     part.recordStatus = @"0";
-    selectVedioPart = i - 1;
     
     NSInteger n = 0;
     for(int i = 0; i < partModelArray.count; i++)
@@ -1095,7 +1086,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         if([part2.recordStatus isEqualToString:@"0"])
         {
-            selectVedioPart = i;
             part2.prepareRecord = @"1";
             break;
         }else
@@ -1540,7 +1530,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             part1.prepareRecord = @"0";
         }
         part.prepareRecord = @"1";
-        selectVedioPart = i - 1;
         
         //        [self createPartView];
         [self createPartViewLayout];
@@ -1778,7 +1767,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.timeNumber.transform = CGAffineTransformMakeRotation(M_PI);
     }
     self.timeNumber.textColor = RGB(255, 255, 255);
-    DLYMiniVlogPart *part = partModelArray[selectVedioPart];
+    
+    NSInteger partNumber = selectPartTag - 10000;
+    DLYMiniVlogPart *part = partModelArray[partNumber - 1];
     NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
     self.timeNumber.text = timeArr[0];
     self.timeNumber.font = FONT_SYSTEM(20);
@@ -1808,7 +1799,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark ==== 拍摄计时操作
 - (void)shootAction {
     
-    DLYMiniVlogPart *part = partModelArray[selectVedioPart];
+    NSInteger partNumber = selectPartTag - 10000;
+    DLYMiniVlogPart *part = partModelArray[partNumber - 1];
     _shootTime += 0.01;
     
     if((int)(_shootTime * 100) % 100 == 0)
@@ -1827,7 +1819,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.cancelButton.hidden = YES;
         [_shootTimer invalidate];
         
-        DLYMiniVlogPart *part = partModelArray[selectVedioPart];
         for(int i = 0; i < partModelArray.count; i++)
         {
             DLYMiniVlogPart *part1 = partModelArray[i];
@@ -1842,7 +1833,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             DLYMiniVlogPart *part2 = partModelArray[i];
             if([part2.recordStatus isEqualToString:@"0"])
             {
-                selectVedioPart = i;
                 part2.prepareRecord = @"1";
                 break;
             }else

@@ -45,11 +45,11 @@
         }
         
         self.frame = window.bounds;
-        self.backgroundColor = [UIColor colorWithRed:0.0/255 green:0.0/255 blue:0.0/255 alpha:0.1];
+        self.backgroundColor = [UIColor colorWithRed:128.0/255 green:128.0/255 blue:128.0/255 alpha:0.8];
         [result.view addSubview:self];
         
         UIView * popView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 200, 111)];
-        popView.backgroundColor = RGBA(0, 0, 0, 0.5);
+        popView.backgroundColor = RGBA(0, 0, 0, 0.6);
         popView.center = self.center;
         [self addSubview:popView];
         
