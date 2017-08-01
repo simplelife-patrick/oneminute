@@ -422,7 +422,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             angle = M_PI;
             break;
         case AVCaptureVideoOrientationLandscapeRight:
-            angle = -M_PI_2;
+            angle = - M_PI_2;
             break;
         case AVCaptureVideoOrientationLandscapeLeft:
             angle = M_PI_2;
@@ -1004,6 +1004,7 @@ outputSettings:audioCompressionSettings];
     [self buildCompositionTracks];
     
     AVVideoComposition *videoComposition = [self buildVideoComposition];
+    [self transitionInstructionsInVideoComposition:videoComposition];
     
     NSURL *outPutUrl = [self.resource saveProductToSandbox];
     
@@ -1230,23 +1231,50 @@ outputSettings:audioCompressionSettings];
 }
 #pragma mark - 配音 -
 - (void) addMusicToVideo:(NSURL *)videoUrl audioUrl:(NSURL *)audioUrl successBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
+    
     //加载素材
-    AVAsset *videoAsset = [AVAsset assetWithURL:videoUrl];
-    AVAsset *audioAsset = [AVAsset assetWithURL:audioUrl];
+    NSDictionary *opts = [NSDictionary dictionaryWithObject:@(YES) forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
+    AVURLAsset *videoAsset = [AVURLAsset URLAssetWithURL:videoUrl options:opts];
+    AVURLAsset *audioAsset = [AVURLAsset URLAssetWithURL:audioUrl options:nil];
+    
     AVAssetTrack *videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
     AVAssetTrack *audioAssetTrack = [[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
-    //
+    
+    //给应用层添加标题用
+    CMTime endTime = CMTimeMakeWithSeconds(videoAsset.duration.value/videoAsset.duration.timescale-0.2, videoAsset.duration.timescale);
+    
     //创建视频编辑工程
     AVMutableComposition* mixComposition = [AVMutableComposition composition];
     
     //将视音频素材加入编辑工程
     AVMutableCompositionTrack *videoCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
     AVMutableCompositionTrack *audioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+    
     [videoCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssetTrack.timeRange.duration) ofTrack:videoAssetTrack atTime:kCMTimeZero error:nil];
     [audioCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssetTrack.timeRange.duration) ofTrack:audioAssetTrack atTime:kCMTimeZero error:nil];
     
     //调整视频方向
     [videoCompositionTrack setPreferredTransform:videoAssetTrack.preferredTransform];
+    
+#pragma mark - 添加标题 -
+
+//    AVMutableVideoCompositionInstruction *instruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+//    instruction.timeRange = CMTimeRangeMake(kCMTimeZero, videoCompositionTrack.timeRange.duration);
+//
+//    AVMutableVideoCompositionLayerInstruction *videolayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoAssetTrack];
+//
+//    [videolayerInstruction setTransform:videoAssetTrack.preferredTransform atTime:kCMTimeZero];
+//    [videolayerInstruction setOpacity:0.0 atTime:endTime];
+//
+//    instruction.layerInstructions = [NSArray arrayWithObjects:videolayerInstruction,nil];
+//    AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
+//
+//    CGSize naturalSize = videoAssetTrack.naturalSize;
+//
+//    videoComposition.renderSize = naturalSize;
+//    videoComposition.instructions = [NSArray arrayWithObject:instruction];
+//    videoComposition.frameDuration = CMTimeMake(1, 60);
+//    [self applyVideoEffectsToComposition:videoComposition videoTitle:@"动旅游VLOG" size:naturalSize];
     
     //处理视频原声
     AVAssetTrack *originalAudioAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
@@ -1255,19 +1283,6 @@ outputSettings:audioCompressionSettings];
     
     [originalAudioCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssetTrack.timeRange.duration) ofTrack:originalAudioAssetTrack atTime:kCMTimeZero error:nil];
     
-    //AVAssetExportSession用于合并文件，导出合并后文件，presetName文件的输出类型
-    AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
-    
-    NSURL *outPutUrl = [self.resource saveProductToSandbox];
-    self.currentProductUrl = outPutUrl;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:outPutUrl.absoluteString])
-    {
-        [[NSFileManager defaultManager] removeItemAtPath:outPutUrl.absoluteString error:nil];
-    }
-    
-    //控制音量
-    CMTime duration = videoAssetTrack.timeRange.duration;
-    CGFloat videoDuration = duration.value / (float)duration.timescale;
     AVMutableAudioMix *audioMix = [AVMutableAudioMix audioMix];
     
     AVMutableAudioMixInputParameters *videoParameters = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:originalAudioCompositionTrack];
@@ -1305,10 +1320,21 @@ outputSettings:audioCompressionSettings];
     }
     audioMix.inputParameters = @[videoParameters,BGMParameters];
     
+    AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
+    
+    NSURL *outPutUrl = [self.resource saveProductToSandbox];
+    self.currentProductUrl = outPutUrl;
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:self.currentProductUrl.absoluteString])
+    {
+        [[NSFileManager defaultManager] removeItemAtPath:self.currentProductUrl.absoluteString error:nil];
+    }
+    
     //输出设置
-    assetExportSession.outputFileType = AVFileTypeMPEG4;
-    assetExportSession.audioMix = audioMix;
     assetExportSession.outputURL = outPutUrl;
+    assetExportSession.outputFileType = AVFileTypeMPEG4;
+//    assetExportSession.videoComposition = videoComposition;
+    assetExportSession.audioMix = audioMix;
     assetExportSession.shouldOptimizeForNetworkUse = YES;
     
     [assetExportSession exportAsynchronouslyWithCompletionHandler:^{
@@ -1329,6 +1355,37 @@ outputSettings:audioCompressionSettings];
         }
     }];
 }
+
+#pragma mark - 标题 -
+- (void)applyVideoEffectsToComposition:(AVMutableVideoComposition *)composition videoTitle:(NSString*)videoTitle  size:(CGSize)size {
+    
+    UIFont *font = [UIFont systemFontOfSize:60.0];
+    CATextLayer *titleText = [[CATextLayer alloc] init];
+    [titleText setFontSize:60];
+    [titleText setString:videoTitle];
+    [titleText setAlignmentMode:kCAAlignmentCenter];
+    [titleText setForegroundColor:[[UIColor blueColor] CGColor]];
+    titleText.masksToBounds = YES;
+    titleText.cornerRadius = 23.0f;
+    [titleText setBackgroundColor:[UIColor redColor].CGColor];
+    CGSize textSize = [videoTitle sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
+    [titleText setFrame:CGRectMake(300, 300, 300, 300)];
+    
+    CALayer *overlayLayer = [CALayer layer];
+    overlayLayer.frame = CGRectMake(0, 0, size.width, size.height);
+    [overlayLayer addSublayer:titleText];
+    [overlayLayer setMasksToBounds:YES];
+    
+    CALayer *parentLayer = [CALayer layer];
+    CALayer *videoLayer = [CALayer layer];
+    parentLayer.frame = CGRectMake(0, 0, size.width, size.height);
+    videoLayer.frame = CGRectMake(0, 0, size.width, size.height);
+    [parentLayer addSublayer:videoLayer];
+    [parentLayer addSublayer:overlayLayer];
+    
+    composition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
+}
+
 #pragma mark - 叠加 -
 - (void) overlayVideoForBodyVideoAction{
     
@@ -1418,4 +1475,9 @@ outputSettings:audioCompressionSettings];
     inst.layerInstructions = [NSArray arrayWithObject:layerInst];
     videoComposition.instructions = [NSArray arrayWithObject:inst];
 }
+
+- (void)captureOutput:(nonnull AVCaptureFileOutput *)output didFinishRecordingToOutputFileAtURL:(nonnull NSURL *)outputFileURL fromConnections:(nonnull NSArray<AVCaptureConnection *> *)connections error:(nullable NSError *)error {
+    
+}
+
 @end
