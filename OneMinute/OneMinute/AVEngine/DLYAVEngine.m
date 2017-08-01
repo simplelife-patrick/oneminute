@@ -976,7 +976,7 @@ outputSettings:audioCompressionSettings];
     
     DLYResource *resource = [[DLYResource alloc]init];
     NSURL *outputUrl = [resource saveProductToSandbox];
-    self.currentProductUrl = outputUrl;
+//    self.currentProductUrl = outputUrl;
 
     AVAssetExportSession *exporter = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1920x1080];
     exporter.outputURL = outputUrl;

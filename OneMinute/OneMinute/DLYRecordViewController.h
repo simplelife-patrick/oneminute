@@ -10,7 +10,9 @@
 
 @interface DLYRecordViewController : DLYBaseViewController
 
+@property (nonatomic, assign) BOOL isPlayer;
 @property (nonatomic, assign) BOOL isExport;
 @property (nonatomic, assign) BOOL isAppear;
+@property (nonatomic, assign) BOOL isSuccess;
 
 @end

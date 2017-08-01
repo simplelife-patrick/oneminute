@@ -10,6 +10,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "DLYExportViewController.h"
 #import "DLYResource.h"
+#import "DLYRecordViewController.h"
 
 #define SWitdh [UIScreen mainScreen].bounds.size.width
 #define SHeight [UIScreen mainScreen].bounds.size.height
@@ -26,6 +27,9 @@
 @property (nonatomic, strong) UIProgressView *progress;
 @property (nonatomic, strong) id progressObserver;
 @property (nonatomic, strong) UIButton *playButton;
+//控件
+@property (nonatomic, strong) UIActivityIndicatorView *waitIndicator;
+@property (nonatomic, strong) UIButton *nextButton;
 
 @end
 
@@ -38,19 +42,18 @@
     
     //即将进入后台
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
+
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(canPlayVideo:) name:@"CANPLAY" object:nil];
 }
 - (void)setupUI{
-    
     //创建播放器层
-//    NSString *path = [[NSBundle mainBundle] pathForResource:@"demo" ofType:@"mp4"];
-//    NSURL *url = [NSURL fileURLWithPath:path];
-//    self.playerItem = [AVPlayerItem playerItemWithURL:url];
-    
+    self.view.backgroundColor = RGB(0, 0, 0);
     self.playerItem = [AVPlayerItem playerItemWithURL:self.playUrl];
-
-    
-    [self addObserverToPlayItem:self.playerItem];
-    
+    NSLog(@"打印：%@", self.playUrl);
+    if ((self.isSuccess && self.isAll) || (!self.isAll)) {
+        [self addObserverToPlayItem:self.playerItem];
+        NSLog(@"走了3");
+    }
     self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
     self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
     self.playerLayer.frame = self.view.frame;
@@ -58,9 +61,7 @@
     [self.view.layer addSublayer:self.playerLayer];
     
     isPlay = YES;
-    //    UIImageView * imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SWitdh, SHeight)];
-    //    imageView.image = [UIImage imageNamed:@"timg"];
-    //    [self.view addSubview:imageView];
+    
     //返回
     UIButton * backButton = [[UIButton alloc]initWithFrame:CGRectMake(28, 0, 60, 60)];
     backButton.centerY = self.view.centerY;
@@ -83,17 +84,33 @@
     self.playButton.center = self.view.center;
     [self.view addSubview:self.playButton];
     //下一步
-    
     if (self.isAll) {
-        UIButton * nextButton = [[UIButton alloc]initWithFrame:CGRectMake(SWitdh - 82, 0, 60, 60)];
-        nextButton.backgroundColor = RGB(255, 0, 0);
-        nextButton.centerY = self.view.centerY;
-        nextButton.layer.cornerRadius = 30;
-        nextButton.clipsToBounds = YES;
-        [nextButton setImage:[UIImage imageNamed:@"next"] forState:UIControlStateNormal];
-        nextButton.imageEdgeInsets = UIEdgeInsetsMake(15, 15, 15, 15);
-        [nextButton addTarget:self action:@selector(onClickNext) forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview:nextButton];
+        self.nextButton = [[UIButton alloc]initWithFrame:CGRectMake(SWitdh - 82, 0, 60, 60)];
+        self.nextButton.backgroundColor = RGB(255, 0, 0);
+        self.nextButton.centerY = self.view.centerY;
+        self.nextButton.layer.cornerRadius = 30;
+        self.nextButton.clipsToBounds = YES;
+        [self.nextButton setImage:[UIImage imageNamed:@"next"] forState:UIControlStateNormal];
+        self.nextButton.imageEdgeInsets = UIEdgeInsetsMake(15, 15, 15, 15);
+        [self.nextButton addTarget:self action:@selector(onClickNext) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:self.nextButton];
+        if (self.isSuccess) {
+            self.nextButton.hidden = NO;
+        }else {
+            self.nextButton.hidden = YES;
+        }
+    }
+    if (self.isAll && self.isSuccess == NO) {
+        
+        self.waitIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        self.waitIndicator.backgroundColor = RGB(0, 0, 0);
+        self.waitIndicator.frame = CGRectMake(0, 0, 65, 65);
+        self.waitIndicator.center = self.view.center;
+        [self.view addSubview:self.waitIndicator];
+        
+        [self.waitIndicator startAnimating];
+        NSLog(@"走了2");
+
     }
     
     self.progress = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
@@ -118,8 +135,6 @@
         self.DismissBlock();
     }
     [self.navigationController popViewControllerAnimated:YES];
-
-    
 }
 
 - (void)onClickPlayOrPause:(UIButton *)sender {
@@ -239,7 +254,6 @@
     _progressObserver = [self.player addPeriodicTimeObserverForInterval:CMTimeMake(1.0, 30.0) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
         float current = CMTimeGetSeconds(time);
         float total = CMTimeGetSeconds(playerItem.duration);
-//        NSLog(@"当前已经播放了%.2f",current);
         if (current) {
             [weakSelf.progress setProgress:(current / total) animated:YES];
         }
@@ -250,11 +264,16 @@
     AVPlayerItem *playerItem = object;
     if ([keyPath isEqualToString:@"status"]) {
         if (playerItem.status == AVPlayerItemStatusReadyToPlay) {
-            
             //添加各种通知和观察者
             [self addNotification];
             [self addProgressObserver];
             [self.player play];
+            if (self.waitIndicator.isAnimating) {
+                [self.waitIndicator stopAnimating];
+            }
+            if (self.isAll) {
+                self.nextButton.hidden = NO;
+            }
         }
     } else if ([keyPath isEqualToString:@"loadedTimeRanges"]) {
         NSArray *array = playerItem.loadedTimeRanges;
@@ -267,20 +286,37 @@
     
 }
 
+- (void)canPlayVideo:(NSNotification *)notification {
+    if (self.isAll) {
+
+        if (self.playUrl== nil || self.playUrl.path.length <= 0) {
+            self.playUrl = notification.userInfo[@"playUrl"];
+        }
+        
+        self.playerItem = [AVPlayerItem playerItemWithURL:self.playUrl];
+        [self.player replaceCurrentItemWithPlayerItem:self.playerItem];
+        [self addObserverToPlayItem:self.playerItem];
+    }
+}
+
 #pragma mark - UI事件 播放和暂停\
 
 - (void)viewWillDisappear:(BOOL)animated {
 
     [super viewWillDisappear:animated];
+    if (self.waitIndicator.isAnimating) {
+        [self.waitIndicator stopAnimating];
+    }
+    
     [MobClick endLogPageView:@"PlayVideoView"];
     [self.player pause];
     [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
-    
+    [self.player replaceCurrentItemWithPlayerItem:nil];
+    self.player = nil;
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CANPLAY" object:nil];
 }
 
 - (void)dealloc {
-    NSLog(@"deallocdeallocdealloc我到底走了几遍几遍几遍");
-
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self.player removeTimeObserver:self.progressObserver];
     [self removeObserverFromPlayerItem:self.player.currentItem];
