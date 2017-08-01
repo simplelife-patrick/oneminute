@@ -1257,14 +1257,14 @@ outputSettings:audioCompressionSettings];
     [videoCompositionTrack setPreferredTransform:videoAssetTrack.preferredTransform];
     
 #pragma mark - 添加标题 -
-//
+
 //    AVMutableVideoCompositionInstruction *instruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
 //    instruction.timeRange = CMTimeRangeMake(kCMTimeZero, videoCompositionTrack.timeRange.duration);
 //
 //    AVMutableVideoCompositionLayerInstruction *videolayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoAssetTrack];
 //
 //    [videolayerInstruction setTransform:videoAssetTrack.preferredTransform atTime:kCMTimeZero];
-//    [videolayerInstruction setOpacity:0.0 atTime:CMTimeMake(10, 1)];
+//    [videolayerInstruction setOpacity:0.0 atTime:endTime];
 //
 //    instruction.layerInstructions = [NSArray arrayWithObjects:videolayerInstruction,nil];
 //    AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
@@ -1325,9 +1325,9 @@ outputSettings:audioCompressionSettings];
     NSURL *outPutUrl = [self.resource saveProductToSandbox];
     self.currentProductUrl = outPutUrl;
     
-    if ([[NSFileManager defaultManager] fileExistsAtPath:outPutUrl.absoluteString])
+    if ([[NSFileManager defaultManager] fileExistsAtPath:self.currentProductUrl.absoluteString])
     {
-        [[NSFileManager defaultManager] removeItemAtPath:outPutUrl.absoluteString error:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:self.currentProductUrl.absoluteString error:nil];
     }
     
     //输出设置
@@ -1359,17 +1359,17 @@ outputSettings:audioCompressionSettings];
 #pragma mark - 标题 -
 - (void)applyVideoEffectsToComposition:(AVMutableVideoComposition *)composition videoTitle:(NSString*)videoTitle  size:(CGSize)size {
     
-    UIFont *font = [UIFont systemFontOfSize:30.0];
+    UIFont *font = [UIFont systemFontOfSize:60.0];
     CATextLayer *titleText = [[CATextLayer alloc] init];
     [titleText setFontSize:60];
     [titleText setString:videoTitle];
     [titleText setAlignmentMode:kCAAlignmentCenter];
-    [titleText setForegroundColor:[[UIColor redColor] CGColor]];
+    [titleText setForegroundColor:[[UIColor blueColor] CGColor]];
     titleText.masksToBounds = YES;
     titleText.cornerRadius = 23.0f;
-    [titleText setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5].CGColor];
+    [titleText setBackgroundColor:[UIColor redColor].CGColor];
     CGSize textSize = [videoTitle sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
-    [titleText setFrame:CGRectMake(50, 100, textSize.width+20, textSize.height+10)];
+    [titleText setFrame:CGRectMake(300, 300, 300, 300)];
     
     CALayer *overlayLayer = [CALayer layer];
     overlayLayer.frame = CGRectMake(0, 0, size.width, size.height);
