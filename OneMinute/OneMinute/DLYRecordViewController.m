@@ -14,7 +14,6 @@
 #import "DLYResource.h"
 #import "DLYAVEngine.h"
 #import "DLYSession.h"
-#import <Photos/Photos.h>
 
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
@@ -144,26 +143,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.isAppear = NO;
     [self initData];
     [self setupUI];
-    //要改 监测
-    [self initPermission];
     [self monitorPermission];
     //进入前台
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recordViewWillEnterForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
     
     [self initializationRecorder];
 }
-- (void)initPermission {
-    
-    ///申请麦克风权限
-    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
-    }];
-    ///申请拍照权限
-    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
-    }];
-    ///申请相册权限
-    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-    }];
-}
+//监测权限
 - (void)monitorPermission {
     //相机 麦克风 相册
     [self checkVideoCameraAuthorization];
@@ -285,8 +271,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark ==== 初始化数据
 - (void)initData {
     
-    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];
-    
+    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];    
     partModelArray = [NSMutableArray arrayWithArray:template.parts];
     for (int i = 0; i < 6; i++) {
         DLYMiniVlogPart *part = partModelArray[i];
@@ -300,10 +285,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
     }
 
-    
     typeModelArray = [[NSMutableArray alloc]init];
-    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活",@"人文",nil];
-    for(int i = 0; i < 5; i ++)
+    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活",nil];
+    for(int i = 0; i < typeNameArray.count; i ++)
     {
         NSMutableDictionary * dict = [[NSMutableDictionary alloc]init];
         [dict setObject:typeNameArray[i] forKey:@"typeName"];
