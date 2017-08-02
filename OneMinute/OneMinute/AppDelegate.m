@@ -91,7 +91,15 @@
     }
     
     [NSThread sleepForTimeInterval:3]; // 设置启动页面停留时间
-    
+    ///申请麦克风权限
+    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+    }];
+    ///申请拍照权限
+    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
+    }];
+    ///申请相册权限
+    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+    }];
     return YES;
 }
 - (void)applicationWillResignActive:(UIApplication *)application {
