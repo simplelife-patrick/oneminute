@@ -500,9 +500,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark - AVCaptureManagerDelegate
 
 - (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL error:(NSError *)error {
-    
-    NSLog(@"%@/%@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    
+        
     if (error) {
         NSLog(@"error:%@", error);
         return;
@@ -698,27 +696,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 
             }];
             dispatch_async(dispatch_get_main_queue(), ^{
-                
                 DLYLog(@"");
             });
         }else{
             
-            ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
-            
-            [assetLibrary writeVideoAtPathToSavedPhotosAlbum:recordedFileUrl completionBlock:^(NSURL *assetURL, NSError *error) {
-                
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                     
-                     if (error != nil) {
-                         
-                         DLYLog(@"Failed to save video");
-                         DLYLog(@"%@",[error localizedDescription]);
-                     }
-                     else {
-                         DLYLog(@"Saved!");
-                     }
-                 });
-             }];
+             DLYLog(@"Saved!");
         }
     });
 }
