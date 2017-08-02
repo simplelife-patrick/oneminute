@@ -27,7 +27,7 @@
             
             _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:kDEFAULTTEMPLATENAME];
         }
-        [[NSUserDefaults standardUserDefaults] setObject:kDEFAULTTEMPLATENAME forKey:kCURRENTTEMPLATEKEY];
+        [[NSUserDefaults standardUserDefaults] setObject:_currentTemplate.templateName forKey:kCURRENTTEMPLATEKEY];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     return _currentTemplate;
