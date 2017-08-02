@@ -1979,7 +1979,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     };
                     [weakSelf.navigationController pushViewController:fvc animated:YES];
                     [self.AVEngine mergeVideoWithSuccessBlock:^{
-                        [self.resource removeCurrentAllPart];
 //                        GCD_MAIN(^{
                             fvc.playUrl = weakSelf.AVEngine.currentProductUrl;
                             weakSelf.isSuccess = YES;
