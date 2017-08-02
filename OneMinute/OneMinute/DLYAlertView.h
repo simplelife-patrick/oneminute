@@ -15,6 +15,8 @@ typedef void (^DLYAlertViewBlock)(void);
 
 - (instancetype)initWithMessage : (NSString *)message andCancelButton : (NSString *)canel andSureButton : (NSString *)sure;
 
+- (instancetype)initWithMessage : (NSString *)message withSureButton : (NSString *)sure;
+
 @property (readwrite, copy) DLYAlertViewBlock cancelButtonAction;
 @property (readwrite, copy) DLYAlertViewBlock sureButtonAction;
 
