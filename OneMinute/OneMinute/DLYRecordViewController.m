@@ -67,11 +67,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIButton *completeButton;     //拍摄单个片段完成
 @property (nonatomic, strong) UILabel *timeNumber;          //倒计时显示label
 @property (nonatomic, strong) DLYResource  *resource;       //资源管理类
+@property (nonatomic, strong) DLYSession *session;          //录制会话管理类
 
 @end
 
 @implementation DLYRecordViewController
-
 - (DLYResource *)resource{
     if (!_resource) {
         _resource = [[DLYResource alloc] init];
@@ -144,12 +144,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.isAppear = NO;
     [self initData];
     [self setupUI];
+    //要改 监测
     [self initPermission];
+    [self monitorPermission];
+    //进入前台
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recordViewWillEnterForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
+    
     [self initializationRecorder];
 }
-
 - (void)initPermission {
-
+    
     ///申请麦克风权限
     [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
     }];
@@ -160,7 +164,19 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
     }];
 }
-
+- (void)monitorPermission {
+    //相机 麦克风 相册
+    [self checkVideoCameraAuthorization];
+    [self checkVideoMicrophoneAudioAuthorization];
+    [self checkVideoPhotoAuthorization];
+}
+- (void)recordViewWillEnterForeground {
+    
+    //相机 麦克风 相册
+    [self checkVideoCameraAuthorization];
+    [self checkVideoMicrophoneAudioAuthorization];
+    [self checkVideoPhotoAuthorization];
+}
 #pragma mark ==== 相册
 - (BOOL)checkVideoPhotoAuthorization {
     __block BOOL isAvalible = NO;
@@ -178,6 +194,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             break;
         case PHAuthorizationStatusNotDetermined:
         {
+            [self showAlertPermissionwithMessage:@"相册"];
+            isAvalible = NO;
         }
             break;
         case PHAuthorizationStatusRestricted:
@@ -188,7 +206,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     return isAvalible;
-};
+}
 #pragma mark ==== 相机
 - (BOOL)checkVideoCameraAuthorization {
     __block BOOL isAvalible = NO;
@@ -205,6 +223,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             break;
         case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动默认弹框
         {
+            [self showAlertPermissionwithMessage:@"相机"];
+            isAvalible = NO;
         }
             break;
         case AVAuthorizationStatusRestricted:  //受限制，家长控制器
@@ -229,6 +249,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             break;
         case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动
         {
+            [self showAlertPermissionwithMessage:@"麦克风"];
+            isAvalible = NO;
         }
             break;
         case AVAuthorizationStatusRestricted:  //受限制，家长控制器
@@ -241,7 +263,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)showAlertPermissionwithMessage:(NSString *)message {
     
     NSString *str = [NSString stringWithFormat:@"请到设置页面允许使用%@", message];
-    self.alert = [[DLYAlertView alloc] initWithMessage:str andCancelButton:@"取消" andSureButton:@"确定"];
+    self.alert = [[DLYAlertView alloc] initWithMessage:str withSureButton:@"确定"];
+
     if (self.newState == 1) {
         self.alert.transform = CGAffineTransformMakeRotation(0);
     }else {
@@ -251,9 +274,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.alert.sureButtonAction = ^{
         [weakSelf gotoSetting];
     };
-    self.alert.cancelButtonAction = ^{
-    };
-    
 }
 //跳转到设置
 - (void)gotoSetting {
@@ -262,9 +282,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [[UIApplication sharedApplication]openURL:url];
     }
 }
-/////////////////////////////////////////
-/////////////////////////////////////////
-/////////////////////////////////////////
+#pragma mark ==== 初始化数据
 - (void)initData {
     
     DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];
@@ -284,7 +302,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
     
     typeModelArray = [[NSMutableArray alloc]init];
-    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"运动",@"风景",@"人文",nil];
+    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活",@"人文",nil];
     for(int i = 0; i < 5; i ++)
     {
         NSMutableDictionary * dict = [[NSMutableDictionary alloc]init];
@@ -910,14 +928,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //拍摄按键
 - (void)startRecordBtnAction {
-    //相机 麦克风 相册
-    BOOL isCamera = [self checkVideoCameraAuthorization];
-    BOOL isMicrophone = [self checkVideoMicrophoneAudioAuthorization];
-    BOOL isPhoto = [self checkVideoPhotoAuthorization];
     
-    if (!isCamera || !isMicrophone || !isPhoto) {
-        return;
-    }
     //////////////////////////////////////////////
     [MobClick event:@"StartRecord"];
     // REC START
@@ -1712,7 +1723,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)changeSceneWithSelectNum:(NSInteger)num {
     
     selectType = num;
-    
+    //////
+    [self.session saveCurrentTemplateWithName:@"Universal_001"];
+    //////
     NSDictionary * dict = typeModelArray[num];
     self.chooseSceneLabel.text = dict[@"typeName"];
     for(int i = 0; i < typeModelArray.count; i++) {
@@ -2027,6 +2040,19 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         _shootView.hidden = YES;
     }
     return _shootView;
+}
+
+- (DLYSession *)session {
+    
+    if (_session == nil) {
+        _session = [[DLYSession alloc] init];
+    }
+    return _session;
+}
+
+- (void)dealloc {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];    
 }
 
 @end
