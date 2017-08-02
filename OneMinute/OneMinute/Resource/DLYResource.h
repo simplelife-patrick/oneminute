@@ -25,6 +25,12 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
 
 
 /**
+ 获取模板样片视频
+
+ @param sampleName 样片名称
+ */
+- (NSURL *) getTemplateSampleWithName:(NSString *)sampleName;
+/**
  加载资源文件
 
  @param resourceType 资源类型

@@ -53,5 +53,7 @@
   ],
   "BGM": "BGM003",
   "header": "header001",
-  "tailer": "tail001"
+  "tailer": "tail001",
+  "templateDescription": "我是通用模板,拉啦啦",
+  "sampleVideoName": "UniversalTemplateSample.mp4"
 }
