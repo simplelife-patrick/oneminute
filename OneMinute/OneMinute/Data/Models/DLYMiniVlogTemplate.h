@@ -40,6 +40,16 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTemplateType)
 @property (nonatomic, assign) DLYMiniVlogTemplateType         templateType;
 
 /**
+ 模板描述
+ */
+@property (nonatomic, strong) NSString                        *templateDescription;
+
+/**
+ 模板样片名称
+ */
+@property (nonatomic, strong) NSString                        *sampleVideoName;
+
+/**
  模板详情
  */
 @property (nonatomic, strong) NSArray                         <DLYMiniVlogPart *>*parts;

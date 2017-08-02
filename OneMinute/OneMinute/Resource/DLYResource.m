@@ -40,6 +40,13 @@
     }
     return _resourceFolderPath;
 }
+
+-(NSURL *)getTemplateSampleWithName:(NSString *)sampleName{
+    NSString *path = [[NSBundle mainBundle] pathForResource:sampleName ofType:nil];
+    NSURL *sampleUrl = [NSURL fileURLWithPath:path];
+    return sampleUrl;
+}
+
 - (NSString *) getSubFolderPathWithFolderName:(NSString *)folderName{
     
     //拼接Data文件夹路径
