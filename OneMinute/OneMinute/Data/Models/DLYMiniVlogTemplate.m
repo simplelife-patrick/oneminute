@@ -26,6 +26,8 @@
         self.BGM = [dic objectForKey:@"BGM"];
         self.videoHeader = [dic objectForKey:@"header"];
         self.videoTailer = [dic objectForKey:@"tailer"];
+        self.templateDescription = [dic objectForKey:@"templateDescription"];
+        self.sampleVideoName = [dic objectForKey:@"sampleVideoName"];
     }
     return self;
 }
