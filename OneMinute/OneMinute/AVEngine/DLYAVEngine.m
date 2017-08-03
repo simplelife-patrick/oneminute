@@ -259,8 +259,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
             [self changeCameraAnimation];
-            self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
             [self.captureSession addInput:self.frontCameraInput];//切换成了前置
+            self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         }
     }else {
         
