@@ -51,6 +51,10 @@ typedef void(^FailureBlock)(NSError *error);
 - (instancetype)initWithPreviewView:(UIView *)previewView;
 
 /**
+ 切换摄像头旋转动画
+ */
+- (void)changeCameraRotateAnimation;
+/**
  按传入的片段信息开始录制
 
  @param part info
