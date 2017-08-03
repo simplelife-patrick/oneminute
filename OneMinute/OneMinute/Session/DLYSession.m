@@ -18,25 +18,29 @@
 -(DLYMiniVlogTemplate *)currentTemplate{
     if (!_currentTemplate) {
         
-        if ([self isExitdraftAtFile] && [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY]) {
+        if ([[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY]) {
             
             NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY];
             _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:savedCurrentTemplateName];
             
         }else{
-            
             _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:kDEFAULTTEMPLATENAME];
         }
-        [[NSUserDefaults standardUserDefaults] setObject:_currentTemplate.templateName forKey:kCURRENTTEMPLATEKEY];
-        [[NSUserDefaults standardUserDefaults] synchronize];
     }
     return _currentTemplate;
 }
 - (void)saveCurrentTemplateWithName:(NSString *)currentTemplateName{
     
-    NSUserDefaults *defaults = [[NSUserDefaults standardUserDefaults] init];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:currentTemplateName forKey:kCURRENTTEMPLATEKEY];
+    
+    if ([defaults synchronize]) {
+        DLYLog(@"Current template saved success!");
+    }else{
+        DLYLog(@"⚠️⚠️⚠️Current template saved failure!");
+    };
 }
+
 - (DLYMiniVlogTemplate *)getCurrentTemplate{
     NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY];
     DLYMiniVlogTemplate *currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:savedCurrentTemplateName];

@@ -271,7 +271,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark ==== 初始化数据
 - (void)initData {
     
-    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];    
+    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];
+    [self.session saveCurrentTemplateWithName:template.templateName];
+
     partModelArray = [NSMutableArray arrayWithArray:template.parts];
     for (int i = 0; i < 6; i++) {
         DLYMiniVlogPart *part = partModelArray[i];
@@ -285,9 +287,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
     }
 
+    
     typeModelArray = [[NSMutableArray alloc]init];
-    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活",nil];
-    for(int i = 0; i < typeNameArray.count; i ++)
+    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活",@"人文",nil];
+    for(int i = 0; i < 5; i ++)
     {
         NSMutableDictionary * dict = [[NSMutableDictionary alloc]init];
         [dict setObject:typeNameArray[i] forKey:@"typeName"];
@@ -1688,7 +1691,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     selectType = num;
     //////
-    [self.session saveCurrentTemplateWithName:@"Universal_001"];
+    [self.session saveCurrentTemplateWithName:@"Universal_001.json"];
     //////
     NSDictionary * dict = typeModelArray[num];
     self.chooseSceneLabel.text = dict[@"typeName"];

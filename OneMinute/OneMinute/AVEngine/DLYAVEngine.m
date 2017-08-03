@@ -984,7 +984,7 @@ outputSettings:audioCompressionSettings];
     exporter.shouldOptimizeForNetworkUse = YES;
     [exporter exportAsynchronouslyWithCompletionHandler:^{
         DLYLog(@"草稿片段mgerge成功");
-        NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"BGM003.m4a" ofType:nil];
+        NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"UniversalTemplateBGM.m4a" ofType:nil];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
         
         [self addMusicToVideo:outputUrl audioUrl:BGMUrl successBlock:successBlock failure:failureBlcok];
@@ -1017,7 +1017,7 @@ outputSettings:audioCompressionSettings];
         NSLog(@"过渡动画合成完毕");
         if (successBlock) {
             
-            NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"BGM003.m4a" ofType:nil];
+            NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"UniversalTemplateBGM.m4a" ofType:nil];
             NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
             self.currentProductUrl = outPutUrl;
             
