@@ -259,6 +259,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
             [self changeCameraAnimation];
+            self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
             [self.captureSession addInput:self.frontCameraInput];
         }
     }else {
@@ -384,7 +385,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 - (void)changeCameraRotateAnimation {
     CATransition *changeAnimation = [CATransition animation];
     changeAnimation.delegate = self;
-    changeAnimation.duration = 0.3;
+    changeAnimation.duration = 0.2;
     changeAnimation.type = @"oglFlip";
     changeAnimation.subtype = kCATransitionPush;
     [self.previewLayer addAnimation:changeAnimation forKey:@"changeAnimation"];
@@ -400,7 +401,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     [self.previewLayer addAnimation:changeAnimation forKey:@"changeAnimation"];
 }
 - (void)animationDidStart:(CAAnimation *)anim {
-    self.videoConnection.videoOrientation = AVCaptureVideoOrientationPortrait;
     [self.captureSession startRunning];
 }
 
@@ -1225,26 +1225,26 @@ outputSettings:audioCompressionSettings];
     
 #pragma mark - 添加标题 -
 
-    AVMutableVideoCompositionInstruction *passThroughInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-
-    AVMutableVideoCompositionLayerInstruction *passThroughLayer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoAssetTrack];
-
-    [passThroughLayer setTransform:videoAssetTrack.preferredTransform atTime:kCMTimeZero];
-    [passThroughLayer setOpacity:0.0 atTime:[videoAsset duration]];
-
-    passThroughInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, videoCompositionTrack.timeRange.duration);
-    
-    passThroughInstruction.layerInstructions = @[passThroughLayer];
-    
-    AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
-
-    videoComposition.instructions = @[passThroughInstruction];
-    videoComposition.frameDuration = CMTimeMake(1, 60);
-    
-    CGSize naturalSize = videoAssetTrack.naturalSize;
-    videoComposition.renderSize = naturalSize;
-    
-    [self applyVideoEffectsToComposition:videoComposition videoTitle:@"动旅游VLOG" size:naturalSize];
+//    AVMutableVideoCompositionInstruction *passThroughInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+//
+//    AVMutableVideoCompositionLayerInstruction *passThroughLayer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoAssetTrack];
+//
+//    [passThroughLayer setTransform:videoAssetTrack.preferredTransform atTime:kCMTimeZero];
+//    [passThroughLayer setOpacity:0.0 atTime:[videoAsset duration]];
+//
+//    passThroughInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, videoCompositionTrack.timeRange.duration);
+//    
+//    passThroughInstruction.layerInstructions = @[passThroughLayer];
+//    
+//    AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
+//
+//    videoComposition.instructions = @[passThroughInstruction];
+//    videoComposition.frameDuration = CMTimeMake(1, 60);
+//    
+//    CGSize naturalSize = videoAssetTrack.naturalSize;
+//    videoComposition.renderSize = naturalSize;
+//    
+//    [self applyVideoEffectsToComposition:videoComposition videoTitle:@"动旅游VLOG" size:naturalSize];
     
     //处理视频原声
     AVAssetTrack *originalAudioAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
@@ -1303,7 +1303,7 @@ outputSettings:audioCompressionSettings];
     //输出设置
     assetExportSession.outputURL = outPutUrl;
     assetExportSession.outputFileType = AVFileTypeMPEG4;
-    assetExportSession.videoComposition = videoComposition;
+//    assetExportSession.videoComposition = videoComposition;
     assetExportSession.audioMix = audioMix;
     assetExportSession.shouldOptimizeForNetworkUse = YES;
     
