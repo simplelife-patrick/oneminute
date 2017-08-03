@@ -38,6 +38,9 @@
 		AD5A069B1F3303B800F26693 /* ColorLifeTemplateBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD5A069A1F3303B800F26693 /* ColorLifeTemplateBGM.m4a */; };
 		AD5A069D1F3303E600F26693 /* TravelerTemplateSample.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD5A069C1F3303E600F26693 /* TravelerTemplateSample.m4a */; };
 		AD5A069F1F3303FE00F26693 /* GourmandismTemplateBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD5A069E1F3303FE00F26693 /* GourmandismTemplateBGM.m4a */; };
+		AD5A06A31F33058A00F26693 /* ColorLife.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A01F33058A00F26693 /* ColorLife.json */; };
+		AD5A06A41F33058A00F26693 /* Travele001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A11F33058A00F26693 /* Travele001.json */; };
+		AD5A06A51F33058A00F26693 /* Gourmandism001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A21F33058A00F26693 /* Gourmandism001.json */; };
 		ADA370961F2D11300082AEC6 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA370951F2D11300082AEC6 /* DLYAVEngine.m */; };
 		ADA370991F2D11500082AEC6 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA370981F2D11500082AEC6 /* DLYRecordViewController.m */; };
 		ADA3709C1F2D11780082AEC6 /* DLYResource.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA3709B1F2D11780082AEC6 /* DLYResource.m */; };
@@ -139,6 +142,9 @@
 		AD5A069A1F3303B800F26693 /* ColorLifeTemplateBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorLifeTemplateBGM.m4a; sourceTree = "<group>"; };
 		AD5A069C1F3303E600F26693 /* TravelerTemplateSample.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = TravelerTemplateSample.m4a; sourceTree = "<group>"; };
 		AD5A069E1F3303FE00F26693 /* GourmandismTemplateBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = GourmandismTemplateBGM.m4a; sourceTree = "<group>"; };
+		AD5A06A01F33058A00F26693 /* ColorLife.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ColorLife.json; sourceTree = "<group>"; };
+		AD5A06A11F33058A00F26693 /* Travele001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Travele001.json; sourceTree = "<group>"; };
+		AD5A06A21F33058A00F26693 /* Gourmandism001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Gourmandism001.json; sourceTree = "<group>"; };
 		ADA370941F2D11300082AEC6 /* DLYAVEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAVEngine.h; sourceTree = "<group>"; };
 		ADA370951F2D11300082AEC6 /* DLYAVEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAVEngine.m; sourceTree = "<group>"; };
 		ADA370971F2D11500082AEC6 /* DLYRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRecordViewController.h; sourceTree = "<group>"; };
@@ -500,6 +506,9 @@
 		ADFFF18F1F18A33000FB5BF7 /* Template */ = {
 			isa = PBXGroup;
 			children = (
+				AD5A06A01F33058A00F26693 /* ColorLife.json */,
+				AD5A06A11F33058A00F26693 /* Travele001.json */,
+				AD5A06A21F33058A00F26693 /* Gourmandism001.json */,
 				ADFFF1901F18A33000FB5BF7 /* Universal_001.json */,
 				ADA7C28B1F22056A0002A4E5 /* header001.mp4 */,
 			);
@@ -635,15 +644,18 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD5A06A51F33058A00F26693 /* Gourmandism001.json in Resources */,
 				ADA721721F31B4AD000BF1B5 /* advertisementVideo(10s).mp4 in Resources */,
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
 				ADA7C28C1F22056A0002A4E5 /* header001.mp4 in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				ADD0E7D61F2DFD8100996BD6 /* UniversalTemplateBGM.m4a in Resources */,
+				AD5A06A41F33058A00F26693 /* Travele001.json in Resources */,
 				AD5A069D1F3303E600F26693 /* TravelerTemplateSample.m4a in Resources */,
 				AD5A069B1F3303B800F26693 /* ColorLifeTemplateBGM.m4a in Resources */,
 				ADA721711F31B4AD000BF1B5 /* advertisementVideo(5s).mp4 in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
+				AD5A06A31F33058A00F26693 /* ColorLife.json in Resources */,
 				6F8925961F1B11A800256093 /* iconfont.ttf in Resources */,
 				AD5A069F1F3303FE00F26693 /* GourmandismTemplateBGM.m4a in Resources */,
 				ADFFF19F1F18A33000FB5BF7 /* Universal_001.json in Resources */,
