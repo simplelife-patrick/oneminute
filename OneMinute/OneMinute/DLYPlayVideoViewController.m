@@ -129,12 +129,26 @@
 
 - (void)onClickBack:(UIButton *)sender{
     
-    [MobClick event:@"BackView"];
-    //返回
-    if(self.DismissBlock){
-        self.DismissBlock();
+//    if ((self.isSuccess && self.isAll) || (!self.isAll)) {
+//        
+//        [MobClick event:@"BackView"];
+//        //返回
+//        if(self.DismissBlock){
+//            self.DismissBlock();
+//        }
+//        [self.navigationController popViewControllerAnimated:YES];
+//    }
+    
+    if (!self.waitIndicator.isAnimating) {
+        NSLog(@"我走了返回");
+        [MobClick event:@"BackView"];
+        //返回
+        if(self.DismissBlock){
+            self.DismissBlock();
+        }
+        [self.navigationController popViewControllerAnimated:YES];
     }
-    [self.navigationController popViewControllerAnimated:YES];
+
 }
 
 - (void)onClickPlayOrPause:(UIButton *)sender {
@@ -210,7 +224,6 @@
     
     [self.player pause];
     [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
-    
 }
 
 - (void)playbackFinished:(NSNotification *)notification {

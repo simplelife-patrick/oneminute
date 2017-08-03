@@ -895,7 +895,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //拍摄按键
 - (void)startRecordBtnAction {
     
-    //////////////////////////////////////////////
     [MobClick event:@"StartRecord"];
     // REC START
     if (!self.AVEngine.isRecording) {
@@ -1683,7 +1682,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.alert.cancelButtonAction = ^{
         return;
     };
-    
 }
 
 - (void)changeSceneWithSelectNum:(NSInteger)num {
@@ -1963,15 +1961,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     };
                     [weakSelf.navigationController pushViewController:fvc animated:YES];
                     [self.AVEngine mergeVideoWithSuccessBlock:^{
-//                        GCD_MAIN(^{
-                            fvc.playUrl = weakSelf.AVEngine.currentProductUrl;
-                            weakSelf.isSuccess = YES;
-                            if (weakSelf.isPlayer) {
-                                NSDictionary *dict = @{@"playUrl":weakSelf.AVEngine.currentProductUrl};
-                                [[NSNotificationCenter defaultCenter]postNotificationName:@"CANPLAY" object:nil userInfo:dict];
-                            }
-
-//                        });
+                        fvc.playUrl = weakSelf.AVEngine.currentProductUrl;
+                        weakSelf.isSuccess = YES;
+                        if (weakSelf.isPlayer) {
+                            NSDictionary *dict = @{@"playUrl":weakSelf.AVEngine.currentProductUrl};
+                            [[NSNotificationCenter defaultCenter]postNotificationName:@"CANPLAY" object:nil userInfo:dict];
+                        }
                         
                     } failure:^(NSError *error) {
                         //失败
