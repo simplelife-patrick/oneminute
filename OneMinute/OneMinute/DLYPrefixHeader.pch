@@ -24,5 +24,6 @@
 #import "UIImage+iconfont.h"
 #import "UIButton+LargerHitArea.h"
 #import <UMengAnalytics/UMMobClick/MobClick.h>
+#import <Photos/Photos.h>
 
 #endif /* DLY_PrefixHeader_pch */
