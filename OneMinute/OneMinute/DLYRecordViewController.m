@@ -696,11 +696,21 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //后面改变的状态
 - (void)deviceChangeAndHomeOnTheLeft {
     
+    if (![self.AVEngine isRecording]) {
+        
+        [self.AVEngine.captureSession stopRunning];
+        
+        [self.AVEngine changeCameraRotateAnimation];
+        self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
+
+    
+    }else{
+        DLYLog(@"⚠️⚠️⚠️录制过程中不再重设录制正方向");
+    }
     NSArray *viewArr = self.navigationController.viewControllers;
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
         [self deviceChangeAndHomeOnTheLeftNewLayout];
-        NSLog(@"首页左转");
-        [[self.AVEngine videoConnection] setVideoOrientation:AVCaptureVideoOrientationLandscapeLeft];
+        DLYLog(@"首页左转");
     }
 
 }
@@ -822,11 +832,21 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //home在右 初始状态
 - (void)deviceChangeAndHomeOnTheRight {
     
+    if (![self.AVEngine isRecording]) {
+        
+        [self.AVEngine.captureSession stopRunning];
+        
+        [self.AVEngine changeCameraRotateAnimation];
+        self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
+        
+        
+    }else{
+        DLYLog(@"⚠️⚠️⚠️录制过程中不再重设录制正方向");
+    }
     NSArray *viewArr = self.navigationController.viewControllers;
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
         [self deviceChangeAndHomeOnTheRightNewLayout];
-        NSLog(@"首页右转");
-        [[self.AVEngine videoConnection] setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
+        DLYLog(@"首页右转");
 
     }
 }

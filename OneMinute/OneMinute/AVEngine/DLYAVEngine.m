@@ -68,6 +68,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 @property (nonatomic, strong) DLYResource                       *resource;
 @property (nonatomic, strong) DLYSession                        *session;
 
+@property (nonatomic, strong) AVMutableVideoComposition         *videoComposition;
+
+
 
 
 @end
@@ -159,8 +162,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([_captureSession canAddOutput:self.audioOutput]) {
             [_captureSession addOutput:self.audioOutput];
         }
-        //设置视频录制的方向
-//        self.videoConnection.videoOrientation = AVCaptureVideoOrientationPortrait;
     }
     return _captureSession;
 }
@@ -379,8 +380,16 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     return nil;
 }
-
-//摄像头切换动画
+//摄像头切换旋转动画
+- (void)changeCameraRotateAnimation {
+    CATransition *changeAnimation = [CATransition animation];
+    changeAnimation.delegate = self;
+    changeAnimation.duration = 0.3;
+    changeAnimation.type = @"oglFlip";
+    changeAnimation.subtype = kCATransitionPush;
+    [self.previewLayer addAnimation:changeAnimation forKey:@"changeAnimation"];
+}
+//摄像头切换翻转动画
 - (void)changeCameraAnimation {
     CATransition *changeAnimation = [CATransition animation];
     changeAnimation.delegate = self;
@@ -395,43 +404,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     [self.captureSession startRunning];
 }
 
-#pragma mark -旋转屏幕-
-- (CGAffineTransform)transformFromCurrentVideoOrientationToOrientation:(AVCaptureVideoOrientation)orientation
-{
-    CGAffineTransform transform = CGAffineTransformIdentity;
-    
-    // Calculate offsets from an arbitrary reference orientation (portrait)
-    CGFloat orientationAngleOffset = [[DLYAVEngine alloc ] angleOffsetFromPortraitOrientationToOrientation:orientation];
-    CGFloat videoOrientationAngleOffset = [[DLYAVEngine alloc] angleOffsetFromPortraitOrientationToOrientation:videoOrientation];
-    
-    // Find the difference in angle between the passed in orientation and the current video orientation
-    CGFloat angleOffset = orientationAngleOffset - videoOrientationAngleOffset;
-    transform = CGAffineTransformMakeRotation(angleOffset);
-    
-    return transform;
-}
-- (CGFloat)angleOffsetFromPortraitOrientationToOrientation:(AVCaptureVideoOrientation)orientation
-{
-    CGFloat angle = 0.0;
-    
-    switch (orientation) {
-        case AVCaptureVideoOrientationPortrait:
-            angle = 0.0;
-            break;
-        case AVCaptureVideoOrientationPortraitUpsideDown:
-            angle = M_PI;
-            break;
-        case AVCaptureVideoOrientationLandscapeRight:
-            angle = - M_PI_2;
-            break;
-        case AVCaptureVideoOrientationLandscapeLeft:
-            angle = M_PI_2;
-            break;
-        default:
-            break;
-    }
-    return angle;
-}
 - (void)updateOrientationWithPreviewView:(UIView *)previewView {
     
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
@@ -566,7 +538,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         
         self.assetWriterVideoInput = [[AVAssetWriterInput alloc] initWithMediaType:AVMediaTypeVideo outputSettings:videoCompressionSettings];
         self.assetWriterVideoInput.expectsMediaDataInRealTime = YES;
-        self.assetWriterVideoInput.transform = [self transformFromCurrentVideoOrientationToOrientation:referenceOrientation];
         
         if ([self.assetWriter canAddInput:self.assetWriterVideoInput]) {
             
@@ -1017,7 +988,7 @@ outputSettings:audioCompressionSettings];
         NSLog(@"过渡动画合成完毕");
         if (successBlock) {
             
-            NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"UniversalTemplateBGM.m4a" ofType:nil];
+            NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"BGM003.m4a" ofType:nil];
             NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
             self.currentProductUrl = outPutUrl;
             
@@ -1233,15 +1204,11 @@ outputSettings:audioCompressionSettings];
 - (void) addMusicToVideo:(NSURL *)videoUrl audioUrl:(NSURL *)audioUrl successBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
     
     //加载素材
-    NSDictionary *opts = [NSDictionary dictionaryWithObject:@(YES) forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
-    AVURLAsset *videoAsset = [AVURLAsset URLAssetWithURL:videoUrl options:opts];
+    AVURLAsset *videoAsset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
     AVURLAsset *audioAsset = [AVURLAsset URLAssetWithURL:audioUrl options:nil];
     
     AVAssetTrack *videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
     AVAssetTrack *audioAssetTrack = [[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
-    
-    //给应用层添加标题用
-    CMTime endTime = CMTimeMakeWithSeconds(videoAsset.duration.value/videoAsset.duration.timescale-0.2, videoAsset.duration.timescale);
     
     //创建视频编辑工程
     AVMutableComposition* mixComposition = [AVMutableComposition composition];
@@ -1258,23 +1225,26 @@ outputSettings:audioCompressionSettings];
     
 #pragma mark - 添加标题 -
 
-//    AVMutableVideoCompositionInstruction *instruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-//    instruction.timeRange = CMTimeRangeMake(kCMTimeZero, videoCompositionTrack.timeRange.duration);
-//
-//    AVMutableVideoCompositionLayerInstruction *videolayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoAssetTrack];
-//
-//    [videolayerInstruction setTransform:videoAssetTrack.preferredTransform atTime:kCMTimeZero];
-//    [videolayerInstruction setOpacity:0.0 atTime:endTime];
-//
-//    instruction.layerInstructions = [NSArray arrayWithObjects:videolayerInstruction,nil];
-//    AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
-//
-//    CGSize naturalSize = videoAssetTrack.naturalSize;
-//
-//    videoComposition.renderSize = naturalSize;
-//    videoComposition.instructions = [NSArray arrayWithObject:instruction];
-//    videoComposition.frameDuration = CMTimeMake(1, 60);
-//    [self applyVideoEffectsToComposition:videoComposition videoTitle:@"动旅游VLOG" size:naturalSize];
+    AVMutableVideoCompositionInstruction *passThroughInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+
+    AVMutableVideoCompositionLayerInstruction *passThroughLayer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoAssetTrack];
+
+    [passThroughLayer setTransform:videoAssetTrack.preferredTransform atTime:kCMTimeZero];
+    [passThroughLayer setOpacity:0.0 atTime:[videoAsset duration]];
+
+    passThroughInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, videoCompositionTrack.timeRange.duration);
+    
+    passThroughInstruction.layerInstructions = @[passThroughLayer];
+    
+    AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
+
+    videoComposition.instructions = @[passThroughInstruction];
+    videoComposition.frameDuration = CMTimeMake(1, 60);
+    
+    CGSize naturalSize = videoAssetTrack.naturalSize;
+    videoComposition.renderSize = naturalSize;
+    
+    [self applyVideoEffectsToComposition:videoComposition videoTitle:@"动旅游VLOG" size:naturalSize];
     
     //处理视频原声
     AVAssetTrack *originalAudioAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
@@ -1333,7 +1303,7 @@ outputSettings:audioCompressionSettings];
     //输出设置
     assetExportSession.outputURL = outPutUrl;
     assetExportSession.outputFileType = AVFileTypeMPEG4;
-//    assetExportSession.videoComposition = videoComposition;
+    assetExportSession.videoComposition = videoComposition;
     assetExportSession.audioMix = audioMix;
     assetExportSession.shouldOptimizeForNetworkUse = YES;
     
@@ -1376,10 +1346,15 @@ outputSettings:audioCompressionSettings];
     [overlayLayer addSublayer:titleText];
     [overlayLayer setMasksToBounds:YES];
     
+    //parentLayer
     CALayer *parentLayer = [CALayer layer];
-    CALayer *videoLayer = [CALayer layer];
     parentLayer.frame = CGRectMake(0, 0, size.width, size.height);
+    
+    //videoLayer
+    CALayer *videoLayer = [CALayer layer];
     videoLayer.frame = CGRectMake(0, 0, size.width, size.height);
+    
+    
     [parentLayer addSublayer:videoLayer];
     [parentLayer addSublayer:overlayLayer];
     
