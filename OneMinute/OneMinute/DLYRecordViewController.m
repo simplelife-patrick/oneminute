@@ -286,7 +286,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)initData {
     
     DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];
-    
+    [self.session saveCurrentTemplateWithName:template.templateName];
+
     partModelArray = [NSMutableArray arrayWithArray:template.parts];
     for (int i = 0; i < 6; i++) {
         DLYMiniVlogPart *part = partModelArray[i];
@@ -1706,7 +1707,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     selectType = num;
     //////
-    [self.session saveCurrentTemplateWithName:@"Universal_001"];
+    [self.session saveCurrentTemplateWithName:@"Universal_001.json"];
     //////
     NSDictionary * dict = typeModelArray[num];
     self.chooseSceneLabel.text = dict[@"typeName"];
