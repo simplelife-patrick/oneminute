@@ -42,6 +42,7 @@ typedef void(^FailureBlock)(NSError *error);
 @property (nonatomic, assign) BOOL                                                    isTime;
 @property (nonatomic, strong) NSMutableArray                                          *imageArray;
 
+
 /**
  初始化录制组件
 

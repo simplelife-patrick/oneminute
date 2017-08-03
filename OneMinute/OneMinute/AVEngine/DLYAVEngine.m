@@ -260,7 +260,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
             [self changeCameraAnimation];
             self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
-            [self.captureSession addInput:self.frontCameraInput];
+            [self.captureSession addInput:self.frontCameraInput];//切换成了前置
         }
     }else {
         
@@ -268,7 +268,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         [self.captureSession removeInput:self.frontCameraInput];
         if ([self.captureSession canAddInput:self.backCameraInput]) {
             [self changeCameraAnimation];
-            [self.captureSession addInput:self.backCameraInput];
+            [self.captureSession addInput:self.backCameraInput];//切换成了后置
         }
     }
     [self.captureSession startRunning];
