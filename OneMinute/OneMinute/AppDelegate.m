@@ -23,7 +23,7 @@
     
     //友盟统计
     UMConfigInstance.appKey = @"596c2805bbea83404400035b";
-    UMConfigInstance.channelId = @"";
+    UMConfigInstance.channelId = @"App Store";
 //    [MobClick setLogEnabled:YES];
     [MobClick startWithConfigure:UMConfigInstance];//配置以上参数后调用此方法初始化SDK！
     [MobClick setAppVersion:XcodeAppVersion];//这里是当前的版本

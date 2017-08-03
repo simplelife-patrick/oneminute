@@ -80,8 +80,8 @@
     self.videoGravity = AVLayerVideoGravityResize;
     self.showsPlaybackControls = NO;
     //播放视频
+    self.player.volume = 0.0;
     [self.player play];
-    
 }
 
 #pragma mark -- 进入应用和显示进入按钮
