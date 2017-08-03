@@ -1,0 +1,66 @@
+{
+  "id": "001",
+  "type": 0,
+  "info": [
+    {
+      "partNum": 0,
+      "startTime": "00:00:00",
+      "stopTime": "00:04:31",
+      "recordType": 1,
+      "soundType": 0,
+      "transitionType": 0
+    },
+    {
+      "partNum": 1,
+      "startTime": "00:04:31",
+      "stopTime": "00:09:31",
+      "recordType": 1,
+      "soundType": 0,
+      "transitionType": 1
+    },
+    {
+      "partNum": 2,
+      "startTime": "00:09:31",
+      "stopTime": "00:15:38",
+      "recordType": 1,
+      "soundType": 0,
+      "transitionType": 2
+    },
+    {
+      "partNum": 3,
+      "startTime": "00:15:38",
+      "stopTime": "00:37:35",
+      "recordType": 0,
+      "soundType": 1,
+      "transitionType": 3
+    },
+    {
+      "partNum": 4,
+      "startTime": "00:37:35",
+      "stopTime": "00:43:28",
+      "recordType": 1,
+      "soundType": 0,
+      "transitionType": 4
+    },
+    {
+      "partNum": 5,
+      "startTime": "00:43:28",
+      "stopTime": "00:47:44",
+      "recordType": 1,
+      "soundType": 0,
+      "transitionType":"4"
+    },
+    {
+      "partNum": 5,
+      "startTime": "00:47:44",
+      "stopTime": "01:00:00",
+      "recordType": 1,
+      "soundType": 0,
+      "transitionType": "0"
+    }
+  ],
+  "BGM": "BGM001",
+  "header": "header001",
+  "tailer": "tail001"
+}
+
