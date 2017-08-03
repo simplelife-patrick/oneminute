@@ -51,7 +51,7 @@
       "transitionType":0
     }
   ],
-  "BGM": "BGM003",
+  "BGM": "UniversalTemplateBGM",
   "header": "header001",
   "tailer": "tail001",
   "templateDescription": "我是通用模板,拉啦啦",
