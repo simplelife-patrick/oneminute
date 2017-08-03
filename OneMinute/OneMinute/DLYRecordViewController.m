@@ -701,9 +701,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self.AVEngine.captureSession stopRunning];
         
         [self.AVEngine changeCameraRotateAnimation];
-        self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
 
-    
+        self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
     }else{
         DLYLog(@"⚠️⚠️⚠️录制过程中不再重设录制正方向");
     }
@@ -837,8 +836,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self.AVEngine.captureSession stopRunning];
         
         [self.AVEngine changeCameraRotateAnimation];
+
         self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
-        
         
     }else{
         DLYLog(@"⚠️⚠️⚠️录制过程中不再重设录制正方向");
