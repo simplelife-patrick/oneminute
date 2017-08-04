@@ -41,7 +41,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 @property (nonatomic, strong) UIView * timeView;
 @property (nonatomic, strong) NSTimer *shootTimer;          //拍摄读秒计时器
-@property (nonatomic, assign) NSInteger prepareTime;
 @property (nonatomic, strong) NSTimer * prepareShootTimer; //准备拍摄片段闪烁的计时器
 @property (nonatomic, strong) DLYAnnularProgress * progressView;    //环形进度条
 @property (nonatomic, strong) UIImageView *imageView;
@@ -271,9 +270,21 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark ==== 初始化数据
 - (void)initData {
     
-    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];
-    [self.session saveCurrentTemplateWithName:template.templateName];
-
+    BOOL isExitDraft = [self.session isExitdraftAtFile];
+    NSMutableArray *draftArr = [NSMutableArray array];
+    
+    if (isExitDraft) {
+        NSArray *arr = [self.resource loadBDraftParts];
+        for (NSURL *url in arr) {
+            NSString *partPath = url.path;
+            NSString *newPath = [partPath stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
+            NSString *partNum = [newPath substringWithRange:NSMakeRange(newPath.length - 1, 1)];
+            [draftArr addObject:partNum];
+        }
+    }
+    
+    ////////////////////////////////////////////////////////////
+    DLYMiniVlogTemplate *template = self.session.currentTemplate;
     partModelArray = [NSMutableArray arrayWithArray:template.parts];
     for (int i = 0; i < 6; i++) {
         DLYMiniVlogPart *part = partModelArray[i];
@@ -286,10 +297,34 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
     }
-
+    /////////////////////////////////
+    if (isExitDraft) {
+        for (NSString *str in draftArr) {
+            NSInteger num = [str integerValue];
+            DLYMiniVlogPart *part = partModelArray[num];
+            part.recordStatus = @"1";
+        }
+        
+        for (DLYMiniVlogPart *part1 in partModelArray) {
+            part1.prepareRecord = @"0";
+        }
+        
+        for(int i = 0; i < partModelArray.count; i++)
+        {
+            DLYMiniVlogPart *part2 = partModelArray[i];
+            if([part2.recordStatus isEqualToString:@"0"])
+            {
+                part2.prepareRecord = @"1";
+                break;
+            }
+        }
+        
+    }
+    
+    /////////////////////////////////
     typeModelArray = [[NSMutableArray alloc]init];
-    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活",@"人文",nil];
-    for(int i = 0; i < 5; i ++)
+    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活",nil];
+    for(int i = 0; i < typeNameArray.count; i ++)
     {
         NSMutableDictionary * dict = [[NSMutableDictionary alloc]init];
         [dict setObject:typeNameArray[i] forKey:@"typeName"];
@@ -298,11 +333,17 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     _shootTime = 0;
-    selectType = 0;
-    _prepareTime = 0;
-    selectPartTag = 10001;
     cursorTag = 0;
     self.isSuccess = NO;
+    
+    selectPartTag = 10001; //也不影响吧
+    selectType = 0; //暂时先这么写
+
+//    if (isExitDraft) {
+//        selectType = 0; //暂时先这么写
+//        
+//    }else {
+//    }
 }
 - (NSString *)getDurationwithStartTime:(NSString *)startTime andStopTime:(NSString *)stopTime {
     
@@ -925,9 +966,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self.AVEngine startRecordingWithPart:part];
         // change UI
         [self.shootView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-        [self createShootView];
         _shootTime = 0;
-        _prepareTime = 0;
+        [self createShootView];
         for (DLYMiniVlogPart *part in partModelArray) {
             if([part.prepareRecord isEqualToString:@"1"])
             {
