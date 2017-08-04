@@ -1182,7 +1182,6 @@ outputSettings:audioCompressionSettings];
     
     for (NSUInteger i = 0; i < transitionInstructions.count; i++) {
         
-        
         DLYMiniVlogTemplate *currentTemplate = self.session.currentTemplate;
         NSArray *array = currentTemplate.parts;
         
@@ -1254,8 +1253,8 @@ outputSettings:audioCompressionSettings];
         
         
         
-        videoSize = mutableVideoComposition.renderSize;
-        CALayer *watermarkLayer = [self addTitleForVideoWith:@"DLY Mini VLOG" size:videoSize];
+        CGSize renderSize = mutableVideoComposition.renderSize;
+        CALayer *watermarkLayer = [self addTitleForVideoWith:@"动旅游 MiniVLOG" size:renderSize];
         
         CALayer *parentLayer = [CALayer layer];
         CALayer *videoLayer = [CALayer layer];
@@ -1348,22 +1347,23 @@ outputSettings:audioCompressionSettings];
 }
 #pragma mark - 标题 -
 
-- (CALayer *) addTitleForVideoWith:(NSString *)titleText size:(CGSize)videoSize{
+- (CALayer *) addTitleForVideoWith:(NSString *)titleText size:(CGSize)renderSize{
     
     CALayer *overlayLayer = [CALayer layer];
     CATextLayer *titleLayer = [CATextLayer layer];
-    [titleLayer setFontSize:30];
-    UIFont *font = [UIFont fontWithName:@"ArialRoundedMTBold" size:80.0f];
+    UIFont *font = [UIFont systemFontOfSize:80.0];
+
+    [titleLayer setFontSize:80.f];
+    [titleLayer setFont:@"ArialRoundedMTBold"];
     [titleLayer setString:titleText];
     [titleLayer setAlignmentMode:kCAAlignmentCenter];
     [titleLayer setForegroundColor:[[UIColor yellowColor] CGColor]];
-    CGSize textSize = [titleText sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
     titleLayer.contentsCenter = overlayLayer.contentsCenter;
+    CGSize textSize = [titleText sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
     titleLayer.bounds = CGRectMake(0, 0, textSize.width + 50, textSize.height + 25);
     
     titleLayer.masksToBounds = YES;
-    titleLayer.cornerRadius = 50.0f;
-    [titleLayer setBackgroundColor:[UIColor colorWithHex:@"#87CEFA"].CGColor];
+    titleLayer.cornerRadius = 23.0f;
     
     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
     animation.fromValue = [NSNumber numberWithFloat:1.0f];
@@ -1374,13 +1374,6 @@ outputSettings:audioCompressionSettings];
     [animation setFillMode:kCAFillModeForwards];
     animation.beginTime = AVCoreAnimationBeginTimeAtZero;
     [titleLayer addAnimation:animation forKey:@"opacityAniamtion"];
-    
-    CABasicAnimation *anima = [CABasicAnimation animationWithKeyPath:@"backgroundColor"];
-    anima.toValue =(id) [UIColor greenColor].CGColor;
-    anima.duration = 5.0f;
-    
-    [titleLayer addAnimation:anima forKey:@"backgroundAnimation"];
-    
     
     [overlayLayer addSublayer:titleLayer];
     
