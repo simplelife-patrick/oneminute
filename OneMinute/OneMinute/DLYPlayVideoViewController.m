@@ -129,18 +129,8 @@
 
 - (void)onClickBack:(UIButton *)sender{
     
-//    if ((self.isSuccess && self.isAll) || (!self.isAll)) {
-//        
-//        [MobClick event:@"BackView"];
-//        //返回
-//        if(self.DismissBlock){
-//            self.DismissBlock();
-//        }
-//        [self.navigationController popViewControllerAnimated:YES];
-//    }
-    
     if (!self.waitIndicator.isAnimating) {
-        NSLog(@"我走了返回");
+
         [MobClick event:@"BackView"];
         //返回
         if(self.DismissBlock){
