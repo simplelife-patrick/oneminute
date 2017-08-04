@@ -395,8 +395,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     CATransition *changeAnimation = [CATransition animation];
     changeAnimation.delegate = self;
     changeAnimation.duration = 0.3;
-    changeAnimation.type = @"oglFlip";
-    changeAnimation.subtype = kCATransitionFromBottom;
+    changeAnimation.type = @"Cube";
+    changeAnimation.subtype = kCATransitionFromRight;
     //    changeAnimation.timingFunction = UIViewAnimationCurveEaseInOut;
     [self.previewLayer addAnimation:changeAnimation forKey:@"changeAnimation"];
 }
