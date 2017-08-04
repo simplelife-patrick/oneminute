@@ -395,8 +395,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     CATransition *changeAnimation = [CATransition animation];
     changeAnimation.delegate = self;
     changeAnimation.duration = 0.3;
-    changeAnimation.type = @"oglFlip";
-    changeAnimation.subtype = kCATransitionFromBottom;
+    changeAnimation.type = @"Cube";
+    changeAnimation.subtype = kCATransitionFromRight;
     //    changeAnimation.timingFunction = UIViewAnimationCurveEaseInOut;
     [self.previewLayer addAnimation:changeAnimation forKey:@"changeAnimation"];
 }
@@ -1182,7 +1182,6 @@ outputSettings:audioCompressionSettings];
     
     for (NSUInteger i = 0; i < transitionInstructions.count; i++) {
         
-        
         DLYMiniVlogTemplate *currentTemplate = self.session.currentTemplate;
         NSArray *array = currentTemplate.parts;
         
@@ -1254,15 +1253,15 @@ outputSettings:audioCompressionSettings];
         
         
         
-        videoSize = mutableVideoComposition.renderSize;
-        CALayer *watermarkLayer = [self addTitleForVideoWith:@"动旅游VLOG" size:videoSize];
+        CGSize renderSize = mutableVideoComposition.renderSize;
+        CALayer *watermarkLayer = [self addTitleForVideoWith:@"动旅游 MiniVLOG" size:renderSize];
         
         CALayer *parentLayer = [CALayer layer];
         CALayer *videoLayer = [CALayer layer];
         parentLayer.frame = CGRectMake(0, 0, mutableVideoComposition.renderSize.width, mutableVideoComposition.renderSize.height);
         videoLayer.frame = CGRectMake(0, 0, mutableVideoComposition.renderSize.width, mutableVideoComposition.renderSize.height);
         [parentLayer addSublayer:videoLayer];
-        watermarkLayer.position = CGPointMake(mutableVideoComposition.renderSize.width/2, mutableVideoComposition.renderSize.height/4);
+        watermarkLayer.position = CGPointMake(mutableVideoComposition.renderSize.width/2, mutableVideoComposition.renderSize.height/2);
         [parentLayer addSublayer:watermarkLayer];
         mutableVideoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
     }
@@ -1348,35 +1347,33 @@ outputSettings:audioCompressionSettings];
 }
 #pragma mark - 标题 -
 
-- (CALayer *) addTitleForVideoWith:(NSString *)titleText size:(CGSize)videoSize{
+- (CALayer *) addTitleForVideoWith:(NSString *)titleText size:(CGSize)renderSize{
     
     CALayer *overlayLayer = [CALayer layer];
-    
     CATextLayer *titleLayer = [CATextLayer layer];
-    titleLayer.bounds = CGRectMake(0, 0, videoSize.width/2, videoSize.height/2);
-    [titleLayer setFont:@"Helvetica-Bold"];
-    [titleLayer setFontSize:60];
-    titleLayer.shadowOpacity = 0.5;
+    UIFont *font = [UIFont systemFontOfSize:80.0];
+
+    [titleLayer setFontSize:80.f];
+    [titleLayer setFont:@"ArialRoundedMTBold"];
     [titleLayer setString:titleText];
     [titleLayer setAlignmentMode:kCAAlignmentCenter];
     [titleLayer setForegroundColor:[[UIColor yellowColor] CGColor]];
+    titleLayer.contentsCenter = overlayLayer.contentsCenter;
+    CGSize textSize = [titleText sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
+    titleLayer.bounds = CGRectMake(0, 0, textSize.width + 50, textSize.height + 25);
+    
+    titleLayer.masksToBounds = YES;
+    titleLayer.cornerRadius = 23.0f;
     
     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
     animation.fromValue = [NSNumber numberWithFloat:1.0f];
     animation.toValue = [NSNumber numberWithFloat:0.0f];
     animation.repeatCount = 0;
-    animation.duration = 5.0f;
+    animation.duration = 8.0f;
     [animation setRemovedOnCompletion:NO];
     [animation setFillMode:kCAFillModeForwards];
     animation.beginTime = AVCoreAnimationBeginTimeAtZero;
     [titleLayer addAnimation:animation forKey:@"opacityAniamtion"];
-    
-    CABasicAnimation *anima = [CABasicAnimation animationWithKeyPath:@"backgroundColor"];
-    anima.toValue =(id) [UIColor greenColor].CGColor;
-    anima.duration = 5.0f;
-    
-    [titleLayer addAnimation:anima forKey:@"backgroundAnimation"];
-    
     
     [overlayLayer addSublayer:titleLayer];
     
