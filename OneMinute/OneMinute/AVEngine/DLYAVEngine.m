@@ -1262,7 +1262,7 @@ outputSettings:audioCompressionSettings];
         parentLayer.frame = CGRectMake(0, 0, mutableVideoComposition.renderSize.width, mutableVideoComposition.renderSize.height);
         videoLayer.frame = CGRectMake(0, 0, mutableVideoComposition.renderSize.width, mutableVideoComposition.renderSize.height);
         [parentLayer addSublayer:videoLayer];
-        watermarkLayer.position = CGPointMake(mutableVideoComposition.renderSize.width/2, mutableVideoComposition.renderSize.height/4);
+        watermarkLayer.position = CGPointMake(mutableVideoComposition.renderSize.width/2, mutableVideoComposition.renderSize.height/2);
         [parentLayer addSublayer:watermarkLayer];
         mutableVideoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
     }
@@ -1352,18 +1352,18 @@ outputSettings:audioCompressionSettings];
     
     CALayer *overlayLayer = [CALayer layer];
     CATextLayer *titleLayer = [CATextLayer layer];
-    UIFont *font = [UIFont systemFontOfSize:80.0];
-    [titleLayer setFont:@"ArialRoundedMTBold"];
-    titleLayer.shadowOpacity = 0.5;
+    [titleLayer setFontSize:30];
+    UIFont *font = [UIFont fontWithName:@"ArialRoundedMTBold" size:80.0f];
     [titleLayer setString:titleText];
     [titleLayer setAlignmentMode:kCAAlignmentCenter];
     [titleLayer setForegroundColor:[[UIColor yellowColor] CGColor]];
     CGSize textSize = [titleText sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
-    [titleLayer setFrame:CGRectMake(50, 100, textSize.width+20, textSize.height+10)];
+    titleLayer.contentsCenter = overlayLayer.contentsCenter;
+    titleLayer.bounds = CGRectMake(0, 0, textSize.width + 50, textSize.height + 25);
     
     titleLayer.masksToBounds = YES;
     titleLayer.cornerRadius = 50.0f;
-    [titleLayer setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5].CGColor];
+    [titleLayer setBackgroundColor:[UIColor colorWithHex:@"#87CEFA"].CGColor];
     
     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
     animation.fromValue = [NSNumber numberWithFloat:1.0f];
