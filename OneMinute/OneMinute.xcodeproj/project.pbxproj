@@ -43,6 +43,7 @@
 		AD5B80AD1F34133B0094922B /* TravelerTemplateSample.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80A71F34133B0094922B /* TravelerTemplateSample.m4a */; };
 		AD5B80AE1F34133B0094922B /* UniversalTemplateBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80A81F34133B0094922B /* UniversalTemplateBGM.m4a */; };
 		AD5B80AF1F34133B0094922B /* header001.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80AA1F34133B0094922B /* header001.mp4 */; };
+		AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5B80B11F3443080094922B /* UIColor+Hex.m */; };
 		ADA370961F2D11300082AEC6 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA370951F2D11300082AEC6 /* DLYAVEngine.m */; };
 		ADA370991F2D11500082AEC6 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA370981F2D11500082AEC6 /* DLYRecordViewController.m */; };
 		ADA3709C1F2D11780082AEC6 /* DLYResource.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA3709B1F2D11780082AEC6 /* DLYResource.m */; };
@@ -147,6 +148,8 @@
 		AD5B80A71F34133B0094922B /* TravelerTemplateSample.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = TravelerTemplateSample.m4a; sourceTree = "<group>"; };
 		AD5B80A81F34133B0094922B /* UniversalTemplateBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = UniversalTemplateBGM.m4a; sourceTree = "<group>"; };
 		AD5B80AA1F34133B0094922B /* header001.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = header001.mp4; sourceTree = "<group>"; };
+		AD5B80B01F3443080094922B /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
+		AD5B80B11F3443080094922B /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		ADA370941F2D11300082AEC6 /* DLYAVEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAVEngine.h; sourceTree = "<group>"; };
 		ADA370951F2D11300082AEC6 /* DLYAVEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAVEngine.m; sourceTree = "<group>"; };
 		ADA370971F2D11500082AEC6 /* DLYRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRecordViewController.h; sourceTree = "<group>"; };
@@ -473,6 +476,8 @@
 			children = (
 				ADD0E7D21F2D9F3500996BD6 /* UIImage+Extension.h */,
 				ADD0E7D31F2D9F3500996BD6 /* UIImage+Extension.m */,
+				AD5B80B01F3443080094922B /* UIColor+Hex.h */,
+				AD5B80B11F3443080094922B /* UIColor+Hex.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -748,6 +753,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADFFF1A41F18A33C00FB5BF7 /* DLYCommon.m in Sources */,
+				AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */,
 				1C7E618A1EE7DF4F0088F33F /* ViewController.m in Sources */,
 				1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */,
 				ADFFF1AB1F18C00200FB5BF7 /* DLYTransitionInstructions.m in Sources */,

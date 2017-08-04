@@ -1255,7 +1255,7 @@ outputSettings:audioCompressionSettings];
         
         
         videoSize = mutableVideoComposition.renderSize;
-        CALayer *watermarkLayer = [self addTitleForVideoWith:@"动旅游VLOG" size:videoSize];
+        CALayer *watermarkLayer = [self addTitleForVideoWith:@"DLY Mini VLOG" size:videoSize];
         
         CALayer *parentLayer = [CALayer layer];
         CALayer *videoLayer = [CALayer layer];
@@ -1351,21 +1351,25 @@ outputSettings:audioCompressionSettings];
 - (CALayer *) addTitleForVideoWith:(NSString *)titleText size:(CGSize)videoSize{
     
     CALayer *overlayLayer = [CALayer layer];
-    
     CATextLayer *titleLayer = [CATextLayer layer];
-    titleLayer.bounds = CGRectMake(0, 0, videoSize.width/2, videoSize.height/2);
-    [titleLayer setFont:@"Helvetica-Bold"];
-    [titleLayer setFontSize:60];
+    UIFont *font = [UIFont systemFontOfSize:80.0];
+    [titleLayer setFont:@"ArialRoundedMTBold"];
     titleLayer.shadowOpacity = 0.5;
     [titleLayer setString:titleText];
     [titleLayer setAlignmentMode:kCAAlignmentCenter];
     [titleLayer setForegroundColor:[[UIColor yellowColor] CGColor]];
+    CGSize textSize = [titleText sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
+    [titleLayer setFrame:CGRectMake(50, 100, textSize.width+20, textSize.height+10)];
+    
+    titleLayer.masksToBounds = YES;
+    titleLayer.cornerRadius = 50.0f;
+    [titleLayer setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5].CGColor];
     
     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
     animation.fromValue = [NSNumber numberWithFloat:1.0f];
     animation.toValue = [NSNumber numberWithFloat:0.0f];
     animation.repeatCount = 0;
-    animation.duration = 5.0f;
+    animation.duration = 8.0f;
     [animation setRemovedOnCompletion:NO];
     [animation setFillMode:kCAFillModeForwards];
     animation.beginTime = AVCoreAnimationBeginTimeAtZero;
