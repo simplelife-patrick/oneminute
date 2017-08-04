@@ -140,7 +140,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
     self.isAppear = NO;
-    [self initData];
+//    [self initData];
+    [self initDataReadDraft];
     [self setupUI];
     [self monitorPermission];
     //进入前台
@@ -268,7 +269,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
 }
 #pragma mark ==== 初始化数据
-- (void)initData {
+- (void)initDataReadDraft {
     
     BOOL isExitDraft = [self.session isExitdraftAtFile];
     NSMutableArray *draftArr = [NSMutableArray array];
@@ -285,6 +286,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     ////////////////////////////////////////////////////////////
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
+    [self.session saveCurrentTemplateWithName:template.templateName];
     partModelArray = [NSMutableArray arrayWithArray:template.parts];
     for (int i = 0; i < 6; i++) {
         DLYMiniVlogPart *part = partModelArray[i];
@@ -345,6 +347,42 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //    }else {
 //    }
 }
+
+- (void)initData {
+    
+    DLYMiniVlogTemplate *template = self.session.currentTemplate;
+    [self.session saveCurrentTemplateWithName:template.templateName];
+    partModelArray = [NSMutableArray arrayWithArray:template.parts];
+    
+    for (int i = 0; i < 6; i++) {
+        DLYMiniVlogPart *part = partModelArray[i];
+        if (i == 0) {
+            part.prepareRecord = @"1";
+        }else {
+            part.prepareRecord = @"0";
+        }
+        part.recordStatus = @"0";
+        
+        part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
+    }
+    
+    typeModelArray = [[NSMutableArray alloc]init];
+    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活",@"人文",nil];
+    for(int i = 0; i < 5; i ++)
+    {
+        NSMutableDictionary * dict = [[NSMutableDictionary alloc]init];
+        [dict setObject:typeNameArray[i] forKey:@"typeName"];
+        [dict setObject:@"这里是介绍，最多两行文字" forKey:@"typeIntroduce"];
+        [typeModelArray addObject:dict];
+    }
+    
+    _shootTime = 0;
+    selectType = 0;
+    selectPartTag = 10001;
+    cursorTag = 0;
+    self.isSuccess = NO;
+}
+
 - (NSString *)getDurationwithStartTime:(NSString *)startTime andStopTime:(NSString *)stopTime {
     
     int startDuration = 0;
