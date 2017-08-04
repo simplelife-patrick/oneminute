@@ -224,7 +224,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     /////////////////////////////////
     typeModelArray = [[NSMutableArray alloc]init];
-    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活",nil];
+    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活", nil];
     for(int i = 0; i < typeNameArray.count; i ++)
     {
         NSMutableDictionary * dict = [[NSMutableDictionary alloc]init];
@@ -271,8 +271,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     typeModelArray = [[NSMutableArray alloc]init];
-    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活",@"人文",nil];
-    for(int i = 0; i < 5; i ++)
+    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活", nil];
+    for(int i = 0; i < typeNameArray.count; i ++)
     {
         NSMutableDictionary * dict = [[NSMutableDictionary alloc]init];
         [dict setObject:typeNameArray[i] forKey:@"typeName"];
@@ -707,6 +707,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         //点击哪个item，光标移动到当前item
         self.prepareView.frame = CGRectMake(button.x, button.y + button.height - 2, 10, 2);
         [self.backScrollView insertSubview:button belowSubview:self.prepareView];
+        
+        for (DLYMiniVlogPart *part in partModelArray) {
+            if ([part.prepareRecord isEqualToString:@"1"]) {
+                NSInteger i = [partModelArray indexOfObject:part];
+                UIView *view = (UIView *)[self.view viewWithTag:30001 + i];
+                [view removeFromSuperview];
+            }
+        }
     }
     
     [self changeDirectionOfView:M_PI];
@@ -842,6 +850,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         //点击哪个item，光标移动到当前item
         self.prepareView.frame = CGRectMake(button.x, button.y, 10, 2);
         [self.backScrollView insertSubview:button belowSubview:self.prepareView];
+        
+        for (DLYMiniVlogPart *part in partModelArray) {
+            if ([part.prepareRecord isEqualToString:@"1"]) {
+                NSInteger i = [partModelArray indexOfObject:part];
+                UIView *view = (UIView *)[self.view viewWithTag:30001 + i];
+                [view removeFromSuperview];
+            }
+        }
     }
     [self changeDirectionOfView:0];
 }
@@ -1261,26 +1277,26 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 [self.backScrollView addSubview:self.prepareView];
                 prepareAlpha = 1;
                 [_prepareShootTimer setFireDate:[NSDate distantPast]];
+
+                //拍摄说明视图
+                UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
+                itemView.centerY = button.centerY;
+                itemView.tag = 30000 + i;
+                [self.backScrollView addSubview:itemView];
                 //判断拍摄状态
-                //正常状态
                 if(part.recordType == DLYMiniVlogRecordTypeNormal)
-                {
+                {//正常状态
                     UILabel * timeLabel = [[UILabel alloc] init];
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
                     NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
                     timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                     [timeLabel sizeToFit];
-                    timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
-                    timeLabel.centerY = button.centerY;
-                    [self.backScrollView addSubview:timeLabel];
+                    timeLabel.frame = CGRectMake(itemView.width - timeLabel.width, (itemView.height - timeLabel.height) / 2, timeLabel.width, timeLabel.height);
+                    [itemView addSubview:timeLabel];
                     
                 }else if(part.recordType == DLYMiniVlogRecordTypeSlomo)
                 {//慢进
-                    UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
-                    itemView.centerY = button.centerY;
-                    [self.backScrollView addSubview:itemView];
-                    
                     UILabel * timeLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 39, 12)];
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
@@ -1300,10 +1316,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     [itemView addSubview:icon];
                 }else
                 {//延时
-                    UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
-                    itemView.centerY = button.centerY;
-                    [self.backScrollView addSubview:itemView];
-                    
                     UILabel * timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 39, 12)];
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
@@ -1398,7 +1410,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 
             }else
             {//延时
-                
                 UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
                 itemView.centerY = button.centerY;
                 itemView.transform = CGAffineTransformMakeRotation(M_PI);
@@ -1436,29 +1447,26 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 [self.backScrollView addSubview:self.prepareView];
                 prepareAlpha = 1;
                 [_prepareShootTimer setFireDate:[NSDate distantPast]];
+                //拍摄说明视图
+                UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
+                itemView.centerY = button.centerY;
+                itemView.transform = CGAffineTransformMakeRotation(M_PI);
+                itemView.tag = 30000 + (7 - i);
+                [self.backScrollView addSubview:itemView];
                 //判断拍摄状态
-                //正常状态
                 if(part.recordType == DLYMiniVlogRecordTypeNormal)
-                {
+                {//正常状态
                     UILabel * timeLabel = [[UILabel alloc] init];
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
                     NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
                     timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                     [timeLabel sizeToFit];
-                    timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
-                    timeLabel.centerY = button.centerY;
-                    timeLabel.transform = CGAffineTransformMakeRotation(M_PI);
-                    [self.backScrollView addSubview:timeLabel];
+                    timeLabel.frame = CGRectMake(4, (itemView.height - timeLabel.height) / 2, timeLabel.width, timeLabel.height);
+                    [itemView addSubview:timeLabel];
                     
                 }else if(part.recordType == DLYMiniVlogRecordTypeSlomo)
                 {//快进
-                    
-                    UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
-                    itemView.centerY = button.centerY;
-                    itemView.transform = CGAffineTransformMakeRotation(M_PI);
-                    [self.backScrollView addSubview:itemView];
-                    
                     UILabel * timeLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 39, 12)];
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
@@ -1479,12 +1487,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     
                 }else
                 {//延时
-                    
-                    UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
-                    itemView.centerY = button.centerY;
-                    itemView.transform = CGAffineTransformMakeRotation(M_PI);
-                    [self.backScrollView addSubview:itemView];
-                    
                     UILabel * timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 39, 12)];
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
@@ -1554,6 +1556,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     if([part.recordStatus isEqualToString:@"1"])
     {//说明时已拍摄片段
+        
+        for (DLYMiniVlogPart *part in partModelArray) {
+            if ([part.prepareRecord isEqualToString:@"1"]) {
+                NSInteger i = [partModelArray indexOfObject:part];
+                UIView *view = (UIView *)[self.view viewWithTag:30001 + i];
+                [view removeFromSuperview];
+            }
+        }
+        
         DDLogInfo(@"点击了已拍摄片段");
         [UIView animateWithDuration:0.5f animations:^{
             if (self.newState == 1) {
@@ -1942,7 +1953,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     __weak typeof(self) weakSelf = self;
                     DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
                     fvc.isAll = YES;
-//                    fvc.isWait = YES;
                     fvc.isSuccess = NO;
                     self.isPlayer = YES;
                     fvc.DismissBlock = ^{
