@@ -456,9 +456,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 - (void)setFocusCursorWithPoint:(CGPoint)point {
     self.focusCursorImageView.center = point;
-    self.focusCursorImageView.transform=CGAffineTransformMakeScale(1.8, 1.8);
+    self.focusCursorImageView.transform=CGAffineTransformMakeScale(1.6, 1.6);
     self.focusCursorImageView.alpha = 1.0;
-    [UIView animateWithDuration:0.3 animations:^{
+    [UIView animateWithDuration:0.5 animations:^{
         self.focusCursorImageView.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished) {
         

@@ -421,9 +421,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 
 CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     CGFloat deltaX = second.x - first.x;
-    NSLog(@"deltaX = %f",deltaX);
     CGFloat deltaY = second.y - first.y;
-    NSLog(@"deltaY = %f",deltaY);
     return sqrt(deltaX*deltaX + deltaY*deltaY);
 };
 
@@ -434,10 +432,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     
     if ([_currentVideoDeviceInput.device lockForConfiguration:nil]) {
         
-        CGFloat distance = distanceBetweenPoints(currentPoint, point);
-        NSLog(@"distance = %f",distance);
+//        CGFloat distance = distanceBetweenPoints(currentPoint, point);
         // 设置对焦
-        if ([captureDevice isFocusModeSupported:AVCaptureFocusModeAutoFocus] && distance > 0.1 && distance != 0) {
+        if ([captureDevice isFocusModeSupported:AVCaptureFocusModeAutoFocus]) {
             [captureDevice setFocusMode:AVCaptureFocusModeAutoFocus];
         }
         if ([captureDevice isFocusPointOfInterestSupported]) {
@@ -445,7 +442,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }
         
         // 设置曝光
-        if ([captureDevice isExposureModeSupported:AVCaptureExposureModeContinuousAutoExposure] && distance > 0.1 && distance != 0) {
+        if ([captureDevice isExposureModeSupported:AVCaptureExposureModeContinuousAutoExposure]) {
             [captureDevice setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
         }
         if ([captureDevice isExposurePointOfInterestSupported]) {
@@ -453,12 +450,12 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }
         
         //设置白平衡
-        if ([captureDevice isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeAutoWhiteBalance] && distance > 0.1 && distance != 0) {
+        if ([captureDevice isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeAutoWhiteBalance]) {
             [captureDevice setWhiteBalanceMode:AVCaptureWhiteBalanceModeAutoWhiteBalance];
         }
         [_currentVideoDeviceInput.device unlockForConfiguration];
         currentPoint = point;
-        NSLog(@"current point of the capture device is :x = %f,y = %f",currentPoint.x,currentPoint.y);
+        NSLog(@"Current point of the capture device is :x = %f,y = %f",currentPoint.x,currentPoint.y);
     }
 }
 
