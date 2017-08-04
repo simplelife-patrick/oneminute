@@ -450,19 +450,23 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         CGPoint point = [touch locationInView:self.previewView];
         CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
-        [self setFocusCursorWithPoint:point];
         [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus atPoint:cameraPoint];
+        [self setFocusCursorWithPoint:point];
     }
 }
 - (void)setFocusCursorWithPoint:(CGPoint)point {
     self.focusCursorImageView.center = point;
-    self.focusCursorImageView.transform=CGAffineTransformMakeScale(1.5, 1.5);
+    self.focusCursorImageView.transform=CGAffineTransformMakeScale(1.8, 1.8);
     self.focusCursorImageView.alpha = 1.0;
-    [UIView animateWithDuration:0.8 animations:^{
+    [UIView animateWithDuration:0.3 animations:^{
         self.focusCursorImageView.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished) {
-        self.focusCursorImageView.alpha=0;
         
+        [UIView animateWithDuration:1.0 animations:^{
+            self.focusCursorImageView.alpha = 0.3;
+        } completion:^(BOOL finished) {
+            self.focusCursorImageView.alpha = 0;
+        }];
     }];
 }
 

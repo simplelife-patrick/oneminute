@@ -460,33 +460,13 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         currentPoint = point;
         NSLog(@"current point of the capture device is :x = %f,y = %f",currentPoint.x,currentPoint.y);
     }
-    
 }
 
 -(void)focusAtPoint:(CGPoint)point{
     
     [self changeDeviceProperty:^(AVCaptureDevice *captureDevice) {
         
-        // 设置对焦
-        if ([captureDevice isFocusModeSupported:AVCaptureFocusModeAutoFocus]) {
-            [captureDevice setFocusMode:AVCaptureFocusModeAutoFocus];
-        }
-        if ([captureDevice isFocusPointOfInterestSupported]) {
-            [captureDevice setFocusPointOfInterest:point];
-        }
-        
-        // 设置曝光
-        if ([captureDevice isExposureModeSupported:AVCaptureExposureModeContinuousAutoExposure]) {
-            [captureDevice setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
-        }
-        if ([captureDevice isExposurePointOfInterestSupported]) {
-            [captureDevice setExposurePointOfInterest:point];
-        }
-        
-        //设置白平衡
-        if ([captureDevice isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeAutoWhiteBalance]) {
-            [captureDevice setWhiteBalanceMode:AVCaptureWhiteBalanceModeAutoWhiteBalance];
-        }
+
     }];
 }
 
@@ -495,7 +475,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     AVCaptureDevice *captureDevice= [self.currentVideoDeviceInput device];
     NSError *error;
     
-    //注意改变设备属性前一定要首先调用lockForConfiguration:调用完之后使用unlockForConfiguration方法解锁
     if ([captureDevice lockForConfiguration:&error]) {
         
         propertyChange(captureDevice);
