@@ -80,7 +80,6 @@
     self.videoGravity = AVLayerVideoGravityResize;
     self.showsPlaybackControls = NO;
     //播放视频
-    self.player.volume = 0.0;
     [self.player play];
 }
 

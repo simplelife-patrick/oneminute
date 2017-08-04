@@ -287,7 +287,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
     }
 
-    
     typeModelArray = [[NSMutableArray alloc]init];
     NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活",@"人文",nil];
     for(int i = 0; i < 5; i ++)
