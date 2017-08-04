@@ -527,8 +527,8 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
                                               [NSNumber numberWithInteger:dimensions.width], AVVideoWidthKey,
                                               [NSNumber numberWithInteger:dimensions.height], AVVideoHeightKey,
                                               [NSDictionary dictionaryWithObjectsAndKeys:
-                                               [NSNumber numberWithInteger:bitsPerSecond], /*AVVideoAverageBitRateKey,
-                                               [NSNumber numberWithInteger:90], */AVVideoMaxKeyFrameIntervalKey,
+                                               [NSNumber numberWithInteger:bitsPerSecond],AVVideoAverageBitRateKey,
+                                               [NSNumber numberWithInteger:30], AVVideoMaxKeyFrameIntervalKey,
                                                nil], AVVideoCompressionPropertiesKey,
                                               nil];
     
