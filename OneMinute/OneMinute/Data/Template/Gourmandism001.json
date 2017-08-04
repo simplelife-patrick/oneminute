@@ -1,5 +1,5 @@
 {
-  "id": "001",
+  "id": "Gourmandism001.json",
   "type": 0,
   "info": [
     {
@@ -51,8 +51,10 @@
       "transitionType":""
     }
   ],
-  "BGM": "BGM001",
+  "BGM": "GourmandismTemplateBGM",
   "header": "header001",
-  "tailer": "tail001"
+  "tailer": "tail001",
+  "templateDescription": "我是美食模板,拉啦啦",
+  "sampleVideoName": "GourmandismTemplateSample.mp4"
 }
 

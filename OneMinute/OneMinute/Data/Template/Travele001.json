@@ -1,5 +1,5 @@
 {
-  "id": "001",
+  "id": "Travele001.json",
   "type": 0,
   "info": [
     {
@@ -59,8 +59,10 @@
       "transitionType": "0"
     }
   ],
-  "BGM": "BGM001",
+  "BGM": "TravelerTemplateBGM",
   "header": "header001",
-  "tailer": "tail001"
+  "tailer": "tail001",
+  "templateDescription": "我是旅行模板,拉啦啦",
+  "sampleVideoName": "TravelerTemplateSample.mov"
 }
 

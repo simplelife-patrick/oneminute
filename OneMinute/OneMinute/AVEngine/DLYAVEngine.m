@@ -259,8 +259,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
             [self changeCameraAnimation];
-            self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
             [self.captureSession addInput:self.frontCameraInput];//切换成了前置
+            self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         }
     }else {
         
@@ -527,12 +527,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
                                               [NSNumber numberWithInteger:dimensions.width], AVVideoWidthKey,
                                               [NSNumber numberWithInteger:dimensions.height], AVVideoHeightKey,
                                               [NSDictionary dictionaryWithObjectsAndKeys:
-                                               [NSNumber numberWithInteger:bitsPerSecond], AVVideoAverageBitRateKey,
-                                               [NSNumber numberWithInteger:90], AVVideoMaxKeyFrameIntervalKey,
+                                               [NSNumber numberWithInteger:bitsPerSecond],AVVideoAverageBitRateKey,
+                                               [NSNumber numberWithInteger:30], AVVideoMaxKeyFrameIntervalKey,
                                                nil], AVVideoCompressionPropertiesKey,
                                               nil];
-    
-    DLYLog(@"videoCompressionSetting:%@", videoCompressionSettings);
     
     if ([self.assetWriter canApplyOutputSettings:videoCompressionSettings forMediaType:AVMediaTypeVideo]) {
         
@@ -1207,8 +1205,15 @@ outputSettings:audioCompressionSettings];
     AVURLAsset *videoAsset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
     AVURLAsset *audioAsset = [AVURLAsset URLAssetWithURL:audioUrl options:nil];
     
-    AVAssetTrack *videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-    AVAssetTrack *audioAssetTrack = [[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
+    AVAssetTrack *videoAssetTrack = nil;
+    AVAssetTrack *audioAssetTrack = nil;
+    
+    if ([[videoAsset tracksWithMediaType:AVMediaTypeVideo] count] != 0) {
+        videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+    }
+    if ([[audioAsset tracksWithMediaType:AVMediaTypeAudio] count] != 0) {
+        audioAssetTrack = [[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
+    }
     
     //创建视频编辑工程
     AVMutableComposition* mixComposition = [AVMutableComposition composition];
@@ -1217,35 +1222,51 @@ outputSettings:audioCompressionSettings];
     AVMutableCompositionTrack *videoCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
     AVMutableCompositionTrack *audioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     
-    [videoCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssetTrack.timeRange.duration) ofTrack:videoAssetTrack atTime:kCMTimeZero error:nil];
-    [audioCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssetTrack.timeRange.duration) ofTrack:audioAssetTrack atTime:kCMTimeZero error:nil];
+    NSError *error = nil;
+    
+    if (videoAssetTrack) {
+        [videoCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssetTrack.timeRange.duration) ofTrack:videoAssetTrack atTime:kCMTimeZero error:&error];
+    }
+    if (audioAssetTrack) {
+        [audioCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, audioAssetTrack.timeRange.duration) ofTrack:audioAssetTrack atTime:kCMTimeZero error:&error];
+    }
     
     //调整视频方向
     [videoCompositionTrack setPreferredTransform:videoAssetTrack.preferredTransform];
     
 #pragma mark - 添加标题 -
-
-//    AVMutableVideoCompositionInstruction *passThroughInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-//
-//    AVMutableVideoCompositionLayerInstruction *passThroughLayer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoAssetTrack];
-//
-//    [passThroughLayer setTransform:videoAssetTrack.preferredTransform atTime:kCMTimeZero];
-//    [passThroughLayer setOpacity:0.0 atTime:[videoAsset duration]];
-//
-//    passThroughInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, videoCompositionTrack.timeRange.duration);
-//    
-//    passThroughInstruction.layerInstructions = @[passThroughLayer];
-//    
-//    AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
-//
-//    videoComposition.instructions = @[passThroughInstruction];
-//    videoComposition.frameDuration = CMTimeMake(1, 60);
-//    
-//    CGSize naturalSize = videoAssetTrack.naturalSize;
-//    videoComposition.renderSize = naturalSize;
-//    
-//    [self applyVideoEffectsToComposition:videoComposition videoTitle:@"动旅游VLOG" size:naturalSize];
     
+    AVMutableVideoComposition *mutableVideoComposition = [AVMutableVideoComposition videoComposition];
+    
+    if ([[mixComposition tracksWithMediaType:AVMediaTypeVideo] count] != 0) {
+        // build a pass through video composition
+        mutableVideoComposition.frameDuration = CMTimeMake(1, 30); // 30 fps
+        mutableVideoComposition.renderSize = videoAssetTrack.naturalSize;
+        
+        AVMutableVideoCompositionInstruction *passThroughInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+        passThroughInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, [mixComposition duration]);
+        
+        AVAssetTrack *videoTrack = [mixComposition tracksWithMediaType:AVMediaTypeVideo][0];
+        AVMutableVideoCompositionLayerInstruction *passThroughLayer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
+        
+        passThroughInstruction.layerInstructions = @[passThroughLayer];
+        mutableVideoComposition.instructions = @[passThroughInstruction];
+        
+        
+        
+        videoSize = mutableVideoComposition.renderSize;
+        CALayer *watermarkLayer = [self addTitleForVideoWith:@"动旅游VLOG" size:videoSize];
+        
+        CALayer *parentLayer = [CALayer layer];
+        CALayer *videoLayer = [CALayer layer];
+        parentLayer.frame = CGRectMake(0, 0, mutableVideoComposition.renderSize.width, mutableVideoComposition.renderSize.height);
+        videoLayer.frame = CGRectMake(0, 0, mutableVideoComposition.renderSize.width, mutableVideoComposition.renderSize.height);
+        [parentLayer addSublayer:videoLayer];
+        watermarkLayer.position = CGPointMake(mutableVideoComposition.renderSize.width/2, mutableVideoComposition.renderSize.height/4);
+        [parentLayer addSublayer:watermarkLayer];
+        mutableVideoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
+    }
+
     //处理视频原声
     AVAssetTrack *originalAudioAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
     
@@ -1303,7 +1324,7 @@ outputSettings:audioCompressionSettings];
     //输出设置
     assetExportSession.outputURL = outPutUrl;
     assetExportSession.outputFileType = AVFileTypeMPEG4;
-//    assetExportSession.videoComposition = videoComposition;
+    assetExportSession.videoComposition = mutableVideoComposition;
     assetExportSession.audioMix = audioMix;
     assetExportSession.shouldOptimizeForNetworkUse = YES;
     
@@ -1325,40 +1346,41 @@ outputSettings:audioCompressionSettings];
         }
     }];
 }
-
 #pragma mark - 标题 -
-- (void)applyVideoEffectsToComposition:(AVMutableVideoComposition *)composition videoTitle:(NSString*)videoTitle  size:(CGSize)size {
-    
-    UIFont *font = [UIFont systemFontOfSize:60.0];
-    CATextLayer *titleText = [[CATextLayer alloc] init];
-    [titleText setFontSize:60];
-    [titleText setString:videoTitle];
-    [titleText setAlignmentMode:kCAAlignmentCenter];
-    [titleText setForegroundColor:[[UIColor blueColor] CGColor]];
-    titleText.masksToBounds = YES;
-    titleText.cornerRadius = 23.0f;
-    [titleText setBackgroundColor:[UIColor redColor].CGColor];
-    CGSize textSize = [videoTitle sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
-    [titleText setFrame:CGRectMake(300, 300, 300, 300)];
+
+- (CALayer *) addTitleForVideoWith:(NSString *)titleText size:(CGSize)videoSize{
     
     CALayer *overlayLayer = [CALayer layer];
-    overlayLayer.frame = CGRectMake(0, 0, size.width, size.height);
-    [overlayLayer addSublayer:titleText];
-    [overlayLayer setMasksToBounds:YES];
     
-    //parentLayer
-    CALayer *parentLayer = [CALayer layer];
-    parentLayer.frame = CGRectMake(0, 0, size.width, size.height);
+    CATextLayer *titleLayer = [CATextLayer layer];
+    titleLayer.bounds = CGRectMake(0, 0, videoSize.width/2, videoSize.height/2);
+    [titleLayer setFont:@"Helvetica-Bold"];
+    [titleLayer setFontSize:60];
+    titleLayer.shadowOpacity = 0.5;
+    [titleLayer setString:titleText];
+    [titleLayer setAlignmentMode:kCAAlignmentCenter];
+    [titleLayer setForegroundColor:[[UIColor yellowColor] CGColor]];
     
-    //videoLayer
-    CALayer *videoLayer = [CALayer layer];
-    videoLayer.frame = CGRectMake(0, 0, size.width, size.height);
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    animation.fromValue = [NSNumber numberWithFloat:1.0f];
+    animation.toValue = [NSNumber numberWithFloat:0.0f];
+    animation.repeatCount = 0;
+    animation.duration = 5.0f;
+    [animation setRemovedOnCompletion:NO];
+    [animation setFillMode:kCAFillModeForwards];
+    animation.beginTime = AVCoreAnimationBeginTimeAtZero;
+    [titleLayer addAnimation:animation forKey:@"opacityAniamtion"];
+    
+    CABasicAnimation *anima = [CABasicAnimation animationWithKeyPath:@"backgroundColor"];
+    anima.toValue =(id) [UIColor greenColor].CGColor;
+    anima.duration = 5.0f;
+    
+    [titleLayer addAnimation:anima forKey:@"backgroundAnimation"];
     
     
-    [parentLayer addSublayer:videoLayer];
-    [parentLayer addSublayer:overlayLayer];
+    [overlayLayer addSublayer:titleLayer];
     
-    composition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
+    return overlayLayer;
 }
 
 #pragma mark - 叠加 -
