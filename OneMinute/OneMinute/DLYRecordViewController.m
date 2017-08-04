@@ -446,8 +446,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     
     UITouch *touch = [touches anyObject];
-    if (touch.view != self.backView && touch.view != self.sceneView) {
-        
+    if (touch.view != self.backView && touch.view != self.sceneView && touch.view != self.playView)
+    {
         CGPoint point = [touch locationInView:self.previewView];
         CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
         [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus atPoint:cameraPoint];
