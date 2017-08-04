@@ -1,5 +1,5 @@
 {
-  "id": "001",
+  "id": "ColorLife.json",
   "type": 0,
   "info": [
     {
@@ -51,8 +51,10 @@
       "transitionType":""
     }
   ],
-  "BGM": "BGM001",
+  "BGM": "ColorLifeTemplateBGM",
   "header": "header001",
-  "tailer": "tail001"
+  "tailer": "tail001",
+  "templateDescription": "我是生活模板,拉啦啦",
+  "sampleVideoName": "ColorLifeTemplateSample.mov"
 }
 
