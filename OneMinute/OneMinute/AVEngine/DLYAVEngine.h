@@ -101,5 +101,15 @@ typedef void(^FailureBlock)(NSError *error);
  @param failureBlcok 失败回调
  */
 - (void) addTransitionEffectSuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
+
+/**
+ 获取视频某一帧图片
+
+ @param assetUrl 视频URL
+ @param intervalTime 某一时刻
+ @return 返回获取的图片
+ */
+-(UIImage*)getKeyImage:(NSURL *)assetUrl intervalTime:(NSInteger)intervalTime;
+
 -(void)focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point;
 @end
