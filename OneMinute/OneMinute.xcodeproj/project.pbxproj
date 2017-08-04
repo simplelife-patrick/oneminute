@@ -47,6 +47,7 @@
 		AD5B80B51F344C750094922B /* advertisementVideo(5s).mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80B31F344C750094922B /* advertisementVideo(5s).mp4 */; };
 		AD5B80B61F344C750094922B /* advertisementVideo(10s).mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */; };
 		AD5B80BC1F34552D0094922B /* ColorLifeTemplateSample.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80B81F34552D0094922B /* ColorLifeTemplateSample.mp4 */; };
+		AD5B80C11F3456640094922B /* GourmandismTemplateSample.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80C01F3456640094922B /* GourmandismTemplateSample.mp4 */; };
 		ADA370961F2D11300082AEC6 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA370951F2D11300082AEC6 /* DLYAVEngine.m */; };
 		ADA370991F2D11500082AEC6 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA370981F2D11500082AEC6 /* DLYRecordViewController.m */; };
 		ADA3709C1F2D11780082AEC6 /* DLYResource.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA3709B1F2D11780082AEC6 /* DLYResource.m */; };
@@ -154,6 +155,7 @@
 		AD5B80B31F344C750094922B /* advertisementVideo(5s).mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "advertisementVideo(5s).mp4"; sourceTree = "<group>"; };
 		AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "advertisementVideo(10s).mp4"; sourceTree = "<group>"; };
 		AD5B80B81F34552D0094922B /* ColorLifeTemplateSample.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorLifeTemplateSample.mp4; sourceTree = "<group>"; };
+		AD5B80C01F3456640094922B /* GourmandismTemplateSample.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = GourmandismTemplateSample.mp4; sourceTree = "<group>"; };
 		ADA370941F2D11300082AEC6 /* DLYAVEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAVEngine.h; sourceTree = "<group>"; };
 		ADA370951F2D11300082AEC6 /* DLYAVEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAVEngine.m; sourceTree = "<group>"; };
 		ADA370971F2D11500082AEC6 /* DLYRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRecordViewController.h; sourceTree = "<group>"; };
@@ -468,6 +470,7 @@
 			isa = PBXGroup;
 			children = (
 				AD5B80B81F34552D0094922B /* ColorLifeTemplateSample.mp4 */,
+				AD5B80C01F3456640094922B /* GourmandismTemplateSample.mp4 */,
 			);
 			path = Sample;
 			sourceTree = "<group>";
@@ -679,6 +682,7 @@
 				AD5A06A51F33058A00F26693 /* Gourmandism001.json in Resources */,
 				AD5B80AE1F34133B0094922B /* UniversalTemplateBGM.m4a in Resources */,
 				AD5B80AC1F34133B0094922B /* GourmandismTemplateBGM.m4a in Resources */,
+				AD5B80C11F3456640094922B /* GourmandismTemplateSample.mp4 in Resources */,
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
 				AD5B80AF1F34133B0094922B /* header001.mp4 in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
