@@ -167,125 +167,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.deleteButton.hidden = NO;
     }
 }
-//监测权限
-- (void)monitorPermission {
-    //相机 麦克风 相册
-    [self checkVideoCameraAuthorization];
-    [self checkVideoMicrophoneAudioAuthorization];
-    [self checkVideoPhotoAuthorization];
-}
-- (void)recordViewWillEnterForeground {
-    
-    //相机 麦克风 相册
-    [self checkVideoCameraAuthorization];
-    [self checkVideoMicrophoneAudioAuthorization];
-    [self checkVideoPhotoAuthorization];
-}
-#pragma mark ==== 相册
-- (BOOL)checkVideoPhotoAuthorization {
-    __block BOOL isAvalible = NO;
-    //iOS8.0之后
-    PHAuthorizationStatus photoStatus =  [PHPhotoLibrary authorizationStatus];
-    switch (photoStatus) {
-        case PHAuthorizationStatusAuthorized:
-            isAvalible = YES;
-            break;
-        case PHAuthorizationStatusDenied:
-        {
-            [self showAlertPermissionwithMessage:@"相册"];
-            isAvalible = NO;
-        }
-            break;
-        case PHAuthorizationStatusNotDetermined:
-        {
-            [self showAlertPermissionwithMessage:@"相册"];
-            isAvalible = NO;
-        }
-            break;
-        case PHAuthorizationStatusRestricted:
-            isAvalible = NO;
-            break;
-        default:
-            break;
-    }
-    
-    return isAvalible;
-}
-#pragma mark ==== 相机
-- (BOOL)checkVideoCameraAuthorization {
-    __block BOOL isAvalible = NO;
-    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-    switch (status) {
-        case AVAuthorizationStatusAuthorized: //授权
-            isAvalible = YES;
-            break;
-        case AVAuthorizationStatusDenied:   //拒绝，弹框
-        {
-            [self showAlertPermissionwithMessage:@"相机"];
-            isAvalible = NO;
-        }
-            break;
-        case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动默认弹框
-        {
-            [self showAlertPermissionwithMessage:@"相机"];
-            isAvalible = NO;
-        }
-            break;
-        case AVAuthorizationStatusRestricted:  //受限制，家长控制器
-            isAvalible = NO;
-            break;
-    }
-    return isAvalible;
-}
-#pragma mark ==== 麦克风
-- (BOOL)checkVideoMicrophoneAudioAuthorization {
-    __block BOOL isAvalible = NO;
-    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
-    switch (status) {
-        case AVAuthorizationStatusAuthorized: //授权
-            isAvalible = YES;
-            break;
-        case AVAuthorizationStatusDenied:   //拒绝，弹框
-        {
-            [self showAlertPermissionwithMessage:@"麦克风"];
-            isAvalible = NO;
-        }
-            break;
-        case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动
-        {
-            [self showAlertPermissionwithMessage:@"麦克风"];
-            isAvalible = NO;
-        }
-            break;
-        case AVAuthorizationStatusRestricted:  //受限制，家长控制器
-            isAvalible = NO;
-            break;
-    }
-    return isAvalible;
-}
-//显示警告框
-- (void)showAlertPermissionwithMessage:(NSString *)message {
-    
-    NSString *str = [NSString stringWithFormat:@"请到设置页面允许使用%@", message];
-    self.alert = [[DLYAlertView alloc] initWithMessage:str withSureButton:@"确定"];
-
-    if (self.newState == 1) {
-        self.alert.transform = CGAffineTransformMakeRotation(0);
-    }else {
-        self.alert.transform = CGAffineTransformMakeRotation(M_PI);
-    }
-    __weak typeof(self) weakSelf = self;
-    self.alert.sureButtonAction = ^{
-        [weakSelf gotoSetting];
-    };
-}
-//跳转到设置
-- (void)gotoSetting {
-    NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
-    if ([[UIApplication sharedApplication]canOpenURL:url]) {
-        [[UIApplication sharedApplication]openURL:url];
-    }
-}
 #pragma mark ==== 初始化数据
 - (NSInteger)initDataReadDraft {
     
@@ -343,7 +224,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     /////////////////////////////////
     typeModelArray = [[NSMutableArray alloc]init];
-    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活",nil];
+    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活", nil];
     for(int i = 0; i < typeNameArray.count; i ++)
     {
         NSMutableDictionary * dict = [[NSMutableDictionary alloc]init];
@@ -371,7 +252,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         return 0;
     }
 }
-
 - (void)initData {
     
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
@@ -391,8 +271,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     typeModelArray = [[NSMutableArray alloc]init];
-    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活",@"人文",nil];
-    for(int i = 0; i < 5; i ++)
+    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活", nil];
+    for(int i = 0; i < typeNameArray.count; i ++)
     {
         NSMutableDictionary * dict = [[NSMutableDictionary alloc]init];
         [dict setObject:typeNameArray[i] forKey:@"typeName"];
@@ -827,6 +707,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         //点击哪个item，光标移动到当前item
         self.prepareView.frame = CGRectMake(button.x, button.y + button.height - 2, 10, 2);
         [self.backScrollView insertSubview:button belowSubview:self.prepareView];
+        
+        for (DLYMiniVlogPart *part in partModelArray) {
+            if ([part.prepareRecord isEqualToString:@"1"]) {
+                NSInteger i = [partModelArray indexOfObject:part];
+                UIView *view = (UIView *)[self.view viewWithTag:30001 + i];
+                [view removeFromSuperview];
+            }
+        }
     }
     
     [self changeDirectionOfView:M_PI];
@@ -962,6 +850,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         //点击哪个item，光标移动到当前item
         self.prepareView.frame = CGRectMake(button.x, button.y, 10, 2);
         [self.backScrollView insertSubview:button belowSubview:self.prepareView];
+        
+        for (DLYMiniVlogPart *part in partModelArray) {
+            if ([part.prepareRecord isEqualToString:@"1"]) {
+                NSInteger i = [partModelArray indexOfObject:part];
+                UIView *view = (UIView *)[self.view viewWithTag:30001 + i];
+                [view removeFromSuperview];
+            }
+        }
     }
     [self changeDirectionOfView:0];
 }
@@ -1016,7 +912,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }];
 
 }
-//拍摄按键
+//拍摄视频按键
 - (void)startRecordBtnAction {
     
     [MobClick event:@"StartRecord"];
@@ -1173,7 +1069,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
 }
 //选择场景页面点击事件
-- (void)sceneViewClick : (id)sender {
+- (void)sceneViewClick : (UIButton *)sender {
     
     UIButton * button = (UIButton *)sender;
     NSInteger selectNum = button.tag/100;
@@ -1288,8 +1184,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
 }
 
-#pragma mark === 拍摄片段的view 暂定6个item
-//需要重写一个相似的 只改变颜色,透明度等.显隐
+#pragma mark ==== 拍摄片段的view 暂定6个item
 - (void)createPartView {
     
     [self.backScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
@@ -1382,26 +1277,26 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 [self.backScrollView addSubview:self.prepareView];
                 prepareAlpha = 1;
                 [_prepareShootTimer setFireDate:[NSDate distantPast]];
+
+                //拍摄说明视图
+                UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
+                itemView.centerY = button.centerY;
+                itemView.tag = 30000 + i;
+                [self.backScrollView addSubview:itemView];
                 //判断拍摄状态
-                //正常状态
                 if(part.recordType == DLYMiniVlogRecordTypeNormal)
-                {
+                {//正常状态
                     UILabel * timeLabel = [[UILabel alloc] init];
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
                     NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
                     timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                     [timeLabel sizeToFit];
-                    timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
-                    timeLabel.centerY = button.centerY;
-                    [self.backScrollView addSubview:timeLabel];
+                    timeLabel.frame = CGRectMake(itemView.width - timeLabel.width, (itemView.height - timeLabel.height) / 2, timeLabel.width, timeLabel.height);
+                    [itemView addSubview:timeLabel];
                     
                 }else if(part.recordType == DLYMiniVlogRecordTypeSlomo)
                 {//慢进
-                    UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
-                    itemView.centerY = button.centerY;
-                    [self.backScrollView addSubview:itemView];
-                    
                     UILabel * timeLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 39, 12)];
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
@@ -1421,10 +1316,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     [itemView addSubview:icon];
                 }else
                 {//延时
-                    UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
-                    itemView.centerY = button.centerY;
-                    [self.backScrollView addSubview:itemView];
-                    
                     UILabel * timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 39, 12)];
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
@@ -1453,7 +1344,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
     }
 }
-
 - (void)createLeftPartView {
     //    self.backView.transform = CGAffineTransformMakeRotation(M_PI);
     
@@ -1520,7 +1410,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 
             }else
             {//延时
-                
                 UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
                 itemView.centerY = button.centerY;
                 itemView.transform = CGAffineTransformMakeRotation(M_PI);
@@ -1558,29 +1447,26 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 [self.backScrollView addSubview:self.prepareView];
                 prepareAlpha = 1;
                 [_prepareShootTimer setFireDate:[NSDate distantPast]];
+                //拍摄说明视图
+                UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
+                itemView.centerY = button.centerY;
+                itemView.transform = CGAffineTransformMakeRotation(M_PI);
+                itemView.tag = 30000 + (7 - i);
+                [self.backScrollView addSubview:itemView];
                 //判断拍摄状态
-                //正常状态
                 if(part.recordType == DLYMiniVlogRecordTypeNormal)
-                {
+                {//正常状态
                     UILabel * timeLabel = [[UILabel alloc] init];
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
                     NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
                     timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                     [timeLabel sizeToFit];
-                    timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
-                    timeLabel.centerY = button.centerY;
-                    timeLabel.transform = CGAffineTransformMakeRotation(M_PI);
-                    [self.backScrollView addSubview:timeLabel];
+                    timeLabel.frame = CGRectMake(4, (itemView.height - timeLabel.height) / 2, timeLabel.width, timeLabel.height);
+                    [itemView addSubview:timeLabel];
                     
                 }else if(part.recordType == DLYMiniVlogRecordTypeSlomo)
                 {//快进
-                    
-                    UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
-                    itemView.centerY = button.centerY;
-                    itemView.transform = CGAffineTransformMakeRotation(M_PI);
-                    [self.backScrollView addSubview:itemView];
-                    
                     UILabel * timeLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 39, 12)];
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
@@ -1601,12 +1487,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     
                 }else
                 {//延时
-                    
-                    UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
-                    itemView.centerY = button.centerY;
-                    itemView.transform = CGAffineTransformMakeRotation(M_PI);
-                    [self.backScrollView addSubview:itemView];
-                    
                     UILabel * timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 39, 12)];
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
@@ -1659,7 +1539,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
 }
 
-#pragma mark ===每个拍摄片段的点击事件
+#pragma mark ==== 每个拍摄片段的点击事件
 - (void)vedioEpisodeClick:(UIButton *)sender {
     UIButton * button = (UIButton *)sender;
     NSInteger i = button.tag - 10000;
@@ -1676,6 +1556,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     if([part.recordStatus isEqualToString:@"1"])
     {//说明时已拍摄片段
+        
+        for (DLYMiniVlogPart *part in partModelArray) {
+            if ([part.prepareRecord isEqualToString:@"1"]) {
+                NSInteger i = [partModelArray indexOfObject:part];
+                UIView *view = (UIView *)[self.view viewWithTag:30001 + i];
+                [view removeFromSuperview];
+            }
+        }
+        
         DDLogInfo(@"点击了已拍摄片段");
         [UIView animateWithDuration:0.5f animations:^{
             if (self.newState == 1) {
@@ -1707,7 +1596,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
 }
-#pragma mark ==创建选择场景view
+#pragma mark ==== 创建选择场景view
 - (void)createSceneView {
     [self.view addSubview:[self sceneView]];
     self.scenceDisapper = [[UIButton alloc]initWithFrame:CGRectMake(20, 20, 14, 14)];
@@ -1782,7 +1671,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
 }
 
-#pragma mark ===更改样片选中状态
+#pragma mark === 更改样片选中状态
 - (void)changeTypeStatusWithTag : (NSInteger)num {
     if(num == selectType) {
         return;
@@ -1863,7 +1752,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }];
 }
 
-#pragma mark ===创建拍摄界面
+#pragma mark ==== 创建拍摄界面
 - (void)createShootView {
     
     self.warningIcon = [[UIImageView alloc]initWithFrame:CGRectMake(28, SCREEN_HEIGHT - 54, 32, 32)];
@@ -2064,7 +1953,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     __weak typeof(self) weakSelf = self;
                     DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
                     fvc.isAll = YES;
-//                    fvc.isWait = YES;
                     fvc.isSuccess = NO;
                     self.isPlayer = YES;
                     fvc.DismissBlock = ^{
@@ -2100,7 +1988,128 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
 }
 
-#pragma mark === 懒加载
+#pragma mark ==== 权限访问
+- (void)monitorPermission {
+    //相机 麦克风 相册
+    [self checkVideoCameraAuthorization];
+    [self checkVideoMicrophoneAudioAuthorization];
+    [self checkVideoPhotoAuthorization];
+}
+//监听通知，APP进入前台
+- (void)recordViewWillEnterForeground {
+    
+    //相机 麦克风 相册
+    [self checkVideoCameraAuthorization];
+    [self checkVideoMicrophoneAudioAuthorization];
+    [self checkVideoPhotoAuthorization];
+}
+//相册
+- (BOOL)checkVideoPhotoAuthorization {
+    __block BOOL isAvalible = NO;
+    //iOS8.0之后
+    PHAuthorizationStatus photoStatus =  [PHPhotoLibrary authorizationStatus];
+    switch (photoStatus) {
+        case PHAuthorizationStatusAuthorized:
+            isAvalible = YES;
+            break;
+        case PHAuthorizationStatusDenied:
+        {
+            [self showAlertPermissionwithMessage:@"相册"];
+            isAvalible = NO;
+        }
+            break;
+        case PHAuthorizationStatusNotDetermined:
+        {
+            [self showAlertPermissionwithMessage:@"相册"];
+            isAvalible = NO;
+        }
+            break;
+        case PHAuthorizationStatusRestricted:
+            isAvalible = NO;
+            break;
+        default:
+            break;
+    }
+    
+    return isAvalible;
+}
+//相机
+- (BOOL)checkVideoCameraAuthorization {
+    __block BOOL isAvalible = NO;
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    switch (status) {
+        case AVAuthorizationStatusAuthorized: //授权
+            isAvalible = YES;
+            break;
+        case AVAuthorizationStatusDenied:   //拒绝，弹框
+        {
+            [self showAlertPermissionwithMessage:@"相机"];
+            isAvalible = NO;
+        }
+            break;
+        case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动默认弹框
+        {
+            [self showAlertPermissionwithMessage:@"相机"];
+            isAvalible = NO;
+        }
+            break;
+        case AVAuthorizationStatusRestricted:  //受限制，家长控制器
+            isAvalible = NO;
+            break;
+    }
+    return isAvalible;
+}
+//麦克风
+- (BOOL)checkVideoMicrophoneAudioAuthorization {
+    __block BOOL isAvalible = NO;
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+    switch (status) {
+        case AVAuthorizationStatusAuthorized: //授权
+            isAvalible = YES;
+            break;
+        case AVAuthorizationStatusDenied:   //拒绝，弹框
+        {
+            [self showAlertPermissionwithMessage:@"麦克风"];
+            isAvalible = NO;
+        }
+            break;
+        case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动
+        {
+            [self showAlertPermissionwithMessage:@"麦克风"];
+            isAvalible = NO;
+        }
+            break;
+        case AVAuthorizationStatusRestricted:  //受限制，家长控制器
+            isAvalible = NO;
+            break;
+    }
+    return isAvalible;
+}
+//显示警告框
+- (void)showAlertPermissionwithMessage:(NSString *)message {
+    
+    NSString *str = [NSString stringWithFormat:@"请到设置页面允许使用%@", message];
+    self.alert = [[DLYAlertView alloc] initWithMessage:str withSureButton:@"确定"];
+    
+    if (self.newState == 1) {
+        self.alert.transform = CGAffineTransformMakeRotation(0);
+    }else {
+        self.alert.transform = CGAffineTransformMakeRotation(M_PI);
+    }
+    __weak typeof(self) weakSelf = self;
+    self.alert.sureButtonAction = ^{
+        [weakSelf gotoSetting];
+    };
+}
+//跳转到设置
+- (void)gotoSetting {
+    NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+    if ([[UIApplication sharedApplication]canOpenURL:url]) {
+        [[UIApplication sharedApplication]openURL:url];
+    }
+}
+
+#pragma mark ==== 懒加载
 
 - (UIView *)sceneView {
     if(_sceneView == nil)
