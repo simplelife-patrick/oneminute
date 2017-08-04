@@ -34,6 +34,7 @@
     
     CMTime _startTime;
     CMTime _stopTime;
+    CMTime _prePoint;
     CGSize videoSize;
     NSURL *fileUrl;
     
@@ -1293,19 +1294,25 @@ outputSettings:audioCompressionSettings];
         NSString *stopTimeStr = stopArr[1];
         float stopTime = [stopTimeStr floatValue];
         _stopTime = CMTimeMake(stopTime, 1);
+        _prePoint = CMTimeMake(stopTime - 2, 1);
         
-        CMTime duration = CMTimeSubtract(_stopTime, _startTime);
+        CMTime duration = CMTimeSubtract(_stopTime, _prePoint);
+        
         CMTimeRange timeRange = CMTimeRangeMake(_startTime, duration);
+        CMTimeRange preTimeRange = CMTimeRangeMake(_prePoint, CMTimeMake(2, 1));
         DLYLog(@"第 %lu 个part的timeRange",i);
         CMTimeShow(_startTime);
         CMTimeShow(duration);
         
         if (part.soundType == DLYMiniVlogAudioTypeMusic) {//空镜
             [BGMParameters setVolumeRampFromStartVolume:5.0 toEndVolume:5.0 timeRange:timeRange];
+            [BGMParameters setVolumeRampFromStartVolume:5.0 toEndVolume:0.4 timeRange:preTimeRange];
+            
             [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:timeRange];
         }else if(part.soundType == DLYMiniVlogAudioTypeNarrate){//人声
             [videoParameters setVolumeRampFromStartVolume:5.0 toEndVolume:5.0 timeRange:timeRange];
             [BGMParameters setVolumeRampFromStartVolume:0.4 toEndVolume:0.4 timeRange:timeRange];
+            [BGMParameters setVolumeRampFromStartVolume:0.4 toEndVolume:5.0 timeRange:preTimeRange];
         }
     }
     audioMix.inputParameters = @[videoParameters,BGMParameters];
