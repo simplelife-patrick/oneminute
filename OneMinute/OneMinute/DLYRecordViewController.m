@@ -121,6 +121,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         if (!self.playView.isHidden && self.playView) {
             self.playView.hidden = YES;
         }
+        [self createPartViewLayout];
         self.isExport = NO;
     }
     
@@ -141,13 +142,30 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
     self.isAppear = NO;
 //    [self initData];
-    [self initDataReadDraft];
+    NSInteger draftNum = [self initDataReadDraft];
     [self setupUI];
     [self monitorPermission];
     //进入前台
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recordViewWillEnterForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
     
     [self initializationRecorder];
+    
+    if (draftNum == 6) {
+        self.recordBtn.hidden = YES;
+        self.isSuccess = YES;
+        if (self.newState == 1) {
+            self.nextButton.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.nextButton.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+        self.nextButton.hidden = NO;
+        if (self.newState == 1) {
+            self.deleteButton.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.deleteButton.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+        self.deleteButton.hidden = NO;
+    }
 }
 //监测权限
 - (void)monitorPermission {
@@ -269,7 +287,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
 }
 #pragma mark ==== 初始化数据
-- (void)initDataReadDraft {
+- (NSInteger)initDataReadDraft {
     
     BOOL isExitDraft = [self.session isExitdraftAtFile];
     NSMutableArray *draftArr = [NSMutableArray array];
@@ -346,6 +364,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //        
 //    }else {
 //    }
+    
+    if (isExitDraft) {
+        return draftArr.count;
+    }else{
+        return 0;
+    }
 }
 
 - (void)initData {
@@ -2056,7 +2080,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                             self.deleteButton.transform = CGAffineTransformMakeRotation(M_PI);
                         }
                         self.deleteButton.hidden = NO;
-                        
                     };
                     [weakSelf.navigationController pushViewController:fvc animated:YES];
                     [self.AVEngine mergeVideoWithSuccessBlock:^{
