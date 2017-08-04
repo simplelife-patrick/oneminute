@@ -167,125 +167,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.deleteButton.hidden = NO;
     }
 }
-//监测权限
-- (void)monitorPermission {
-    //相机 麦克风 相册
-    [self checkVideoCameraAuthorization];
-    [self checkVideoMicrophoneAudioAuthorization];
-    [self checkVideoPhotoAuthorization];
-}
-- (void)recordViewWillEnterForeground {
-    
-    //相机 麦克风 相册
-    [self checkVideoCameraAuthorization];
-    [self checkVideoMicrophoneAudioAuthorization];
-    [self checkVideoPhotoAuthorization];
-}
-#pragma mark ==== 相册
-- (BOOL)checkVideoPhotoAuthorization {
-    __block BOOL isAvalible = NO;
-    //iOS8.0之后
-    PHAuthorizationStatus photoStatus =  [PHPhotoLibrary authorizationStatus];
-    switch (photoStatus) {
-        case PHAuthorizationStatusAuthorized:
-            isAvalible = YES;
-            break;
-        case PHAuthorizationStatusDenied:
-        {
-            [self showAlertPermissionwithMessage:@"相册"];
-            isAvalible = NO;
-        }
-            break;
-        case PHAuthorizationStatusNotDetermined:
-        {
-            [self showAlertPermissionwithMessage:@"相册"];
-            isAvalible = NO;
-        }
-            break;
-        case PHAuthorizationStatusRestricted:
-            isAvalible = NO;
-            break;
-        default:
-            break;
-    }
-    
-    return isAvalible;
-}
-#pragma mark ==== 相机
-- (BOOL)checkVideoCameraAuthorization {
-    __block BOOL isAvalible = NO;
-    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-    switch (status) {
-        case AVAuthorizationStatusAuthorized: //授权
-            isAvalible = YES;
-            break;
-        case AVAuthorizationStatusDenied:   //拒绝，弹框
-        {
-            [self showAlertPermissionwithMessage:@"相机"];
-            isAvalible = NO;
-        }
-            break;
-        case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动默认弹框
-        {
-            [self showAlertPermissionwithMessage:@"相机"];
-            isAvalible = NO;
-        }
-            break;
-        case AVAuthorizationStatusRestricted:  //受限制，家长控制器
-            isAvalible = NO;
-            break;
-    }
-    return isAvalible;
-}
-#pragma mark ==== 麦克风
-- (BOOL)checkVideoMicrophoneAudioAuthorization {
-    __block BOOL isAvalible = NO;
-    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
-    switch (status) {
-        case AVAuthorizationStatusAuthorized: //授权
-            isAvalible = YES;
-            break;
-        case AVAuthorizationStatusDenied:   //拒绝，弹框
-        {
-            [self showAlertPermissionwithMessage:@"麦克风"];
-            isAvalible = NO;
-        }
-            break;
-        case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动
-        {
-            [self showAlertPermissionwithMessage:@"麦克风"];
-            isAvalible = NO;
-        }
-            break;
-        case AVAuthorizationStatusRestricted:  //受限制，家长控制器
-            isAvalible = NO;
-            break;
-    }
-    return isAvalible;
-}
-//显示警告框
-- (void)showAlertPermissionwithMessage:(NSString *)message {
-    
-    NSString *str = [NSString stringWithFormat:@"请到设置页面允许使用%@", message];
-    self.alert = [[DLYAlertView alloc] initWithMessage:str withSureButton:@"确定"];
-
-    if (self.newState == 1) {
-        self.alert.transform = CGAffineTransformMakeRotation(0);
-    }else {
-        self.alert.transform = CGAffineTransformMakeRotation(M_PI);
-    }
-    __weak typeof(self) weakSelf = self;
-    self.alert.sureButtonAction = ^{
-        [weakSelf gotoSetting];
-    };
-}
-//跳转到设置
-- (void)gotoSetting {
-    NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
-    if ([[UIApplication sharedApplication]canOpenURL:url]) {
-        [[UIApplication sharedApplication]openURL:url];
-    }
-}
 #pragma mark ==== 初始化数据
 - (NSInteger)initDataReadDraft {
     
@@ -371,7 +252,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         return 0;
     }
 }
-
 - (void)initData {
     
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
@@ -1016,7 +896,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }];
 
 }
-//拍摄按键
+//拍摄视频按键
 - (void)startRecordBtnAction {
     
     [MobClick event:@"StartRecord"];
@@ -1173,7 +1053,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
 }
 //选择场景页面点击事件
-- (void)sceneViewClick : (id)sender {
+- (void)sceneViewClick : (UIButton *)sender {
     
     UIButton * button = (UIButton *)sender;
     NSInteger selectNum = button.tag/100;
@@ -1288,8 +1168,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
 }
 
-#pragma mark === 拍摄片段的view 暂定6个item
-//需要重写一个相似的 只改变颜色,透明度等.显隐
+#pragma mark ==== 拍摄片段的view 暂定6个item
 - (void)createPartView {
     
     [self.backScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
@@ -1453,7 +1332,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
     }
 }
-
 - (void)createLeftPartView {
     //    self.backView.transform = CGAffineTransformMakeRotation(M_PI);
     
@@ -1659,7 +1537,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
 }
 
-#pragma mark ===每个拍摄片段的点击事件
+#pragma mark ==== 每个拍摄片段的点击事件
 - (void)vedioEpisodeClick:(UIButton *)sender {
     UIButton * button = (UIButton *)sender;
     NSInteger i = button.tag - 10000;
@@ -1707,7 +1585,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
 }
-#pragma mark ==创建选择场景view
+#pragma mark ==== 创建选择场景view
 - (void)createSceneView {
     [self.view addSubview:[self sceneView]];
     self.scenceDisapper = [[UIButton alloc]initWithFrame:CGRectMake(20, 20, 14, 14)];
@@ -1782,7 +1660,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
 }
 
-#pragma mark ===更改样片选中状态
+#pragma mark === 更改样片选中状态
 - (void)changeTypeStatusWithTag : (NSInteger)num {
     if(num == selectType) {
         return;
@@ -1863,7 +1741,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }];
 }
 
-#pragma mark ===创建拍摄界面
+#pragma mark ==== 创建拍摄界面
 - (void)createShootView {
     
     self.warningIcon = [[UIImageView alloc]initWithFrame:CGRectMake(28, SCREEN_HEIGHT - 54, 32, 32)];
@@ -2100,7 +1978,128 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
 }
 
-#pragma mark === 懒加载
+#pragma mark ==== 权限访问
+- (void)monitorPermission {
+    //相机 麦克风 相册
+    [self checkVideoCameraAuthorization];
+    [self checkVideoMicrophoneAudioAuthorization];
+    [self checkVideoPhotoAuthorization];
+}
+//监听通知，APP进入前台
+- (void)recordViewWillEnterForeground {
+    
+    //相机 麦克风 相册
+    [self checkVideoCameraAuthorization];
+    [self checkVideoMicrophoneAudioAuthorization];
+    [self checkVideoPhotoAuthorization];
+}
+//相册
+- (BOOL)checkVideoPhotoAuthorization {
+    __block BOOL isAvalible = NO;
+    //iOS8.0之后
+    PHAuthorizationStatus photoStatus =  [PHPhotoLibrary authorizationStatus];
+    switch (photoStatus) {
+        case PHAuthorizationStatusAuthorized:
+            isAvalible = YES;
+            break;
+        case PHAuthorizationStatusDenied:
+        {
+            [self showAlertPermissionwithMessage:@"相册"];
+            isAvalible = NO;
+        }
+            break;
+        case PHAuthorizationStatusNotDetermined:
+        {
+            [self showAlertPermissionwithMessage:@"相册"];
+            isAvalible = NO;
+        }
+            break;
+        case PHAuthorizationStatusRestricted:
+            isAvalible = NO;
+            break;
+        default:
+            break;
+    }
+    
+    return isAvalible;
+}
+//相机
+- (BOOL)checkVideoCameraAuthorization {
+    __block BOOL isAvalible = NO;
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    switch (status) {
+        case AVAuthorizationStatusAuthorized: //授权
+            isAvalible = YES;
+            break;
+        case AVAuthorizationStatusDenied:   //拒绝，弹框
+        {
+            [self showAlertPermissionwithMessage:@"相机"];
+            isAvalible = NO;
+        }
+            break;
+        case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动默认弹框
+        {
+            [self showAlertPermissionwithMessage:@"相机"];
+            isAvalible = NO;
+        }
+            break;
+        case AVAuthorizationStatusRestricted:  //受限制，家长控制器
+            isAvalible = NO;
+            break;
+    }
+    return isAvalible;
+}
+//麦克风
+- (BOOL)checkVideoMicrophoneAudioAuthorization {
+    __block BOOL isAvalible = NO;
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+    switch (status) {
+        case AVAuthorizationStatusAuthorized: //授权
+            isAvalible = YES;
+            break;
+        case AVAuthorizationStatusDenied:   //拒绝，弹框
+        {
+            [self showAlertPermissionwithMessage:@"麦克风"];
+            isAvalible = NO;
+        }
+            break;
+        case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动
+        {
+            [self showAlertPermissionwithMessage:@"麦克风"];
+            isAvalible = NO;
+        }
+            break;
+        case AVAuthorizationStatusRestricted:  //受限制，家长控制器
+            isAvalible = NO;
+            break;
+    }
+    return isAvalible;
+}
+//显示警告框
+- (void)showAlertPermissionwithMessage:(NSString *)message {
+    
+    NSString *str = [NSString stringWithFormat:@"请到设置页面允许使用%@", message];
+    self.alert = [[DLYAlertView alloc] initWithMessage:str withSureButton:@"确定"];
+    
+    if (self.newState == 1) {
+        self.alert.transform = CGAffineTransformMakeRotation(0);
+    }else {
+        self.alert.transform = CGAffineTransformMakeRotation(M_PI);
+    }
+    __weak typeof(self) weakSelf = self;
+    self.alert.sureButtonAction = ^{
+        [weakSelf gotoSetting];
+    };
+}
+//跳转到设置
+- (void)gotoSetting {
+    NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+    if ([[UIApplication sharedApplication]canOpenURL:url]) {
+        [[UIApplication sharedApplication]openURL:url];
+    }
+}
+
+#pragma mark ==== 懒加载
 
 - (UIView *)sceneView {
     if(_sceneView == nil)
