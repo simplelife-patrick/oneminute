@@ -87,11 +87,11 @@
     
     NSString *text = [[NSUserDefaults standardUserDefaults] objectForKey:@"videoTitle"];
     NSString *newStr = [text stringByReplacingOccurrencesOfString:@" " withString:@""];
-    if (newStr.length == 0) {
+//    if (newStr.length == 0) {
         self.titleField.placeholder = @"请输入标题";
-    }else {
-        self.titleField.text = text;
-    }
+//    }else {
+//        self.titleField.text = text;
+//    }
     self.titleField.textAlignment = NSTextAlignmentCenter;
     [self.titleField setValue:RGB(255, 255, 255) forKeyPath:@"_placeholderLabel.textColor"];
     self.titleField.tintColor = RGB(255, 255, 255);
@@ -137,16 +137,16 @@
     
     //跳过的时候，调用合成接口
     __weak typeof(self) weakSelf = self;
-    [self.AVEngine mergeVideoWithSuccessBlock:^{
+    
+    [self.AVEngine mergeVideoWithVideoTitle:self.titleField.text SuccessBlock:^{
+        
         if (!weakSelf.isSuccess && weakSelf.isAll) {
             NSDictionary *dict = @{@"playUrl":weakSelf.AVEngine.currentProductUrl};
             [[NSNotificationCenter defaultCenter] postNotificationName:@"CANPLAY" object:nil userInfo:dict];
         }
-        
     } failure:^(NSError *error) {
-        //失败
+        
     }];
-
 }
 
 - (void)setupUI{

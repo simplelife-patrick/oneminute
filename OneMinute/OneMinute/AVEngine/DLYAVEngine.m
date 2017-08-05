@@ -885,7 +885,7 @@ outputSettings:audioCompressionSettings];
     return (image);
 }
 #pragma mark - 合并 -
-- (void) mergeVideoWithSuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
+- (void) mergeVideoWithVideoTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
     
     NSArray *videoArray = [self.resource loadBDraftParts];
     
@@ -934,7 +934,7 @@ outputSettings:audioCompressionSettings];
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"UniversalTemplateBGM.m4a" ofType:nil];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
         
-        [self addMusicToVideo:outputUrl audioUrl:BGMUrl successBlock:successBlock failure:failureBlcok];
+        [self addMusicToVideo:outputUrl audioUrl:BGMUrl videoTitle:videoTitle successBlock:successBlock failure:failureBlcok];
     }];
 }
 
@@ -968,7 +968,7 @@ outputSettings:audioCompressionSettings];
             NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
             self.currentProductUrl = outPutUrl;
             
-            [self addMusicToVideo:self.currentProductUrl audioUrl:BGMUrl successBlock:successBlock failure:failureBlcok];
+            [self addMusicToVideo:outPutUrl audioUrl:BGMUrl videoTitle:nil successBlock:successBlock failure:failureBlcok];
         }
     }];
     
@@ -1176,7 +1176,7 @@ outputSettings:audioCompressionSettings];
     return transitionInstructions;
 }
 #pragma mark - 配音 -
-- (void) addMusicToVideo:(NSURL *)videoUrl audioUrl:(NSURL *)audioUrl successBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
+- (void) addMusicToVideo:(NSURL *)videoUrl audioUrl:(NSURL *)audioUrl videoTitle:(NSString *)videoTitle successBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
     
     //加载素材
     AVURLAsset *videoAsset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
@@ -1232,7 +1232,7 @@ outputSettings:audioCompressionSettings];
         
         
         CGSize renderSize = mutableVideoComposition.renderSize;
-        CALayer *watermarkLayer = [self addTitleForVideoWith:@"动旅游 MiniVLOG" size:renderSize];
+        CALayer *watermarkLayer = [self addTitleForVideoWith:videoTitle size:renderSize];
         
         CALayer *parentLayer = [CALayer layer];
         CALayer *videoLayer = [CALayer layer];

@@ -92,7 +92,7 @@ typedef void(^FailureBlock)(NSError *error);
  @param successBlock 成功回
  @param failureBlcok 失败回调
  */
-- (void) mergeVideoWithSuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
+- (void) mergeVideoWithVideoTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
 
 /**
  添加转场效果
