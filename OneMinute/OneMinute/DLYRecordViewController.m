@@ -974,7 +974,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
     fvc.playUrl = self.AVEngine.currentProductUrl;
     fvc.isAll = YES;
-    fvc.isSuccess = self.isSuccess;
+    fvc.isSuccess = NO;
     self.isPlayer = YES;
     [self.navigationController pushViewController:fvc animated:YES];
 }
@@ -1197,7 +1197,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     {
         episodeHeight = (SCREEN_WIDTH - 30  * SCREEN_WIDTH/375 - 10)/6;
     }
-    
+    BOOL isAllPart = YES;
     for(int i = 1; i <= partModelArray.count; i ++)
     {
         DLYMiniVlogPart *part = partModelArray[i - 1];
@@ -1274,8 +1274,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             button.backgroundColor = RGBA_HEX(0xc9c9c9, 0.1);
             // 辨别该片段是否是默认准备拍摄片段
             if([part.prepareRecord isEqualToString:@"1"]){
-                //光标
+                isAllPart = NO;
                 selectPartTag = button.tag;
+                //光标
                 self.prepareView = [[UIView alloc]initWithFrame:CGRectMake(button.x, button.y, 10, 2)];
                 self.prepareView.backgroundColor = [UIColor whiteColor];
                 [self.backScrollView addSubview:self.prepareView];
@@ -1347,6 +1348,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self.backScrollView addSubview:button];
         
     }
+    if (isAllPart) {
+        UIButton *button = (UIButton *)[self.view viewWithTag:10001];
+        //光标
+        self.prepareView = [[UIView alloc]initWithFrame:CGRectMake(button.x, button.y, 10, 2)];
+        self.prepareView.backgroundColor = [UIColor whiteColor];
+        [self.backScrollView addSubview:self.prepareView];
+        prepareAlpha = 1;
+        [_prepareShootTimer setFireDate:[NSDate distantPast]];
+        //拍摄说明视图
+    }
 }
 - (void)createLeftPartView {
     //    self.backView.transform = CGAffineTransformMakeRotation(M_PI);
@@ -1360,7 +1371,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     NSMutableArray *leftModelArray = [NSMutableArray arrayWithArray:partModelArray];
     leftModelArray = (NSMutableArray *)[[leftModelArray reverseObjectEnumerator] allObjects];
-    
+    BOOL isAllPart = YES;
     for(int i = 1; i <= leftModelArray.count; i ++)
     {
         DLYMiniVlogPart *part = leftModelArray[i - 1];
@@ -1444,6 +1455,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             // 辨别该片段是否是默认准备拍摄片段
             if([part.prepareRecord isEqualToString:@"1"])
             {
+                isAllPart = NO;
                 selectPartTag = button.tag;
                 //光标
                 self.prepareView = [[UIView alloc]initWithFrame:CGRectMake(button.x, button.y + button.height - 2, 10, 2)];
@@ -1517,6 +1529,17 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         button.clipsToBounds = YES;
         [self.backScrollView addSubview:button];
         
+    }
+    
+    if (isAllPart) {
+        UIButton *button = (UIButton *)[self.view viewWithTag:10001];
+        //光标
+        self.prepareView = [[UIView alloc]initWithFrame:CGRectMake(button.x, button.y + button.height - 2, 10, 2)];
+        self.prepareView.backgroundColor = [UIColor whiteColor];
+        [self.backScrollView addSubview:self.prepareView];
+        prepareAlpha = 1;
+        [_prepareShootTimer setFireDate:[NSDate distantPast]];
+        //拍摄说明视图
     }
 }
 
@@ -1958,6 +1981,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
                     fvc.isAll = YES;
                     fvc.isSuccess = NO;
+                    fvc.playUrl = self.AVEngine.currentProductUrl;
+
                     self.isPlayer = YES;
                     fvc.DismissBlock = ^{
                         if (self.newState == 1) {
@@ -1972,19 +1997,20 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                             self.deleteButton.transform = CGAffineTransformMakeRotation(M_PI);
                         }
                         self.deleteButton.hidden = NO;
+                        self.isSuccess = YES;
                     };
                     [weakSelf.navigationController pushViewController:fvc animated:YES];
-                    [self.AVEngine mergeVideoWithSuccessBlock:^{
-                        fvc.playUrl = weakSelf.AVEngine.currentProductUrl;
-                        weakSelf.isSuccess = YES;
-                        if (weakSelf.isPlayer) {
-                            NSDictionary *dict = @{@"playUrl":weakSelf.AVEngine.currentProductUrl};
-                            [[NSNotificationCenter defaultCenter]postNotificationName:@"CANPLAY" object:nil userInfo:dict];
-                        }
-                        
-                    } failure:^(NSError *error) {
-                        //失败
-                    }];
+//                    [self.AVEngine mergeVideoWithSuccessBlock:^{
+//                        fvc.playUrl = weakSelf.AVEngine.currentProductUrl;
+//                        weakSelf.isSuccess = YES;
+//                        if (weakSelf.isPlayer) {
+//                            NSDictionary *dict = @{@"playUrl":weakSelf.AVEngine.currentProductUrl};
+//                            [[NSNotificationCenter defaultCenter]postNotificationName:@"CANPLAY" object:nil userInfo:dict];
+//                        }
+//                        
+//                    } failure:^(NSError *error) {
+//                        //失败
+//                    }];
                 }
             } completion:^(BOOL finished) {
             }];
