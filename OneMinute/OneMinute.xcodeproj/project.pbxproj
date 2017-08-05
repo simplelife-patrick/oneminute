@@ -35,6 +35,7 @@
 		6F8925DF1F1B142300256093 /* DLYPopupMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DA1F1B142300256093 /* DLYPopupMenu.m */; };
 		6F8925E01F1B142300256093 /* DLYPopupMenuPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DC1F1B142300256093 /* DLYPopupMenuPath.m */; };
 		6F8925E11F1B142300256093 /* DLYRectConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DE1F1B142300256093 /* DLYRectConst.m */; };
+		AD13AC381F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = AD13AC371F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m */; };
 		AD5A06A31F33058A00F26693 /* ColorLife.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A01F33058A00F26693 /* ColorLife.json */; };
 		AD5A06A41F33058A00F26693 /* Travele001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A11F33058A00F26693 /* Travele001.json */; };
 		AD5A06A51F33058A00F26693 /* Gourmandism001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A21F33058A00F26693 /* Gourmandism001.json */; };
@@ -144,6 +145,8 @@
 		6F8925DD1F1B142300256093 /* DLYRectConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRectConst.h; sourceTree = "<group>"; };
 		6F8925DE1F1B142300256093 /* DLYRectConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRectConst.m; sourceTree = "<group>"; };
 		7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneMinute.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute.debug.xcconfig"; sourceTree = "<group>"; };
+		AD13AC361F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALAssetsLibrary+CustomPhotoAlbum.h"; sourceTree = "<group>"; };
+		AD13AC371F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ALAssetsLibrary+CustomPhotoAlbum.m"; sourceTree = "<group>"; };
 		AD5A06A01F33058A00F26693 /* ColorLife.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ColorLife.json; sourceTree = "<group>"; };
 		AD5A06A11F33058A00F26693 /* Travele001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Travele001.json; sourceTree = "<group>"; };
 		AD5A06A21F33058A00F26693 /* Gourmandism001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Gourmandism001.json; sourceTree = "<group>"; };
@@ -498,6 +501,8 @@
 				ADD0E7D31F2D9F3500996BD6 /* UIImage+Extension.m */,
 				AD5B80B01F3443080094922B /* UIColor+Hex.h */,
 				AD5B80B11F3443080094922B /* UIColor+Hex.m */,
+				AD13AC361F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.h */,
+				AD13AC371F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -811,6 +816,7 @@
 				6F8925D51F1B13FF00256093 /* DLYAnnularProgress.m in Sources */,
 				ADFFF19B1F18A33000FB5BF7 /* DLYMiniVlogDraft.m in Sources */,
 				ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */,
+				AD13AC381F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m in Sources */,
 				1C7E61BF1EE7E4AC0088F33F /* DLYModuleManager.m in Sources */,
 				ADA370961F2D11300082AEC6 /* DLYAVEngine.m in Sources */,
 				6F8925DF1F1B142300256093 /* DLYPopupMenu.m in Sources */,
