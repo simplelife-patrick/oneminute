@@ -35,6 +35,7 @@
 		6F8925DF1F1B142300256093 /* DLYPopupMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DA1F1B142300256093 /* DLYPopupMenu.m */; };
 		6F8925E01F1B142300256093 /* DLYPopupMenuPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DC1F1B142300256093 /* DLYPopupMenuPath.m */; };
 		6F8925E11F1B142300256093 /* DLYRectConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DE1F1B142300256093 /* DLYRectConst.m */; };
+		AD13AC381F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = AD13AC371F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m */; };
 		AD5A06A31F33058A00F26693 /* ColorLife.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A01F33058A00F26693 /* ColorLife.json */; };
 		AD5A06A41F33058A00F26693 /* Travele001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A11F33058A00F26693 /* Travele001.json */; };
 		AD5A06A51F33058A00F26693 /* Gourmandism001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A21F33058A00F26693 /* Gourmandism001.json */; };
@@ -46,10 +47,6 @@
 		AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5B80B11F3443080094922B /* UIColor+Hex.m */; };
 		AD5B80B51F344C750094922B /* advertisementVideo(5s).mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80B31F344C750094922B /* advertisementVideo(5s).mp4 */; };
 		AD5B80B61F344C750094922B /* advertisementVideo(10s).mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */; };
-		AD5B80BC1F34552D0094922B /* ColorLifeTemplateSample.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80B81F34552D0094922B /* ColorLifeTemplateSample.mp4 */; };
-		AD5B80C11F3456640094922B /* GourmandismTemplateSample.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80C01F3456640094922B /* GourmandismTemplateSample.mp4 */; };
-		AD5B80C31F3456CC0094922B /* TravelerTemplateSample.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80C21F3456CC0094922B /* TravelerTemplateSample.mp4 */; };
-		AD5B80C51F3456D90094922B /* UniversalTemplateSample.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80C41F3456D90094922B /* UniversalTemplateSample.mp4 */; };
 		ADA370961F2D11300082AEC6 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA370951F2D11300082AEC6 /* DLYAVEngine.m */; };
 		ADA370991F2D11500082AEC6 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA370981F2D11500082AEC6 /* DLYRecordViewController.m */; };
 		ADA3709C1F2D11780082AEC6 /* DLYResource.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA3709B1F2D11780082AEC6 /* DLYResource.m */; };
@@ -144,6 +141,8 @@
 		6F8925DD1F1B142300256093 /* DLYRectConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRectConst.h; sourceTree = "<group>"; };
 		6F8925DE1F1B142300256093 /* DLYRectConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRectConst.m; sourceTree = "<group>"; };
 		7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneMinute.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute.debug.xcconfig"; sourceTree = "<group>"; };
+		AD13AC361F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALAssetsLibrary+CustomPhotoAlbum.h"; sourceTree = "<group>"; };
+		AD13AC371F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ALAssetsLibrary+CustomPhotoAlbum.m"; sourceTree = "<group>"; };
 		AD5A06A01F33058A00F26693 /* ColorLife.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ColorLife.json; sourceTree = "<group>"; };
 		AD5A06A11F33058A00F26693 /* Travele001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Travele001.json; sourceTree = "<group>"; };
 		AD5A06A21F33058A00F26693 /* Gourmandism001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Gourmandism001.json; sourceTree = "<group>"; };
@@ -156,10 +155,6 @@
 		AD5B80B11F3443080094922B /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		AD5B80B31F344C750094922B /* advertisementVideo(5s).mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "advertisementVideo(5s).mp4"; sourceTree = "<group>"; };
 		AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "advertisementVideo(10s).mp4"; sourceTree = "<group>"; };
-		AD5B80B81F34552D0094922B /* ColorLifeTemplateSample.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorLifeTemplateSample.mp4; sourceTree = "<group>"; };
-		AD5B80C01F3456640094922B /* GourmandismTemplateSample.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = GourmandismTemplateSample.mp4; sourceTree = "<group>"; };
-		AD5B80C21F3456CC0094922B /* TravelerTemplateSample.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = TravelerTemplateSample.mp4; sourceTree = "<group>"; };
-		AD5B80C41F3456D90094922B /* UniversalTemplateSample.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = UniversalTemplateSample.mp4; sourceTree = "<group>"; };
 		ADA370941F2D11300082AEC6 /* DLYAVEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAVEngine.h; sourceTree = "<group>"; };
 		ADA370951F2D11300082AEC6 /* DLYAVEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAVEngine.m; sourceTree = "<group>"; };
 		ADA370971F2D11500082AEC6 /* DLYRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRecordViewController.h; sourceTree = "<group>"; };
@@ -470,21 +465,9 @@
 			path = Header;
 			sourceTree = "<group>";
 		};
-		AD5B80B71F34552D0094922B /* Sample */ = {
-			isa = PBXGroup;
-			children = (
-				AD5B80B81F34552D0094922B /* ColorLifeTemplateSample.mp4 */,
-				AD5B80C01F3456640094922B /* GourmandismTemplateSample.mp4 */,
-				AD5B80C21F3456CC0094922B /* TravelerTemplateSample.mp4 */,
-				AD5B80C41F3456D90094922B /* UniversalTemplateSample.mp4 */,
-			);
-			path = Sample;
-			sourceTree = "<group>";
-		};
 		ADA7C2881F2203500002A4E5 /* resources */ = {
 			isa = PBXGroup;
 			children = (
-				AD5B80B71F34552D0094922B /* Sample */,
 				AD5B80A41F34133B0094922B /* BGM */,
 				AD5B80A91F34133B0094922B /* Header */,
 			);
@@ -498,6 +481,8 @@
 				ADD0E7D31F2D9F3500996BD6 /* UIImage+Extension.m */,
 				AD5B80B01F3443080094922B /* UIColor+Hex.h */,
 				AD5B80B11F3443080094922B /* UIColor+Hex.m */,
+				AD13AC361F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.h */,
+				AD13AC371F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -687,15 +672,11 @@
 			files = (
 				AD5A06A51F33058A00F26693 /* Gourmandism001.json in Resources */,
 				AD5B80AE1F34133B0094922B /* UniversalTemplateBGM.m4a in Resources */,
-				AD5B80C31F3456CC0094922B /* TravelerTemplateSample.mp4 in Resources */,
 				AD5B80AC1F34133B0094922B /* GourmandismTemplateBGM.m4a in Resources */,
-				AD5B80C11F3456640094922B /* GourmandismTemplateSample.mp4 in Resources */,
-				AD5B80C51F3456D90094922B /* UniversalTemplateSample.mp4 in Resources */,
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
 				AD5B80AF1F34133B0094922B /* header001.mp4 in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				AD5B80B61F344C750094922B /* advertisementVideo(10s).mp4 in Resources */,
-				AD5B80BC1F34552D0094922B /* ColorLifeTemplateSample.mp4 in Resources */,
 				AD5B80B51F344C750094922B /* advertisementVideo(5s).mp4 in Resources */,
 				AD5B80AB1F34133B0094922B /* ColorLifeTemplateBGM.m4a in Resources */,
 				AD5A06A41F33058A00F26693 /* Travele001.json in Resources */,
@@ -811,6 +792,7 @@
 				6F8925D51F1B13FF00256093 /* DLYAnnularProgress.m in Sources */,
 				ADFFF19B1F18A33000FB5BF7 /* DLYMiniVlogDraft.m in Sources */,
 				ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */,
+				AD13AC381F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m in Sources */,
 				1C7E61BF1EE7E4AC0088F33F /* DLYModuleManager.m in Sources */,
 				ADA370961F2D11300082AEC6 /* DLYAVEngine.m in Sources */,
 				6F8925DF1F1B142300256093 /* DLYPopupMenu.m in Sources */,
