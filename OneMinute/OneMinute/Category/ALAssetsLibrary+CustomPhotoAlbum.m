@@ -11,31 +11,22 @@
 
 @interface ALAssetsLibrary (Private)
 
--(void)addAssetURL:(NSURL *)assetURL
-            toAlbum:(NSString *)albumName
-       failureBlock:(ALAssetsLibraryAccessFailureBlock)failureBlock;
+-(void)addAssetURL:(NSURL *)assetURL toAlbum:(NSString *)albumName failureBlock:(ALAssetsLibraryAccessFailureBlock)failureBlock;
 
 @end
 
 @implementation ALAssetsLibrary (CustomPhotoAlbum)
 
-- (void)saveVideo:(NSURL *)videoUrl
-          toAlbum:(NSString *)albumName
-  completionBlock:(ALAssetsLibraryWriteImageCompletionBlock)completionBlock
-     failureBlock:(ALAssetsLibraryAccessFailureBlock)failureBlock {
+- (void)saveVideo:(NSURL *)videoUrl toAlbum:(NSString *)albumName completionBlock:(ALAssetsLibraryWriteImageCompletionBlock)completionBlock failureBlock:(ALAssetsLibraryAccessFailureBlock)failureBlock {
 
-    [self writeVideoAtPathToSavedPhotosAlbum: videoUrl
-                             completionBlock:^(NSURL *assetURL, NSError *error) {
+    [self writeVideoAtPathToSavedPhotosAlbum: videoUrl completionBlock:^(NSURL *assetURL, NSError *error) {
 
-                                 if (completionBlock) completionBlock(assetURL, error);
-                                 
-                                 if (error != nil)
-                                     return;
-                                 
-                                 [self addAssetURL:assetURL
-                                            toAlbum:albumName
-                                       failureBlock:failureBlock];
-                             }];
+        if (completionBlock) completionBlock(assetURL, error);
+
+        if (error != nil) return;
+
+        [self addAssetURL:assetURL toAlbum:albumName failureBlock:failureBlock];
+    }];
 }
 
 #pragma mark - Private Method
@@ -71,13 +62,13 @@
                                            
                [weakSelf assetForURL:assetURL resultBlock:^(ALAsset *asset) {
                    [group addAsset:asset];
+                   
                } failureBlock:failureBlock];
             }
             failureBlock:failureBlock];
             return;
         }
     };
-    
     [self enumerateGroupsWithTypes:ALAssetsGroupAlbum usingBlock:enumerationBlock failureBlock:failureBlock];
 }
 
