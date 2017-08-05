@@ -66,7 +66,7 @@
     //进入前台
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewWillEnterForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
     //视频播放结束
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlaybackComplete) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlaybackEnd) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
     //播放开始
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlaybackStart) name:AVPlayerItemTimeJumpedNotification object:nil];
 }
@@ -79,7 +79,14 @@
     //视频填充模式 充满
     self.videoGravity = AVLayerVideoGravityResize;
     self.showsPlaybackControls = NO;
-    //播放视频
+    //静音下播放声音
+    NSError *error = nil;
+    BOOL success = [[AVAudioSession sharedInstance]
+                    setCategory:AVAudioSessionCategoryPlayback
+                    error:&error];
+    if (!success) {
+        NSLog(@"Could not use AVAudioSessionCategoryPlayback");
+    }
     [self.player play];
 }
 
@@ -130,7 +137,15 @@
         self.startPlayerImageView = nil;
     });
 }
-//视频播放完成
+
+- (void)moviePlaybackEnd {
+    
+    [self.player seekToTime:kCMTimeZero];
+    [self.player play];
+
+}
+
+//进入主界面，对视频做完成操作
 - (void)moviePlaybackComplete {
     //发送推送之后就删除  否则 界面显示有问题
     [[NSNotificationCenter defaultCenter] removeObserver:self
