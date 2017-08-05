@@ -19,6 +19,7 @@
 #import "DLYVideoTransition.h"
 #import "DLYResource.h"
 #import "DLYSession.h"
+#import "ALAssetsLibrary+CustomPhotoAlbum.h"
 #import <math.h>
 
 @interface DLYAVEngine ()
@@ -504,8 +505,8 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
                                               [NSNumber numberWithInteger:dimensions.width], AVVideoWidthKey,
                                               [NSNumber numberWithInteger:dimensions.height], AVVideoHeightKey,
                                               [NSDictionary dictionaryWithObjectsAndKeys:
-                                               [NSNumber numberWithInteger:bitsPerSecond],AVVideoAverageBitRateKey,
-                                               [NSNumber numberWithInteger:30], AVVideoMaxKeyFrameIntervalKey,
+                                               [NSNumber numberWithInteger:bitsPerSecond],AVVideoAverageBitRateKey,/*
+                                               [NSNumber numberWithInteger:30], AVVideoMaxKeyFrameIntervalKey,*/
                                                nil], AVVideoCompressionPropertiesKey,
                                               nil];
     
@@ -1316,8 +1317,14 @@ outputSettings:audioCompressionSettings];
                 DLYLog(@"配音失败: %@",[[assetExportSession error] description]);
             }break;
             case AVAssetExportSessionStatusCompleted:{
-                UISaveVideoAtPathToSavedPhotosAlbum([outPutUrl path], nil, nil, nil);
-                DLYLog(@"配音完成后保存在手机相册");
+                ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
+                [assetLibrary saveVideo:outPutUrl toAlbum:@"一分" completionBlock:^(NSURL *assetURL, NSError *error) {
+                    
+                    DLYLog(@"配音完成后保存在手机相册");
+                } failureBlock:^(NSError *error) {
+                    
+                }];
+//                UISaveVideoAtPathToSavedPhotosAlbum([outPutUrl path], nil, nil, nil);
             }break;
             default:
                 break;
