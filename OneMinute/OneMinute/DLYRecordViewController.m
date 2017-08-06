@@ -745,13 +745,19 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.shootGuide.transform = CGAffineTransformMakeRotation(num);
     }
     if (!self.progressView.isHidden && self.progressView) {
-        self.progressView.transform = CGAffineTransformMakeRotation(num);
+        [UIView animateWithDuration:0.5f animations:^{
+            self.progressView.transform = CGAffineTransformMakeRotation(num);
+        }];
     }
     if (!self.timeNumber.isHidden && self.timeNumber) {
-        self.timeNumber.transform = CGAffineTransformMakeRotation(num);
+        [UIView animateWithDuration:0.5f animations:^{
+            self.timeNumber.transform = CGAffineTransformMakeRotation(num);
+        }];
     }
     if (!self.completeButton.isHidden && self.completeButton) {
-        self.completeButton.transform = CGAffineTransformMakeRotation(num);
+        [UIView animateWithDuration:0.5f animations:^{
+            self.completeButton.transform = CGAffineTransformMakeRotation(num);
+        }];
     }
     if (!self.chooseScene.isHidden && self.chooseScene) {
         if (num == 0) {
@@ -759,7 +765,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }else {
             self.chooseScene.frame = CGRectMake(11, SCREEN_HEIGHT - 56, 40, 40);
         }
-        self.chooseScene.transform = CGAffineTransformMakeRotation(num);
+        [UIView animateWithDuration:0.5f animations:^{
+            self.chooseScene.transform = CGAffineTransformMakeRotation(num);
+        }];
     }
     if (!self.chooseSceneLabel.isHidden && self.chooseSceneLabel) {
         if (num == 0) {
@@ -767,7 +775,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }else {
             self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.top - 15, 40, 13);
         }
-        self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(num);
+        [UIView animateWithDuration:0.5f animations:^{
+            self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(num);
+        }];
     }
     if (!self.toggleCameraBtn.isHidden && self.toggleCameraBtn) {
         if (num == 0) {
@@ -775,18 +785,26 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }else {
             self.toggleCameraBtn.frame = CGRectMake(11, 11, 40, 40);
         }
-        self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(num);
+        [UIView animateWithDuration:0.5f animations:^{
+            self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(num);
+        }];
     }
     if (!self.playView.isHidden && self.playView) {
-        self.playButton.transform = CGAffineTransformMakeRotation(num);
-        self.deletePartButton.transform = CGAffineTransformMakeRotation(num);
+        [UIView animateWithDuration:0.5f animations:^{
+            self.playButton.transform = CGAffineTransformMakeRotation(num);
+            self.deletePartButton.transform = CGAffineTransformMakeRotation(num);
+        }];
     }
     
     if (!self.deleteButton.isHidden && self.deleteButton) {
-        self.deleteButton.transform = CGAffineTransformMakeRotation(num);
+        [UIView animateWithDuration:0.5f animations:^{
+            self.deleteButton.transform = CGAffineTransformMakeRotation(num);
+        }];
     }
     if (!self.nextButton.isHidden && self.nextButton) {
-        self.nextButton.transform = CGAffineTransformMakeRotation(num);
+        [UIView animateWithDuration:0.5f animations:^{
+            self.nextButton.transform = CGAffineTransformMakeRotation(num);
+        }];
     }
     if (!self.cancelButton.isHidden && self.cancelButton) {
         if (num == 0) {
@@ -806,20 +824,25 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }else {
                 self.scenceDisapper.frame = CGRectMake(20, SCREEN_HEIGHT - 34, 14, 14);
             }
-            self.scenceDisapper.transform = CGAffineTransformMakeRotation(num);
+            [UIView animateWithDuration:0.5f animations:^{
+                self.scenceDisapper.transform = CGAffineTransformMakeRotation(num);
+            }];
         }
         
         for(int i = 0; i < typeModelArray.count; i++)
         {
             UIView *view = (UIView *)[self.view viewWithTag:101 + i];
-            view.transform = CGAffineTransformMakeRotation(num);
+            [UIView animateWithDuration:0.5f animations:^{
+                view.transform = CGAffineTransformMakeRotation(num);
+            }];
         }
     }
     
     if (!self.alert.isHidden && self.alert) {
-        self.alert.transform = CGAffineTransformMakeRotation(num);
+        [UIView animateWithDuration:0.5f animations:^{
+            self.alert.transform = CGAffineTransformMakeRotation(num);
+        }];
     }
-    
 }
 
 //home在右 初始状态
@@ -887,7 +910,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //显示模板页面
 - (void)showChooseSceneView {
     
-    [UIView animateWithDuration:0.5f animations:^{
+    [UIView animateWithDuration:0.1f animations:^{
         self.chooseScene.hidden = YES;
         self.toggleCameraBtn.hidden = YES;
         self.chooseSceneLabel.hidden = YES;
@@ -909,10 +932,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 view.transform = CGAffineTransformMakeRotation(M_PI);
             }
         }
+    } completion:^(BOOL finished) {
         self.sceneView.hidden = NO;
         self.sceneView.alpha = 1;
-    } completion:^(BOOL finished) {
-        
     }];
 
 }
@@ -2000,17 +2022,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         self.isSuccess = YES;
                     };
                     [weakSelf.navigationController pushViewController:fvc animated:YES];
-//                    [self.AVEngine mergeVideoWithSuccessBlock:^{
-//                        fvc.playUrl = weakSelf.AVEngine.currentProductUrl;
-//                        weakSelf.isSuccess = YES;
-//                        if (weakSelf.isPlayer) {
-//                            NSDictionary *dict = @{@"playUrl":weakSelf.AVEngine.currentProductUrl};
-//                            [[NSNotificationCenter defaultCenter]postNotificationName:@"CANPLAY" object:nil userInfo:dict];
-//                        }
-//                        
-//                    } failure:^(NSError *error) {
-//                        //失败
-//                    }];
                 }
             } completion:^(BOOL finished) {
             }];
