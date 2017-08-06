@@ -22,7 +22,7 @@
     BOOL isPlay;  //记录播放还是暂停
 }
 @property (nonatomic, strong) DLYAVEngine *AVEngine;
-@property (nonatomic, strong) UIView *previewView;
+@property (nonatomic, strong) DLYResource  *resource;
 @property (nonatomic, strong) AVPlayer *player;
 @property (nonatomic, strong) AVPlayerItem *playerItem;
 @property (nonatomic, strong) AVPlayerLayer *playerLayer;
@@ -65,16 +65,16 @@
 #pragma mark - 初始化相机
 - (void)initializationRecorder {
     
-    //PreviewView
-    self.previewView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-    self.previewView.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:self.previewView];
-    
-    self.AVEngine = [[DLYAVEngine alloc] initWithPreviewView:self.previewView];
+    self.AVEngine = [[DLYAVEngine alloc] init];
 }
 
-
 - (void)createMainView {
+    NSURL *url = [self.resource getPartUrlWithPartNum:0];
+    UIImage *frameImage = [self.AVEngine getKeyImage:url intervalTime:2.0];
+    
+    UIImageView * videoImage = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SWitdh, SHeight)];
+    videoImage.image = frameImage;
+    [self.view addSubview:videoImage];
     
     self.backView = [[UIView alloc] initWithFrame:self.view.frame];
     self.backView.backgroundColor = RGBA(0, 0, 0, 0.6);
@@ -483,5 +483,14 @@
     [self.player removeTimeObserver:self.progressObserver];
     [self removeObserverFromPlayerItem:self.player.currentItem];
 }
+
+#pragma mark ==== 懒加载
+- (DLYResource *)resource{
+    if (!_resource) {
+        _resource = [[DLYResource alloc] init];
+    }
+    return _resource;
+}
+
 
 @end
