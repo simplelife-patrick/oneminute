@@ -92,7 +92,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //According to the preview center focus after launch
     CGPoint point = self.previewView.center;
     CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
-    [self setFocusCursorWithPoint:point];
     [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus atPoint:cameraPoint];
 
     self.isAppear = YES;
