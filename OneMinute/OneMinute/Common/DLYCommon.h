@@ -22,6 +22,9 @@
 #import <UMengAnalytics/UMMobClick/MobClick.h>
 #import <Photos/Photos.h>
 #import "UIColor+Hex.h"
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+
 
 #ifdef DEBUG
 //#import "FLEXManager.h"
