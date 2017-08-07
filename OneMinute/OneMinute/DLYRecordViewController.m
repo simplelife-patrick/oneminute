@@ -461,7 +461,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.focusCursorImageView.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished) {
         
-        [UIView animateWithDuration:1.0 animations:^{
+        [UIView animateWithDuration:2.0 animations:^{
             self.focusCursorImageView.alpha = 0.3;
         } completion:^(BOOL finished) {
             self.focusCursorImageView.alpha = 0;

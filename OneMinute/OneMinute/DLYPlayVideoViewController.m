@@ -147,6 +147,16 @@
     } failure:^(NSError *error) {
         
     }];
+    
+//    [self.AVEngine addTransitionEffectSuccessBlock:^{
+//        
+//        if (!weakSelf.isSuccess && weakSelf.isAll) {
+//            NSDictionary *dict = @{@"playUrl":weakSelf.AVEngine.currentProductUrl};
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"CANPLAY" object:nil userInfo:dict];
+//        }
+//    } failure:^(NSError *error) {
+//        
+//    }];
 }
 
 - (void)setupUI{
