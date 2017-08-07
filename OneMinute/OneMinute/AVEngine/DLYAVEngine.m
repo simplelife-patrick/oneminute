@@ -964,7 +964,7 @@ outputSettings:audioCompressionSettings];
         NSLog(@"过渡动画合成完毕");
         if (successBlock) {
             
-            NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"BGM003.m4a" ofType:nil];
+            NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"UniversalTemplateBGM.m4a" ofType:nil];
             NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
             self.currentProductUrl = outPutUrl;
             
@@ -1324,7 +1324,6 @@ outputSettings:audioCompressionSettings];
                 } failureBlock:^(NSError *error) {
                     
                 }];
-//                UISaveVideoAtPathToSavedPhotosAlbum([outPutUrl path], nil, nil, nil);
             }break;
             default:
                 break;
