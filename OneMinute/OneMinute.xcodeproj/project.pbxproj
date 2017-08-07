@@ -573,6 +573,7 @@
 				1C7E617D1EE7DF4F0088F33F /* Resources */,
 				B7B7E3E858E4E93FD9FA6273 /* [CP] Embed Pods Frameworks */,
 				83550378109E7656E28B1048 /* [CP] Copy Pods Resources */,
+				6F5852B31F386727009F48D1 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -705,6 +706,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		6F5852B31F386727009F48D1 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Fabric.framework/run 2f6f57d1750b79c831d17cc6c389c8845ebb3c76 93ea7ad6f266a4dc27e17514253853169f38f70744cf26dcaab44d620925729b";
+		};
 		83550378109E7656E28B1048 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -948,7 +962,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: DENG KE (3QC6PDN9W4)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 3QC6PDN9W4;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/OneMinute/DLYPrefixHeader.pch";
 				INFOPLIST_FILE = OneMinute/Info.plist;

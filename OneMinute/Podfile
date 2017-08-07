@@ -16,7 +16,8 @@ pod 'GPUImage', '~> 0.1.7'
 pod 'Masonry', '~> 1.0.2'
 pod 'CocoaSecurity', '~> 1.2.4'
 pod 'UMengAnalytics', '~> 4.2.4'
-
+pod 'Fabric'
+pod 'Crashlytics'
 ########################调试##################################
 # 注意，发appstore的时候一定要全部移除掉
 #pod 'FLEX', '2.1.1-framework'
