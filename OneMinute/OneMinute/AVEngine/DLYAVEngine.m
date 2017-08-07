@@ -887,7 +887,7 @@ outputSettings:audioCompressionSettings];
 #pragma mark - 合并 -
 - (void) mergeVideoWithVideoTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
     
-    NSArray *videoArray = [self.resource loadBDraftParts];
+    NSArray *videoArray = [self.resource loadDraftParts];
     
     AVMutableComposition* mixComposition = [AVMutableComposition composition];
     
@@ -991,7 +991,7 @@ outputSettings:audioCompressionSettings];
     CMTime transitionDuration = CMTimeMake(2, 1);
     CMTime audioCursorTime = kCMTimeZero;
     
-    NSArray *videoArray = [self.resource loadBDraftParts];
+    NSArray *videoArray = [self.resource loadDraftParts];
     
     for (NSUInteger i = 0; i < videoArray.count; i++) {
         

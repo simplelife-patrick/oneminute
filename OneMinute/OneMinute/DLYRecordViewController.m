@@ -174,7 +174,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSMutableArray *draftArr = [NSMutableArray array];
     
     if (isExitDraft) {
-        NSArray *arr = [self.resource loadBDraftParts];
+        NSArray *arr = [self.resource loadDraftParts];
         for (NSURL *url in arr) {
             NSString *partPath = url.path;
             NSString *newPath = [partPath stringByReplacingOccurrencesOfString:@".mp4" withString:@""];

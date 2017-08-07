@@ -44,7 +44,7 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
 
  @return 返回草稿片段
  */
--(NSArray *)loadBDraftParts;
+-(NSArray *)loadDraftParts;
 
 /**
  保存草稿片段到沙盒中
