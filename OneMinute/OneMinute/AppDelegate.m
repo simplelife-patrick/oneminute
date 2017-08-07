@@ -20,7 +20,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    
+    [Fabric with:@[[Crashlytics class]]];
+
     //友盟统计
     UMConfigInstance.appKey = @"596c2805bbea83404400035b";
     UMConfigInstance.channelId = @"App Store";

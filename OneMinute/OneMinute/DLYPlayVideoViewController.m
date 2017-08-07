@@ -77,11 +77,11 @@
     [self.view addSubview:videoImage];
     
     self.backView = [[UIView alloc] initWithFrame:self.view.frame];
-    self.backView.backgroundColor = RGBA(0, 0, 0, 0.6);
+    self.backView.backgroundColor = RGBA(0, 0, 0, 0);
     [self.view addSubview:self.backView];
     
     //标题输入框
-    self.titleField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 300, 42)];
+    self.titleField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 320, 42)];
     self.titleField.center = self.view.center;
     self.titleField.delegate = self;
     
@@ -98,6 +98,7 @@
     self.titleField.font = FONT_SYSTEM(40);
     self.titleField.textColor = RGB(255, 255, 255);
     [self.view addSubview:self.titleField];
+    [self.titleField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     
     //跳过button
     self.skipButton = [[UIButton alloc] initWithFrame:CGRectMake(582 * SCALE_WIDTH, 158 * SCALE_HEIGHT, 60 * SCALE_WIDTH, 60 * SCALE_WIDTH)];
@@ -244,6 +245,10 @@
         self.backButton.hidden = YES;
         self.playButton.hidden = YES;
     }
+    
+    //手势
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleControls:)];
+    [self.view addGestureRecognizer:singleTap];
 }
 
 - (void)onClickBack:(UIButton *)sender{
@@ -274,7 +279,7 @@
         [self.player play];
     }
     isPlay = !isPlay;
-    
+    [self scheduleHideControls];
 }
 
 - (void)onClickNext {
@@ -353,8 +358,6 @@
     }else {
         [self.navigationController popViewControllerAnimated:YES];
     }
-    
-
 }
 #pragma mark - 页面将要显示
 - (void)viewWillAppear:(BOOL)animated {
@@ -369,9 +372,7 @@
     }
 }
 #pragma mark - 播放进度监控
-/**
- *	进度条监控
- */
+//进度条监控
 - (void)addProgressObserver {
     AVPlayerItem *playerItem = self.player.currentItem;
     //这里每秒执行一次
@@ -384,7 +385,6 @@
         }
     }];
 }
-
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
     AVPlayerItem *playerItem = object;
     if ([keyPath isEqualToString:@"status"]) {
@@ -403,6 +403,7 @@
             }
             [self.player play];
             isPlay = YES;
+            [self scheduleHideControls];
         }
     } else if ([keyPath isEqualToString:@"loadedTimeRanges"]) {
         NSArray *array = playerItem.loadedTimeRanges;
@@ -445,6 +446,7 @@
     CGFloat min = a < b ? a : b;
     rect.origin.y = (min - height - rect.size.height) / 2;
     [UIView animateWithDuration:duration.doubleValue animations:^{
+        self.backView.backgroundColor = RGBA(0, 0, 0, 0.5);
         self.titleField.frame = rect;
     }];
 }
@@ -455,6 +457,7 @@
     NSNumber *duration = [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
     //回归位置
     [UIView animateWithDuration:duration.doubleValue animations:^{
+        self.backView.backgroundColor = RGBA(0, 0, 0, 0);
         self.titleField.center = self.view.center;
     }];
     
@@ -466,6 +469,120 @@
 }
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.view endEditing:YES];
+}
+
+- (void)textFieldDidChange:(UITextField *)textField {
+    int length = 8;//限制的字数
+    NSString *toBeString = textField.text;
+    NSString *lang = self.titleField.textInputMode.primaryLanguage; //键盘输入模式
+    if ([lang isEqualToString:@"zh-Hans"]) { // 简体中文输入，包括简体拼音，健体五笔，简体手写
+        UITextRange *selectedRange = [textField markedTextRange];       //获取高亮部分
+        UITextPosition *position = [textField positionFromPosition:selectedRange.start offset:0];
+        // 没有高亮选择的字，则对已输入的文字进行字数统计和限制
+        if (!position || !selectedRange)
+        {
+            if (toBeString.length > length)
+            {
+                NSRange rangeIndex = [toBeString rangeOfComposedCharacterSequenceAtIndex:length];
+                if (rangeIndex.length == 1)
+                {
+                    textField.text = [toBeString substringToIndex:length];
+                }
+                else
+                {
+                    NSRange rangeRange = [toBeString rangeOfComposedCharacterSequencesForRange:NSMakeRange(0, length)];
+                    textField.text = [toBeString substringWithRange:rangeRange];
+                }
+            }
+        }
+        
+    }
+}
+#pragma mark ==== 控件显隐
+
+-(void)toggleControls:(UITapGestureRecognizer *)recognizer {
+    //转菊花判断
+    if (self.waitIndicator.isAnimating) {
+    
+        return;
+    }else {
+        if(self.progress.isHidden){
+            [self showControlsFast];
+        }else{
+            [self hideControlsFast];
+        }
+        
+        [self scheduleHideControls];
+    }
+}
+
+//1快速显示
+-(void)showControlsFast {
+    
+    self.playButton.alpha = 0.0;
+    self.playButton.hidden = NO;
+    
+    if (self.nextButton) {
+        self.nextButton.alpha = 0.0;
+        self.nextButton.hidden = NO;
+    }
+
+    self.backButton.alpha = 0.0;
+    self.backButton.hidden = NO;
+
+    self.progress.alpha = 0.0;
+    self.progress.hidden = NO;
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        self.playButton.alpha = 1.0;
+        self.backButton.alpha = 1.0;
+        self.progress.alpha = 1.0;
+        if (self.nextButton) {
+            self.nextButton.alpha = 1.0;
+        }
+    }];
+    
+}
+//2快速隐藏
+-(void)hideControlsFast {
+    [self hideControlsWithDuration:0.2];
+}
+//3慢隐藏
+-(void)hideControlsSlowly {
+    [self hideControlsWithDuration:0.5];
+}
+//4隐藏操作
+-(void)hideControlsWithDuration:(NSTimeInterval)duration {
+    self.playButton.alpha = 1.0;
+    self.backButton.alpha = 1.0;
+    self.progress.alpha = 1.0;
+    if (self.nextButton) {
+        self.nextButton.alpha = 1.0;
+    }
+    
+    [UIView animateWithDuration:duration animations:^{
+        self.playButton.alpha = 0.0;
+        self.backButton.alpha = 0.0;
+        self.progress.alpha = 0.0;
+        if (self.nextButton) {
+            self.nextButton.alpha = 0.0;
+        }
+    } completion:^(BOOL finished) {
+        self.playButton.hidden = YES;
+        self.backButton.hidden = YES;
+        self.progress.hidden = YES;
+        if (self.nextButton) {
+            self.nextButton.hidden = YES;
+        }
+    }];
+    
+}
+//5
+-(void)scheduleHideControls {
+    if(!self.progress.isHidden) {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self];
+        [self performSelector:@selector(hideControlsSlowly) withObject:nil afterDelay:3.0];
+    }
 }
 
 #pragma mark - UI事件 播放和暂停

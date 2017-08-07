@@ -939,7 +939,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //拍摄视频按键
 - (void)startRecordBtnAction {
-    
+
     [MobClick event:@"StartRecord"];
     // REC START
     if (!self.AVEngine.isRecording) {
@@ -1721,27 +1721,44 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 #pragma mark === 更改样片选中状态
 - (void)changeTypeStatusWithTag : (NSInteger)num {
+    
     if(num == selectType) {
         return;
     }
-
-    __weak typeof(self) weakSelf = self;
-    self.alert = [[DLYAlertView alloc] initWithMessage:@"切换模板后已经拍摄的视频会清空，确定吗?" andCancelButton:@"取消" andSureButton:@"确定"];
-    if (self.newState == 1) {
-        self.alert.transform = CGAffineTransformMakeRotation(0);
-    }else {
-        self.alert.transform = CGAffineTransformMakeRotation(M_PI);
+    
+    BOOL isEmpty = YES;
+    for (DLYMiniVlogPart *part in partModelArray) {
+        if ([part.recordStatus isEqualToString:@"1"]) {
+            isEmpty = NO;
+        }
     }
-    self.alert.sureButtonAction = ^{
+
+    if (isEmpty) {
         //数组初始化，view布局 弹出选择
-        [weakSelf.resource removeCurrentAllPart];
-        [weakSelf initData];
-        [weakSelf changeSceneWithSelectNum:num];
-        [weakSelf createPartViewLayout];
-    };
-    self.alert.cancelButtonAction = ^{
-        return;
-    };
+        [self.resource removeCurrentAllPart];
+        [self initData];
+        [self changeSceneWithSelectNum:num];
+        [self createPartViewLayout];
+    }else {
+        __weak typeof(self) weakSelf = self;
+        self.alert = [[DLYAlertView alloc] initWithMessage:@"切换模板后已经拍摄的视频会清空，确定吗?" andCancelButton:@"取消" andSureButton:@"确定"];
+        if (self.newState == 1) {
+            self.alert.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.alert.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+        self.alert.sureButtonAction = ^{
+            //数组初始化，view布局 弹出选择
+            [weakSelf.resource removeCurrentAllPart];
+            [weakSelf initData];
+            [weakSelf changeSceneWithSelectNum:num];
+            [weakSelf createPartViewLayout];
+        };
+        self.alert.cancelButtonAction = ^{
+            return;
+        };
+    
+    }
 }
 
 - (void)changeSceneWithSelectNum:(NSInteger)num {
