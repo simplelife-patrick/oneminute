@@ -103,7 +103,7 @@
     }
     return nil;
 }
--(NSArray *)loadBDraftParts{
+-(NSArray *)loadDraftParts{
     
     NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
     if ([self.fileManager fileExistsAtPath:dataPath]) {

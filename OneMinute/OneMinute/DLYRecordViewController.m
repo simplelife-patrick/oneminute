@@ -92,7 +92,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //According to the preview center focus after launch
     CGPoint point = self.previewView.center;
     CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
-    [self setFocusCursorWithPoint:point];
     [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus atPoint:cameraPoint];
 
     self.isAppear = YES;
@@ -174,7 +173,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSMutableArray *draftArr = [NSMutableArray array];
     
     if (isExitDraft) {
-        NSArray *arr = [self.resource loadBDraftParts];
+        NSArray *arr = [self.resource loadDraftParts];
         for (NSURL *url in arr) {
             NSString *partPath = url.path;
             NSString *newPath = [partPath stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
@@ -462,7 +461,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.focusCursorImageView.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished) {
         
-        [UIView animateWithDuration:1.0 animations:^{
+        [UIView animateWithDuration:2.0 animations:^{
             self.focusCursorImageView.alpha = 0.3;
         } completion:^(BOOL finished) {
             self.focusCursorImageView.alpha = 0;
