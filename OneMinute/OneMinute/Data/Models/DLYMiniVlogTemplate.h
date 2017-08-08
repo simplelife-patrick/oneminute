@@ -35,6 +35,10 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTemplateType)
 @property (nonatomic, strong) NSString                        *templateName;
 
 /**
+ 模板标题
+ */
+@property (nonatomic, strong) NSString                        *templateTitle;
+/**
  模板类型
  */
 @property (nonatomic, assign) DLYMiniVlogTemplateType         templateType;
