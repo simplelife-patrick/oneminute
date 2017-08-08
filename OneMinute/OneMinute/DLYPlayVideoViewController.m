@@ -148,16 +148,6 @@
     } failure:^(NSError *error) {
         
     }];
-    
-//    [self.AVEngine addTransitionEffectSuccessBlock:^{
-//        
-//        if (!weakSelf.isSuccess && weakSelf.isAll) {
-//            NSDictionary *dict = @{@"playUrl":weakSelf.AVEngine.currentProductUrl};
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"CANPLAY" object:nil userInfo:dict];
-//        }
-//    } failure:^(NSError *error) {
-//        
-//    }];
 }
 
 - (void)setupUI{
@@ -215,7 +205,7 @@
             self.nextButton.hidden = YES;
         }
     }
-    if (self.isAll && self.isSuccess == NO) {
+    if ((self.isAll && self.isSuccess == NO) || self.isOnline) {
         
         self.waitIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         self.waitIndicator.frame = CGRectMake(0, 0, 65, 65);
@@ -223,8 +213,6 @@
         [self.view addSubview:self.waitIndicator];
         
         [self.waitIndicator startAnimating];
-        NSLog(@"走了2");
-
     }
     
     self.progress = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
@@ -240,9 +228,12 @@
     [self.progress setProgress:0.0 animated:YES];
     [self.view addSubview:self.progress];
     
-    if (self.waitIndicator.isAnimating) {
+    if (!self.isOnline && self.waitIndicator.isAnimating) {
         self.progress.hidden = YES;
         self.backButton.hidden = YES;
+        self.playButton.hidden = YES;
+    }
+    if (self.isOnline && self.waitIndicator.isAnimating) {
         self.playButton.hidden = YES;
     }
     
@@ -300,11 +291,17 @@
     [playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
     //监控网络加载情况属性
     [playerItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
+    // 缓冲区空了，需要等待数据
+    [playerItem addObserver:self forKeyPath:@"playbackBufferEmpty" options: NSKeyValueObservingOptionNew context:nil];
+    // 缓冲区有足够数据可以播放了
+    [playerItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options: NSKeyValueObservingOptionNew context:nil];
 }
 
 - (void)removeObserverFromPlayerItem:(AVPlayerItem *)playerItem {
     [playerItem removeObserver:self forKeyPath:@"status"];
     [playerItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+    [playerItem removeObserver:self forKeyPath:@"playbackBufferEmpty"];
+    [playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
 }
 #pragma mark - 重写父类方法
 - (void)deviceChangeAndHomeOnTheLeft {
@@ -392,10 +389,14 @@
             //添加各种通知和观察者
             [self addNotification];
             [self addProgressObserver];
-            if (self.waitIndicator.isAnimating) {
+            if (!self.isOnline && self.waitIndicator.isAnimating) {
                 [self.waitIndicator stopAnimating];
                 self.backButton.hidden = NO;
                 self.progress.hidden = NO;
+                self.playButton.hidden = NO;
+            }
+            if (self.isOnline && self.waitIndicator.isAnimating) {
+                [self.waitIndicator stopAnimating];
                 self.playButton.hidden = NO;
             }
             if (self.isAll) {
@@ -404,6 +405,10 @@
             [self.player play];
             isPlay = YES;
             [self scheduleHideControls];
+        }else if (playerItem.status == AVPlayerItemStatusFailed){
+            
+            NSLog(@"Error fail : %@", playerItem.error);
+            
         }
     } else if ([keyPath isEqualToString:@"loadedTimeRanges"]) {
         NSArray *array = playerItem.loadedTimeRanges;
@@ -412,6 +417,21 @@
         float durationSeconds = CMTimeGetSeconds(timeRange.duration);
         NSTimeInterval totalBuffer = startSeconds + durationSeconds;
         NSLog(@"共缓存: %.2f",totalBuffer);
+    } else if ([keyPath isEqualToString:@"playbackBufferEmpty"]) {
+        //        [self.loadingView startAnimating];
+        // 当缓冲是空的时候
+        //        if (self.playerItem.playbackBufferEmpty) {
+        //            NSLog(@"缓存为空");
+        //            [self loadedTimeRanges];
+        //        }
+        
+    } else if ([keyPath isEqualToString:@"playbackLikelyToKeepUp"]) {
+        //        [self.loadingView stopAnimating];
+        // 当缓冲好的时候
+        //        if (self.playerItem.playbackLikelyToKeepUp && self.state == WMPlayerStateBuffering){
+        //            NSLog(@"55555%s WMPlayerStatePlaying",__FUNCTION__);
+        //            self.state = WMPlayerStatePlaying;
+        //        }
     }
     
 }
