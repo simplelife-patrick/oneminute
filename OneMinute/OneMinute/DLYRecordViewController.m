@@ -181,7 +181,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             [draftArr addObject:partNum];
         }
     }
-    
     ////////////////////////////////////////////////////////////
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     [self.session saveCurrentTemplateWithName:template.templateName];
@@ -220,30 +219,29 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         
     }
-    
     /////////////////////////////////
     typeModelArray = [[NSMutableArray alloc]init];
-    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活", nil];
+    //通用,美食,旅行,生活
+    NSArray *typeNameArray = @[@"Universal_001.json",@"Gourmandism001.json",@"Travele001.json",@"ColorLife.json"];
     for(int i = 0; i < typeNameArray.count; i ++)
     {
-        NSMutableDictionary * dict = [[NSMutableDictionary alloc]init];
-        [dict setObject:typeNameArray[i] forKey:@"typeName"];
-        [dict setObject:@"这里是介绍，最多两行文字" forKey:@"typeIntroduce"];
-        [typeModelArray addObject:dict];
+        DLYMiniVlogTemplate *template = [DLYSession loadTemplateWithTemplateName:typeNameArray[i]];
+        [typeModelArray addObject:template];
     }
     
     _shootTime = 0;
     cursorTag = 0;
     self.isSuccess = NO;
-    
     selectPartTag = 10001; //也不影响吧
+    
     selectType = 0; //暂时先这么写
-
-//    if (isExitDraft) {
-//        selectType = 0; //暂时先这么写
-//        
-//    }else {
-//    }
+    NSString *typeName = template.templateName;
+    for (int i = 0; i < typeModelArray.count; i ++) {
+        DLYMiniVlogTemplate *templateModel = typeModelArray[i];
+        if ([templateModel.templateName isEqualToString:typeName]) {
+            selectType = i;
+        }
+    }
     
     if (isExitDraft) {
         return draftArr.count;
@@ -270,20 +268,27 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     typeModelArray = [[NSMutableArray alloc]init];
-    NSArray * typeNameArray = [[NSArray alloc]initWithObjects:@"通用",@"美食",@"旅行",@"生活", nil];
+    //模板数据
+    NSArray *typeNameArray = @[@"Universal_001.json",@"Gourmandism001.json",@"Travele001.json",@"ColorLife.json"];
     for(int i = 0; i < typeNameArray.count; i ++)
     {
-        NSMutableDictionary * dict = [[NSMutableDictionary alloc]init];
-        [dict setObject:typeNameArray[i] forKey:@"typeName"];
-        [dict setObject:@"这里是介绍，最多两行文字" forKey:@"typeIntroduce"];
-        [typeModelArray addObject:dict];
+        DLYMiniVlogTemplate *template = [DLYSession loadTemplateWithTemplateName:typeNameArray[i]];
+        [typeModelArray addObject:template];
     }
     
     _shootTime = 0;
-    selectType = 0;
     selectPartTag = 10001;
     cursorTag = 0;
     self.isSuccess = NO;
+    
+    selectType = 0; //暂时先这么写
+    NSString *typeName = template.templateName;
+    for (int i = 0; i < typeModelArray.count; i ++) {
+        DLYMiniVlogTemplate *templateModel = typeModelArray[i];
+        if ([templateModel.templateName isEqualToString:typeName]) {
+            selectType = i;
+        }
+    }
 }
 
 - (NSString *)getDurationwithStartTime:(NSString *)startTime andStopTime:(NSString *)stopTime {
@@ -341,7 +346,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.view addSubview:self.chooseScene];
     //显示场景的label
     self.chooseSceneLabel = [[UILabel alloc]initWithFrame:CGRectMake(11, self.chooseScene.bottom + 2, 40, 13)];
-    self.chooseSceneLabel.text = @"通用";
+    DLYMiniVlogTemplate *template = self.session.currentTemplate;
+    self.chooseSceneLabel.text = template.templateTitle;
     self.chooseSceneLabel.font = FONT_SYSTEM(12);
     self.chooseSceneLabel.textColor = RGBA(255, 255, 255, 1);
     self.chooseSceneLabel.textAlignment = NSTextAlignmentCenter;
@@ -700,9 +706,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 - (void)deviceChangeAndHomeOnTheLeftNewLayout {
-    if (!self.isPlayer) {
-        [self createLeftPartView];
-    }
+    [self createLeftPartView];
     
     if (!self.playView.isHidden && self.playView) {
         UIButton *button = (UIButton *)[self.view viewWithTag:cursorTag];
@@ -867,9 +871,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 - (void)deviceChangeAndHomeOnTheRightNewLayout{
-    if (!self.isPlayer) {
-        [self createPartView];
-    }
+    [self createPartView];
+    
     if (!self.playView.isHidden) {
         UIButton *button = (UIButton *)[self.view viewWithTag:cursorTag];
         selectPartTag = cursorTag;
@@ -1096,16 +1099,28 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //选择场景页面点击事件
 - (void)sceneViewClick : (UIButton *)sender {
     
-    UIButton * button = (UIButton *)sender;
-    NSInteger selectNum = button.tag/100;
+    NSInteger selectNum = sender.tag/100;
     if(selectNum == 4)
     {//点击的事观看样片
-        
+        [self changeTypeToPlayWithTag:sender.tag -400];
     }else if(selectNum == 3)
     {//点击的事某个片段
-        [self changeTypeStatusWithTag:button.tag -300];
+        [self changeTypeStatusWithTag:sender.tag -300];
         
     }
+}
+
+- (void)changeTypeToPlayWithTag:(NSInteger)num {
+    
+//    DLYMiniVlogTemplate *template = typeModelArray[num];
+    DLYPlayVideoViewController *playVC = [[DLYPlayVideoViewController alloc] init];
+    //    NSURL *url = [NSURL URLWithString:@"http://s3.amazonaws.com/adplayer/colgate.mp4"];
+    NSURL *url = [NSURL URLWithString:@"http://flv1.bn.netease.com/tvmrepo/2017/8/5/5/ECQD6GG55/SD/ECQD6GG55-mobile.mp4"];
+    playVC.playUrl = url;
+    playVC.isAll = NO;
+    playVC.isOnline = YES;
+//    self.isPlayer = YES; 应该不需要
+    [self.navigationController pushViewController:playVC animated:YES];
 }
 //取消拍摄按键
 - (void)onClickCancelClick:(UIButton *)sender {
@@ -1667,7 +1682,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     typeScrollView.contentSize = CGSizeMake(width * typeModelArray.count + 10 * (typeModelArray.count - 1), typeScrollView.height);
     for(int i = 0; i < typeModelArray.count; i ++)
     {
-        NSDictionary * dcitModel = typeModelArray[i];
+        DLYMiniVlogTemplate *templateModel = typeModelArray[i];
         UIView * view = [[UIView alloc]initWithFrame:CGRectMake((width + 10) * i, 0, width, typeView.height)];
         view.layer.cornerRadius = 5;
         view.clipsToBounds = YES;
@@ -1675,7 +1690,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [typeScrollView addSubview:view];
         
         UILabel * typeName = [[UILabel alloc]initWithFrame:CGRectMake(12, 19, 42, 21)];
-        typeName.text = dcitModel[@"typeName"];
+        typeName.text = templateModel.templateTitle;
         typeName.textColor = RGB(255, 255, 255);
         typeName.font = FONT_BOLD(20);
         [view addSubview:typeName];
@@ -1686,7 +1701,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [view addSubview:selectImage];
         
         UILabel * detailLabel = [[UILabel alloc]initWithFrame:CGRectMake(11, typeName.bottom + 15, view.width - 26, 34)];
-        detailLabel.text = dcitModel[@"typeIntroduce"];
+        detailLabel.text = templateModel.templateDescription;
         detailLabel.font = FONT_SYSTEM(14);
         detailLabel.textColor = RGBA(255, 255, 255, 0.6);
         detailLabel.numberOfLines = 2;
@@ -1704,6 +1719,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         seeRush.titleLabel.font = FONT_SYSTEM(12);
         seeRush.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
         seeRush.tag = 400 + i;
+        UIEdgeInsets edgeInsets = {-5, -3, -10, -3};
+        [button setHitEdgeInsets:edgeInsets];
         [seeRush addTarget:self action:@selector(sceneViewClick:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:seeRush];
         
@@ -1720,7 +1737,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 #pragma mark === 更改样片选中状态
-- (void)changeTypeStatusWithTag : (NSInteger)num {
+- (void)changeTypeStatusWithTag:(NSInteger)num {
     
     if(num == selectType) {
         return;
@@ -1736,8 +1753,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (isEmpty) {
         //数组初始化，view布局 弹出选择
         [self.resource removeCurrentAllPart];
-        [self initData];
         [self changeSceneWithSelectNum:num];
+        [self initData];
         [self createPartViewLayout];
     }else {
         __weak typeof(self) weakSelf = self;
@@ -1750,8 +1767,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.alert.sureButtonAction = ^{
             //数组初始化，view布局 弹出选择
             [weakSelf.resource removeCurrentAllPart];
-            [weakSelf initData];
             [weakSelf changeSceneWithSelectNum:num];
+            [weakSelf initData];
             [weakSelf createPartViewLayout];
         };
         self.alert.cancelButtonAction = ^{
@@ -1764,11 +1781,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)changeSceneWithSelectNum:(NSInteger)num {
     
     selectType = num;
-    //////
-    [self.session saveCurrentTemplateWithName:@"Universal_001.json"];
-    //////
-    NSDictionary * dict = typeModelArray[num];
-    self.chooseSceneLabel.text = dict[@"typeName"];
+    DLYMiniVlogTemplate *template = typeModelArray[num];
+    self.chooseSceneLabel.text = template.templateTitle;
+    [self.session saveCurrentTemplateWithName:template.templateName];
+    
     for(int i = 0; i < typeModelArray.count; i++) {
         UIView * view = (UIView *)[self.view viewWithTag:101 + i];
         UIImageView * imageView = (UIImageView *)[self.view viewWithTag:10 + i];

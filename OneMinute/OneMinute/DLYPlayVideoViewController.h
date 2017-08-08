@@ -15,5 +15,6 @@
 @property (nonatomic, assign) BOOL isAll;
 @property (nonatomic, strong) NSURL *playUrl;
 @property (nonatomic, assign) BOOL isSuccess;
+@property (nonatomic, assign) BOOL isOnline;
 
 @end

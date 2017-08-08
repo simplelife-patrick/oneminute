@@ -6,7 +6,7 @@
     {
       "partNum": 0,
       "startTime": "00:00:00",
-      "stopTime": "08:00:00",
+      "stopTime": "00:08:00",
       "recordType": 1,
       "soundType": 0,
       "transitionType": 0
@@ -14,7 +14,7 @@
     {
       "partNum": 1,
       "startTime": "00:08:01",
-      "stopTime": "08:16:19",
+      "stopTime": "00:16:19",
       "recordType": 2,
       "soundType": 0,
       "transitionType": 1
