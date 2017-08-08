@@ -139,8 +139,16 @@
     //跳过的时候，调用合成接口
     __weak typeof(self) weakSelf = self;
     
-    [self.AVEngine mergeVideoWithVideoTitle:self.titleField.text SuccessBlock:^{
-        
+//    [self.AVEngine mergeVideoWithVideoTitle:self.titleField.text SuccessBlock:^{
+//        
+//        if (!weakSelf.isSuccess && weakSelf.isAll) {
+//            NSDictionary *dict = @{@"playUrl":weakSelf.AVEngine.currentProductUrl};
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"CANPLAY" object:nil userInfo:dict];
+//        }
+//    } failure:^(NSError *error) {
+//        
+//    }];
+    [self.AVEngine addTransitionEffectWithTitle:self.titleField.text SuccessBlock:^{
         if (!weakSelf.isSuccess && weakSelf.isAll) {
             NSDictionary *dict = @{@"playUrl":weakSelf.AVEngine.currentProductUrl};
             [[NSNotificationCenter defaultCenter] postNotificationName:@"CANPLAY" object:nil userInfo:dict];

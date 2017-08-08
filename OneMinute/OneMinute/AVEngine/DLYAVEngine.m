@@ -909,7 +909,6 @@ outputSettings:audioCompressionSettings];
     
     DLYResource *resource = [[DLYResource alloc]init];
     NSURL *outputUrl = [resource saveProductToSandbox];
-//    self.currentProductUrl = outputUrl;
 
     AVAssetExportSession *exporter = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1920x1080];
     exporter.outputURL = outputUrl;
@@ -931,240 +930,82 @@ outputSettings:audioCompressionSettings];
     return totalMilliseconds;
 }
 #pragma mark - 转场 -
-- (void) addTransitionEffectSuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
+- (void) addTransitionEffectWithTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
 
     self.composition = [AVMutableComposition composition];
     
     CMPersistentTrackID trackID = kCMPersistentTrackID_Invalid;
     AVMutableCompositionTrack *compositionTrackA = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
     AVMutableCompositionTrack *compositionTrackB = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
+    AVMutableCompositionTrack *compositionTrackAudio =
+    [self.composition addMutableTrackWithMediaType:AVMediaTypeAudio
+                                  preferredTrackID:trackID];
     
     NSArray *videoTracks = @[compositionTrackA, compositionTrackB];
     
     CMTime videoCursorTime = kCMTimeZero;
     CMTime transitionDuration = CMTimeMake(2, 1);
+    CMTime audioCursorTime = kCMTimeZero;
     
-    NSArray *videoArray = [self.resource loadDraftParts];
-    NSInteger videoCount = [videoArray count];
+    NSArray *videoPathArray = [self.resource loadDraftParts];
+    NSInteger videoCount = [videoPathArray count];
     
-    for (NSUInteger i = 0; i < videoArray.count; i++) {
+    for (NSUInteger i = 0; i < videoPathArray.count; i++) {
         
-        NSUInteger trackIndex = i % 2;
+        NSUInteger trackIndex = i % 2;                                      // 3
         
-        AVMutableCompositionTrack *currentTrack = videoTracks[trackIndex];
-        
-        AVURLAsset *asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
+        AVURLAsset *asset = [AVURLAsset URLAssetWithURL:videoPathArray[i] options:nil];
+        NSLog(@"self.videoPathArray[%lu]: %@",(unsigned long)i,videoPathArray[i]);
         
         AVAssetTrack *assetVideoTrack = nil;
+        AVAssetTrack *assetAudioTrack = nil;
+        
         if ([asset tracksWithMediaType:AVMediaTypeVideo].count != 0) {
             assetVideoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
         }
-        CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero, assetVideoTrack.timeRange.duration);
-        
-        [currentTrack insertTimeRange:timeRange ofTrack:assetVideoTrack atTime:videoCursorTime error:nil];
-        
-        videoCursorTime = CMTimeAdd(videoCursorTime, timeRange.duration);
-        videoCursorTime = CMTimeSubtract(videoCursorTime, transitionDuration);
-    }
-    
-    //计算重叠时间
-    [self calculateOverlayTimeRange];
-    
-    NSMutableArray *compositionInstructions = [NSMutableArray array];
-    
-    NSArray *tracks = [self.composition tracksWithMediaType:AVMediaTypeVideo];
-    
-    for (NSInteger i = 0; i < _passThroughTimeRanges.count; i++) {
-        NSUInteger trackIndex = i % 2;
+        if ([asset tracksWithMediaType:AVMediaTypeAudio].count != 0) {
+            assetAudioTrack = [[asset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
+        }
         AVMutableCompositionTrack *currentTrack = videoTracks[trackIndex];
         
-        AVMutableVideoCompositionInstruction *instruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-        instruction.timeRange = [_passThroughTimeRanges[i] CMTimeRangeValue];
+        CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero, assetVideoTrack.timeRange.duration);
         
-        AVMutableVideoCompositionLayerInstruction *layerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:currentTrack];
-        instruction.layerInstructions = @[layerInstruction];
+        [currentTrack insertTimeRange:timeRange
+                              ofTrack:assetVideoTrack
+                               atTime:videoCursorTime error:nil];
+        [compositionTrackAudio insertTimeRange:timeRange
+                                       ofTrack:assetAudioTrack
+                                        atTime:audioCursorTime error:nil];
+        // Overlap clips by transition duration                             // 4
+        videoCursorTime = CMTimeAdd(videoCursorTime, timeRange.duration);
+        videoCursorTime = CMTimeSubtract(videoCursorTime, transitionDuration);
+        audioCursorTime = CMTimeAdd(audioCursorTime, timeRange.duration);
         
-        [compositionInstructions addObject:instruction];
-        
-        if (i < _transitionTimeRanges.count) {
-            AVCompositionTrack *foregroundTrack = tracks[trackIndex];
-            AVCompositionTrack *backgroundTrack = tracks[1 - trackIndex];
-            
-            AVMutableVideoCompositionInstruction *instruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-            CMTimeRange timeRange = [_transitionTimeRanges[i] CMTimeRangeValue];
-            
-            instruction.timeRange = timeRange;
-            
-            AVMutableVideoCompositionLayerInstruction *fromLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:foregroundTrack];
-            
-            AVMutableVideoCompositionLayerInstruction *toLayerInstruction = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:backgroundTrack];
-            instruction.layerInstructions = @[fromLayerInstruction,toLayerInstruction];
-            [compositionInstructions addObject:instruction];
+        if (i + 1 < videoPathArray.count) {
+            timeRange = CMTimeRangeMake(videoCursorTime, transitionDuration);
+            NSValue *timeRangeValue = [NSValue valueWithCMTimeRange:timeRange];
+            [self.transitionTimeRanges addObject:timeRangeValue];
         }
     }
+    AVMutableVideoComposition *videoComposition = [self buildVideoComposition];
     
-    AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
-    videoComposition.instructions = compositionInstructions;
-    videoComposition.renderSize = CGSizeMake(1280.0f, 720.0f);
-    videoComposition.frameDuration = CMTimeMake(1, 30);
-    videoComposition.renderScale = 1.0f;
-    
-    NSURL *outPutUrl = [self.resource saveProductToSandbox];
+    NSURL *outputUrl = [self.resource saveProductToSandbox];
+    self.currentProductUrl = outputUrl;
     
     AVAssetExportSession *exporter = [[AVAssetExportSession alloc] initWithAsset:self.composition presetName:AVAssetExportPresetHighestQuality];
-    exporter.outputURL = outPutUrl;
+    exporter.outputURL = outputUrl;
     exporter.videoComposition = videoComposition;
     exporter.outputFileType = AVFileTypeMPEG4;
     exporter.shouldOptimizeForNetworkUse = YES;
     [exporter exportAsynchronouslyWithCompletionHandler:^{
-        UISaveVideoAtPathToSavedPhotosAlbum([outPutUrl path], self, nil, nil);
-        NSLog(@"过渡动画合成完毕");
-        if (successBlock) {
-            
-            NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"UniversalTemplateBGM.m4a" ofType:nil];
-            NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
-            self.currentProductUrl = outPutUrl;
-            
-            [self addMusicToVideo:outPutUrl audioUrl:BGMUrl videoTitle:nil successBlock:successBlock failure:failureBlcok];
-        }
+        
+        DLYLog(@"合并及转场操作成功");
+        NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"UniversalTemplateBGM.m4a" ofType:nil];
+        NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
+        
+        [self addMusicToVideo:outputUrl audioUrl:BGMUrl videoTitle:videoTitle successBlock:successBlock failure:failureBlcok];
     }];
 }
-//计算重叠时间
-- (void) calculateOverlayTimeRange{
-    
-    CMTime videoCursorTime = kCMTimeZero;
-    CMTime transitionDuration = CMTimeMake(2, 1);
-    
-    NSArray *videoArray = [self.resource loadDraftParts];
-    NSInteger videoCount = [videoArray count];
-    
-    self.passThroughTimeRanges = [NSMutableArray array];
-    self.transitionTimeRanges = [NSMutableArray array];
-    
-    for (NSUInteger i = 0; i < videoCount; i++) {
-        
-        AVURLAsset *asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
-        CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero, asset.duration);
-        
-        if (i > 0) {
-            timeRange.start = CMTimeAdd(videoCursorTime, asset.duration);
-            timeRange.duration = CMTimeSubtract(timeRange.duration, transitionDuration);
-        }
-        
-        if (i + 1 < videoCount) {
-            timeRange.duration = CMTimeSubtract(timeRange.duration, transitionDuration);
-        }
-        [_passThroughTimeRanges addObject:[NSValue valueWithCMTimeRange:timeRange]];
-        
-        videoCursorTime = CMTimeAdd(videoCursorTime, timeRange.duration);
-        videoCursorTime = CMTimeSubtract(videoCursorTime, transitionDuration);
-        
-        
-        if (i + 1 < videoCount) {
-            timeRange = CMTimeRangeMake(videoCursorTime, transitionDuration);
-            NSValue *timeRangeValue = [NSValue valueWithCMTimeRange:timeRange];
-            [_transitionTimeRanges addObject:timeRangeValue];
-        }
-    }
-    
-}
-//- (void) addTransitionEffectSuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
-//    
-//    [self buildCompositionTracks];
-//    
-//    AVVideoComposition *videoComposition = [self buildVideoComposition];
-//    [self transitionInstructionsInVideoComposition:videoComposition];
-//    
-//    NSURL *outPutUrl = [self.resource saveProductToSandbox];
-//    
-//    AVAssetExportSession *exporter = [[AVAssetExportSession alloc] initWithAsset:self.composition presetName:AVAssetExportPresetHighestQuality];
-//    exporter.outputURL = outPutUrl;
-//    exporter.outputFileType = AVFileTypeMPEG4;
-//    exporter.shouldOptimizeForNetworkUse = YES;
-//    [exporter exportAsynchronouslyWithCompletionHandler:^{
-//        UISaveVideoAtPathToSavedPhotosAlbum([outPutUrl path], self, nil, nil);
-//        NSLog(@"过渡动画合成完毕");
-//        if (successBlock) {
-//            
-//            NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"UniversalTemplateBGM.m4a" ofType:nil];
-//            NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
-//            self.currentProductUrl = outPutUrl;
-//            
-//            [self addMusicToVideo:outPutUrl audioUrl:BGMUrl videoTitle:nil successBlock:successBlock failure:failureBlcok];
-//        }
-//    }];
-//    
-//}
-//- (void)buildCompositionTracks {
-//    
-//    CMPersistentTrackID trackID = kCMPersistentTrackID_Invalid;
-//    
-//    AVMutableCompositionTrack *compositionTrackA = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
-//    
-//    AVMutableCompositionTrack *compositionTrackB = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
-//    
-////    AVMutableCompositionTrack *compositionTrackAudio = [self.composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:trackID];
-//    
-//    NSArray *videoTracks = @[compositionTrackA, compositionTrackB];
-//    
-//    CMTime videoCursorTimeBefor = kCMTimeZero;
-//    CMTime videoCursorTimeAfter = kCMTimeZero;
-//    
-//    CMTime transitionDuration = CMTimeMake(2, 1);
-////    CMTime audioCursorTime = kCMTimeZero;
-//    
-//    NSArray *videoArray = [self.resource loadDraftParts];
-//    
-//    for (NSUInteger i = 0; i < videoArray.count; i++) {
-//        
-//        NSUInteger trackIndex = i % 2;
-//        
-//        AVURLAsset *asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
-//        DLYLog(@"self.videoPathArray[%lu]: %@",(unsigned long)i,videoArray[i]);
-//        
-//        AVAssetTrack *assetVideoTrack = nil;
-//        AVAssetTrack *assetAudioTrack = nil;
-//        
-//        if ([asset tracksWithMediaType:AVMediaTypeVideo].count != 0) {
-//            assetVideoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-//        }
-//        if ([asset tracksWithMediaType:AVMediaTypeAudio].count != 0) {
-//            assetAudioTrack = [[asset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
-//        }
-//        DLYLog(@"当前compositiontrack :%lu",trackIndex);
-//        AVMutableCompositionTrack *currentTrack = videoTracks[trackIndex];
-//        
-//        CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero, assetVideoTrack.timeRange.duration);
-//        
-//        // Overlap clips by transition duration
-//        videoCursorTimeBefor = CMTimeAdd(videoCursorTimeBefor, timeRange.duration);
-//        DLYLog(@"正常cursor时间");
-//        CMTimeShow(videoCursorTimeBefor);
-//        
-//        videoCursorTimeAfter = CMTimeSubtract(videoCursorTimeBefor, transitionDuration);
-//        DLYLog(@"重叠插入cursor时间");
-//        CMTimeShow(videoCursorTimeAfter);
-//        
-////        audioCursorTime = CMTimeAdd(videoCursorTimeAfter, timeRange.duration);
-//        DLYLog(@"音频插入cursor时间");
-////        CMTimeShow(audioCursorTime);
-//        
-//        [currentTrack insertTimeRange:timeRange
-//                              ofTrack:assetVideoTrack
-//                               atTime:videoCursorTimeAfter error:nil];
-////        [compositionTrackAudio insertTimeRange:timeRange
-////                                       ofTrack:assetAudioTrack
-////                                        atTime:audioCursorTime error:nil];
-//        
-//        
-//        if (i + 1 < videoArray.count) {
-//            timeRange = CMTimeRangeMake(videoCursorTimeAfter, transitionDuration);
-//            NSValue *timeRangeValue = [NSValue valueWithCMTimeRange:timeRange];
-//            [self.transitionTimeRangeArray addObject:timeRangeValue];
-//        }
-//    }
-//    
-//}
 - (AVVideoComposition *)buildVideoComposition {
     
     AVVideoComposition *videoComposition = [AVMutableVideoComposition videoCompositionWithPropertiesOfAsset:self.composition];
@@ -1179,100 +1020,54 @@ outputSettings:audioCompressionSettings];
         
         AVMutableVideoCompositionLayerInstruction *toLayer = instructions.toLayerInstruction;
         
-        DLYVideoTransitionType type = instructions.transition.type;
+        //        ZHVideoTransitionType type = instructions.transition.type;
         
-        if (type == DLYVideoTransitionTypeDissolve) {
-            
-            [fromLayer setOpacityRampFromStartOpacity:1.0
-                                         toEndOpacity:0.0
-                                            timeRange:timeRange];
-            
-        }else if (type == DLYVideoTransitionTypePush) {
-            
-            // Define starting and ending transforms
-            CGAffineTransform identityTransform = CGAffineTransformIdentity;
-            
-            CGFloat videoWidth = videoComposition.renderSize.width;
-            
-            CGAffineTransform fromDestTransform =
-            CGAffineTransformMakeTranslation(-videoWidth, 0.0);
-            
-            CGAffineTransform toStartTransform =
-            CGAffineTransformMakeTranslation(videoWidth, 0.0);
-            
-            [fromLayer setTransformRampFromStartTransform:identityTransform
-                                           toEndTransform:fromDestTransform
-                                                timeRange:timeRange];
-            
-            [toLayer setTransformRampFromStartTransform:toStartTransform
-                                         toEndTransform:identityTransform
-                                              timeRange:timeRange];
-            
-        }else if (type == DLYVideoTransitionTypeWipe) {
-            
-            CGFloat videoWidth = videoComposition.renderSize.width;
-            CGFloat videoHeight = videoComposition.renderSize.height;
-            
-            CGRect startRect = CGRectMake(0.0f, 0.0f, videoWidth, videoHeight);
-            CGRect endRect = CGRectMake(0.0f, videoHeight, videoWidth, 0.0f);
-            
-            [fromLayer setCropRectangleRampFromStartCropRectangle:startRect
-                                               toEndCropRectangle:endRect
-                                                        timeRange:timeRange];
-        }else if (type == DLYVideoTransitionTypeClockwiseRotate){
-
-            [fromLayer setCropRectangleRampFromStartCropRectangle:CGRectMake(0, 0, 300, 300)
-                                               toEndCropRectangle:CGRectMake(50, 50, 500, 300)
-                                                        timeRange:timeRange];
-            [toLayer setCropRectangleRampFromStartCropRectangle:CGRectMake(100, 100, 200, 300)
-                                               toEndCropRectangle:CGRectMake(0, 0, 500, 500)
-                                                        timeRange:timeRange];
-        }else if (type == DLYVideoTransitionTypeZoom){
-            
-            
-            // Define starting and ending transforms
-            CGAffineTransform identityTransform = CGAffineTransformIdentity;
-            
-            CGFloat videoWidth = videoComposition.renderSize.width;
-            
-            CGAffineTransform fromDestTransform = CGAffineTransformMakeTranslation(-videoWidth, 0.0);
-
-            CGAffineTransform toStartTransform = CGAffineTransformMakeTranslation(videoWidth, 0.0);
-
-            [fromLayer setTransformRampFromStartTransform:identityTransform
-                                           toEndTransform:fromDestTransform
-                                                timeRange:timeRange];
-
-            [toLayer setTransformRampFromStartTransform:toStartTransform
-                                         toEndTransform:identityTransform
-                                              timeRange:timeRange];
-        }
+        //        if (type == ZHVideoTransitionTypeDissolve) {//溶解
+        //
+        [fromLayer setOpacityRampFromStartOpacity:1.0
+                                     toEndOpacity:0.0
+                                        timeRange:timeRange];
+        //        }
         
-        instructions.compositionInstruction.layerInstructions = @[fromLayer,toLayer];
+        //        if (type == ZHVideoTransitionTypePush) {//推出
+        
+        // Define starting and ending transforms
+        CGAffineTransform identityTransform = CGAffineTransformIdentity;
+        
+        CGFloat videoWidth = videoComposition.renderSize.width;
+        
+        //        CGAffineTransform fromDestTransform = CGAffineTransformMakeRotation(M_PI_2);
+        CGAffineTransform toStartTransform = CGAffineTransformMakeRotation(-M_PI_2);
+        
+        CGAffineTransform fromDestTransform =CGAffineTransformInvert(CGAffineTransformMakeScale(2, 2));
+        
+        
+        instructions.compositionInstruction.layerInstructions = @[fromLayer,
+                                                                  toLayer];
     }
     return videoComposition;
 }
-- (NSArray *)transitionInstructionsInVideoComposition:(AVVideoComposition *)videoComposition {
+- (NSArray *)transitionInstructionsInVideoComposition:(AVVideoComposition *)vc {
     
     NSMutableArray *transitionInstructions = [NSMutableArray array];
     
     int layerInstructionIndex = 1;
     
-    //拿到videoComposition的指令集
-    NSArray *compositionInstructions = videoComposition.instructions;
+    NSArray *compositionInstructions = vc.instructions;
     
-    // 遍历指令集
-    for (AVMutableVideoCompositionInstruction *videoCompositionInstruction in compositionInstructions) {
+    for (AVMutableVideoCompositionInstruction *vci in compositionInstructions) {
         
-        if (videoCompositionInstruction.layerInstructions.count == 2) {
+        if (vci.layerInstructions.count == 2) {
             
             DLYTransitionInstructions *instructions = [[DLYTransitionInstructions alloc] init];
             
-            instructions.compositionInstruction = videoCompositionInstruction;
+            instructions.compositionInstruction = vci;
             
-            instructions.fromLayerInstruction = (AVMutableVideoCompositionLayerInstruction *)videoCompositionInstruction.layerInstructions[1 - layerInstructionIndex];
+            instructions.fromLayerInstruction =
+            (AVMutableVideoCompositionLayerInstruction *)vci.layerInstructions[1 - layerInstructionIndex];
             
-            instructions.toLayerInstruction = (AVMutableVideoCompositionLayerInstruction *)videoCompositionInstruction.layerInstructions[layerInstructionIndex];
+            instructions.toLayerInstruction =
+            (AVMutableVideoCompositionLayerInstruction *)vci.layerInstructions[layerInstructionIndex];
             
             [transitionInstructions addObject:instructions];
             
@@ -1281,20 +1076,13 @@ outputSettings:audioCompressionSettings];
     }
     
     for (NSUInteger i = 0; i < transitionInstructions.count; i++) {
+        DLYTransitionInstructions *tis = transitionInstructions[i];
         
-        DLYMiniVlogTemplate *currentTemplate = self.session.currentTemplate;
-        NSArray *array = currentTemplate.parts;
-        
-        for (int i = 0; i < array.count; i++) {
-            DLYMiniVlogPart *part = [[DLYMiniVlogPart alloc] init];
-            part = array[i];
-            DLYTransitionInstructions *tis = transitionInstructions[i];
-            DLYVideoTransition *videoTransition = [DLYVideoTransition videoTransition];
-            videoTransition.type = part.transitionType;
-            tis.transition = videoTransition;
-            transitionInstructions[i] = tis;
-        }
+        DLYVideoTransition *transition = [DLYVideoTransition videoTransition];
+        transition.type = DLYVideoTransitionTypeDissolve;
+        tis.transition = transition;
     }
+    
     return transitionInstructions;
 }
 #pragma mark - 配音 -

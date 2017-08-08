@@ -82,29 +82,23 @@ typedef void(^FailureBlock)(NSError *error);
 /**
  合并片段
 
- @param successBlock 成功回调
- @param failureBlcok 失败回调
- */
-
-/**
- 合并片段
-
  @param successBlock 成功回
  @param failureBlcok 失败回调
  */
 - (void) mergeVideoWithVideoTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
 
 /**
- 添加转场效果
+ 合并并添加转场效果
 
+ @param videoTitle 视频标题
  @param successBlock 成功回调
  @param failureBlcok 失败回调
  */
-- (void) addTransitionEffectSuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
+- (void) addTransitionEffectWithTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
 
 /**
  获取视频某一帧图片
-
+ 
  @param assetUrl 视频URL
  @param intervalTime 某一时刻
  @return 返回获取的图片
