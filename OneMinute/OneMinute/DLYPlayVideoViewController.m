@@ -503,7 +503,6 @@
 -(void)toggleControls:(UITapGestureRecognizer *)recognizer {
     //转菊花判断
     if (self.waitIndicator.isAnimating) {
-    
         return;
     }else {
         if(self.progress.isHidden){

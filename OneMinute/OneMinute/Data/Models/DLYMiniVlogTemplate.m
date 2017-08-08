@@ -21,6 +21,7 @@
         NSMutableDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         
         self.templateName = [dic objectForKey:@"id"];
+        self.templateTitle = [dic objectForKey:@"title"];
         self.templateType = [[dic objectForKey:@"type"] integerValue];
         self.parts = [dic objectForKey:@"info"];
         self.BGM = [dic objectForKey:@"BGM"];
