@@ -16,5 +16,6 @@
 @property (nonatomic, strong) NSURL *playUrl;
 @property (nonatomic, assign) BOOL isSuccess;
 @property (nonatomic, assign) BOOL isOnline;
+@property (nonatomic, assign) NSInteger beforeState;
 
 @end
