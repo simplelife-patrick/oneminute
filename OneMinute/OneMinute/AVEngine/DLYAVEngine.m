@@ -136,7 +136,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         //添加后置摄像头的输出
         if ([_captureSession canAddInput:self.backCameraInput]) {
             [_captureSession addInput:self.backCameraInput];
-            
         }
         //添加后置麦克风的输出
         if ([_captureSession canAddInput:self.audioMicInput]) {
@@ -155,7 +154,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 }
 - (instancetype)initWithPreviewView:(UIView *)previewView{
     if (self = [super init]) {
-        
+
         referenceOrientation = (AVCaptureVideoOrientation)UIDeviceOrientationPortrait;
         
         NSError *error;
@@ -944,7 +943,7 @@ outputSettings:audioCompressionSettings];
     NSArray *videoTracks = @[compositionTrackA, compositionTrackB];
     
     CMTime videoCursorTime = kCMTimeZero;
-    CMTime transitionDuration = CMTimeMake(2, 1);
+    CMTime transitionDuration = CMTimeMake(1, 1);
     CMTime audioCursorTime = kCMTimeZero;
     
     NSArray *videoPathArray = [self.resource loadDraftParts];
@@ -952,7 +951,7 @@ outputSettings:audioCompressionSettings];
     
     for (NSUInteger i = 0; i < videoPathArray.count; i++) {
         
-        NSUInteger trackIndex = i % 2;                                      // 3
+        NSUInteger trackIndex = i % 2;
         
         AVURLAsset *asset = [AVURLAsset URLAssetWithURL:videoPathArray[i] options:nil];
         NSLog(@"self.videoPathArray[%lu]: %@",(unsigned long)i,videoPathArray[i]);
@@ -976,7 +975,7 @@ outputSettings:audioCompressionSettings];
         [compositionTrackAudio insertTimeRange:timeRange
                                        ofTrack:assetAudioTrack
                                         atTime:audioCursorTime error:nil];
-        // Overlap clips by transition duration                             // 4
+        
         videoCursorTime = CMTimeAdd(videoCursorTime, timeRange.duration);
         videoCursorTime = CMTimeSubtract(videoCursorTime, transitionDuration);
         audioCursorTime = CMTimeAdd(audioCursorTime, timeRange.duration);
@@ -1020,30 +1019,80 @@ outputSettings:audioCompressionSettings];
         
         AVMutableVideoCompositionLayerInstruction *toLayer = instructions.toLayerInstruction;
         
-        //        ZHVideoTransitionType type = instructions.transition.type;
-        
-        //        if (type == ZHVideoTransitionTypeDissolve) {//溶解
-        //
-        [fromLayer setOpacityRampFromStartOpacity:1.0
-                                     toEndOpacity:0.0
-                                        timeRange:timeRange];
-        //        }
-        
-        //        if (type == ZHVideoTransitionTypePush) {//推出
-        
-        // Define starting and ending transforms
         CGAffineTransform identityTransform = CGAffineTransformIdentity;
         
         CGFloat videoWidth = videoComposition.renderSize.width;
+        CGFloat videoHeight = videoComposition.renderSize.height;
         
-        //        CGAffineTransform fromDestTransform = CGAffineTransformMakeRotation(M_PI_2);
-        CGAffineTransform toStartTransform = CGAffineTransformMakeRotation(-M_PI_2);
+        //Transform
+        CGAffineTransform fromDestTransform = CGAffineTransformMakeTranslation(-videoWidth, 0.0);
+        CGAffineTransform toStartTransform = CGAffineTransformMakeTranslation(videoWidth, 0.0);
         
-        CGAffineTransform fromDestTransform =CGAffineTransformInvert(CGAffineTransformMakeScale(2, 2));
         
+        //平移变换
+        CGAffineTransform fromDestTransformAndTransform = CGAffineTransformTranslate(fromDestTransform,videoWidth,videoHeight);
         
-        instructions.compositionInstruction.layerInstructions = @[fromLayer,
-                                                                  toLayer];
+        //Rotation
+        CGAffineTransform fromDestTransformRotation = CGAffineTransformMakeRotation(M_PI_2);
+        CGAffineTransform toStartTransformRotation = CGAffineTransformMakeRotation(-M_PI_2);
+        
+        //Transform2
+        CGAffineTransform fromDestTransformTransform = CGAffineTransformMakeTranslation(videoHeight, 0.0);
+        CGAffineTransform toStartTransformTransform = CGAffineTransformMakeTranslation(-videoHeight, 0.0);
+        
+        DLYVideoTransitionType type = instructions.transition.type;
+    
+        switch (type) {
+            case DLYVideoTransitionTypeDissolve:
+                
+                [fromLayer setOpacityRampFromStartOpacity:1.0 toEndOpacity:0.0 timeRange:timeRange];
+                break;
+            case DLYVideoTransitionTypePush:
+                
+                [fromLayer setTransformRampFromStartTransform:identityTransform
+                                               toEndTransform:fromDestTransform
+                                                    timeRange:timeRange];
+                
+                [toLayer setTransformRampFromStartTransform:toStartTransform
+                                             toEndTransform:identityTransform
+                                                  timeRange:timeRange];
+                break;
+            case DLYVideoTransitionTypeWipe:
+    
+                [fromLayer setTransformRampFromStartTransform:identityTransform
+                                               toEndTransform:fromDestTransformTransform
+                                                    timeRange:timeRange];
+    
+                [toLayer setTransformRampFromStartTransform:toStartTransformTransform
+                                             toEndTransform:identityTransform
+                                                  timeRange:timeRange];
+                
+                break;
+            case DLYVideoTransitionTypeClockwiseRotate:
+                
+                [fromLayer setTransformRampFromStartTransform:identityTransform
+                                               toEndTransform:fromDestTransformRotation
+                                                    timeRange:timeRange];
+    
+                [toLayer setTransformRampFromStartTransform:toStartTransformRotation
+                                             toEndTransform:identityTransform
+                                                  timeRange:timeRange];
+                break;
+            case DLYVideoTransitionTypeZoom:
+                
+                [fromLayer setCropRectangleRampFromStartCropRectangle:CGRectMake(0, 0, videoWidth, videoHeight)
+                                                   toEndCropRectangle:CGRectMake(-200, -200, videoWidth, videoHeight)
+                                                            timeRange:timeRange];
+                [toLayer setCropRectangleRampFromStartCropRectangle:CGRectMake(-200, -200, videoWidth, videoHeight)
+                                                   toEndCropRectangle:CGRectMake(0, 0, videoWidth, videoHeight)
+                                                            timeRange:timeRange];
+                break;
+                
+            default:
+                break;
+        }
+    
+        instructions.compositionInstruction.layerInstructions = @[fromLayer,toLayer];
     }
     return videoComposition;
 }
@@ -1076,10 +1125,19 @@ outputSettings:audioCompressionSettings];
     }
     
     for (NSUInteger i = 0; i < transitionInstructions.count; i++) {
+        
+        DLYMiniVlogTemplate *template = self.session.currentTemplate;
+        DLYMiniVlogPart *part = template.parts[i];
+        DLYVideoTransitionType transitionType = part.transitionType;
+        
         DLYTransitionInstructions *tis = transitionInstructions[i];
         
         DLYVideoTransition *transition = [DLYVideoTransition videoTransition];
-        transition.type = DLYVideoTransitionTypeDissolve;
+        
+        if (transitionType == DLYVideoTransitionTypeWipe) {
+             
+        }
+        transition.type = transitionType;
         tis.transition = transition;
     }
     
@@ -1127,7 +1185,7 @@ outputSettings:audioCompressionSettings];
     
     if ([[mixComposition tracksWithMediaType:AVMediaTypeVideo] count] != 0) {
         // build a pass through video composition
-        mutableVideoComposition.frameDuration = CMTimeMake(1, 30); // 30 fps
+        mutableVideoComposition.frameDuration = CMTimeMake(1, 30);
         mutableVideoComposition.renderSize = videoAssetTrack.naturalSize;
         
         AVMutableVideoCompositionInstruction *passThroughInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
@@ -1187,9 +1245,6 @@ outputSettings:audioCompressionSettings];
         
         CMTimeRange timeRange = CMTimeRangeMake(_startTime, duration);
         CMTimeRange preTimeRange = CMTimeRangeMake(_prePoint, CMTimeMake(2, 1));
-        DLYLog(@"第 %lu 个part的timeRange",i);
-        CMTimeShow(_startTime);
-        CMTimeShow(duration);
         
         if (part.soundType == DLYMiniVlogAudioTypeMusic) {//空镜
             [BGMParameters setVolumeRampFromStartVolume:5.0 toEndVolume:5.0 timeRange:timeRange];
@@ -1228,7 +1283,7 @@ outputSettings:audioCompressionSettings];
             }break;
             case AVAssetExportSessionStatusCompleted:{
                 ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
-                [assetLibrary saveVideo:outPutUrl toAlbum:@"一分" completionBlock:^(NSURL *assetURL, NSError *error) {
+                [assetLibrary saveVideo:outPutUrl toAlbum:@"OneMinute" completionBlock:^(NSURL *assetURL, NSError *error) {
                     
                     DLYLog(@"配音完成后保存在手机相册");
                 } failureBlock:^(NSError *error) {
