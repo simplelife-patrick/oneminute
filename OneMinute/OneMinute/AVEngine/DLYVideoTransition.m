@@ -44,7 +44,7 @@
         _direction = direction;
     } else {
         _direction = DLYPushTransitionDirectionInvalid;
-        NSAssert(NO, @"Direction can only be specified for a type == ZHVideoTransitionTypePush.");
+        NSAssert(NO, @"Direction can only be specified for a type == DLYVideoTransitionTypePush.");
     }
 }
 
