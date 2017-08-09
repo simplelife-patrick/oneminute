@@ -999,6 +999,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     fvc.playUrl = self.AVEngine.currentProductUrl;
     fvc.isAll = YES;
     fvc.isSuccess = NO;
+    fvc.beforeState = self.newState;
     self.isPlayer = YES;
     [self.navigationController pushViewController:fvc animated:YES];
 }
@@ -1037,6 +1038,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     DLYPlayVideoViewController *playVC = [[DLYPlayVideoViewController alloc] init];
     playVC.playUrl = [self.resource getPartUrlWithPartNum:partNum];
     playVC.isAll = NO;
+    playVC.beforeState = self.newState;
     self.isPlayer = YES;
     [self.navigationController pushViewController:playVC animated:YES];
     
@@ -1119,7 +1121,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     playVC.playUrl = url;
     playVC.isAll = NO;
     playVC.isOnline = YES;
-//    self.isPlayer = YES; 应该不需要
+    playVC.beforeState = self.newState;
+    self.isPlayer = YES; //应该不需要
     [self.navigationController pushViewController:playVC animated:YES];
 }
 //取消拍摄按键
@@ -1719,8 +1722,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         seeRush.titleLabel.font = FONT_SYSTEM(12);
         seeRush.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
         seeRush.tag = 400 + i;
-        UIEdgeInsets edgeInsets = {-5, -3, -10, -3};
-        [button setHitEdgeInsets:edgeInsets];
+        UIEdgeInsets seeRushedgeInsets = {-10, 0, -10, -3};
+        [seeRush setHitEdgeInsets:seeRushedgeInsets];
         [seeRush addTarget:self action:@selector(sceneViewClick:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:seeRush];
         
@@ -2036,7 +2039,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     fvc.isAll = YES;
                     fvc.isSuccess = NO;
                     fvc.playUrl = self.AVEngine.currentProductUrl;
-
+                    fvc.beforeState = self.newState;
                     self.isPlayer = YES;
                     fvc.DismissBlock = ^{
                         if (self.newState == 1) {

@@ -13,7 +13,7 @@
 #import "DLYRecordViewController.h"
 #import "DLYAVEngine.h"
 
-
+#define kMaxLength 16
 #define SWitdh [UIScreen mainScreen].bounds.size.width
 #define SHeight [UIScreen mainScreen].bounds.size.height
 
@@ -81,7 +81,7 @@
     [self.view addSubview:self.backView];
     
     //标题输入框
-    self.titleField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 320, 42)];
+    self.titleField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 370, 42)];
     self.titleField.center = self.view.center;
     self.titleField.delegate = self;
     
@@ -252,7 +252,7 @@
 
 - (void)onClickBack:(UIButton *)sender{
     
-    if (!self.waitIndicator.isAnimating) {
+//    if (!self.waitIndicator.isAnimating) {
 
         [MobClick event:@"BackView"];
         //返回
@@ -260,7 +260,7 @@
             self.DismissBlock();
         }
         [self.navigationController popViewControllerAnimated:YES];
-    }
+//    }
 
 }
 
@@ -291,6 +291,7 @@
     [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
     
     DLYExportViewController *exportVC = [[DLYExportViewController alloc] init];
+    exportVC.beforeState = self.newState;
     [self.navigationController pushViewController:exportVC animated:YES];
 }
 
@@ -358,6 +359,7 @@
         [resource removeCurrentAllPart];
         //跳转下一步填写标题
         DLYExportViewController *exportVC = [[DLYExportViewController alloc] init];
+        exportVC.beforeState = self.newState;
         [self.navigationController pushViewController:exportVC animated:YES];
 
     }else {
@@ -368,11 +370,11 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [MobClick beginLogPageView:@"PlayVideoView"];
-    if (self.newState == 1) {
+    if (self.beforeState == 1) {
         NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
         [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
     }else {
-        NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
+        NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeRight];
         [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
     }
 }
@@ -457,7 +459,6 @@
     }
 }
 
-
 #pragma mark ==== 键盘监听
 //监听 键盘将要显示
 - (void)changeContentViewPosition:(NSNotification *)notification {
@@ -498,34 +499,68 @@
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.view endEditing:YES];
 }
-
+#pragma mark ==== 限制输入字数
 - (void)textFieldDidChange:(UITextField *)textField {
-    int length = 8;//限制的字数
     NSString *toBeString = textField.text;
-    NSString *lang = self.titleField.textInputMode.primaryLanguage; //键盘输入模式
-    if ([lang isEqualToString:@"zh-Hans"]) { // 简体中文输入，包括简体拼音，健体五笔，简体手写
-        UITextRange *selectedRange = [textField markedTextRange];       //获取高亮部分
+    
+    if (![self isInputRuleAndBlank:toBeString]) {
+        textField.text = [self disable_emoji:toBeString];
+        return;
+    }
+    
+    NSString *lang = [[textField textInputMode] primaryLanguage]; // 获取当前键盘输入模式
+    NSLog(@"%@",lang);
+    if([lang isEqualToString:@"zh-Hans"]) { //简体中文输入,第三方输入法（搜狗）所有模式下都会显示“zh-Hans”
+        UITextRange *selectedRange = [textField markedTextRange];
+        //获取高亮部分
         UITextPosition *position = [textField positionFromPosition:selectedRange.start offset:0];
-        // 没有高亮选择的字，则对已输入的文字进行字数统计和限制
-        if (!position || !selectedRange)
-        {
-            if (toBeString.length > length)
-            {
-                NSRange rangeIndex = [toBeString rangeOfComposedCharacterSequenceAtIndex:length];
-                if (rangeIndex.length == 1)
-                {
-                    textField.text = [toBeString substringToIndex:length];
-                }
-                else
-                {
-                    NSRange rangeRange = [toBeString rangeOfComposedCharacterSequencesForRange:NSMakeRange(0, length)];
-                    textField.text = [toBeString substringWithRange:rangeRange];
-                }
+        //没有高亮选择的字，则对已输入的文字进行字数统计和限制
+        if(!position) {
+            NSString *getStr = [self getSubString:toBeString];
+            if(getStr && getStr.length > 0) {
+                textField.text = getStr;
             }
         }
-        
+    } else{
+        NSString *getStr = [self getSubString:toBeString];
+        if(getStr && getStr.length > 0) {
+            textField.text= getStr;
+        }
     }
 }
+// 字母、数字、中文正则判断（包括空格）（在系统输入法中文输入时会出现拼音之间有空格，需要忽略，当按return键时会自动用字母替换，按空格输入响应汉字）
+- (BOOL)isInputRuleAndBlank:(NSString *)str {
+    
+    NSString *pattern = @"^[a-zA-Z\u4E00-\u9FA5\\d\\s]*$";
+    NSPredicate *pred = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern];
+    BOOL isMatch = [pred evaluateWithObject:str];
+    return isMatch;
+}
+// 获得 kMaxLength长度的字符
+- (NSString *)getSubString:(NSString*)string {
+    NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+    NSData* data = [string dataUsingEncoding:encoding];
+    NSInteger length = [data length];
+    if (length > kMaxLength) {
+        NSData *data1 = [data subdataWithRange:NSMakeRange(0, kMaxLength)];
+        NSString *content = [[NSString alloc] initWithData:data1 encoding:encoding];//注意：当截取kMaxLength长度字符时把中文字符截断返回的content会是nil
+        if (!content || content.length == 0) {
+            data1 = [data subdataWithRange:NSMakeRange(0, kMaxLength - 1)];
+            content =  [[NSString alloc] initWithData:data1 encoding:encoding];
+        }
+        return content;
+    }
+    return nil;
+}
+- (NSString *)disable_emoji:(NSString *)text{
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^\\u0020-\\u007E\\u00A0-\\u00BE\\u2E80-\\uA4CF\\uF900-\\uFAFF\\uFE30-\\uFE4F\\uFF00-\\uFFEF\\u0080-\\u009F\\u2000-\\u201f\r\n]"options:NSRegularExpressionCaseInsensitive error:nil];
+    NSString *modifiedString = [regex stringByReplacingMatchesInString:text
+                                                               options:0
+                                                                 range:NSMakeRange(0, [text length])
+                                                          withTemplate:@""];
+    return modifiedString;
+}
+
 #pragma mark ==== 控件显隐
 
 -(void)toggleControls:(UITapGestureRecognizer *)recognizer {

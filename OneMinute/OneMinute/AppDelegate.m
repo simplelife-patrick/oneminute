@@ -101,6 +101,8 @@
     ///申请相册权限
     [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
     }];
+    //常亮
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
     return YES;
 }
 - (void)applicationWillResignActive:(UIApplication *)application {

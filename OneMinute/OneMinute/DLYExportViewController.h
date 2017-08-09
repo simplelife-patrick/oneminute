@@ -9,5 +9,6 @@
 #import "DLYBaseViewController.h"
 
 @interface DLYExportViewController : DLYBaseViewController
+@property (nonatomic, assign) NSInteger beforeState;
 
 @end
