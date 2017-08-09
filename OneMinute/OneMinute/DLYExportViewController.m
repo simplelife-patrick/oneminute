@@ -123,11 +123,11 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [MobClick beginLogPageView:@"ExportView"];
-    if (self.newState == 1) {
+    if (self.beforeState == 1) {
         NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
         [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
     }else {
-        NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
+        NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeRight];
         [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
     }
 }
