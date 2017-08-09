@@ -136,7 +136,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         //添加后置摄像头的输出
         if ([_captureSession canAddInput:self.backCameraInput]) {
             [_captureSession addInput:self.backCameraInput];
-            
         }
         //添加后置麦克风的输出
         if ([_captureSession canAddInput:self.audioMicInput]) {
@@ -155,7 +154,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 }
 - (instancetype)initWithPreviewView:(UIView *)previewView{
     if (self = [super init]) {
-        
+
         referenceOrientation = (AVCaptureVideoOrientation)UIDeviceOrientationPortrait;
         
         NSError *error;
@@ -944,7 +943,7 @@ outputSettings:audioCompressionSettings];
     NSArray *videoTracks = @[compositionTrackA, compositionTrackB];
     
     CMTime videoCursorTime = kCMTimeZero;
-    CMTime transitionDuration = CMTimeMake(2, 1);
+    CMTime transitionDuration = CMTimeMake(1, 1);
     CMTime audioCursorTime = kCMTimeZero;
     
     NSArray *videoPathArray = [self.resource loadDraftParts];
@@ -952,7 +951,7 @@ outputSettings:audioCompressionSettings];
     
     for (NSUInteger i = 0; i < videoPathArray.count; i++) {
         
-        NSUInteger trackIndex = i % 2;                                      // 3
+        NSUInteger trackIndex = i % 2;
         
         AVURLAsset *asset = [AVURLAsset URLAssetWithURL:videoPathArray[i] options:nil];
         NSLog(@"self.videoPathArray[%lu]: %@",(unsigned long)i,videoPathArray[i]);
@@ -976,7 +975,7 @@ outputSettings:audioCompressionSettings];
         [compositionTrackAudio insertTimeRange:timeRange
                                        ofTrack:assetAudioTrack
                                         atTime:audioCursorTime error:nil];
-        // Overlap clips by transition duration                             // 4
+        
         videoCursorTime = CMTimeAdd(videoCursorTime, timeRange.duration);
         videoCursorTime = CMTimeSubtract(videoCursorTime, transitionDuration);
         audioCursorTime = CMTimeAdd(audioCursorTime, timeRange.duration);

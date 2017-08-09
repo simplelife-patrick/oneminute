@@ -9,7 +9,6 @@
 #import "DLYResource.h"
 #import "DLYMiniVlogDraft.h"
 
-
 @interface DLYResource ()
 
 @end
@@ -30,10 +29,10 @@
         NSString *documentPath = [homeDir objectAtIndex:0];
         
         NSString *dataPath = [documentPath stringByAppendingPathComponent:kDataFolder];
-        if ([_fileManager fileExistsAtPath:dataPath]) {
+        if ([self.fileManager fileExistsAtPath:dataPath]) {
             
             NSString *resourceFolderPath = [dataPath stringByAppendingPathComponent:kResourceFolder];
-            if ([_fileManager fileExistsAtPath:resourceFolderPath]) {
+            if ([self.fileManager fileExistsAtPath:resourceFolderPath]) {
                 _resourceFolderPath = resourceFolderPath;
             }
         }
@@ -68,30 +67,30 @@
     
     switch (resourceType) {
         case DLYResourceTypeVideoHeader:
-            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:kVideoHeaderFolder];
+            _resourcePath = [self.resourceFolderPath stringByAppendingPathComponent:kVideoHeaderFolder];
             break;
         case DLYResourceTypeVideoTailer:
-            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:kVideoTailerFolder];
+            _resourcePath = [self.resourceFolderPath stringByAppendingPathComponent:kVideoTailerFolder];
             break;
 
         case DLYResourceTypeBGM:
-            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:kBGMFolder];
+            _resourcePath = [self.resourceFolderPath stringByAppendingPathComponent:kBGMFolder];
             break;
 
         case DLYResourceTypeSoundEffect:
-            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:kSoundEffectFolder];
+            _resourcePath = [self.resourceFolderPath stringByAppendingPathComponent:kSoundEffectFolder];
             break;
 
         case DLYResourceTypeSampleVideo:
-            _resourcePath = [_resourceFolderPath stringByAppendingPathComponent:kSoundEffectFolder];
+            _resourcePath = [self.resourceFolderPath stringByAppendingPathComponent:kSoundEffectFolder];
             break;
         default:
             break;
     }
     
-    if ([_fileManager fileExistsAtPath:_resourcePath]) {
+    if ([self.fileManager fileExistsAtPath:self.resourcePath]) {
         
-        NSArray *resourcesArray = [_fileManager contentsOfDirectoryAtPath:_resourcePath error:nil];
+        NSArray *resourcesArray = [self.fileManager contentsOfDirectoryAtPath:self.resourcePath error:nil];
         
         for (NSString *path in resourcesArray) {
             if([path isEqualToString:fileName]){
@@ -207,7 +206,6 @@
         NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mp4",partNum];
         
         BOOL isDelete = [fileManager removeItemAtPath:targetPath error:nil];
-        DLYLog(@"%@",isDelete ? @"成功删除第 %lu 个片段":@"删除第 %lu 个片段失败",partNum + 1);
     }
 }
 - (void) removeCurrentAllPart{
@@ -223,7 +221,6 @@
             if ([path hasSuffix:@"mp4"]) {
                 NSString *targetPath = [draftPath stringByAppendingFormat:@"/%@",path];
                 BOOL isDelete = [fileManager removeItemAtPath:targetPath error:nil];
-                DLYLog(@"%@",isDelete ? @"删除片段成功":@"删除片段失败");
             }
         }
         DLYLog(@"成功删除所有草稿片段");
