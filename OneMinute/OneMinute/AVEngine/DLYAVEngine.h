@@ -106,4 +106,9 @@ typedef void(^FailureBlock)(NSError *error);
 -(UIImage*)getKeyImage:(NSURL *)assetUrl intervalTime:(NSInteger)intervalTime;
 
 -(void)focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point;
+
+/**
+ 创建导出会话
+ */
+- (void) makeExportable;
 @end

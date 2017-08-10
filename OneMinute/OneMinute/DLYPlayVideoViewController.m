@@ -274,8 +274,7 @@
 
 - (void)onClickNext {
     
-    DLYResource *resource = [[DLYResource alloc] init];
-    [resource removeCurrentAllPart];
+    [self.resource removeCurrentAllPart];
     //跳转下一步填写标题
     [self.player pause];
     isPlay = NO;
@@ -346,8 +345,7 @@
     [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
     
     if (self.isAll) {
-        DLYResource *resource = [[DLYResource alloc] init];
-        [resource removeCurrentAllPart];
+        [self.resource removeCurrentAllPart];
         //跳转下一步填写标题
         DLYExportViewController *exportVC = [[DLYExportViewController alloc] init];
         exportVC.beforeState = self.newState;
