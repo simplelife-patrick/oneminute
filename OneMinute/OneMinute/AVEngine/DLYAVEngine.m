@@ -143,11 +143,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([_captureSession canAddOutput:self.videoOutput]) {
             [_captureSession addOutput:self.videoOutput];
         }
-        //添加元数据输出
-        if ([_captureSession canAddOutput:self.metadataOutput]) {
-            [_captureSession addOutput:self.metadataOutput];
-            self.metadataOutput.metadataObjectTypes = @[AVMetadataObjectTypeFace];
-        }
         //添加音频输出
         if ([_captureSession canAddOutput:self.audioOutput]) {
             [_captureSession addOutput:self.audioOutput];
@@ -216,6 +211,12 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         }else{
             DLYLog(@"Video output creation faild");
         }
+        //添加元数据输出
+        if ([_captureSession canAddOutput:self.metadataOutput]) {
+            [_captureSession addOutput:self.metadataOutput];
+            self.metadataOutput.metadataObjectTypes = @[AVMetadataObjectTypeFace];
+        }
+
         //添加音频输出
         if ([_captureSession canAddOutput:self.audioOutput]) {
             [_captureSession addOutput:self.audioOutput];
@@ -234,9 +235,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         // BufferQueue
         OSStatus err = CMBufferQueueCreate(kCFAllocatorDefault, 1, CMBufferQueueGetCallbacksForUnsortedSampleBuffers(), &previewBufferQueue);
         DLYLog(@"CMBufferQueueCreate error:%d", (int)err);
-        
-        self.metadataOutput.rectOfInterest = [self.previewLayer metadataOutputRectOfInterestForRect:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
 
+        self.metadataOutput.rectOfInterest = [self.previewLayer metadataOutputRectOfInterestForRect:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        
         [self.captureSession startRunning];
     }
     return self;
@@ -315,13 +316,20 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
                                         [NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange], kCVPixelBufferPixelFormatTypeKey,
                                         nil];
         _videoOutput.videoSettings = setcapSettings;
-        dispatch_queue_t videoCaptureQueue = dispatch_queue_create("videocapture", NULL);
+        dispatch_queue_t videoCaptureQueue = dispatch_queue_create("videocapture", DISPATCH_QUEUE_SERIAL);
         [_videoOutput setSampleBufferDelegate:self queue:videoCaptureQueue];
         [_videoOutput setAlwaysDiscardsLateVideoFrames:YES];
     }
     return _videoOutput;
 }
-
+-(AVCaptureMetadataOutput *)metadataOutput {
+    if (_metadataOutput == nil) {
+        _metadataOutput = [[AVCaptureMetadataOutput alloc]init];
+        dispatch_queue_t metadataOutputQueue = dispatch_queue_create("metadataOutput", DISPATCH_QUEUE_SERIAL);
+        [_metadataOutput setMetadataObjectsDelegate:self queue:metadataOutputQueue];
+    }
+    return _metadataOutput;
+}
 //音频输出
 - (AVCaptureAudioDataOutput *)audioOutput {
     if (_audioOutput == nil) {
@@ -473,7 +481,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
 }
 
-#pragma mark - 视频数据输出设置 -
+#pragma mark -视频数据输出设置-
 
 - (BOOL)setupAssetWriterVideoInput:(CMFormatDescriptionRef)currentFormatDescription
 {
@@ -772,8 +780,8 @@ outputSettings:audioCompressionSettings];
         }];
     });
 }
-#pragma mark
-#pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate -
+
+#pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     
     if (self.onBuffer) {
@@ -820,8 +828,7 @@ outputSettings:audioCompressionSettings];
         CFRelease(sampleBuffer);
     });
 }
-#pragma mark
-#pragma mark - AVCaptureMetadataOutputObjectsDelegate -
+#pragma mark 从输出的元数据中捕捉人脸
 // 检测人脸是为了获得“人脸区域”，做“人脸区域”与“身份证人像框”的区域对比，当前者在后者范围内的时候，才能截取到完整的身份证图像
 -(void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection{
     
@@ -842,7 +849,7 @@ outputSettings:audioCompressionSettings];
         }
     }
 }
-#pragma mark - 延时拍摄 -
+#pragma mark -延时拍摄-
 //获取视频某一帧图像
 -(UIImage*)getKeyImage:(NSURL *)assetUrl intervalTime:(NSInteger)intervalTime{
     
