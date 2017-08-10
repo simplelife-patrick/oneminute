@@ -44,6 +44,8 @@
         part.partNum = [[dic objectForKey:@"partNum"] integerValue];
         part.starTime = [dic objectForKey:@"startTime"];
         part.stopTime = [dic objectForKey:@"stopTime"];
+        part.dubStartTime = [dic objectForKey:@"dubStartTime"];
+        part.dubStopTime = [dic objectForKey:@"dubStopTime"];
         part.recordType = [[dic objectForKey:@"recordType"] integerValue];
         part.soundType = [[dic objectForKey:@"soundType"] integerValue];
         part.transitionType = [[dic objectForKey:@"transitionType"] integerValue];

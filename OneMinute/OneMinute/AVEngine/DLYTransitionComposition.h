@@ -10,7 +10,7 @@
 
 @interface DLYTransitionComposition : NSObject
 
-@property (nonatomic, strong) AVComposition                *composition;
+@property (nonatomic, strong) AVComposition                          *composition;
 @property (nonatomic, strong, readonly) AVVideoComposition           *videoComposition;
 @property (nonatomic, strong, readonly) AVAudioMix                   *audioMax;
 

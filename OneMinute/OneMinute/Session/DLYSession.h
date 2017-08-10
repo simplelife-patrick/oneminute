@@ -45,7 +45,7 @@
  @return 加载好的模板数据
  */
 
-+ (DLYMiniVlogTemplate *)loadTemplateWithTemplateName:(NSString *)templateName;
+- (DLYMiniVlogTemplate *)loadTemplateWithTemplateName:(NSString *)templateName;
 /**
  重置sesion
  */

@@ -68,7 +68,17 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
  终止时间
  */
 @property (nonatomic, strong) NSString                      *stopTime;
-
+    
+/**
+ 配音开始时间
+ */
+@property (nonatomic, strong) NSString                      *dubStartTime;
+    
+/**
+ 配音结束时间
+ */
+@property (nonatomic, strong) NSString                      *dubStopTime;
+    
 /**
  拍摄类型
  */
