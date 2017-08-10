@@ -1230,12 +1230,12 @@ outputSettings:audioCompressionSettings];
         
         DLYMiniVlogPart *part = partArray[i];
         
-        NSArray *startArr = [part.starTime componentsSeparatedByString:@":"];
+        NSArray *startArr = [part.dubStarTime componentsSeparatedByString:@":"];
         NSString *startTimeStr = startArr[1];
         float startTime = [startTimeStr floatValue];
         _startTime = CMTimeMake(startTime, 1);
         
-        NSArray *stopArr = [part.stopTime componentsSeparatedByString:@":"];
+        NSArray *stopArr = [part.dubStopTime componentsSeparatedByString:@":"];
         NSString *stopTimeStr = stopArr[1];
         float stopTime = [stopTimeStr floatValue];
         _stopTime = CMTimeMake(stopTime, 1);
