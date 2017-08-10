@@ -915,7 +915,9 @@ outputSettings:audioCompressionSettings];
     exporter.shouldOptimizeForNetworkUse = YES;
     [exporter exportAsynchronouslyWithCompletionHandler:^{
         DLYLog(@"草稿片段mgerge成功");
-        NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"UniversalTemplateBGM.m4a" ofType:nil];
+        DLYMiniVlogTemplate *template = self.session.currentTemplate;
+        
+        NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@".m4a"];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
         
         [self addMusicToVideo:outputUrl audioUrl:BGMUrl videoTitle:videoTitle successBlock:successBlock failure:failureBlcok];
@@ -999,7 +1001,9 @@ outputSettings:audioCompressionSettings];
     [exporter exportAsynchronouslyWithCompletionHandler:^{
         
         DLYLog(@"合并及转场操作成功");
-        NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"UniversalTemplateBGM.m4a" ofType:nil];
+        DLYMiniVlogTemplate *template = self.session.currentTemplate;
+
+        NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@".m4a"];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
         
         [self addMusicToVideo:outputUrl audioUrl:BGMUrl videoTitle:videoTitle successBlock:successBlock failure:failureBlcok];
@@ -1028,17 +1032,19 @@ outputSettings:audioCompressionSettings];
         CGAffineTransform fromDestTransform = CGAffineTransformMakeTranslation(-videoWidth, 0.0);
         CGAffineTransform toStartTransform = CGAffineTransformMakeTranslation(videoWidth, 0.0);
         
+        CGAffineTransform transform1 = CGAffineTransformMakeRotation(M_PI);
+        CGAffineTransform transform2 = CGAffineTransformScale(transform1, 0.5, 0.5);
+        CGAffineTransform transforms = CGAffineTransformTranslate(transform2,100,100);
         
         //平移变换
-        CGAffineTransform fromDestTransformAndTransform = CGAffineTransformTranslate(fromDestTransform,videoWidth,videoHeight);
+        CGAffineTransform fromDestTransformAndTransform = CGAffineTransformTranslate(toStartTransform,videoWidth,videoHeight);
         
         //Rotation
         CGAffineTransform fromDestTransformRotation = CGAffineTransformMakeRotation(M_PI_2);
         CGAffineTransform toStartTransformRotation = CGAffineTransformMakeRotation(-M_PI_2);
         
-        //Transform2
-        CGAffineTransform fromDestTransformTransform = CGAffineTransformMakeTranslation(videoHeight, 0.0);
-        CGAffineTransform toStartTransformTransform = CGAffineTransformMakeTranslation(-videoHeight, 0.0);
+        //缩放
+        CGAffineTransform fromTransformScale = CGAffineTransformMakeScale(2, 2);
         
         DLYVideoTransitionType type = instructions.transition.type;
     
@@ -1059,14 +1065,9 @@ outputSettings:audioCompressionSettings];
                 break;
             case DLYVideoTransitionTypeWipe:
     
-                [fromLayer setTransformRampFromStartTransform:identityTransform
-                                               toEndTransform:fromDestTransformTransform
+                [toLayer setTransformRampFromStartTransform:identityTransform
+                                               toEndTransform:transforms
                                                     timeRange:timeRange];
-    
-                [toLayer setTransformRampFromStartTransform:toStartTransformTransform
-                                             toEndTransform:identityTransform
-                                                  timeRange:timeRange];
-                
                 break;
             case DLYVideoTransitionTypeClockwiseRotate:
                 
@@ -1080,12 +1081,7 @@ outputSettings:audioCompressionSettings];
                 break;
             case DLYVideoTransitionTypeZoom:
                 
-                [fromLayer setCropRectangleRampFromStartCropRectangle:CGRectMake(0, 0, videoWidth, videoHeight)
-                                                   toEndCropRectangle:CGRectMake(-200, -200, videoWidth, videoHeight)
-                                                            timeRange:timeRange];
-                [toLayer setCropRectangleRampFromStartCropRectangle:CGRectMake(-200, -200, videoWidth, videoHeight)
-                                                   toEndCropRectangle:CGRectMake(0, 0, videoWidth, videoHeight)
-                                                            timeRange:timeRange];
+            [fromLayer setTransformRampFromStartTransform:identityTransform toEndTransform:fromTransformScale timeRange:timeRange];
                 break;
                 
             default:
@@ -1306,7 +1302,7 @@ outputSettings:audioCompressionSettings];
     CALayer *overlayLayer = [CALayer layer];
     CATextLayer *titleLayer = [CATextLayer layer];
     UIFont *font = [UIFont systemFontOfSize:80.0];
-
+    
     [titleLayer setFontSize:80.f];
     [titleLayer setFont:@"ArialRoundedMTBold"];
     [titleLayer setString:titleText];
@@ -1329,11 +1325,19 @@ outputSettings:audioCompressionSettings];
     animation.beginTime = AVCoreAnimationBeginTimeAtZero;
     [titleLayer addAnimation:animation forKey:@"opacityAniamtion"];
     
+//    CABasicAnimation *anima = [CABasicAnimation animationWithKeyPath:@"position"];
+//    anima.fromValue = [NSValue valueWithCGPoint:CGPointMake(0, renderSize.height/2)];
+//    anima.toValue = [NSValue valueWithCGPoint:CGPointMake(renderSize.width/2, renderSize.height/2)];
+//    anima.duration = 5.0f;
+//    anima.repeatCount = 0;
+//    anima.fillMode = kCAFillModeForwards;
+//    anima.removedOnCompletion = YES;
+//    [titleLayer addAnimation:anima forKey:@"positionAnimation"];
+    
     [overlayLayer addSublayer:titleLayer];
     
     return overlayLayer;
 }
-
 #pragma mark - 叠加 -
 - (void) overlayVideoForBodyVideoAction{
     
