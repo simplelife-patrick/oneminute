@@ -71,9 +71,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 @property (nonatomic, strong) DLYSession                        *session;
 
 @property (nonatomic, strong) AVMutableVideoComposition         *videoComposition;
-
-
-
+@property (nonatomic, strong) AVAssetExportSession              *assetExporter;
 
 @end
 
@@ -100,7 +98,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     _audioConnection  = nil;
     _videoConnection  = nil;
 }
-#pragma mark - lazy load -
+#pragma mark - Lazy Load -
 
 -(DLYResource *)resource{
     if (!_resource) {
@@ -127,7 +125,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     return _session;
 }
-
 -(AVCaptureSession *)captureSession{
     if (_captureSession == nil) {
         _captureSession = [[AVCaptureSession alloc] init];
@@ -575,8 +572,9 @@ outputSettings:audioCompressionSettings];
             [self.assetWriter startSessionAtSourceTime:timestamp];
         }
         else {
-            
-            DLYLog(@"AVAssetWriter startWriting error:%@", self.assetWriter.error);
+            if (self.assetWriter.error) {
+                DLYLog(@"AVAssetWriter startWriting error:%@", self.assetWriter.error);
+            }
         }
     }
     
@@ -589,7 +587,9 @@ outputSettings:audioCompressionSettings];
                 if (![self.assetWriterVideoInput appendSampleBuffer:sampleBuffer]) {
                     
                     DLYLog(@"isRecording:%d, willBeStarted:%d", self.isRecording, recordingWillBeStarted);
-                    DLYLog(@"AVAssetWriterInput video appendSampleBuffer error:%@", self.assetWriter.error);
+                    if (self.assetWriter.error) {
+                        DLYLog(@"AVAssetWriterInput video appendSampleBuffer error:%@", self.assetWriter.error);
+                    }
                 }
             }
         }
@@ -598,8 +598,9 @@ outputSettings:audioCompressionSettings];
             if (self.assetWriterAudioInput.readyForMoreMediaData) {
                 
                 if (![self.assetWriterAudioInput appendSampleBuffer:sampleBuffer]) {
-                    
-                    DLYLog(@"AVAssetWriterInput audio appendSapleBuffer error:%@", self.assetWriter.error);
+                    if (self.assetWriter.error) {
+                        DLYLog(@"AVAssetWriterInput audio appendSapleBuffer error:%@", self.assetWriter.error);
+                    }
                 }
             }
         }
@@ -657,7 +658,7 @@ outputSettings:audioCompressionSettings];
     {
         if ([videoDevice lockForConfiguration:nil]) {
             
-            DLYLog(@"selected format:%@", selectedFormat);
+//            DLYLog(@"selected format:%@", selectedFormat);
             videoDevice.activeFormat = selectedFormat;
             videoDevice.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);//设置帧率
             videoDevice.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
@@ -670,7 +671,6 @@ outputSettings:audioCompressionSettings];
 #pragma mark - 开始录制 -
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
     
-    self.currentPart = part;
 //    CGFloat desiredFps = 0.0;
 //    
 //    if (part.recordType == DLYMiniVlogRecordTypeSlomo) {
@@ -714,12 +714,13 @@ outputSettings:audioCompressionSettings];
         referenceOrientation = (AVCaptureVideoOrientation)orientation;
     }
     
-    DLYResource *resource = [[DLYResource alloc] init];
-    fileUrl = [resource saveDraftPartWithPartNum:part.partNum];
+    fileUrl = [self.resource saveDraftPartWithPartNum:part.partNum];
     
     NSError *error;
     self.assetWriter = [[AVAssetWriter alloc] initWithURL:fileUrl fileType:AVFileTypeMPEG4 error:&error];
-    DLYLog(@"AVAssetWriter error:%@", error);
+    if (error) {
+        DLYLog(@"AVAssetWriter error:%@", error);
+    }
     
     recordingWillBeStarted = YES;
 }
@@ -874,7 +875,7 @@ outputSettings:audioCompressionSettings];
     
     NSArray *videoArray = [self.resource loadDraftParts];
     
-    AVMutableComposition* mixComposition = [AVMutableComposition composition];
+    AVMutableComposition *mixComposition = [AVMutableComposition composition];
     
     AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
     AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
@@ -906,16 +907,15 @@ outputSettings:audioCompressionSettings];
         tmpDuration += CMTimeGetSeconds(videoAssetTrack.timeRange.duration);
     }
     
-    DLYResource *resource = [[DLYResource alloc]init];
-    NSURL *outputUrl = [resource saveProductToSandbox];
+    NSURL *outputUrl = [self.resource saveProductToSandbox];
 
-    AVAssetExportSession *exporter = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1920x1080];
-    exporter.outputURL = outputUrl;
-    exporter.outputFileType = AVFileTypeMPEG4;
-    exporter.shouldOptimizeForNetworkUse = YES;
+    AVAssetExportSession *exporter = [self makeExportableWithAsset:mixComposition outputUrl:outputUrl videoComposition:nil andAudioMax:nil];
+
     [exporter exportAsynchronouslyWithCompletionHandler:^{
         DLYLog(@"草稿片段mgerge成功");
-        NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"UniversalTemplateBGM.m4a" ofType:nil];
+        DLYMiniVlogTemplate *template = self.session.currentTemplate;
+        
+        NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@".m4a"];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
         
         [self addMusicToVideo:outputUrl audioUrl:BGMUrl videoTitle:videoTitle successBlock:successBlock failure:failureBlcok];
@@ -936,9 +936,7 @@ outputSettings:audioCompressionSettings];
     CMPersistentTrackID trackID = kCMPersistentTrackID_Invalid;
     AVMutableCompositionTrack *compositionTrackA = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
     AVMutableCompositionTrack *compositionTrackB = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
-    AVMutableCompositionTrack *compositionTrackAudio =
-    [self.composition addMutableTrackWithMediaType:AVMediaTypeAudio
-                                  preferredTrackID:trackID];
+    AVMutableCompositionTrack *compositionTrackAudio = [self.composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:trackID];
     
     NSArray *videoTracks = @[compositionTrackA, compositionTrackB];
     
@@ -986,20 +984,20 @@ outputSettings:audioCompressionSettings];
             [self.transitionTimeRanges addObject:timeRangeValue];
         }
     }
-    AVMutableVideoComposition *videoComposition = [self buildVideoComposition];
+    
+    AVVideoComposition *videoComposition = [self buildVideoComposition];
     
     NSURL *outputUrl = [self.resource saveProductToSandbox];
     self.currentProductUrl = outputUrl;
     
-    AVAssetExportSession *exporter = [[AVAssetExportSession alloc] initWithAsset:self.composition presetName:AVAssetExportPresetHighestQuality];
-    exporter.outputURL = outputUrl;
-    exporter.videoComposition = videoComposition;
-    exporter.outputFileType = AVFileTypeMPEG4;
-    exporter.shouldOptimizeForNetworkUse = YES;
+    AVAssetExportSession *exporter = [self makeExportableWithAsset:self.composition outputUrl:outputUrl videoComposition:videoComposition andAudioMax:nil];
+    
     [exporter exportAsynchronouslyWithCompletionHandler:^{
         
         DLYLog(@"合并及转场操作成功");
-        NSString *BGMPath = [[NSBundle mainBundle] pathForResource:@"UniversalTemplateBGM.m4a" ofType:nil];
+        DLYMiniVlogTemplate *template = self.session.currentTemplate;
+
+        NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@".m4a"];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
         
         [self addMusicToVideo:outputUrl audioUrl:BGMUrl videoTitle:videoTitle successBlock:successBlock failure:failureBlcok];
@@ -1028,17 +1026,16 @@ outputSettings:audioCompressionSettings];
         CGAffineTransform fromDestTransform = CGAffineTransformMakeTranslation(-videoWidth, 0.0);
         CGAffineTransform toStartTransform = CGAffineTransformMakeTranslation(videoWidth, 0.0);
         
-        
-        //平移变换
-        CGAffineTransform fromDestTransformAndTransform = CGAffineTransformTranslate(fromDestTransform,videoWidth,videoHeight);
+        CGAffineTransform transform1 = CGAffineTransformMakeRotation(M_PI);
+        CGAffineTransform transform2 = CGAffineTransformScale(transform1, 2.0, 2.0);
+        CGAffineTransform transforms = CGAffineTransformTranslate(transform2,400,400);
         
         //Rotation
-        CGAffineTransform fromDestTransformRotation = CGAffineTransformMakeRotation(M_PI_2);
-        CGAffineTransform toStartTransformRotation = CGAffineTransformMakeRotation(-M_PI_2);
+        CGAffineTransform fromDestTransformRotation = CGAffineTransformMakeRotation(-M_PI);
+        CGAffineTransform toStartTransformRotation = CGAffineTransformMakeRotation(M_PI);
         
-        //Transform2
-        CGAffineTransform fromDestTransformTransform = CGAffineTransformMakeTranslation(videoHeight, 0.0);
-        CGAffineTransform toStartTransformTransform = CGAffineTransformMakeTranslation(-videoHeight, 0.0);
+        //缩放
+        CGAffineTransform fromTransformScale = CGAffineTransformMakeScale(2, 2);
         
         DLYVideoTransitionType type = instructions.transition.type;
     
@@ -1060,13 +1057,12 @@ outputSettings:audioCompressionSettings];
             case DLYVideoTransitionTypeWipe:
     
                 [fromLayer setTransformRampFromStartTransform:identityTransform
-                                               toEndTransform:fromDestTransformTransform
+                                               toEndTransform:transform2
                                                     timeRange:timeRange];
-    
-                [toLayer setTransformRampFromStartTransform:toStartTransformTransform
-                                             toEndTransform:identityTransform
-                                                  timeRange:timeRange];
                 
+                [toLayer setTransformRampFromStartTransform:transform2
+                                               toEndTransform:identityTransform
+                                                    timeRange:timeRange];
                 break;
             case DLYVideoTransitionTypeClockwiseRotate:
                 
@@ -1080,12 +1076,7 @@ outputSettings:audioCompressionSettings];
                 break;
             case DLYVideoTransitionTypeZoom:
                 
-                [fromLayer setCropRectangleRampFromStartCropRectangle:CGRectMake(0, 0, videoWidth, videoHeight)
-                                                   toEndCropRectangle:CGRectMake(-200, -200, videoWidth, videoHeight)
-                                                            timeRange:timeRange];
-                [toLayer setCropRectangleRampFromStartCropRectangle:CGRectMake(-200, -200, videoWidth, videoHeight)
-                                                   toEndCropRectangle:CGRectMake(0, 0, videoWidth, videoHeight)
-                                                            timeRange:timeRange];
+            [fromLayer setTransformRampFromStartTransform:identityTransform toEndTransform:fromTransformScale timeRange:timeRange];
                 break;
                 
             default:
@@ -1140,7 +1131,6 @@ outputSettings:audioCompressionSettings];
         transition.type = transitionType;
         tis.transition = transition;
     }
-    
     return transitionInstructions;
 }
 #pragma mark - 配音 -
@@ -1159,16 +1149,15 @@ outputSettings:audioCompressionSettings];
     if ([[audioAsset tracksWithMediaType:AVMediaTypeAudio] count] != 0) {
         audioAssetTrack = [[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
     }
-    
     //创建视频编辑工程
     AVMutableComposition* mixComposition = [AVMutableComposition composition];
     
     //将视音频素材加入编辑工程
-    AVMutableCompositionTrack *videoCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-    AVMutableCompositionTrack *audioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+    CMPersistentTrackID trackID = kCMPersistentTrackID_Invalid;
+    AVMutableCompositionTrack *videoCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
+    AVMutableCompositionTrack *audioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:trackID];
     
     NSError *error = nil;
-    
     if (videoAssetTrack) {
         [videoCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssetTrack.timeRange.duration) ofTrack:videoAssetTrack atTime:kCMTimeZero error:&error];
     }
@@ -1197,8 +1186,6 @@ outputSettings:audioCompressionSettings];
         passThroughInstruction.layerInstructions = @[passThroughLayer];
         mutableVideoComposition.instructions = @[passThroughInstruction];
         
-        
-        
         CGSize renderSize = mutableVideoComposition.renderSize;
         CALayer *watermarkLayer = [self addTitleForVideoWith:videoTitle size:renderSize];
         
@@ -1213,7 +1200,10 @@ outputSettings:audioCompressionSettings];
     }
 
     //处理视频原声
-    AVAssetTrack *originalAudioAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
+    AVAssetTrack *originalAudioAssetTrack = nil;
+    if ([[videoAsset tracksWithMediaType:AVMediaTypeAudio] count] != 0) {
+        originalAudioAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
+    }
     
     AVMutableCompositionTrack *originalAudioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     
@@ -1230,12 +1220,12 @@ outputSettings:audioCompressionSettings];
         
         DLYMiniVlogPart *part = partArray[i];
         
-        NSArray *startArr = [part.starTime componentsSeparatedByString:@":"];
+        NSArray *startArr = [part.dubStartTime componentsSeparatedByString:@":"];
         NSString *startTimeStr = startArr[1];
         float startTime = [startTimeStr floatValue];
         _startTime = CMTimeMake(startTime, 1);
         
-        NSArray *stopArr = [part.stopTime componentsSeparatedByString:@":"];
+        NSArray *stopArr = [part.dubStopTime componentsSeparatedByString:@":"];
         NSString *stopTimeStr = stopArr[1];
         float stopTime = [stopTimeStr floatValue];
         _stopTime = CMTimeMake(stopTime, 1);
@@ -1259,7 +1249,6 @@ outputSettings:audioCompressionSettings];
     }
     audioMix.inputParameters = @[videoParameters,BGMParameters];
     
-    AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
     
     NSURL *outPutUrl = [self.resource saveProductToSandbox];
     self.currentProductUrl = outPutUrl;
@@ -1270,11 +1259,7 @@ outputSettings:audioCompressionSettings];
     }
     
     //输出设置
-    assetExportSession.outputURL = outPutUrl;
-    assetExportSession.outputFileType = AVFileTypeMPEG4;
-    assetExportSession.videoComposition = mutableVideoComposition;
-    assetExportSession.audioMix = audioMix;
-    assetExportSession.shouldOptimizeForNetworkUse = YES;
+    AVAssetExportSession *assetExportSession = [self makeExportableWithAsset:mixComposition outputUrl:outPutUrl videoComposition:mutableVideoComposition andAudioMax:audioMix];
     
     [assetExportSession exportAsynchronouslyWithCompletionHandler:^{
         switch ([assetExportSession status]) {
@@ -1306,7 +1291,7 @@ outputSettings:audioCompressionSettings];
     CALayer *overlayLayer = [CALayer layer];
     CATextLayer *titleLayer = [CATextLayer layer];
     UIFont *font = [UIFont systemFontOfSize:80.0];
-
+    
     [titleLayer setFontSize:80.f];
     [titleLayer setFont:@"ArialRoundedMTBold"];
     [titleLayer setString:titleText];
@@ -1329,11 +1314,19 @@ outputSettings:audioCompressionSettings];
     animation.beginTime = AVCoreAnimationBeginTimeAtZero;
     [titleLayer addAnimation:animation forKey:@"opacityAniamtion"];
     
+//    CABasicAnimation *anima = [CABasicAnimation animationWithKeyPath:@"position"];
+//    anima.fromValue = [NSValue valueWithCGPoint:CGPointMake(0, renderSize.height/2)];
+//    anima.toValue = [NSValue valueWithCGPoint:CGPointMake(renderSize.width/2, renderSize.height/2)];
+//    anima.duration = 5.0f;
+//    anima.repeatCount = 0;
+//    anima.fillMode = kCAFillModeForwards;
+//    anima.removedOnCompletion = YES;
+//    [titleLayer addAnimation:anima forKey:@"positionAnimation"];
+    
     [overlayLayer addSublayer:titleLayer];
     
     return overlayLayer;
 }
-
 #pragma mark - 叠加 -
 - (void) overlayVideoForBodyVideoAction{
     
@@ -1352,8 +1345,7 @@ outputSettings:audioCompressionSettings];
     [self.alphaMovie addTarget:self.filter];
     [self.bodyMovie addTarget:self.filter];
     
-    DLYResource *resource = [[DLYResource alloc]init];
-    NSURL *outputUrl = [resource saveToSandboxFolderType:NSDocumentDirectory subfolderName:@"HeaderVideos" suffixType:@".mp4"];
+    NSURL *outputUrl = [self.resource saveToSandboxFolderType:NSDocumentDirectory subfolderName:@"HeaderVideos" suffixType:@".mp4"];
     self.movieWriter =  [[GPUImageMovieWriter alloc] initWithMovieURL:outputUrl size:videoSize];
     
     [self.filter addTarget:self.movieWriter];
@@ -1424,8 +1416,16 @@ outputSettings:audioCompressionSettings];
     videoComposition.instructions = [NSArray arrayWithObject:inst];
 }
 
-- (void)captureOutput:(nonnull AVCaptureFileOutput *)output didFinishRecordingToOutputFileAtURL:(nonnull NSURL *)outputFileURL fromConnections:(nonnull NSArray<AVCaptureConnection *> *)connections error:(nullable NSError *)error {
+- (AVAssetExportSession *)makeExportableWithAsset:(AVMutableComposition *)composition outputUrl:(NSURL *)outputUrl videoComposition:(AVVideoComposition *)videoComposition andAudioMax:(AVAudioMix *)audioMax{
     
+    AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:composition presetName:AVAssetExportPresetHighestQuality];
+    assetExportSession.outputURL = outputUrl;
+    assetExportSession.audioMix = audioMax;
+    assetExportSession.videoComposition = videoComposition;
+    assetExportSession.outputFileType = AVFileTypeMPEG4;
+    assetExportSession.shouldOptimizeForNetworkUse = YES;
+    
+    return assetExportSession;
 }
 
 @end

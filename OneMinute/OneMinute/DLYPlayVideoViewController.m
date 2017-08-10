@@ -280,8 +280,7 @@
 
 - (void)onClickNext {
     
-    DLYResource *resource = [[DLYResource alloc] init];
-    [resource removeCurrentAllPart];
+    [self.resource removeCurrentAllPart];
     //跳转下一步填写标题
     [self pause];
     DLYExportViewController *exportVC = [[DLYExportViewController alloc] init];
@@ -545,8 +544,7 @@
     
     [self pause];
     if (self.isAll) {
-        DLYResource *resource = [[DLYResource alloc] init];
-        [resource removeCurrentAllPart];
+        [self.resource removeCurrentAllPart];
         //跳转下一步填写标题
         DLYExportViewController *exportVC = [[DLYExportViewController alloc] init];
         exportVC.beforeState = self.newState;

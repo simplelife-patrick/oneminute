@@ -33,7 +33,7 @@
     [defaults setObject:currentTemplateName forKey:kCURRENTTEMPLATEKEY];
     
     if ([defaults synchronize]) {
-        DLYLog(@"Current template saved success!");
+
     }else{
         DLYLog(@"⚠️⚠️⚠️Current template saved failure!");
     };
@@ -67,7 +67,7 @@
     return NO;
 }
 
-+ (DLYMiniVlogTemplate *)loadTemplateWithTemplateName:(NSString *)templateName{
+- (DLYMiniVlogTemplate *)loadTemplateWithTemplateName:(NSString *)templateName{
     
     DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:templateName];
     

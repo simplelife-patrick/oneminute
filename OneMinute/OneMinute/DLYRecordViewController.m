@@ -225,7 +225,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSArray *typeNameArray = @[@"Universal_001.json",@"Gourmandism001.json",@"Travele001.json",@"ColorLife.json"];
     for(int i = 0; i < typeNameArray.count; i ++)
     {
-        DLYMiniVlogTemplate *template = [DLYSession loadTemplateWithTemplateName:typeNameArray[i]];
+        DLYMiniVlogTemplate *template = [self.session loadTemplateWithTemplateName:typeNameArray[i]];
         [typeModelArray addObject:template];
     }
     
@@ -272,7 +272,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSArray *typeNameArray = @[@"Universal_001.json",@"Gourmandism001.json",@"Travele001.json",@"ColorLife.json"];
     for(int i = 0; i < typeNameArray.count; i ++)
     {
-        DLYMiniVlogTemplate *template = [DLYSession loadTemplateWithTemplateName:typeNameArray[i]];
+        DLYMiniVlogTemplate *template = [self.session loadTemplateWithTemplateName:typeNameArray[i]];
         [typeModelArray addObject:template];
     }
     
