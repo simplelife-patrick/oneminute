@@ -26,7 +26,7 @@ typedef void(^FailureBlock)(NSError *error);
                                       error:(NSError *)error;
 @end
 
-@interface DLYAVEngine : DLYModule<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate>
+@interface DLYAVEngine : DLYModule<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate>
 
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *currentVideoDeviceInput;
 @property (nonatomic, strong) AVCaptureDevice                                         *videoDevice;

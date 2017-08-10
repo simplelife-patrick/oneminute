@@ -1031,8 +1031,8 @@ outputSettings:audioCompressionSettings];
         CGAffineTransform transforms = CGAffineTransformTranslate(transform2,400,400);
         
         //Rotation
-        CGAffineTransform fromDestTransformRotation = CGAffineTransformMakeRotation(-M_PI_2);
-        CGAffineTransform toStartTransformRotation = CGAffineTransformMakeRotation(M_PI_2);
+        CGAffineTransform fromDestTransformRotation = CGAffineTransformMakeRotation(-M_PI);
+        CGAffineTransform toStartTransformRotation = CGAffineTransformMakeRotation(M_PI);
         
         //缩放
         CGAffineTransform fromTransformScale = CGAffineTransformMakeScale(2, 2);
