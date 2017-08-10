@@ -22,7 +22,7 @@
 #import "ALAssetsLibrary+CustomPhotoAlbum.h"
 #import <math.h>
 
-@interface DLYAVEngine ()
+@interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate>
 {
     CMTime defaultVideoMaxFrameDuration;
     BOOL readyToRecordAudio;
@@ -44,6 +44,7 @@
 
 @property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;
 @property (nonatomic, strong) AVCaptureAudioDataOutput          *audioOutput;
+@property (nonatomic,strong) AVCaptureMetadataOutput            *metadataOutput;
 @property (nonatomic, strong) AVCaptureMovieFileOutput          *movieFileOutput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *backCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *frontCameraInput;
@@ -142,6 +143,11 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([_captureSession canAddOutput:self.videoOutput]) {
             [_captureSession addOutput:self.videoOutput];
         }
+        //添加元数据输出
+        if ([_captureSession canAddOutput:self.metadataOutput]) {
+            [_captureSession addOutput:self.metadataOutput];
+            self.metadataOutput.metadataObjectTypes = @[AVMetadataObjectTypeFace];
+        }
         //添加音频输出
         if ([_captureSession canAddOutput:self.audioOutput]) {
             [_captureSession addOutput:self.audioOutput];
@@ -228,6 +234,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         // BufferQueue
         OSStatus err = CMBufferQueueCreate(kCFAllocatorDefault, 1, CMBufferQueueGetCallbacksForUnsortedSampleBuffers(), &previewBufferQueue);
         DLYLog(@"CMBufferQueueCreate error:%d", (int)err);
+        
+        self.metadataOutput.rectOfInterest = [self.previewLayer metadataOutputRectOfInterestForRect:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
 
         [self.captureSession startRunning];
     }
@@ -465,7 +473,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
 }
 
-#pragma mark -视频数据输出设置-
+#pragma mark - 视频数据输出设置 -
 
 - (BOOL)setupAssetWriterVideoInput:(CMFormatDescriptionRef)currentFormatDescription
 {
@@ -764,8 +772,8 @@ outputSettings:audioCompressionSettings];
         }];
     });
 }
-
-#pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
+#pragma mark
+#pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate -
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     
     if (self.onBuffer) {
@@ -812,7 +820,29 @@ outputSettings:audioCompressionSettings];
         CFRelease(sampleBuffer);
     });
 }
-#pragma mark -延时拍摄-
+#pragma mark
+#pragma mark - AVCaptureMetadataOutputObjectsDelegate -
+// 检测人脸是为了获得“人脸区域”，做“人脸区域”与“身份证人像框”的区域对比，当前者在后者范围内的时候，才能截取到完整的身份证图像
+-(void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection{
+    
+    if (metadataObjects.count) {
+        AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects.firstObject;
+        
+        AVMetadataObject *transformedMetadataObject = [self.previewLayer transformedMetadataObjectForMetadataObject:metadataObject];
+        CGRect faceRegion = transformedMetadataObject.bounds;
+        
+        if (metadataObject.type == AVMetadataObjectTypeFace) {
+            CGRect referenceRect = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+            
+            DLYLog(@"是否包含人脸：%d, facePathRect: %@, faceRegion: %@",CGRectContainsRect(referenceRect, faceRegion),NSStringFromCGRect(referenceRect),NSStringFromCGRect(faceRegion));
+            if (!self.videoOutput.sampleBufferDelegate) {
+                dispatch_queue_t faceRegionQueue = dispatch_queue_create("faceRegionQueue", DISPATCH_QUEUE_SERIAL);
+                [self.videoOutput setSampleBufferDelegate:self queue:faceRegionQueue];
+            }
+        }
+    }
+}
+#pragma mark - 延时拍摄 -
 //获取视频某一帧图像
 -(UIImage*)getKeyImage:(NSURL *)assetUrl intervalTime:(NSInteger)intervalTime{
     

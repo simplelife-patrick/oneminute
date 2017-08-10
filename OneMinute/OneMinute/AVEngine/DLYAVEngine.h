@@ -22,11 +22,12 @@ typedef void(^SuccessBlock)(void);
 typedef void(^FailureBlock)(NSError *error);
 
 @protocol DLYCaptureManagerDelegate <NSObject>
-- (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
-                                      error:(NSError *)error;
+
+- (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL error:(NSError *)error;
+
 @end
 
-@interface DLYAVEngine : DLYModule<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate>
+@interface DLYAVEngine : DLYModule
 
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *currentVideoDeviceInput;
 @property (nonatomic, strong) AVCaptureDevice                                         *videoDevice;
