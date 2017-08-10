@@ -9,8 +9,6 @@
 #import "DLYPopupMenu.h"
 #import "DLYPopupMenuPath.h"
 
-#define YBScreenWidth [UIScreen mainScreen].bounds.size.width
-#define YBScreenHeight [UIScreen mainScreen].bounds.size.height
 #define YBMainWindow  [UIApplication sharedApplication].keyWindow
 #define YB_SAFE_BLOCK(BlockName, ...) ({ !BlockName ? nil : BlockName(__VA_ARGS__); })
 
@@ -284,7 +282,7 @@ UITableViewDataSource
     _itemHeight = 44;
     _isCornerChanged = NO;
     _showMaskView = YES;
-    _menuBackView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, YBScreenWidth, YBScreenHeight)];
+    _menuBackView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     _menuBackView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
     _menuBackView.alpha = 0;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget: self action: @selector(touchOutSide)];
@@ -478,7 +476,7 @@ UITableViewDataSource
     }
     _isChangeDirection = NO;
     if (_priorityDirection == YBPopupMenuPriorityDirectionTop) {
-        if (_point.y + height + _arrowHeight > YBScreenHeight - _minSpace) {
+        if (_point.y + height + _arrowHeight > SCREEN_HEIGHT - _minSpace) {
             _arrowDirection = YBPopupMenuArrowDirectionBottom;
             _isChangeDirection = YES;
         }else {
@@ -494,7 +492,7 @@ UITableViewDataSource
             _isChangeDirection = NO;
         }
     }else if (_priorityDirection == YBPopupMenuPriorityDirectionLeft) {
-        if (_point.x + _itemWidth + _arrowHeight > YBScreenWidth - _minSpace) {
+        if (_point.x + _itemWidth + _arrowHeight > SCREEN_WIDTH - _minSpace) {
             _arrowDirection = YBPopupMenuArrowDirectionRight;
             _isChangeDirection = YES;
         }else {
@@ -515,7 +513,7 @@ UITableViewDataSource
     if (_arrowDirection == YBPopupMenuArrowDirectionTop) {
         CGFloat y = _isChangeDirection ? _point.y  : _point.y;
         if (_arrowPosition > _itemWidth / 2) {
-            self.frame = CGRectMake(YBScreenWidth - _minSpace - _itemWidth, y, _itemWidth, height + _arrowHeight);
+            self.frame = CGRectMake(SCREEN_WIDTH - _minSpace - _itemWidth, y, _itemWidth, height + _arrowHeight);
         }else if (_arrowPosition < _itemWidth / 2) {
             self.frame = CGRectMake(_minSpace, y, _itemWidth, height + _arrowHeight);
         }else {
@@ -524,7 +522,7 @@ UITableViewDataSource
     }else if (_arrowDirection == YBPopupMenuArrowDirectionBottom) {
         CGFloat y = _isChangeDirection ? _point.y - _arrowHeight - height : _point.y - _arrowHeight - height;
         if (_arrowPosition > _itemWidth / 2) {
-            self.frame = CGRectMake(YBScreenWidth - _minSpace - _itemWidth, y, _itemWidth, height + _arrowHeight);
+            self.frame = CGRectMake(SCREEN_WIDTH - _minSpace - _itemWidth, y, _itemWidth, height + _arrowHeight);
         }else if (_arrowPosition < _itemWidth / 2) {
             self.frame = CGRectMake(_minSpace, y, _itemWidth, height + _arrowHeight);
         }else {
@@ -703,8 +701,8 @@ UITableViewDataSource
         return;
     }
     if (_arrowDirection == YBPopupMenuArrowDirectionTop || _arrowDirection == YBPopupMenuArrowDirectionBottom) {
-        if (_point.x + _itemWidth / 2 > YBScreenWidth - _minSpace) {
-            _arrowPosition = _itemWidth - (YBScreenWidth - _minSpace - _point.x);
+        if (_point.x + _itemWidth / 2 > SCREEN_WIDTH - _minSpace) {
+            _arrowPosition = _itemWidth - (SCREEN_WIDTH - _minSpace - _point.x);
         }else if (_point.x < _itemWidth / 2 + _minSpace) {
             _arrowPosition = _point.x - _minSpace;
         }else {

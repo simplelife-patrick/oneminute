@@ -24,7 +24,7 @@
 #import "UIColor+Hex.h"
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
-
+#import <AFNetworking/AFNetworking.h>
 
 #ifdef DEBUG
 //#import "FLEXManager.h"

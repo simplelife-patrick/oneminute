@@ -185,7 +185,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     [self.session saveCurrentTemplateWithName:template.templateName];
     partModelArray = [NSMutableArray arrayWithArray:template.parts];
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < partModelArray.count; i++) {
         DLYMiniVlogPart *part = partModelArray[i];
         if (i == 0) {
             part.prepareRecord = @"1";
@@ -255,7 +255,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.session saveCurrentTemplateWithName:template.templateName];
     partModelArray = [NSMutableArray arrayWithArray:template.parts];
     
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < partModelArray.count; i++) {
         DLYMiniVlogPart *part = partModelArray[i];
         if (i == 0) {
             part.prepareRecord = @"1";

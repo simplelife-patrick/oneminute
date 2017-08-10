@@ -14,12 +14,13 @@
 #import "DLYAVEngine.h"
 
 #define kMaxLength 16
-#define SWitdh [UIScreen mainScreen].bounds.size.width
-#define SHeight [UIScreen mainScreen].bounds.size.height
 
 @interface DLYPlayVideoViewController ()<UITextFieldDelegate>
 {
-    BOOL isPlay;  //记录播放还是暂停
+    float mRestoreAfterScrubbingRate;
+    //1.流量 2.WiFi 3.不可用
+    NSInteger statusNum;
+    id _timeObserver;
 }
 @property (nonatomic, strong) DLYAVEngine *AVEngine;
 @property (nonatomic, strong) DLYResource  *resource;
@@ -27,8 +28,7 @@
 @property (nonatomic, strong) AVPlayerItem *playerItem;
 @property (nonatomic, strong) AVPlayerLayer *playerLayer;
 /** 播放器对象 */
-@property (nonatomic, strong) UIProgressView *progress;
-@property (nonatomic, strong) id progressObserver;
+@property (nonatomic, strong) UISlider *progressSlider;
 @property (nonatomic, strong) UIButton *playButton;
 //控件
 @property (nonatomic, strong) UIActivityIndicatorView *waitIndicator;
@@ -39,6 +39,12 @@
 @property (nonatomic, strong) UIButton *skipButton;
 @property (nonatomic, strong) UIButton *skipTestBtn;
 @property (nonatomic, strong) UIView *backView;
+//网络监测
+@property (nonatomic, strong) AFNetworkReachabilityManager *manager;
+@property (nonatomic, strong) DLYAlertView *alert;
+
+@property (nonatomic, assign) BOOL isCanOnlinePlay; //准备好了可以播放
+@property (nonatomic, assign) BOOL isSurePlay;      //确定流量播放
 
 @end
 
@@ -46,6 +52,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    if (self.isOnline) {
+        [self monitorNetWork];
+    }
     
     if (!self.isSuccess && self.isAll) {
         [self initializationRecorder];
@@ -60,9 +70,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
 
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(canPlayVideo:) name:@"CANPLAY" object:nil];
+    
+
 }
 
-#pragma mark - 初始化相机
+#pragma mark ==== 初始化相机
 - (void)initializationRecorder {
     
     self.AVEngine = [[DLYAVEngine alloc] init];
@@ -72,7 +84,7 @@
     NSURL *url = [self.resource getPartUrlWithPartNum:0];
     UIImage *frameImage = [self.AVEngine getKeyImage:url intervalTime:2.0];
     
-    UIImageView * videoImage = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SWitdh, SHeight)];
+    UIImageView * videoImage = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     videoImage.image = frameImage;
     [self.view addSubview:videoImage];
     
@@ -153,18 +165,15 @@
     //创建播放器层
     self.view.backgroundColor = RGB(0, 0, 0);
     self.playerItem = [AVPlayerItem playerItemWithURL:self.playUrl];
-    NSLog(@"打印：%@", self.playUrl);
+
     if ((self.isSuccess && self.isAll) || (!self.isAll)) {
         [self addObserverToPlayItem:self.playerItem];
-        NSLog(@"走了3");
     }
     self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
     self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
     self.playerLayer.frame = self.view.frame;
     self.playerLayer.videoGravity = AVLayerVideoGravityResize;
-    [self.view.layer addSublayer:self.playerLayer];
-    
-    isPlay = YES;
+    [self.view.layer insertSublayer:self.playerLayer atIndex:0];
     
     //返回
     self.backButton = [[UIButton alloc]initWithFrame:CGRectMake(28, 0, 60, 60)];
@@ -189,7 +198,7 @@
     [self.view addSubview:self.playButton];
     //下一步
     if (self.isAll) {
-        self.nextButton = [[UIButton alloc]initWithFrame:CGRectMake(SWitdh - 82, 0, 60, 60)];
+        self.nextButton = [[UIButton alloc]initWithFrame:CGRectMake(SCREEN_WIDTH - 82, 0, 60, 60)];
         self.nextButton.backgroundColor = RGB(255, 0, 0);
         self.nextButton.centerY = self.view.centerY;
         self.nextButton.layer.cornerRadius = 30;
@@ -213,22 +222,23 @@
         
         [self.waitIndicator startAnimating];
     }
+    //滑块
+    self.progressSlider = [[UISlider alloc] initWithFrame:CGRectMake(32, SCREEN_HEIGHT - 45, SCREEN_WIDTH - 64, 20)];
+    self.progressSlider.centerY = SCREEN_HEIGHT - 44;
+    self.progressSlider.maximumTrackTintColor = [UIColor whiteColor];
+    self.progressSlider.minimumTrackTintColor = [UIColor redColor];
+    self.progressSlider.continuous = NO;
+    self.progressSlider.value = 0.0;
+    [self.progressSlider setThumbImage:[UIImage imageNamed:@"plthumb"] forState:UIControlStateNormal];
+    [self.progressSlider setThumbImage:[UIImage imageNamed:@"plthumb"] forState:UIControlStateHighlighted];
+    [self.progressSlider addTarget:self action:@selector(scrub:) forControlEvents:UIControlEventValueChanged];
+    [self.progressSlider addTarget:self action:@selector(beginScrubbing:) forControlEvents:UIControlEventTouchDown];
+    [self.progressSlider addTarget:self action:@selector(endScrubbing:) forControlEvents:UIControlEventTouchUpInside];
+    [self.progressSlider addTarget:self action:@selector(endScrubbing:) forControlEvents:UIControlEventTouchUpOutside];
     
-    self.progress = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
-    //设置的高度对进度条的高度没影响，整个高度=进度条的高度，进度条也是个圆角矩形
-    //但slider滑动控件：设置的高度对slider也没影响，但整个高度=设置的高度，可以设置背景来检验
-    self.progress.frame = CGRectMake(32, SHeight - 45, SWitdh - 64, 2);
-    //设置进度条颜色
-    self.progress.trackTintColor = [UIColor whiteColor];
-    //设置进度默认值，这个相当于百分比，范围在0~1之间，不可以设置最大最小值
-    self.progress.progress = 0;
-    //设置进度条上进度的颜色
-    self.progress.progressTintColor = [UIColor redColor];
-    [self.progress setProgress:0.0 animated:YES];
-    [self.view addSubview:self.progress];
-    
+    [self.view addSubview:self.progressSlider];
     if (!self.isOnline && self.waitIndicator.isAnimating) {
-        self.progress.hidden = YES;
+        self.progressSlider.hidden = YES;
         self.backButton.hidden = YES;
         self.playButton.hidden = YES;
     }
@@ -258,18 +268,14 @@
 - (void)onClickPlayOrPause:(UIButton *)sender {
     
     [MobClick event:@"PlayOrPause"];
-    if(isPlay)
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    if([self isPlaying])
     {//之前是播放那就暂停 显示暂停图标
-        
-        [sender setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
-        [self.player pause];
+        [self pause];
     }else
     {//之前是暂停那就播放 显示播放图标
-        [sender setImage:[UIImage imageWithIcon:@"\U0000e66a" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
-        [self.player play];
+        [self play];
     }
-    isPlay = !isPlay;
-    [self scheduleHideControls];
 }
 
 - (void)onClickNext {
@@ -277,10 +283,7 @@
     DLYResource *resource = [[DLYResource alloc] init];
     [resource removeCurrentAllPart];
     //跳转下一步填写标题
-    [self.player pause];
-    isPlay = NO;
-    [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
-    
+    [self pause];
     DLYExportViewController *exportVC = [[DLYExportViewController alloc] init];
     exportVC.beforeState = self.newState;
     [self.navigationController pushViewController:exportVC animated:YES];
@@ -303,7 +306,209 @@
     [playerItem removeObserver:self forKeyPath:@"playbackBufferEmpty"];
     [playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
 }
-#pragma mark - 重写父类方法
+#pragma mark ==== 网络监测
+- (void)monitorNetWork {
+    
+    // 1.获得网络监控的管理者
+    _manager = [AFNetworkReachabilityManager sharedManager];
+    // 2.设置网络状态改变后的处理
+    __weak typeof(self) weakSelf = self;
+    [_manager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        
+        if (status == AFNetworkReachabilityStatusReachableViaWWAN) {
+            statusNum = AFNetworkReachabilityStatusReachableViaWWAN;
+//            NSLog(@"当前处于非WIFI状态");
+            [weakSelf pause];
+            [weakSelf hideControlsFast];
+            weakSelf.alert = [[DLYAlertView alloc] initWithMessage:@"当前处于非WIFI状态\n是否继续观看?" andCancelButton:@"取消" andSureButton:@"确定"];
+            weakSelf.alert.sureButtonAction = ^{
+                if (weakSelf.isCanOnlinePlay) {
+                    [weakSelf play];
+                }else {
+                    weakSelf.isSurePlay = YES;
+                }
+            };
+            weakSelf.alert.cancelButtonAction = ^{
+            };
+            
+        }else if (status == AFNetworkReachabilityStatusUnknown || status == AFNetworkReachabilityStatusNotReachable){
+            statusNum = -1;
+//            NSLog(@"当前无可用网络,请联网后播放");
+            weakSelf.alert = [[DLYAlertView alloc] initWithMessage:@"当前无可用网络,请联网后播放" withSureButton:@"确定"];
+            weakSelf.alert.sureButtonAction = ^{
+                
+            };
+        }else if (status == AFNetworkReachabilityStatusReachableViaWiFi) {
+            statusNum = AFNetworkReachabilityStatusReachableViaWiFi;
+        }
+    }];
+    // 3.开始监控
+    [_manager startMonitoring];
+    
+}
+#pragma mark ==== 播放器控制
+- (void)beginScrubbing:(UISlider *)sender {
+    mRestoreAfterScrubbingRate = [self.player rate];
+    [self.player setRate:0.f];
+    
+    [self removePlayerTimeObserver];
+}
+- (void)scrub:(UISlider *)sender {
+    if ([sender isKindOfClass:[UISlider class]]) {
+        UISlider* slider = sender;
+        
+        CMTime playerDuration = [self playerItemDuration];
+        if (CMTIME_IS_INVALID(playerDuration)) {
+            return;
+        }
+        
+        double duration = CMTimeGetSeconds(playerDuration);
+        if (isfinite(duration)) {
+            float minValue = [slider minimumValue];
+            float maxValue = [slider maximumValue];
+            float value = [slider value];
+            
+            double time = duration * (value - minValue) / (maxValue - minValue);
+            
+            if (time == duration) {
+                
+                [_player seekToTime:kCMTimeZero];
+                [_player play];
+                
+            }else{
+                __weak typeof(self) weakSelf = self;
+                [_player seekToTime:CMTimeMakeWithSeconds(time, NSEC_PER_SEC) completionHandler:^(BOOL finished) {
+                    if (finished == YES) {
+                        //转菊花
+                        if (self.isOnline) {
+                            [self.waitIndicator stopAnimating];
+                            self.playButton.hidden = NO;
+                        }
+                        //播放
+                        [weakSelf play];
+                    }
+                }];
+                //转菊花
+                if (self.isOnline) {
+                    [self.waitIndicator startAnimating];
+                    self.playButton.hidden = YES;
+                }
+            }
+        }
+    }
+}
+- (void)endScrubbing:(UISlider *)sender {
+    if (!_timeObserver) {
+        CMTime playerDuration = [self playerItemDuration];
+        if (CMTIME_IS_INVALID(playerDuration)) {
+            return;
+        }
+        
+        double duration = CMTimeGetSeconds(playerDuration);
+        if (isfinite(duration)) {
+            CGFloat width = CGRectGetWidth([_progressSlider bounds]);
+            double tolerance = 0.5f * duration / width;
+            
+            __weak typeof(self) weakSelf = self;
+            _timeObserver = [_player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(tolerance, NSEC_PER_SEC) queue:NULL usingBlock:
+                             ^(CMTime time)
+                             {
+                                 [weakSelf syncScrubber];
+                             }];
+        }
+    }
+    
+    if (mRestoreAfterScrubbingRate) {
+        [_player setRate:mRestoreAfterScrubbingRate];
+        mRestoreAfterScrubbingRate = 0.f;
+    }
+}
+
+- (void)initScrubberTimer {
+    double interval = .1f;
+    
+    CMTime playerDuration = [self playerItemDuration];
+    if (CMTIME_IS_INVALID(playerDuration)) {
+        return;
+    }
+    double duration = CMTimeGetSeconds(playerDuration);
+    if (isfinite(duration)) {
+        CGFloat width = CGRectGetWidth([_progressSlider bounds]);
+        interval = 0.5f * duration / width;
+    }
+    
+    
+    __weak typeof(self) weakSelf = self;
+    _timeObserver = [_player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(0.1, NSEC_PER_SEC)
+                                                          queue:NULL /* If you pass NULL, the main queue is used. */
+                                                     usingBlock:^(CMTime time)
+                     {
+                         [weakSelf syncScrubber];
+                     }];
+    
+}
+- (void)syncScrubber {
+    CMTime playerDuration = [self playerItemDuration];
+    if (CMTIME_IS_INVALID(playerDuration)) {
+        _progressSlider.minimumValue = 0.0;
+        return;
+    }
+    
+    double duration = CMTimeGetSeconds(playerDuration);
+    if (isfinite(duration)) {
+        float minValue = [_progressSlider minimumValue];
+        float maxValue = [_progressSlider maximumValue];
+        double time = CMTimeGetSeconds([_player currentTime]);
+        
+//        [_progressSlider setValue:(maxValue - minValue) * time / duration + minValue];
+        [_progressSlider setValue:(maxValue - minValue) * time / duration + minValue animated:YES];
+    }
+}
+
+- (void)enableScrubber {
+    _progressSlider.enabled = YES;
+}
+- (void)disableScrubber {
+    _progressSlider.enabled = NO;
+}
+
+- (void)removePlayerTimeObserver {
+    if (_timeObserver) {
+        [_player removeTimeObserver:_timeObserver];
+        _timeObserver = nil;
+    }
+}
+//考虑菊花
+- (void)enablePlayerButtons {
+    _playButton.enabled = YES;
+}
+//考虑菊花
+- (void)disablePlayerButtons {
+    _playButton.enabled = NO;
+}
+- (CMTime)playerItemDuration {
+    
+    if (self.playerItem.status == AVPlayerItemStatusReadyToPlay) {
+        
+        return([self.playerItem duration]);
+    }
+    
+    return(kCMTimeInvalid);
+}
+- (BOOL)isPlaying {
+    return mRestoreAfterScrubbingRate != 0.f || [self.player rate] != 0.f;
+}
+- (void)play {
+    [self.player play];
+    [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66a" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+    [self scheduleHideControls];
+}
+- (void)pause {
+    [self.player pause];
+    [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+    [self scheduleHideControls];
+}
+#pragma mark ==== 重写父类方法
 - (void)deviceChangeAndHomeOnTheLeft {
     NSArray *viewArr = self.navigationController.viewControllers;
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYPlayVideoViewController class]]) {
@@ -326,25 +531,19 @@
     }
 }
 
-#pragma mark - 播放完成通知
+#pragma mark ==== 播放完成通知
 - (void)addNotification {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playbackFinished:) name:AVPlayerItemDidPlayToEndTimeNotification object:self.player.currentItem];
 }
 
 //即将进入后台，暂停视频
 - (void)applicationWillResignActive {
-    
-    [self.player pause];
-    isPlay = NO;
-    [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+    [self pause];
 }
 
 - (void)playbackFinished:(NSNotification *)notification {
-
-    [self.player pause];
-    isPlay = NO;
-    [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
     
+    [self pause];
     if (self.isAll) {
         DLYResource *resource = [[DLYResource alloc] init];
         [resource removeCurrentAllPart];
@@ -357,7 +556,7 @@
         [self.navigationController popViewControllerAnimated:YES];
     }
 }
-#pragma mark - 页面将要显示
+#pragma mark ==== 页面将要显示
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [MobClick beginLogPageView:@"PlayVideoView"];
@@ -369,31 +568,31 @@
         [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
     }
 }
-#pragma mark - 播放进度监控
-//进度条监控
-- (void)addProgressObserver {
-    AVPlayerItem *playerItem = self.player.currentItem;
-    //这里每秒执行一次
-    __weak typeof(self) weakSelf = self;
-    _progressObserver = [self.player addPeriodicTimeObserverForInterval:CMTimeMake(1.0, 30.0) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
-        float current = CMTimeGetSeconds(time);
-        float total = CMTimeGetSeconds(playerItem.duration);
-        if (current) {
-            [weakSelf.progress setProgress:(current / total) animated:YES];
-        }
-    }];
-}
+#pragma mark ==== 播放进度监控
+////进度条监控
+//- (void)addProgressObserver {
+//    AVPlayerItem *playerItem = self.player.currentItem;
+//    //这里每秒执行一次
+//    __weak typeof(self) weakSelf = self;
+//    _timeObserver = [self.player addPeriodicTimeObserverForInterval:CMTimeMake(1.0, 30.0) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
+//        float current = CMTimeGetSeconds(time);
+//        float total = CMTimeGetSeconds(playerItem.duration);
+//        if (current) {
+//            [weakSelf.progressSlider setValue:(current / total)];
+//        }
+//    }];
+//}
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
     AVPlayerItem *playerItem = object;
     if ([keyPath isEqualToString:@"status"]) {
         if (playerItem.status == AVPlayerItemStatusReadyToPlay) {
             //添加各种通知和观察者
             [self addNotification];
-            [self addProgressObserver];
+//            [self addProgressObserver];
             if (!self.isOnline && self.waitIndicator.isAnimating) {
                 [self.waitIndicator stopAnimating];
                 self.backButton.hidden = NO;
-                self.progress.hidden = NO;
+                self.progressSlider.hidden = NO;
                 self.playButton.hidden = NO;
             }
             if (self.isOnline && self.waitIndicator.isAnimating) {
@@ -403,13 +602,32 @@
             if (self.isAll) {
                 self.nextButton.hidden = NO;
             }
-            [self.player play];
-            isPlay = YES;
-            [self scheduleHideControls];
-        }else if (playerItem.status == AVPlayerItemStatusFailed){
+            self.isCanOnlinePlay = YES;
+            if (self.isOnline) {
+                if ((statusNum == 1 && self.isSurePlay) || (statusNum == 2)) {
+                    [self initScrubberTimer];
+                    [self enablePlayerButtons];
+                    [self enableScrubber];
+                    [self play];
+                }
+            }else {
+                [self initScrubberTimer];
+                [self enablePlayerButtons];
+                [self enableScrubber];
+                [self play];
+            }
             
-            NSLog(@"Error fail : %@", playerItem.error);
+        }else if (playerItem.status == AVPlayerItemStatusUnknown){
+            [self removePlayerTimeObserver];
+            [self syncScrubber];
+            [self disableScrubber];
+            [self disablePlayerButtons];
             
+        }else if (playerItem.status == AVPlayerItemStatusFailed) {
+            [self removePlayerTimeObserver];
+            [self syncScrubber];
+            [self disableScrubber];
+            [self disablePlayerButtons];
         }
     } else if ([keyPath isEqualToString:@"loadedTimeRanges"]) {
         NSArray *array = playerItem.loadedTimeRanges;
@@ -554,12 +772,12 @@
 
 #pragma mark ==== 控件显隐
 
--(void)toggleControls:(UITapGestureRecognizer *)recognizer {
+- (void)toggleControls:(UITapGestureRecognizer *)recognizer {
     //转菊花判断
     if (self.waitIndicator.isAnimating) {
         return;
     }else {
-        if(self.progress.isHidden){
+        if(self.progressSlider.isHidden){
             [self showControlsFast];
         }else{
             [self hideControlsFast];
@@ -570,7 +788,7 @@
 }
 
 //1快速显示
--(void)showControlsFast {
+- (void)showControlsFast {
     
     self.playButton.alpha = 0.0;
     self.playButton.hidden = NO;
@@ -583,13 +801,13 @@
     self.backButton.alpha = 0.0;
     self.backButton.hidden = NO;
 
-    self.progress.alpha = 0.0;
-    self.progress.hidden = NO;
+    self.progressSlider.alpha = 0.0;
+    self.progressSlider.hidden = NO;
     
     [UIView animateWithDuration:0.2 animations:^{
         self.playButton.alpha = 1.0;
         self.backButton.alpha = 1.0;
-        self.progress.alpha = 1.0;
+        self.progressSlider.alpha = 1.0;
         if (self.nextButton) {
             self.nextButton.alpha = 1.0;
         }
@@ -597,18 +815,18 @@
     
 }
 //2快速隐藏
--(void)hideControlsFast {
+- (void)hideControlsFast {
     [self hideControlsWithDuration:0.2];
 }
 //3慢隐藏
--(void)hideControlsSlowly {
+- (void)hideControlsSlowly {
     [self hideControlsWithDuration:0.5];
 }
 //4隐藏操作
--(void)hideControlsWithDuration:(NSTimeInterval)duration {
+- (void)hideControlsWithDuration:(NSTimeInterval)duration {
     self.playButton.alpha = 1.0;
     self.backButton.alpha = 1.0;
-    self.progress.alpha = 1.0;
+    self.progressSlider.alpha = 1.0;
     if (self.nextButton) {
         self.nextButton.alpha = 1.0;
     }
@@ -616,14 +834,14 @@
     [UIView animateWithDuration:duration animations:^{
         self.playButton.alpha = 0.0;
         self.backButton.alpha = 0.0;
-        self.progress.alpha = 0.0;
+        self.progressSlider.alpha = 0.0;
         if (self.nextButton) {
             self.nextButton.alpha = 0.0;
         }
     } completion:^(BOOL finished) {
         self.playButton.hidden = YES;
         self.backButton.hidden = YES;
-        self.progress.hidden = YES;
+        self.progressSlider.hidden = YES;
         if (self.nextButton) {
             self.nextButton.hidden = YES;
         }
@@ -631,14 +849,14 @@
     
 }
 //5
--(void)scheduleHideControls {
-    if(!self.progress.isHidden) {
+- (void)scheduleHideControls {
+    if(!self.progressSlider.isHidden) {
         [NSObject cancelPreviousPerformRequestsWithTarget:self];
         [self performSelector:@selector(hideControlsSlowly) withObject:nil afterDelay:3.0];
     }
 }
 
-#pragma mark - UI事件 播放和暂停
+#pragma mark ==== UI事件 播放和暂停
 
 - (void)viewWillDisappear:(BOOL)animated {
     
@@ -648,19 +866,22 @@
     }
     
     [MobClick endLogPageView:@"PlayVideoView"];
-    [self.player pause];
-    isPlay = NO;
-    [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+    [_manager stopMonitoring];
+    [self pause];
     [self.player replaceCurrentItemWithPlayerItem:nil];
     self.player = nil;
+    @try {
+        [self removePlayerTimeObserver];
+    } @catch(id anException) {
+        //do nothing
+    }
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CANPLAY" object:nil];
-    
     [[NSUserDefaults standardUserDefaults] setObject:self.titleField.text forKey:@"videoTitle"];
 }
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self.player removeTimeObserver:self.progressObserver];
+    [self.player removeTimeObserver:_timeObserver];
     [self removeObserverFromPlayerItem:self.player.currentItem];
 }
 
@@ -671,6 +892,5 @@
     }
     return _resource;
 }
-
 
 @end
