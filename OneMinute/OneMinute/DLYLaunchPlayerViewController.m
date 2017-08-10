@@ -12,8 +12,6 @@
 #import "DLYBaseNavigationController.h"
 #import "DLYRecordViewController.h"
 
-#define kScreenHeight [UIScreen mainScreen].bounds.size.height
-#define kScreenWidth [UIScreen mainScreen].bounds.size.width
 
 @interface DLYLaunchPlayerViewController ()
 /** 播放开始之前的图片 */
@@ -44,12 +42,12 @@
 #pragma mark -- 初始化视图逻辑
 - (void)setupView {
     self.startPlayerImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"lauch"]];
-    _startPlayerImageView.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeight);
+    _startPlayerImageView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     [self.contentOverlayView addSubview:_startPlayerImageView];
     
     //进入应用button
     self.enterMainButton = [[UIButton alloc] init];
-    _enterMainButton.frame = CGRectMake((kScreenWidth - 190) /2, kScreenHeight - 32 - 50, 190, 50);
+    _enterMainButton.frame = CGRectMake((SCREEN_WIDTH - 190) /2, SCREEN_HEIGHT - 32 - 50, 190, 50);
     _enterMainButton.layer.cornerRadius = 25;
     _enterMainButton.clipsToBounds = YES;
     _enterMainButton.backgroundColor = RGBA(0, 0, 0, 0.7);
@@ -95,7 +93,7 @@
     //视频暂停
     [self.player pause];
     self.pausePlayerImageView = [[UIImageView alloc] init];
-    _pausePlayerImageView.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeight);
+    _pausePlayerImageView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     [self.contentOverlayView addSubview:_pausePlayerImageView];
     self.pausePlayerImageView.contentMode = UIViewContentModeScaleToFill;
     //获取当前暂停时的截图

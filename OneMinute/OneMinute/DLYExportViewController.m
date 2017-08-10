@@ -11,11 +11,6 @@
 #import "ViewController.h"
 #import "DLYRecordViewController.h"
 
-#define SWitdh [UIScreen mainScreen].bounds.size.width
-#define SHeight [UIScreen mainScreen].bounds.size.height
-#define S_WIDTH SWitdh/667
-#define S_HEIGHT SHeight/375
-
 @interface DLYExportViewController (){
     
     double _shootTime;
@@ -44,7 +39,7 @@
 - (void)createMainView {
     
     //背景图片
-    UIImageView * videoImage = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SWitdh, SHeight)];
+    UIImageView * videoImage = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     videoImage.image = [UIImage imageNamed:@"timg"];
     [self.view addSubview:videoImage];
     
@@ -52,7 +47,7 @@
     self.syntheticView.backgroundColor = RGBA(0, 0, 0, 0.5);
     [self.view addSubview:self.syntheticView];
     
-    self.centerView = [[UIView alloc] initWithFrame:CGRectMake(0, 133 * S_HEIGHT, 68, 68)];
+    self.centerView = [[UIView alloc] initWithFrame:CGRectMake(0, 133 * SCALE_HEIGHT, 68, 68)];
     self.centerView.centerX = self.view.centerX;
     [self.syntheticView addSubview:self.centerView];
     
