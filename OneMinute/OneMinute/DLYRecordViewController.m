@@ -743,7 +743,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self deviceChangeAndHomeOnTheLeftNewLayout];
         DLYLog(@"首页左转");
     }
-
 }
 
 - (void)deviceChangeAndHomeOnTheLeftNewLayout {
