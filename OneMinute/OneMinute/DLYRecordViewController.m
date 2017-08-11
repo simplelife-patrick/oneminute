@@ -950,6 +950,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (self.toggleCameraBtn.selected) {
         [self.AVEngine changeCameraInputDeviceisFront:YES];
         self.flashButton.hidden = YES;
+        if (self.flashButton.selected) {
+            self.flashButton.selected = NO;
+        }
         isFront = YES;
     }else{
         [self.AVEngine changeCameraInputDeviceisFront:NO];
