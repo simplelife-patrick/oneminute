@@ -691,7 +691,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         [self.AVEngine.captureSession stopRunning];
         
-        [self.AVEngine changeCameraRotateAnimation];
+        [self.AVEngine changeCameraAnimation];
 
         self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
     }else{
@@ -855,7 +855,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         [self.AVEngine.captureSession stopRunning];
         
-        [self.AVEngine changeCameraRotateAnimation];
+        [self.AVEngine changeCameraAnimation];
 
         self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         

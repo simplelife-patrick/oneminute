@@ -375,29 +375,18 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             // save the default format
             self.defaultFormat = device.activeFormat;
             defaultVideoMaxFrameDuration = device.activeVideoMaxFrameDuration;
-            DLYLog(@"videoDevice.activeFormat:%@", device.activeFormat);
             return device;
         }
     }
     return nil;
-}
-//摄像头切换旋转动画
-- (void)changeCameraRotateAnimation {
-    CATransition *changeAnimation = [CATransition animation];
-    changeAnimation.delegate = self;
-    changeAnimation.duration = 0.2;
-    changeAnimation.type = @"oglFlip";
-    changeAnimation.subtype = kCATransitionPush;
-    [self.previewLayer addAnimation:changeAnimation forKey:@"changeAnimation"];
 }
 //摄像头切换翻转动画
 - (void)changeCameraAnimation {
     CATransition *changeAnimation = [CATransition animation];
     changeAnimation.delegate = self;
     changeAnimation.duration = 0.3;
-    changeAnimation.type = @"Cube";
-    changeAnimation.subtype = kCATransitionFromRight;
-    //    changeAnimation.timingFunction = UIViewAnimationCurveEaseInOut;
+    changeAnimation.type = @"oglFlip";
+    changeAnimation.subtype = kCATransitionFromTop;
     [self.previewLayer addAnimation:changeAnimation forKey:@"changeAnimation"];
 }
 - (void)animationDidStart:(CAAnimation *)anim {
@@ -421,7 +410,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     CGFloat deltaX = second.x - first.x;
     CGFloat deltaY = second.y - first.y;
-    return sqrt(deltaX*deltaX + deltaY*deltaY);
+    return sqrt(deltaX * deltaX + deltaY * deltaY);
 };
 
 -(void)focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point{
@@ -835,6 +824,7 @@ outputSettings:audioCompressionSettings];
     if (metadataObjects.count) {
         AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects.firstObject;
         
+        DLYLog(@"metadataObjects.count: %lu",metadataObjects.count);
         AVMetadataObject *transformedMetadataObject = [self.previewLayer transformedMetadataObjectForMetadataObject:metadataObject];
         CGRect faceRegion = transformedMetadataObject.bounds;
         
