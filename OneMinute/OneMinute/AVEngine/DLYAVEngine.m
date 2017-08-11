@@ -38,8 +38,11 @@
     CMTime _prePoint;
     CGSize videoSize;
     NSURL *fileUrl;
+    CGRect faceRegion;
+    CGRect lastFaceRegion;
     
     BOOL isMicGranted;//麦克风权限是否被允许
+
 }
 
 @property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;
@@ -158,6 +161,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 - (instancetype)initWithPreviewView:(UIView *)previewView{
     if (self = [super init]) {
 
+        [self createTimer];
         referenceOrientation = (AVCaptureVideoOrientation)UIDeviceOrientationPortrait;
         
         NSError *error;
@@ -343,7 +347,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 
 //视频连接
 - (AVCaptureConnection *)videoConnection {
-    _videoConnection = [self.videoOutput connectionWithMediaType:AVMediaTypeVideo];
+    if (!_videoConnection) {
+        _videoConnection = [self.videoOutput connectionWithMediaType:AVMediaTypeVideo];
+    }
     return _videoConnection;
 }
 
@@ -470,7 +476,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         NSLog(@"设置设备属性过程发生错误，错误信息：%@",error.localizedDescription);
     }
 }
-
 #pragma mark -视频数据输出设置-
 
 - (BOOL)setupAssetWriterVideoInput:(CMFormatDescriptionRef)currentFormatDescription
@@ -821,23 +826,77 @@ outputSettings:audioCompressionSettings];
 // 检测人脸是为了获得“人脸区域”，做“人脸区域”与“身份证人像框”的区域对比，当前者在后者范围内的时候，才能截取到完整的身份证图像
 -(void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection{
     
+    //检测到目标元数据
     if (metadataObjects.count) {
         AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects.firstObject;
         
-        DLYLog(@"metadataObjects.count: %lu",metadataObjects.count);
+        DLYLog(@"检测到 %lu 个人脸",metadataObjects.count);
+        //取到识别到的人脸区域
         AVMetadataObject *transformedMetadataObject = [self.previewLayer transformedMetadataObjectForMetadataObject:metadataObject];
-        CGRect faceRegion = transformedMetadataObject.bounds;
+        faceRegion = transformedMetadataObject.bounds;
         
+        //检测到人脸
         if (metadataObject.type == AVMetadataObjectTypeFace) {
+            //检测区域
             CGRect referenceRect = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
             
-            DLYLog(@"是否包含人脸：%d, facePathRect: %@, faceRegion: %@",CGRectContainsRect(referenceRect, faceRegion),NSStringFromCGRect(referenceRect),NSStringFromCGRect(faceRegion));
-            if (!self.videoOutput.sampleBufferDelegate) {
-                dispatch_queue_t faceRegionQueue = dispatch_queue_create("faceRegionQueue", DISPATCH_QUEUE_SERIAL);
-                [self.videoOutput setSampleBufferDelegate:self queue:faceRegionQueue];
-            }
+            DLYLog(@"%d, facePathRect: %@, faceRegion: %@",CGRectContainsRect(referenceRect, faceRegion) ? @"包含人脸":@"不包含人脸",NSStringFromCGRect(referenceRect),NSStringFromCGRect(faceRegion));
+            
+        }else{
+            faceRegion = CGRectZero;
         }
+    }else{
+        faceRegion = CGRectZero;
     }
+}
+NSInteger timeCount = 0;
+NSInteger maskCount = 0;
+NSInteger startCount = MAXFLOAT;
+BOOL isOnce = YES;
+- (void)createTimer{
+    //获得队列
+    dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
+    //创建一个定时器
+    dispatch_source_t enliveTime = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+    //设置开始时间
+    dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC));
+    //设置时间间隔
+    uint64_t interval = (uint64_t)(1.0 * NSEC_PER_SEC);
+    //设置定时器
+    dispatch_source_set_timer(enliveTime, start, interval, 0);
+    //设置回调
+    dispatch_source_set_event_handler(enliveTime, ^{
+        
+        CGFloat distance = distanceBetweenPoints(faceRegion.origin, lastFaceRegion.origin);
+        lastFaceRegion = faceRegion;
+        if (distance < 20) {
+            if (isOnce) {
+                isOnce = NO;
+                startCount = timeCount;
+            }
+            maskCount++;
+        }
+        timeCount++;
+        if (timeCount - startCount >= 3) {
+            if (maskCount == 3) {
+                faceRegion = CGRectZero;
+            }
+            isOnce = YES;
+            startCount = MAXFLOAT;
+            maskCount = 0;
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.delegate && [self.delegate respondsToSelector:@selector(displayRefrenceRect:)]) {
+                [self.delegate displayRefrenceRect:faceRegion];
+            }
+        });
+        if(timeCount > MAXFLOAT){
+            dispatch_cancel(enliveTime);
+        }
+        
+    });
+    //启动定时器
+    dispatch_resume(enliveTime);
 }
 #pragma mark -延时拍摄-
 //获取视频某一帧图像
@@ -864,7 +923,7 @@ outputSettings:audioCompressionSettings];
     thumbnailImageRef = [assetImageGenerator copyCGImageAtTime:CMTimeMake(intervalTime, 2) actualTime:NULL error:&thumbnailImageGenerationError];
     
     if (!thumbnailImageRef)
-        DLYLog(@"thumbnailImageGenerationError %@", thumbnailImageGenerationError);
+        DLYLog(@"Thumbnail Image Generation Error %@", thumbnailImageGenerationError);
     
     UIImage *thumbnailImage = thumbnailImageRef ? [[UIImage alloc] initWithCGImage:thumbnailImageRef] : nil;
     return thumbnailImage;

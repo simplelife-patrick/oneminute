@@ -85,15 +85,17 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         imageView.frame = CGRectMake(0, 0, 50, 50);
         _focusCursorImageView = imageView;
         [self.view addSubview:_focusCursorImageView];
-        
     }
     return _focusCursorImageView;
 }
 -(UIImageView *)faceRegionImageView{
     if (_faceRegionImageView == nil) {
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
-    _faceRegionImageView = imageView;
-    [self.view addSubview:_faceRegionImageView];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 100, 200)];
+        imageView.layer.cornerRadius = 10;
+        imageView.layer.borderWidth = 2;
+        imageView.layer.borderColor = [[UIColor colorWithHexString:@"#FFD700" withAlpha:0.6] CGColor];
+        _faceRegionImageView = imageView;
+        [self.view addSubview:_faceRegionImageView];
     }
     return _faceRegionImageView;
 }
@@ -497,6 +499,28 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 #pragma mark - AVCaptureManagerDelegate
+
+-(void)displayRefrenceRect:(CGRect)faceRegion{
+    
+    DLYLog(@"代理方法测试");
+    DLYLog(@"faceRegion: %@",NSStringFromCGRect(faceRegion));
+    
+    CGPoint origin = faceRegion.origin;
+    CGSize size = faceRegion.size;
+
+    if (size.width != 0 && size.height != 0) {
+        self.faceRegionImageView.hidden = NO;
+        self.faceRegionImageView.frame = faceRegion;
+    }else{
+        [UIView animateWithDuration:0.3 animations:^{
+            self.faceRegionImageView.alpha = 0.0;
+        } completion:^(BOOL finished) {
+            self.faceRegionImageView.hidden = YES;
+            self.faceRegionImageView.alpha = 1.0;
+        }];
+        
+    }
+}
 
 - (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL error:(NSError *)error {
         
@@ -959,7 +983,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.flashButton.hidden = NO;
         isFront = NO;
     }
-    NSLog(@"陈立勇摄像头:%d", self.toggleCameraBtn.selected);
 }
 //选择场景
 - (void)onClickChooseScene:(UIButton *)sender {
