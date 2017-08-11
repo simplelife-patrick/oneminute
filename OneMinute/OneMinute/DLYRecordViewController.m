@@ -36,6 +36,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) DLYAVEngine                       *AVEngine;
 @property (nonatomic, strong) UIView                            *previewView;
 @property (nonatomic, strong) UIImageView                       *focusCursorImageView;
+@property (nonatomic, strong) UIImageView                       *faceRegionImageView;
 @property (nonatomic, strong) UIView * sceneView; //选择场景的view
 @property (nonatomic, strong) UIView * shootView; //拍摄界面
 
@@ -86,6 +87,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     return _focusCursorImageView;
 }
+-(UIImageView *)faceRegionImageView{
+    if (_faceRegionImageView == nil) {
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
+    _faceRegionImageView = imageView;
+    [self.view addSubview:_faceRegionImageView];
+    }
+    return _faceRegionImageView;
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [MobClick beginLogPageView:@"RecordView"];
     
@@ -461,7 +471,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 - (void)setFocusCursorWithPoint:(CGPoint)point {
     self.focusCursorImageView.center = point;
-    self.focusCursorImageView.transform=CGAffineTransformMakeScale(1.6, 1.6);
+    self.focusCursorImageView.transform = CGAffineTransformMakeScale(1.6, 1.6);
     self.focusCursorImageView.alpha = 1.0;
     [UIView animateWithDuration:0.5 animations:^{
         self.focusCursorImageView.transform = CGAffineTransformIdentity;

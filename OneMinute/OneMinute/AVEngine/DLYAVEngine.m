@@ -389,6 +389,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     changeAnimation.subtype = kCATransitionFromTop;
     [self.previewLayer addAnimation:changeAnimation forKey:@"changeAnimation"];
 }
+
 - (void)animationDidStart:(CAAnimation *)anim {
     [self.captureSession startRunning];
 }
@@ -890,7 +891,6 @@ outputSettings:audioCompressionSettings];
     CGContextRelease(context);
     CGColorSpaceRelease(colorSpace);
     
-    //UIImage *image = [UIImage imageWithCGImage:quartzImage];
     UIImage *image = [UIImage imageWithCGImage:quartzImage scale:1.0f orientation:UIImageOrientationRight];
     
     CGImageRelease(quartzImage);
