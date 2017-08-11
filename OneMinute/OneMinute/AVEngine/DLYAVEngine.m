@@ -40,6 +40,7 @@
     NSURL *fileUrl;
     CGRect faceRegion;
     CGRect lastFaceRegion;
+    BOOL isDetectedMetadataObjectTarget;
     
     BOOL isMicGranted;//麦克风权限是否被允许
 
@@ -828,6 +829,7 @@ outputSettings:audioCompressionSettings];
     
     //检测到目标元数据
     if (metadataObjects.count) {
+        isDetectedMetadataObjectTarget = YES;
         AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects.firstObject;
         
         DLYLog(@"检测到 %lu 个人脸",metadataObjects.count);
@@ -846,6 +848,7 @@ outputSettings:audioCompressionSettings];
             faceRegion = CGRectZero;
         }
     }else{
+        isDetectedMetadataObjectTarget = NO;
         faceRegion = CGRectZero;
     }
 }

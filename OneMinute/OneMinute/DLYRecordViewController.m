@@ -502,9 +502,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 -(void)displayRefrenceRect:(CGRect)faceRegion{
     
-    DLYLog(@"代理方法测试");
-    DLYLog(@"faceRegion: %@",NSStringFromCGRect(faceRegion));
-    
     CGPoint origin = faceRegion.origin;
     CGSize size = faceRegion.size;
 
