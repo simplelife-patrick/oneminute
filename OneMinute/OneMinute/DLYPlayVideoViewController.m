@@ -173,7 +173,9 @@
     self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
     self.playerLayer.frame = self.view.frame;
     self.playerLayer.videoGravity = AVLayerVideoGravityResize;
-    [self.view.layer insertSublayer:self.playerLayer atIndex:0];
+//    [self.view.layer insertSublayer:self.playerLayer atIndex:0];
+    [self.view.layer addSublayer:self.playerLayer];
+
     
     //返回
     self.backButton = [[UIButton alloc]initWithFrame:CGRectMake(28, 0, 60, 60)];
@@ -567,19 +569,7 @@
     }
 }
 #pragma mark ==== 播放进度监控
-////进度条监控
-//- (void)addProgressObserver {
-//    AVPlayerItem *playerItem = self.player.currentItem;
-//    //这里每秒执行一次
-//    __weak typeof(self) weakSelf = self;
-//    _timeObserver = [self.player addPeriodicTimeObserverForInterval:CMTimeMake(1.0, 30.0) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
-//        float current = CMTimeGetSeconds(time);
-//        float total = CMTimeGetSeconds(playerItem.duration);
-//        if (current) {
-//            [weakSelf.progressSlider setValue:(current / total)];
-//        }
-//    }];
-//}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
     AVPlayerItem *playerItem = object;
     if ([keyPath isEqualToString:@"status"]) {

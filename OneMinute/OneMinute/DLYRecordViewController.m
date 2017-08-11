@@ -32,6 +32,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSMutableArray * typeModelArray; //模拟选择样式的模型数组
     BOOL isNeededToSave;
     BOOL isMicGranted;//麦克风权限是否被允许
+    BOOL isFront;
 }
 @property (nonatomic, strong) DLYAVEngine                       *AVEngine;
 @property (nonatomic, strong) UIView                            *previewView;
@@ -49,6 +50,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIButton *chooseScene;        //选择场景
 @property (nonatomic, strong) UILabel *chooseSceneLabel;    //选择场景文字
 @property (nonatomic, strong) UIButton *toggleCameraBtn;    //切换摄像头
+@property (nonatomic, strong) UIButton *flashButton;        //闪光灯
 @property (nonatomic, strong) UIView *backView;             //控制页面底层
 @property (nonatomic, strong) UIButton *recordBtn;          //拍摄按钮
 @property (nonatomic, strong) UIButton *nextButton;         //下一步按钮
@@ -362,6 +364,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.chooseSceneLabel.textColor = RGBA(255, 255, 255, 1);
     self.chooseSceneLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:self.chooseSceneLabel];
+    
+    //闪光
+    self.flashButton = [[UIButton alloc]initWithFrame:CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40)];
+//    self.flashButton.layer.cornerRadius = 20;
+//    self.flashButton.backgroundColor = RGBA(0, 0, 0, 0.4);
+//    self.flashButton.clipsToBounds = YES;
+    [self.flashButton setImage:[UIImage imageNamed:@"flash"] forState:UIControlStateNormal];
+    [self.flashButton addTarget:self action:@selector(onClickFlashAction) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.flashButton];
     
     //切换前置摄像头
     self.toggleCameraBtn = [[UIButton alloc]initWithFrame:CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40)];
@@ -802,6 +813,17 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(num);
         }];
     }
+    if (!self.flashButton.isHidden && self.flashButton) {
+        if (num == 0) {
+            self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
+        }else {
+            self.flashButton.frame = CGRectMake(11, 61, 40, 40);
+        }
+        [UIView animateWithDuration:0.5f animations:^{
+            self.flashButton.transform = CGAffineTransformMakeRotation(num);
+        }];
+    }
+    
     if (!self.playView.isHidden && self.playView) {
         [UIView animateWithDuration:0.5f animations:^{
             self.playButton.transform = CGAffineTransformMakeRotation(num);
@@ -902,6 +924,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 #pragma mark ==== button点击事件
+//闪光灯
+- (void)onClickFlashAction {
+
+    
+
+}
 //切换摄像头
 - (void)toggleCameraAction {
     
@@ -909,9 +937,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.toggleCameraBtn.selected = !self.toggleCameraBtn.selected;
     if (self.toggleCameraBtn.selected) {
         [self.AVEngine changeCameraInputDeviceisFront:YES];
+        self.flashButton.hidden = YES;
+        isFront = YES;
     }else{
         [self.AVEngine changeCameraInputDeviceisFront:NO];
+        self.flashButton.hidden = NO;
+        isFront = NO;
     }
+    NSLog(@"陈立勇摄像头:%d", self.toggleCameraBtn.selected);
 }
 //选择场景
 - (void)onClickChooseScene:(UIButton *)sender {
@@ -925,6 +958,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [UIView animateWithDuration:0.1f animations:^{
         self.chooseScene.hidden = YES;
         self.toggleCameraBtn.hidden = YES;
+        self.flashButton.hidden = YES;
         self.chooseSceneLabel.hidden = YES;
         self.backView.hidden = YES;
         if (self.newState == 1) {
@@ -994,6 +1028,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.chooseScene.hidden = YES;
             self.chooseSceneLabel.hidden = YES;
             self.toggleCameraBtn.hidden = YES;
+            self.flashButton.hidden = YES;
             self.backView.transform = CGAffineTransformMakeTranslation(self.backView.width, 0);
         } completion:^(BOOL finished) {
             self.backView.hidden = YES;
@@ -1092,6 +1127,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(M_PI);
         }
         self.toggleCameraBtn.hidden = NO;
+        if (!isFront) {
+            if (self.newState == 1) {
+                self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
+                self.flashButton.transform = CGAffineTransformMakeRotation(0);
+            }else {
+                self.flashButton.frame = CGRectMake(11, 61, 40, 40);
+                self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+            }
+            self.flashButton.hidden = NO;
+        }
         if (self.newState == 1) {
             self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.bottom + 2, 40, 13);
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
@@ -1163,6 +1208,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(M_PI);
         }
         self.toggleCameraBtn.hidden = NO;
+        if (!isFront) {
+            if (self.newState == 1) {
+                self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
+                self.flashButton.transform = CGAffineTransformMakeRotation(0);
+            }else {
+                self.flashButton.frame = CGRectMake(11, 61, 40, 40);
+                self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+            }
+            self.flashButton.hidden = NO;
+        }
         if (self.newState == 1) {
             self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.bottom + 2, 40, 13);
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
@@ -1830,6 +1885,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(M_PI);
         }
         self.toggleCameraBtn.hidden = NO;
+        if (!isFront) {
+            if (self.newState == 1) {
+                self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
+                self.flashButton.transform = CGAffineTransformMakeRotation(0);
+            }else {
+                self.flashButton.frame = CGRectMake(11, 61, 40, 40);
+                self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+            }
+            self.flashButton.hidden = NO;
+        }
         if (self.newState == 1) {
             self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.bottom + 2, 40, 13);
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
@@ -2020,6 +2085,17 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(M_PI);
                 }
                 self.toggleCameraBtn.hidden = NO;
+                if (!isFront) {
+                    if (self.newState == 1) {
+                        self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
+                        self.flashButton.transform = CGAffineTransformMakeRotation(0);
+                    }else {
+                        self.flashButton.frame = CGRectMake(11, 61, 40, 40);
+                        self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+                    }
+                    self.flashButton.hidden = NO;
+                }
+
                 if (self.newState == 1) {
                     self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
                     self.chooseScene.transform = CGAffineTransformMakeRotation(0);
