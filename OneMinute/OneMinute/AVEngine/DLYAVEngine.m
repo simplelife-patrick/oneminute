@@ -804,7 +804,12 @@ outputSettings:audioCompressionSettings];
         }];
     });
 }
-
+#pragma mark - 暂停录制 -
+- (void) pauseRecording{
+    if (self.captureSession.isRunning) {
+        [self.captureSession stopRunning];
+    }
+}
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     

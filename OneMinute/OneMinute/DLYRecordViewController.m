@@ -73,6 +73,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @end
 
 @implementation DLYRecordViewController
+
 - (DLYResource *)resource{
     if (!_resource) {
         _resource = [[DLYResource alloc] init];
@@ -145,6 +146,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    [self.AVEngine pauseRecording];
     [MobClick endLogPageView:@"RecordView"];
 }
 - (void)viewDidLoad {

@@ -45,6 +45,9 @@ typedef void(^FailureBlock)(NSError *error);
 @property (nonatomic, strong) NSMutableArray                                          *imageArray;
 
 
+- (void) stopRecording;
+- (void) cancelRecording;
+- (void) pauseRecording;
 /**
  初始化录制组件
 
@@ -63,16 +66,6 @@ typedef void(^FailureBlock)(NSError *error);
  @param part info
  */
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part;
-
-/**
- 停止录制
- */
-- (void)stopRecording;
-
-/**
- 取消录制
- */
-- (void)cancelRecording;
 
 /**
  切换摄像头
