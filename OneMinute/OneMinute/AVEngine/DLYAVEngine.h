@@ -22,17 +22,16 @@ typedef void(^SuccessBlock)(void);
 typedef void(^FailureBlock)(NSError *error);
 
 @protocol DLYCaptureManagerDelegate <NSObject>
-
-- (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL error:(NSError *)error;
+- (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
+                                      error:(NSError *)error;
 - (void) displayRefrenceRect:(CGRect)faceRegion;
-
 @end
 
 @interface DLYAVEngine : DLYModule
 
+@property (nonatomic, strong) AVCaptureDeviceInput                                    *backCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *currentVideoDeviceInput;
 @property (nonatomic, strong) AVCaptureDevice                                         *videoDevice;
-@property (nonatomic, strong) AVCaptureDeviceInput                                    *backCameraInput;
 @property (nonatomic, assign) id                                                      delegate;
 @property (nonatomic, readonly) BOOL                                                  isRecording;
 @property (nonatomic, copy) OnBufferBlock                                             onBuffer;
@@ -46,6 +45,9 @@ typedef void(^FailureBlock)(NSError *error);
 @property (nonatomic, strong) NSMutableArray                                          *imageArray;
 
 
+- (void) stopRecording;
+- (void) cancelRecording;
+- (void) pauseRecording;
 /**
  初始化录制组件
 
@@ -55,7 +57,7 @@ typedef void(^FailureBlock)(NSError *error);
 - (instancetype)initWithPreviewView:(UIView *)previewView;
 
 /**
- 切换摄像头旋转动画
+ 切换摄像头动画
  */
 - (void)changeCameraAnimation;
 /**
@@ -64,16 +66,6 @@ typedef void(^FailureBlock)(NSError *error);
  @param part info
  */
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part;
-
-/**
- 停止录制
- */
-- (void)stopRecording;
-
-/**
- 取消录制
- */
-- (void)cancelRecording;
 
 /**
  切换摄像头

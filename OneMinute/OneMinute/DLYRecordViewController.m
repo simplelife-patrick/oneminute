@@ -73,6 +73,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @end
 
 @implementation DLYRecordViewController
+
 - (DLYResource *)resource{
     if (!_resource) {
         _resource = [[DLYResource alloc] init];
@@ -145,6 +146,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    [self.AVEngine pauseRecording];
     [MobClick endLogPageView:@"RecordView"];
 }
 - (void)viewDidLoad {
@@ -502,9 +504,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 -(void)displayRefrenceRect:(CGRect)faceRegion{
     
-    DLYLog(@"代理方法测试");
-    DLYLog(@"faceRegion: %@",NSStringFromCGRect(faceRegion));
-    
     CGPoint origin = faceRegion.origin;
     CGSize size = faceRegion.size;
 
@@ -746,7 +745,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self deviceChangeAndHomeOnTheLeftNewLayout];
         DLYLog(@"首页左转");
     }
-
 }
 
 - (void)deviceChangeAndHomeOnTheLeftNewLayout {
