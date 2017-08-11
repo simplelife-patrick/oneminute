@@ -78,8 +78,6 @@
     
     if ([self isExitdraftAtFile]) {
         
-        DLYResource *resouece = [[DLYResource alloc] init];
-        NSArray *draftArray = [resouece loadDraftParts];
         DLYMiniVlogTemplate *currentTemplate = [self currentTemplate];
         
         _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:currentTemplate.templateName];

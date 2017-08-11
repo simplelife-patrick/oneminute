@@ -665,7 +665,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)saveRecordedFileByUrl:(NSURL *)recordedFileUrl {
     
     DLYLog(@"Saving...");
-    NSURL *outputURL = recordedFileUrl;
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
         
@@ -898,7 +897,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
         [self deviceChangeAndHomeOnTheRightNewLayout];
         DLYLog(@"首页右转");
-
     }
 }
 
@@ -924,11 +922,25 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 #pragma mark ==== button点击事件
-//闪光灯
+//补光灯开关
 - (void)onClickFlashAction {
-
     
-
+    self.flashButton.selected = !self.flashButton.selected;
+    AVCaptureDevice *device = self.AVEngine.backCameraInput.device;
+    NSError *error = nil;
+    if (self.flashButton.selected == YES) { //打开闪光灯
+        if ([device hasTorch]) {
+            [device lockForConfiguration:&error];
+            [device setTorchMode:AVCaptureTorchModeOn];
+            [device unlockForConfiguration];
+        }
+    }else{//关闭闪光灯
+        if ([device hasTorch]) {
+            [device lockForConfiguration:&error];
+            [device setTorchMode:AVCaptureTorchModeOff];
+            [device unlockForConfiguration];
+        }
+    }
 }
 //切换摄像头
 - (void)toggleCameraAction {

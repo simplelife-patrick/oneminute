@@ -30,6 +30,7 @@ typedef void(^FailureBlock)(NSError *error);
 
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *currentVideoDeviceInput;
 @property (nonatomic, strong) AVCaptureDevice                                         *videoDevice;
+@property (nonatomic, strong) AVCaptureDeviceInput                                    *backCameraInput;
 @property (nonatomic, assign) id                                                      delegate;
 @property (nonatomic, readonly) BOOL                                                  isRecording;
 @property (nonatomic, copy) OnBufferBlock                                             onBuffer;
