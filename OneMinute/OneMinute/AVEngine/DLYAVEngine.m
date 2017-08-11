@@ -417,6 +417,37 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     return sqrt(deltaX*deltaX + deltaY*deltaY);
 };
 
+- (void) focusOnceWithPoint:(CGPoint)point{
+    
+    AVCaptureDevice *captureDevice = _currentVideoDeviceInput.device;
+    CGPoint currentPoint = CGPointZero;
+    
+    if ([_currentVideoDeviceInput.device lockForConfiguration:nil]) {
+        
+        // 设置对焦
+        if ([captureDevice isFocusModeSupported:AVCaptureFocusModeLocked]) {
+            [captureDevice setFocusMode:AVCaptureFocusModeLocked];
+        }
+        if ([captureDevice isFocusPointOfInterestSupported]) {
+            [captureDevice setFocusPointOfInterest:point];
+        }
+        
+        // 设置曝光
+        if ([captureDevice isExposureModeSupported:AVCaptureExposureModeLocked]) {
+            [captureDevice setExposureMode:AVCaptureExposureModeLocked];
+        }
+        if ([captureDevice isExposurePointOfInterestSupported]) {
+            [captureDevice setExposurePointOfInterest:point];
+        }
+        
+        //设置白平衡
+        if ([captureDevice isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeLocked]) {
+            [captureDevice setWhiteBalanceMode:AVCaptureWhiteBalanceModeLocked];
+        }
+        [_currentVideoDeviceInput.device unlockForConfiguration];
+    }
+}
+
 -(void)focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point{
     
     AVCaptureDevice *captureDevice = _currentVideoDeviceInput.device;
@@ -839,9 +870,7 @@ outputSettings:audioCompressionSettings];
         if (metadataObject.type == AVMetadataObjectTypeFace) {
             //检测区域
             CGRect referenceRect = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-            
             DLYLog(@"%d, facePathRect: %@, faceRegion: %@",CGRectContainsRect(referenceRect, faceRegion) ? @"包含人脸":@"不包含人脸",NSStringFromCGRect(referenceRect),NSStringFromCGRect(faceRegion));
-            
         }else{
             faceRegion = CGRectZero;
         }
@@ -873,6 +902,9 @@ BOOL isOnce = YES;
         if (distance < 20) {
             if (isOnce) {
                 isOnce = NO;
+                CGPoint point = CGPointMake(faceRegion.size.width/2, faceRegion.size.height/2);
+                CGPoint cameraPoint = [self.previewLayer captureDevicePointOfInterestForPoint:point];
+                [self focusOnceWithPoint:cameraPoint];
                 startCount = timeCount;
             }
             maskCount++;
@@ -1012,7 +1044,7 @@ BOOL isOnce = YES;
 -(long long)getDateTimeTOMilliSeconds:(NSDate *)datetime
 {
     NSTimeInterval interval = [datetime timeIntervalSince1970];
-    long long totalMilliseconds = interval*1000;
+    long long totalMilliseconds = interval * 1000;
     return totalMilliseconds;
 }
 #pragma mark - 转场 -
