@@ -205,7 +205,7 @@
         
         NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mp4",partNum];
         
-        BOOL isDelete = [fileManager removeItemAtPath:targetPath error:nil];
+        [fileManager removeItemAtPath:targetPath error:nil];
     }
 }
 - (void) removeCurrentAllPart{
@@ -220,7 +220,7 @@
         for (NSString *path in draftArray) {
             if ([path hasSuffix:@"mp4"]) {
                 NSString *targetPath = [draftPath stringByAppendingFormat:@"/%@",path];
-                BOOL isDelete = [fileManager removeItemAtPath:targetPath error:nil];
+                [fileManager removeItemAtPath:targetPath error:nil];
             }
         }
         DLYLog(@"成功删除所有草稿片段");

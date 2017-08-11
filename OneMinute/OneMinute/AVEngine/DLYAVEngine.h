@@ -22,14 +22,17 @@ typedef void(^SuccessBlock)(void);
 typedef void(^FailureBlock)(NSError *error);
 
 @protocol DLYCaptureManagerDelegate <NSObject>
-- (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
-                                      error:(NSError *)error;
+
+- (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL error:(NSError *)error;
+- (void) displayRefrenceRect:(CGRect)faceRegion;
+
 @end
 
-@interface DLYAVEngine : DLYModule<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate>
+@interface DLYAVEngine : DLYModule
 
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *currentVideoDeviceInput;
 @property (nonatomic, strong) AVCaptureDevice                                         *videoDevice;
+@property (nonatomic, strong) AVCaptureDeviceInput                                    *backCameraInput;
 @property (nonatomic, assign) id                                                      delegate;
 @property (nonatomic, readonly) BOOL                                                  isRecording;
 @property (nonatomic, copy) OnBufferBlock                                             onBuffer;
@@ -54,7 +57,7 @@ typedef void(^FailureBlock)(NSError *error);
 /**
  切换摄像头旋转动画
  */
-- (void)changeCameraRotateAnimation;
+- (void)changeCameraAnimation;
 /**
  按传入的片段信息开始录制
 
