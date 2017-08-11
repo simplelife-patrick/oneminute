@@ -37,6 +37,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) DLYAVEngine                       *AVEngine;
 @property (nonatomic, strong) UIView                            *previewView;
 @property (nonatomic, strong) UIImageView                       *focusCursorImageView;
+@property (nonatomic, strong) UIImageView                       *faceRegionImageView;
 @property (nonatomic, strong) UIView * sceneView; //选择场景的view
 @property (nonatomic, strong) UIView * shootView; //拍摄界面
 
@@ -84,10 +85,21 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         imageView.frame = CGRectMake(0, 0, 50, 50);
         _focusCursorImageView = imageView;
         [self.view addSubview:_focusCursorImageView];
-        
     }
     return _focusCursorImageView;
 }
+-(UIImageView *)faceRegionImageView{
+    if (_faceRegionImageView == nil) {
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 100, 200)];
+        imageView.layer.cornerRadius = 10;
+        imageView.layer.borderWidth = 2;
+        imageView.layer.borderColor = [[UIColor colorWithHexString:@"#FFD700" withAlpha:0.6] CGColor];
+        _faceRegionImageView = imageView;
+        [self.view addSubview:_faceRegionImageView];
+    }
+    return _faceRegionImageView;
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [MobClick beginLogPageView:@"RecordView"];
     
@@ -472,7 +484,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 - (void)setFocusCursorWithPoint:(CGPoint)point {
     self.focusCursorImageView.center = point;
-    self.focusCursorImageView.transform=CGAffineTransformMakeScale(1.6, 1.6);
+    self.focusCursorImageView.transform = CGAffineTransformMakeScale(1.6, 1.6);
     self.focusCursorImageView.alpha = 1.0;
     [UIView animateWithDuration:0.5 animations:^{
         self.focusCursorImageView.transform = CGAffineTransformIdentity;
@@ -487,6 +499,28 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 #pragma mark - AVCaptureManagerDelegate
+
+-(void)displayRefrenceRect:(CGRect)faceRegion{
+    
+    DLYLog(@"代理方法测试");
+    DLYLog(@"faceRegion: %@",NSStringFromCGRect(faceRegion));
+    
+    CGPoint origin = faceRegion.origin;
+    CGSize size = faceRegion.size;
+
+    if (size.width != 0 && size.height != 0) {
+        self.faceRegionImageView.hidden = NO;
+        self.faceRegionImageView.frame = faceRegion;
+    }else{
+        [UIView animateWithDuration:0.3 animations:^{
+            self.faceRegionImageView.alpha = 0.0;
+        } completion:^(BOOL finished) {
+            self.faceRegionImageView.hidden = YES;
+            self.faceRegionImageView.alpha = 1.0;
+        }];
+        
+    }
+}
 
 - (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL error:(NSError *)error {
         
@@ -655,7 +689,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)saveRecordedFileByUrl:(NSURL *)recordedFileUrl {
     
     DLYLog(@"Saving...");
-    NSURL *outputURL = recordedFileUrl;
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
         
@@ -702,7 +735,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         [self.AVEngine.captureSession stopRunning];
         
-        [self.AVEngine changeCameraRotateAnimation];
+        [self.AVEngine changeCameraAnimation];
 
         self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
     }else{
@@ -877,7 +910,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         [self.AVEngine.captureSession stopRunning];
         
-        [self.AVEngine changeCameraRotateAnimation];
+        [self.AVEngine changeCameraAnimation];
 
         self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         
@@ -888,7 +921,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
         [self deviceChangeAndHomeOnTheRightNewLayout];
         DLYLog(@"首页右转");
-
     }
 }
 
@@ -914,11 +946,25 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 #pragma mark ==== button点击事件
-//闪光灯
+//补光灯开关
 - (void)onClickFlashAction {
-
     
-
+    self.flashButton.selected = !self.flashButton.selected;
+    AVCaptureDevice *device = self.AVEngine.backCameraInput.device;
+    NSError *error = nil;
+    if (self.flashButton.selected == YES) { //打开闪光灯
+        if ([device hasTorch]) {
+            [device lockForConfiguration:&error];
+            [device setTorchMode:AVCaptureTorchModeOn];
+            [device unlockForConfiguration];
+        }
+    }else{//关闭闪光灯
+        if ([device hasTorch]) {
+            [device lockForConfiguration:&error];
+            [device setTorchMode:AVCaptureTorchModeOff];
+            [device unlockForConfiguration];
+        }
+    }
 }
 //切换摄像头
 - (void)toggleCameraAction {
@@ -928,13 +974,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (self.toggleCameraBtn.selected) {
         [self.AVEngine changeCameraInputDeviceisFront:YES];
         self.flashButton.hidden = YES;
+        if (self.flashButton.selected) {
+            self.flashButton.selected = NO;
+        }
         isFront = YES;
     }else{
         [self.AVEngine changeCameraInputDeviceisFront:NO];
         self.flashButton.hidden = NO;
         isFront = NO;
     }
-    NSLog(@"陈立勇摄像头:%d", self.toggleCameraBtn.selected);
 }
 //选择场景
 - (void)onClickChooseScene:(UIButton *)sender {

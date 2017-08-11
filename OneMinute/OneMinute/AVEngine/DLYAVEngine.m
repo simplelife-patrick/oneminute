@@ -22,7 +22,7 @@
 #import "ALAssetsLibrary+CustomPhotoAlbum.h"
 #import <math.h>
 
-@interface DLYAVEngine ()
+@interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate>
 {
     CMTime defaultVideoMaxFrameDuration;
     BOOL readyToRecordAudio;
@@ -38,14 +38,16 @@
     CMTime _prePoint;
     CGSize videoSize;
     NSURL *fileUrl;
+    CGRect faceRegion;
+    CGRect lastFaceRegion;
     
     BOOL isMicGranted;//麦克风权限是否被允许
+
 }
 
 @property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;
 @property (nonatomic, strong) AVCaptureAudioDataOutput          *audioOutput;
-@property (nonatomic, strong) AVCaptureMovieFileOutput          *movieFileOutput;
-@property (nonatomic, strong) AVCaptureDeviceInput              *backCameraInput;
+@property (nonatomic,strong) AVCaptureMetadataOutput            *metadataOutput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *frontCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *audioMicInput;
 @property (nonatomic, strong) AVCaptureDeviceFormat             *defaultFormat;
@@ -65,7 +67,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 @property (nonatomic, strong) AVMutableComposition              *composition;
 @property (nonatomic, strong) NSMutableArray                    *passThroughTimeRanges;
 @property (nonatomic, strong) NSMutableArray                    *transitionTimeRanges;
-@property (nonatomic, strong) UIImagePickerController           *moviePicker;
 
 @property (nonatomic, strong) DLYResource                       *resource;
 @property (nonatomic, strong) DLYSession                        *session;
@@ -91,12 +92,20 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     [_captureSession stopRunning];
     _captureSession   = nil;
     _previewLayer     = nil;
+    
     _backCameraInput  = nil;
     _frontCameraInput = nil;
+    
     _audioOutput      = nil;
     _videoOutput      = nil;
+    _metadataOutput   = nil;
+    
     _audioConnection  = nil;
     _videoConnection  = nil;
+    
+    _assetWriter      = nil;
+    _assetWriterVideoInput = nil;
+    _assetWriterAudioInput = nil;
 }
 #pragma mark - Lazy Load -
 
@@ -152,6 +161,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 - (instancetype)initWithPreviewView:(UIView *)previewView{
     if (self = [super init]) {
 
+        [self createTimer];
         referenceOrientation = (AVCaptureVideoOrientation)UIDeviceOrientationPortrait;
         
         NSError *error;
@@ -210,6 +220,12 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         }else{
             DLYLog(@"Video output creation faild");
         }
+        //添加元数据输出
+        if ([_captureSession canAddOutput:self.metadataOutput]) {
+            [_captureSession addOutput:self.metadataOutput];
+            self.metadataOutput.metadataObjectTypes = @[AVMetadataObjectTypeFace];
+        }
+
         //添加音频输出
         if ([_captureSession canAddOutput:self.audioOutput]) {
             [_captureSession addOutput:self.audioOutput];
@@ -229,6 +245,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         OSStatus err = CMBufferQueueCreate(kCFAllocatorDefault, 1, CMBufferQueueGetCallbacksForUnsortedSampleBuffers(), &previewBufferQueue);
         DLYLog(@"CMBufferQueueCreate error:%d", (int)err);
 
+        self.metadataOutput.rectOfInterest = [self.previewLayer metadataOutputRectOfInterestForRect:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        
         [self.captureSession startRunning];
     }
     return self;
@@ -293,12 +311,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     return _audioMicInput;
 }
--(AVCaptureMovieFileOutput *)movieFileOutput{
-    if (_movieFileOutput == nil) {
-        _movieFileOutput = [[AVCaptureMovieFileOutput alloc]init];
-    }
-    return _movieFileOutput;
-}
+
 //视频输出
 - (AVCaptureVideoDataOutput *)videoOutput {
     if (_videoOutput == nil) {
@@ -307,13 +320,20 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
                                         [NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange], kCVPixelBufferPixelFormatTypeKey,
                                         nil];
         _videoOutput.videoSettings = setcapSettings;
-        dispatch_queue_t videoCaptureQueue = dispatch_queue_create("videocapture", NULL);
+        dispatch_queue_t videoCaptureQueue = dispatch_queue_create("videocapture", DISPATCH_QUEUE_SERIAL);
         [_videoOutput setSampleBufferDelegate:self queue:videoCaptureQueue];
         [_videoOutput setAlwaysDiscardsLateVideoFrames:YES];
     }
     return _videoOutput;
 }
-
+-(AVCaptureMetadataOutput *)metadataOutput {
+    if (_metadataOutput == nil) {
+        _metadataOutput = [[AVCaptureMetadataOutput alloc]init];
+        dispatch_queue_t metadataOutputQueue = dispatch_queue_create("metadataOutput", DISPATCH_QUEUE_SERIAL);
+        [_metadataOutput setMetadataObjectsDelegate:self queue:metadataOutputQueue];
+    }
+    return _metadataOutput;
+}
 //音频输出
 - (AVCaptureAudioDataOutput *)audioOutput {
     if (_audioOutput == nil) {
@@ -327,7 +347,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 
 //视频连接
 - (AVCaptureConnection *)videoConnection {
-    _videoConnection = [self.videoOutput connectionWithMediaType:AVMediaTypeVideo];
+    if (!_videoConnection) {
+        _videoConnection = [self.videoOutput connectionWithMediaType:AVMediaTypeVideo];
+    }
     return _videoConnection;
 }
 
@@ -359,31 +381,21 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             // save the default format
             self.defaultFormat = device.activeFormat;
             defaultVideoMaxFrameDuration = device.activeVideoMaxFrameDuration;
-            DLYLog(@"videoDevice.activeFormat:%@", device.activeFormat);
             return device;
         }
     }
     return nil;
-}
-//摄像头切换旋转动画
-- (void)changeCameraRotateAnimation {
-    CATransition *changeAnimation = [CATransition animation];
-    changeAnimation.delegate = self;
-    changeAnimation.duration = 0.2;
-    changeAnimation.type = @"oglFlip";
-    changeAnimation.subtype = kCATransitionPush;
-    [self.previewLayer addAnimation:changeAnimation forKey:@"changeAnimation"];
 }
 //摄像头切换翻转动画
 - (void)changeCameraAnimation {
     CATransition *changeAnimation = [CATransition animation];
     changeAnimation.delegate = self;
     changeAnimation.duration = 0.3;
-    changeAnimation.type = @"Cube";
-    changeAnimation.subtype = kCATransitionFromRight;
-    //    changeAnimation.timingFunction = UIViewAnimationCurveEaseInOut;
+    changeAnimation.type = @"oglFlip";
+    changeAnimation.subtype = kCATransitionFromTop;
     [self.previewLayer addAnimation:changeAnimation forKey:@"changeAnimation"];
 }
+
 - (void)animationDidStart:(CAAnimation *)anim {
     [self.captureSession startRunning];
 }
@@ -405,15 +417,15 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     CGFloat deltaX = second.x - first.x;
     CGFloat deltaY = second.y - first.y;
-    return sqrt(deltaX*deltaX + deltaY*deltaY);
+    return sqrt(deltaX * deltaX + deltaY * deltaY);
 };
 
 -(void)focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point{
     
-    AVCaptureDevice *captureDevice = _currentVideoDeviceInput.device;
+    AVCaptureDevice *captureDevice = self.currentVideoDeviceInput.device;
     CGPoint currentPoint = CGPointZero;
     
-    if ([_currentVideoDeviceInput.device lockForConfiguration:nil]) {
+    if ([self.currentVideoDeviceInput.device lockForConfiguration:nil]) {
         
 //        CGFloat distance = distanceBetweenPoints(currentPoint, point);
         // 设置对焦
@@ -436,7 +448,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         if ([captureDevice isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeAutoWhiteBalance]) {
             [captureDevice setWhiteBalanceMode:AVCaptureWhiteBalanceModeAutoWhiteBalance];
         }
-        [_currentVideoDeviceInput.device unlockForConfiguration];
+        [self.currentVideoDeviceInput.device unlockForConfiguration];
         currentPoint = point;
         NSLog(@"Current point of the capture device is :x = %f,y = %f",currentPoint.x,currentPoint.y);
     }
@@ -464,7 +476,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         NSLog(@"设置设备属性过程发生错误，错误信息：%@",error.localizedDescription);
     }
 }
-
 #pragma mark -视频数据输出设置-
 
 - (BOOL)setupAssetWriterVideoInput:(CMFormatDescriptionRef)currentFormatDescription
@@ -617,10 +628,10 @@ outputSettings:audioCompressionSettings];
         [self.captureSession stopRunning];
     }
     
-    [_videoDevice lockForConfiguration:nil];
-    _videoDevice.activeFormat = self.defaultFormat;
-    _videoDevice.activeVideoMaxFrameDuration = defaultVideoMaxFrameDuration;
-    [_videoDevice unlockForConfiguration];
+    [self.videoDevice lockForConfiguration:nil];
+    self.videoDevice.activeFormat = self.defaultFormat;
+    self.videoDevice.activeVideoMaxFrameDuration = defaultVideoMaxFrameDuration;
+    [self.videoDevice unlockForConfiguration];
     
     if (isRunning) {
         [self.captureSession startRunning];
@@ -632,12 +643,11 @@ outputSettings:audioCompressionSettings];
     BOOL isRunning = self.captureSession.isRunning;
     if (isRunning)  [self.captureSession stopRunning];
     
-    AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     AVCaptureDeviceFormat *selectedFormat = nil;
     int32_t maxWidth = 0;
     AVFrameRateRange *frameRateRange = nil;
     
-    for (AVCaptureDeviceFormat *format in [videoDevice formats]) {
+    for (AVCaptureDeviceFormat *format in [self.videoDevice formats]) {
         
         for (AVFrameRateRange *range in format.videoSupportedFrameRateRanges) {
             
@@ -656,13 +666,13 @@ outputSettings:audioCompressionSettings];
     
     if (selectedFormat)
     {
-        if ([videoDevice lockForConfiguration:nil]) {
+        if ([self.videoDevice lockForConfiguration:nil]) {
             
 //            DLYLog(@"selected format:%@", selectedFormat);
-            videoDevice.activeFormat = selectedFormat;
-            videoDevice.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);//设置帧率
-            videoDevice.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
-            [videoDevice unlockForConfiguration];
+            self.videoDevice.activeFormat = selectedFormat;
+            self.videoDevice.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);//设置帧率
+            self.videoDevice.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+            [self.videoDevice unlockForConfiguration];
         }
     }
     
@@ -812,6 +822,82 @@ outputSettings:audioCompressionSettings];
         CFRelease(sampleBuffer);
     });
 }
+#pragma mark 从输出的元数据中捕捉人脸
+// 检测人脸是为了获得“人脸区域”，做“人脸区域”与“身份证人像框”的区域对比，当前者在后者范围内的时候，才能截取到完整的身份证图像
+-(void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection{
+    
+    //检测到目标元数据
+    if (metadataObjects.count) {
+        AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects.firstObject;
+        
+        DLYLog(@"检测到 %lu 个人脸",metadataObjects.count);
+        //取到识别到的人脸区域
+        AVMetadataObject *transformedMetadataObject = [self.previewLayer transformedMetadataObjectForMetadataObject:metadataObject];
+        faceRegion = transformedMetadataObject.bounds;
+        
+        //检测到人脸
+        if (metadataObject.type == AVMetadataObjectTypeFace) {
+            //检测区域
+            CGRect referenceRect = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+            
+            DLYLog(@"%d, facePathRect: %@, faceRegion: %@",CGRectContainsRect(referenceRect, faceRegion) ? @"包含人脸":@"不包含人脸",NSStringFromCGRect(referenceRect),NSStringFromCGRect(faceRegion));
+            
+        }else{
+            faceRegion = CGRectZero;
+        }
+    }else{
+        faceRegion = CGRectZero;
+    }
+}
+NSInteger timeCount = 0;
+NSInteger maskCount = 0;
+NSInteger startCount = MAXFLOAT;
+BOOL isOnce = YES;
+- (void)createTimer{
+    //获得队列
+    dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
+    //创建一个定时器
+    dispatch_source_t enliveTime = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+    //设置开始时间
+    dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC));
+    //设置时间间隔
+    uint64_t interval = (uint64_t)(1.0 * NSEC_PER_SEC);
+    //设置定时器
+    dispatch_source_set_timer(enliveTime, start, interval, 0);
+    //设置回调
+    dispatch_source_set_event_handler(enliveTime, ^{
+        
+        CGFloat distance = distanceBetweenPoints(faceRegion.origin, lastFaceRegion.origin);
+        lastFaceRegion = faceRegion;
+        if (distance < 20) {
+            if (isOnce) {
+                isOnce = NO;
+                startCount = timeCount;
+            }
+            maskCount++;
+        }
+        timeCount++;
+        if (timeCount - startCount >= 3) {
+            if (maskCount == 3) {
+                faceRegion = CGRectZero;
+            }
+            isOnce = YES;
+            startCount = MAXFLOAT;
+            maskCount = 0;
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.delegate && [self.delegate respondsToSelector:@selector(displayRefrenceRect:)]) {
+                [self.delegate displayRefrenceRect:faceRegion];
+            }
+        });
+        if(timeCount > MAXFLOAT){
+            dispatch_cancel(enliveTime);
+        }
+        
+    });
+    //启动定时器
+    dispatch_resume(enliveTime);
+}
 #pragma mark -延时拍摄-
 //获取视频某一帧图像
 -(UIImage*)getKeyImage:(NSURL *)assetUrl intervalTime:(NSInteger)intervalTime{
@@ -837,7 +923,7 @@ outputSettings:audioCompressionSettings];
     thumbnailImageRef = [assetImageGenerator copyCGImageAtTime:CMTimeMake(intervalTime, 2) actualTime:NULL error:&thumbnailImageGenerationError];
     
     if (!thumbnailImageRef)
-        DLYLog(@"thumbnailImageGenerationError %@", thumbnailImageGenerationError);
+        DLYLog(@"Thumbnail Image Generation Error %@", thumbnailImageGenerationError);
     
     UIImage *thumbnailImage = thumbnailImageRef ? [[UIImage alloc] initWithCGImage:thumbnailImageRef] : nil;
     return thumbnailImage;
@@ -863,7 +949,6 @@ outputSettings:audioCompressionSettings];
     CGContextRelease(context);
     CGColorSpaceRelease(colorSpace);
     
-    //UIImage *image = [UIImage imageWithCGImage:quartzImage];
     UIImage *image = [UIImage imageWithCGImage:quartzImage scale:1.0f orientation:UIImageOrientationRight];
     
     CGImageRelease(quartzImage);
@@ -947,7 +1032,7 @@ outputSettings:audioCompressionSettings];
     NSArray *videoPathArray = [self.resource loadDraftParts];
     NSInteger videoCount = [videoPathArray count];
     
-    for (NSUInteger i = 0; i < videoPathArray.count; i++) {
+    for (NSUInteger i = 0; i < videoCount; i++) {
         
         NSUInteger trackIndex = i % 2;
         
