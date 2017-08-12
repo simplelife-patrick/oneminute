@@ -102,6 +102,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+//    if (!self.AVEngine.captureSession.isRunning) {
+//        [self.AVEngine.captureSession startRunning];
+//    }
     [MobClick beginLogPageView:@"RecordView"];
     
     //According to the preview center focus after launch
