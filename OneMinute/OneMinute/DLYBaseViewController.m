@@ -117,7 +117,7 @@
     }
     else
     {
-        if (x >= 0){
+        if (x >= 0.75){
             //home在左
 //            NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeRight];
 //            [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
@@ -128,7 +128,7 @@
                 self.oldState = self.newState;
             }
         }
-        else{
+        else if (x <= -0.75){
             //home在右
 //            NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
 //            [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
