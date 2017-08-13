@@ -804,6 +804,11 @@ outputSettings:audioCompressionSettings];
         }];
     });
 }
+- (void) restartRecording{
+    if (!self.captureSession.isRunning) {
+        [self.captureSession startRunning];
+    }
+}
 #pragma mark - 暂停录制 -
 - (void) pauseRecording{
     if (self.captureSession.isRunning) {
@@ -1409,7 +1414,6 @@ BOOL isOnce = YES;
     }];
 }
 #pragma mark - 标题 -
-
 - (CALayer *) addTitleForVideoWith:(NSString *)titleText size:(CGSize)renderSize{
     
     CALayer *overlayLayer = [CALayer layer];
