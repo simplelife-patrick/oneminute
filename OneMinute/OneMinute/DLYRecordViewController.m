@@ -102,15 +102,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-//    if (!self.AVEngine.captureSession.isRunning) {
-//        [self.AVEngine.captureSession startRunning];
-//    }
-    [MobClick beginLogPageView:@"RecordView"];
     
-    //According to the preview center focus after launch
-    CGPoint point = self.previewView.center;
-    CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
-    [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus atPoint:cameraPoint];
+    [self.AVEngine restartRecording];
+    [MobClick beginLogPageView:@"RecordView"];
 
     self.isAppear = YES;
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
@@ -167,6 +161,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recordViewWillEnterForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
     
     [self initializationRecorder];
+    
+    //According to the preview center focus after launch
+    CGPoint point = self.previewView.center;
+    CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
+    [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus atPoint:cameraPoint];
     
     if (draftNum == 6) {
         self.recordBtn.hidden = YES;

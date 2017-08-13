@@ -44,7 +44,7 @@ typedef void(^FailureBlock)(NSError *error);
 @property (nonatomic, assign) BOOL                                                    isTime;
 @property (nonatomic, strong) NSMutableArray                                          *imageArray;
 
-
+- (void) restartRecording;
 - (void) stopRecording;
 - (void) cancelRecording;
 - (void) pauseRecording;
@@ -92,6 +92,16 @@ typedef void(^FailureBlock)(NSError *error);
 - (void) addTransitionEffectWithTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
 
 /**
+ 配音
+
+ @param videoUrl 视频文件Url
+ @param audioUrl 音频文件Url
+ @param videoTitle 视频标题名称
+ @param successBlock 成功回调
+ @param failureBlcok 失败回调
+ */
+- (void) addMusicToVideo:(NSURL *)videoUrl audioUrl:(NSURL *)audioUrl videoTitle:(NSString *)videoTitle successBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
+/**
  获取视频某一帧图片
  
  @param assetUrl 视频URL
@@ -100,6 +110,7 @@ typedef void(^FailureBlock)(NSError *error);
  */
 -(UIImage*)getKeyImage:(NSURL *)assetUrl intervalTime:(NSInteger)intervalTime;
 
+- (void) focusOnceWithPoint:(CGPoint)point;
 -(void)focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point;
 
 /**
