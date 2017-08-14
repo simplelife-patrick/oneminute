@@ -16,7 +16,7 @@
 
 #define kMaxLength 16
 
-@interface DLYPlayVideoViewController ()<UITextFieldDelegate>
+@interface DLYPlayVideoViewController ()<UITextFieldDelegate,DLYCaptureManagerDelegate>
 {
     float mRestoreAfterScrubbingRate;
     //1.流量 2.WiFi 3.不可用
@@ -72,16 +72,19 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
 
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(canPlayVideo:) name:@"CANPLAY" object:nil];
-    
-
 }
 
 #pragma mark ==== 初始化相机
 - (void)initializationRecorder {
     
     self.AVEngine = [[DLYAVEngine alloc] init];
+    self.AVEngine.delegate = self;
 }
-
+-(void)didFinishEdititProductUrl:(NSURL *)productUrl{
+    
+    NSDictionary *dict = @{@"playUrl":self.AVEngine.currentProductUrl};
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CANPLAY" object:nil userInfo:dict];
+}
 - (void)createMainView {
     NSURL *url = [self.resource getPartUrlWithPartNum:0];
     UIImage *frameImage = [self.AVEngine getKeyImage:url intervalTime:2.0];
@@ -153,32 +156,11 @@
     //跳过的时候，调用合成接口
     __weak typeof(self) weakSelf = self;
     
-//    dispatch_queue_t combineVideoQueue = dispatch_queue_create("combineVideo", DISPATCH_QUEUE_SERIAL);
-//    NSLog(@"start--%@",[NSThread currentThread]);
-//    //合成
-//    dispatch_async(combineVideoQueue, ^{
-//        [self.AVEngine addTransitionEffectWithTitle:nil SuccessBlock:nil failure:nil];
-//    });
-//    //配音
-//    dispatch_async(combineVideoQueue, ^{
-//        
-//        DLYSession *session = [[DLYSession alloc] init];
-//        DLYMiniVlogTemplate *currentTemplate= session.currentTemplate;
-//        
-//        NSString *BGMPath = [[NSBundle mainBundle] pathForResource:currentTemplate.BGM ofType:@".m4a"];
-//        NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
-//        
-//        NSURL *outPutUrl = [self.resource saveProductToSandbox];
-//        self.AVEngine.currentProductUrl = outPutUrl;
-//        
-//        [self.AVEngine addMusicToVideo:outPutUrl audioUrl:BGMUrl videoTitle:self.titleField.text successBlock:nil failure:nil];
-//    });
-    
-    
     [self.AVEngine addTransitionEffectWithTitle:self.titleField.text SuccessBlock:^{
         if (!weakSelf.isSuccess && weakSelf.isAll) {
-            NSDictionary *dict = @{@"playUrl":weakSelf.AVEngine.currentProductUrl};
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"CANPLAY" object:nil userInfo:dict];
+            
+//            NSDictionary *dict = @{@"playUrl":weakSelf.AVEngine.currentProductUrl};
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"CANPLAY" object:nil userInfo:dict];
         }
     } failure:^(NSError *error) {
         

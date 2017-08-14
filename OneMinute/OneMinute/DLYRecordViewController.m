@@ -34,6 +34,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     BOOL isNeededToSave;
     BOOL isMicGranted;//麦克风权限是否被允许
     BOOL isFront;
+    CGFloat _initialPinchZoom;
 }
 @property (nonatomic, strong) DLYAVEngine                       *AVEngine;
 @property (nonatomic, strong) UIView                            *previewView;
@@ -185,6 +186,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.deleteButton.hidden = NO;
     }
 }
+
 #pragma mark ==== 初始化数据
 - (NSInteger)initDataReadDraft {
     
@@ -351,6 +353,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //PreviewView
     self.previewView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     self.previewView.backgroundColor = [UIColor clearColor];
+    UIPinchGestureRecognizer *pinch =[[UIPinchGestureRecognizer alloc]initWithTarget:self action:@selector(pinchDetected:)];
+    [self.previewView addGestureRecognizer:pinch];
     [self.view addSubview:self.previewView];
     
     //通用button 选择场景button
@@ -467,7 +471,50 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self createSceneView];
     [self.view addSubview:[self shootView]];
 }
+//添加捏合事件
 
+- (void)pinchDetected:(UIPinchGestureRecognizer*)recogniser
+{
+    // 1
+    if (!self.AVEngine.videoDevice)
+    {
+        return;
+    }
+    
+    // 2
+    if (recogniser.state == UIGestureRecognizerStateBegan)
+    {
+        _initialPinchZoom = self.AVEngine.videoDevice.videoZoomFactor;
+    }
+    
+    // 3
+    NSError *error = nil;
+    [self.AVEngine.videoDevice lockForConfiguration:&error];
+    
+    if (!error) {
+        CGFloat zoomFactor;
+        CGFloat scale = recogniser.scale;
+        if (scale < 1.0f) {
+            // 4
+            zoomFactor = _initialPinchZoom - pow(self.AVEngine.videoDevice.activeFormat.videoMaxZoomFactor, 1.0f - recogniser.scale);
+        }
+        else
+        {
+            // 5
+            zoomFactor = _initialPinchZoom + pow(self.AVEngine.videoDevice.activeFormat.videoMaxZoomFactor, (recogniser.scale - 1.0f) / 2.0f);
+        }
+        
+        // 6
+        zoomFactor = MIN(10.0f, zoomFactor);
+        zoomFactor = MAX(1.0f, zoomFactor);
+        
+        // 7
+        self.AVEngine.videoDevice.videoZoomFactor = zoomFactor;
+        
+        // 8
+        [self.AVEngine.videoDevice unlockForConfiguration];
+    }
+}
 #pragma mark - 初始化相机
 - (void)initializationRecorder {
     

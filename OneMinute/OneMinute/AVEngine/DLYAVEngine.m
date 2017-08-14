@@ -245,6 +245,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     return self;
 }
+
 #pragma mark - 切换摄像头 -
 - (void)changeCameraInputDeviceisFront:(BOOL)isFront {
     
@@ -912,9 +913,9 @@ BOOL isOnce = YES;
         if (distance < 20) {
             if (isOnce) {
                 isOnce = NO;
-                CGPoint point = CGPointMake(faceRegion.size.width/2, faceRegion.size.height/2);
-                CGPoint cameraPoint = [self.previewLayer captureDevicePointOfInterestForPoint:point];
-                [self focusOnceWithPoint:cameraPoint];
+//                CGPoint point = CGPointMake(faceRegion.size.width/2, faceRegion.size.height/2);
+//                CGPoint cameraPoint = [self.previewLayer captureDevicePointOfInterestForPoint:point];
+//                [self focusOnceWithPoint:cameraPoint];
                 startCount = timeCount;
             }
             maskCount++;
@@ -1165,6 +1166,7 @@ BOOL isOnce = YES;
         
         //缩放
         CGAffineTransform fromTransformScale = CGAffineTransformMakeScale(2, 2);
+        CGAffineTransform toTransformScale = CGAffineTransformMakeScale(2, 2);
         
         DLYVideoTransitionType type = instructions.transition.type;
     
@@ -1205,7 +1207,9 @@ BOOL isOnce = YES;
                 break;
             case DLYVideoTransitionTypeZoom:
                 
-            [fromLayer setTransformRampFromStartTransform:identityTransform toEndTransform:fromTransformScale timeRange:timeRange];
+                [fromLayer setTransformRampFromStartTransform:identityTransform toEndTransform:fromTransformScale timeRange:timeRange];
+                [toLayer setTransformRampFromStartTransform:identityTransform toEndTransform:toTransformScale timeRange:timeRange];
+
                 break;
                 
             default:
@@ -1396,6 +1400,9 @@ BOOL isOnce = YES;
                 DLYLog(@"配音失败: %@",[[assetExportSession error] description]);
             }break;
             case AVAssetExportSessionStatusCompleted:{
+                if ([self.delegate  respondsToSelector:@selector(didFinishEdititProductUrl:)]) {
+                    [self.delegate didFinishEdititProductUrl:outPutUrl];
+                }
                 ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
                 [assetLibrary saveVideo:outPutUrl toAlbum:@"OneMinute" completionBlock:^(NSURL *assetURL, NSError *error) {
                     
@@ -1407,10 +1414,10 @@ BOOL isOnce = YES;
             default:
                 break;
         }
-        if (successBlock) {
-            DLYLog(@"合并配音流程结束!");
-            successBlock();
-        }
+//        if (successBlock) {
+//            DLYLog(@"合并配音流程结束!");
+//            successBlock();
+//        }
     }];
 }
 #pragma mark - 标题 -
@@ -1439,17 +1446,8 @@ BOOL isOnce = YES;
     animation.duration = 8.0f;
     [animation setRemovedOnCompletion:NO];
     [animation setFillMode:kCAFillModeForwards];
-    animation.beginTime = AVCoreAnimationBeginTimeAtZero;
+    animation.beginTime = 16.0;
     [titleLayer addAnimation:animation forKey:@"opacityAniamtion"];
-    
-//    CABasicAnimation *anima = [CABasicAnimation animationWithKeyPath:@"position"];
-//    anima.fromValue = [NSValue valueWithCGPoint:CGPointMake(0, renderSize.height/2)];
-//    anima.toValue = [NSValue valueWithCGPoint:CGPointMake(renderSize.width/2, renderSize.height/2)];
-//    anima.duration = 5.0f;
-//    anima.repeatCount = 0;
-//    anima.fillMode = kCAFillModeForwards;
-//    anima.removedOnCompletion = YES;
-//    [titleLayer addAnimation:anima forKey:@"positionAnimation"];
     
     [overlayLayer addSublayer:titleLayer];
     
