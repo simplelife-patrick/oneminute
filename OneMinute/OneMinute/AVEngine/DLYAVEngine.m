@@ -912,9 +912,9 @@ BOOL isOnce = YES;
         if (distance < 20) {
             if (isOnce) {
                 isOnce = NO;
-                CGPoint point = CGPointMake(faceRegion.size.width/2, faceRegion.size.height/2);
-                CGPoint cameraPoint = [self.previewLayer captureDevicePointOfInterestForPoint:point];
-                [self focusOnceWithPoint:cameraPoint];
+//                CGPoint point = CGPointMake(faceRegion.size.width/2, faceRegion.size.height/2);
+//                CGPoint cameraPoint = [self.previewLayer captureDevicePointOfInterestForPoint:point];
+//                [self focusOnceWithPoint:cameraPoint];
                 startCount = timeCount;
             }
             maskCount++;
@@ -1165,6 +1165,7 @@ BOOL isOnce = YES;
         
         //缩放
         CGAffineTransform fromTransformScale = CGAffineTransformMakeScale(2, 2);
+        CGAffineTransform toTransformScale = CGAffineTransformMakeScale(2, 2);
         
         DLYVideoTransitionType type = instructions.transition.type;
     
@@ -1205,7 +1206,9 @@ BOOL isOnce = YES;
                 break;
             case DLYVideoTransitionTypeZoom:
                 
-            [fromLayer setTransformRampFromStartTransform:identityTransform toEndTransform:fromTransformScale timeRange:timeRange];
+                [fromLayer setTransformRampFromStartTransform:identityTransform toEndTransform:fromTransformScale timeRange:timeRange];
+                [toLayer setTransformRampFromStartTransform:identityTransform toEndTransform:toTransformScale timeRange:timeRange];
+
                 break;
                 
             default:
