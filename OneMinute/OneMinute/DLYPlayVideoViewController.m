@@ -46,6 +46,7 @@
 
 @property (nonatomic, assign) BOOL isCanOnlinePlay; //准备好了可以播放
 @property (nonatomic, assign) BOOL isSurePlay;      //确定流量播放
+@property (nonatomic, strong) UIImage *frameImage;
 
 @end
 
@@ -84,7 +85,7 @@
 - (void)createMainView {
     NSURL *url = [self.resource getPartUrlWithPartNum:0];
     UIImage *frameImage = [self.AVEngine getKeyImage:url intervalTime:2.0];
-    
+    self.frameImage = frameImage;
     UIImageView * videoImage = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     videoImage.image = frameImage;
     [self.view addSubview:videoImage];
@@ -310,6 +311,7 @@
     [self pause];
     DLYExportViewController *exportVC = [[DLYExportViewController alloc] init];
     exportVC.beforeState = self.newState;
+    exportVC.backImage = self.frameImage;
     [self.navigationController pushViewController:exportVC animated:YES];
 }
 
@@ -573,6 +575,7 @@
         //跳转下一步填写标题
         DLYExportViewController *exportVC = [[DLYExportViewController alloc] init];
         exportVC.beforeState = self.newState;
+        exportVC.backImage = self.frameImage;
         [self.navigationController pushViewController:exportVC animated:YES];
 
     }else {

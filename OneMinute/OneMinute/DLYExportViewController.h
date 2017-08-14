@@ -11,4 +11,6 @@
 @interface DLYExportViewController : DLYBaseViewController
 @property (nonatomic, assign) NSInteger beforeState;
 
+@property (nonatomic, strong) UIImage *backImage;
+
 @end

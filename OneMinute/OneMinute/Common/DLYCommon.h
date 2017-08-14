@@ -44,6 +44,7 @@ static const int ddLogLevel = DDLogLevelError;
 
 //沙盒文件目录文件夹
 #define kPathDocument [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]
+#define kCachePath [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0]
 #define kDataFolder @"Data"
 #define kTemplateFolder @"Template"
 #define kResourceFolder @"Resource"

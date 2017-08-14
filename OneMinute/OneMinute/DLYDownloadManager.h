@@ -14,6 +14,13 @@
 
 +(instancetype)shredManager;
 
+
+/**
+ *  是否存在已经完成的文件
+ */
+
+- (BOOL)isExistLocalVideo:(NSString *) videoName andVideoURLString:(NSString *)url;
+
 /**
  *  断点下载
  *
