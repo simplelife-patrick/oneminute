@@ -22,6 +22,9 @@ typedef void(^SuccessBlock)(void);
 typedef void(^FailureBlock)(NSError *error);
 
 @protocol DLYCaptureManagerDelegate <NSObject>
+
+- (void)didFinishEdititProductUrl:(NSURL *)productUrl;
+
 - (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
                                       error:(NSError *)error;
 - (void) displayRefrenceRect:(CGRect)faceRegion;

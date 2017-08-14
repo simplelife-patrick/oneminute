@@ -64,6 +64,10 @@
       "transitionType":0
     }
   ],
+  "subTitle1": {
+    "startTime": "00:08:16",
+    "stopTime": "00:16:19"
+  },
   "BGM": "UniversalTemplateBGM",
   "header": "header001",
   "tailer": "tail001",

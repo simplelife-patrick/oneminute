@@ -25,6 +25,7 @@
         self.templateType = [[dic objectForKey:@"type"] integerValue];
         self.parts = [dic objectForKey:@"info"];
         self.BGM = [dic objectForKey:@"BGM"];
+        self.subTitle1 = [dic objectForKey:@"subTitle1"];
         self.videoHeader = [dic objectForKey:@"header"];
         self.videoTailer = [dic objectForKey:@"tailer"];
         self.templateDescription = [dic objectForKey:@"templateDescription"];
