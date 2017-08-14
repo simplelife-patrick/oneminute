@@ -1,0 +1,37 @@
+
+platform :ios, '9.0'
+inhibit_all_warnings!
+
+def main_pods
+
+#pod 'pop'
+#pod 'Reachability'
+#pod 'MBProgressHUD'
+#pod 'YYKit'
+#pod 'Masonry'
+#pod 'fmdb'
+pod 'ZipArchive', '1.4.0'
+pod 'CocoaLumberjack', '2.0.1'
+pod 'GPUImage', '~> 0.1.7'
+pod 'Masonry', '~> 1.0.2'
+pod 'CocoaSecurity', '~> 1.2.4'
+pod 'UMengAnalytics', '~> 4.2.4'
+pod 'Fabric', '~> 1.6.12'
+pod 'Crashlytics', '~> 3.8.5'
+pod 'AFNetworking', '~> 3.1.0'
+pod 'FFmpeg', '~> 2.8.3'
+########################调试##################################
+# 注意，发appstore的时候一定要全部移除掉
+#pod 'FLEX', '2.1.1-framework'
+#pod 'PFEasy', '1.0.1'
+#pod 'ATSDK', '0.2.1.56'
+#pod 'Reveal-iOS-SDK'
+#pod 'dyci'
+#pod 'DTFeedbackKit', '0.0.1-SNAPSHOT'
+###############################################################
+end
+
+target 'OneMinute' do
+    platform :ios, '9.0'
+    main_pods
+end
