@@ -48,6 +48,41 @@ static DLYDownloadManager *mgr=nil;
     }
     return self;
 }
+
+/**
+ *  是否存在已经完成的文件
+ */
+
+- (BOOL)isExistLocalVideo:(NSString *) videoName andVideoURLString:(NSString *)url {
+    
+    NSString *finishPath = [kPathDocument stringByAppendingFormat:@"/FinishVideo/%@.mp4", videoName];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if ([fileManager fileExistsAtPath:finishPath]) {
+        return YES;
+    }else {
+        NSString *tempPath = [kCachePath stringByAppendingFormat:@"/%@.mp4", videoName];
+        if ([fileManager fileExistsAtPath:tempPath]) {
+            float videoProgress = [[DLYDownloadManager shredManager] lastProgress:url];
+            if (videoProgress >= 1.0) {
+                BOOL isSuccess = [fileManager copyItemAtPath:tempPath toPath:finishPath error:nil];
+                if (isSuccess) {
+                    DLYLog(@"rename success");
+                    [fileManager removeItemAtPath:tempPath error:nil];
+                    return YES;
+                }else{
+                    DLYLog(@"rename fail");
+                    return NO;
+                }
+            }else {
+                return NO;
+            }
+        }else {
+            return NO;
+        }
+        
+    }
+    
+}
 /**
  *  收到系统存储空间不足的通知调用的方法
  *

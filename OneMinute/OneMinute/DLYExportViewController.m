@@ -40,7 +40,7 @@
     
     //背景图片
     UIImageView * videoImage = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-    videoImage.image = [UIImage imageNamed:@"timg"];
+    videoImage.image = self.backImage;
     [self.view addSubview:videoImage];
     
     self.syntheticView = [[UIView alloc]initWithFrame:self.view.frame];

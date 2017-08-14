@@ -14,6 +14,7 @@
 #import "DLYResource.h"
 #import "DLYAVEngine.h"
 #import "DLYSession.h"
+#import "DLYDownloadManager.h"
 
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
@@ -1253,16 +1254,51 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 - (void)changeTypeToPlayWithTag:(NSInteger)num {
+    //数据 url也放在这里
+    DLYMiniVlogTemplate *template = typeModelArray[num];
+    NSString *videoName = [template.sampleVideoName stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
+    NSArray *urlArr = @[@"http://flv1.bn.netease.com/tvmrepo/2017/8/5/5/ECQD6GG55/SD/ECQD6GG55-mobile.mp4",
+                        @"http://flv3.bn.netease.com/tvmrepo/2017/8/P/9/ECQSCHRP9/SD/ECQSCHRP9-mobile.mp4",
+                        @"http://flv1.bn.netease.com/tvmrepo/2017/8/O/I/ECQSCRKOI/SD/ECQSCRKOI-mobile.mp4",
+                        @"http://flv3.bn.netease.com/videolib3/1708/14/pCFcf4418/SD/pCFcf4418-mobile.mp4"];
+    NSString *videoUrl = urlArr[num];
+    //路径
+    NSString *finishPath = [kPathDocument stringByAppendingFormat:@"/FinishVideo/%@.mp4", videoName];
+    NSString *tempPath = [kCachePath stringByAppendingFormat:@"/%@.mp4", videoName];
+    NSString *finishFolder = [kPathDocument stringByAppendingFormat:@"/FinishVideo"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:finishFolder]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:finishFolder withIntermediateDirectories:YES attributes:nil error:nil];
+    }
     
-//    DLYMiniVlogTemplate *template = typeModelArray[num];
     DLYPlayVideoViewController *playVC = [[DLYPlayVideoViewController alloc] init];
-    //    NSURL *url = [NSURL URLWithString:@"http://s3.amazonaws.com/adplayer/colgate.mp4"];
-    NSURL *url = [NSURL URLWithString:@"http://flv1.bn.netease.com/tvmrepo/2017/8/5/5/ECQD6GG55/SD/ECQD6GG55-mobile.mp4"];
-    playVC.playUrl = url;
+    BOOL isExist = [[DLYDownloadManager shredManager] isExistLocalVideo:videoName andVideoURLString:videoUrl];
+    if (isExist) {
+        NSURL *url = [NSURL fileURLWithPath:finishPath];
+        playVC.playUrl = url;
+        playVC.isOnline = NO;
+    }else {
+        [[DLYDownloadManager shredManager] downloadWithUrlString:videoUrl toPath:tempPath process:^(float progress, NSString *sizeString, NSString *speedString) {
+            //下载过程中
+        } completion:^{
+            //下载完成
+            BOOL isSuccess = [[NSFileManager defaultManager] copyItemAtPath:tempPath toPath:finishPath error:nil];
+            if (isSuccess) {
+                DLYLog(@"rename success");
+                [[NSFileManager defaultManager] removeItemAtPath:tempPath error:nil];
+            }else{
+                DLYLog(@"rename fail");
+            }
+        } failure:^(NSError *error) {
+            //失败
+            [[DLYDownloadManager shredManager] cancelDownloadTask:videoUrl];
+        }];
+        
+        playVC.playUrl = [NSURL URLWithString:videoUrl];
+        playVC.isOnline = YES;
+    }
     playVC.isAll = NO;
-    playVC.isOnline = YES;
     playVC.beforeState = self.newState;
-    self.isPlayer = YES; //应该不需要
+    self.isPlayer = YES;
     [self.navigationController pushViewController:playVC animated:YES];
 }
 //取消拍摄按键
@@ -1752,7 +1788,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         
     }];
-    
 }
 
 #pragma mark ==== 每个拍摄片段的点击事件
