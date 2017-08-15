@@ -60,12 +60,12 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTemplateType)
 /**
  背景音乐
  */
-@property (nonatomic, strong) NSString                           *BGM;
+@property (nonatomic, strong) NSString                        *BGM;
 
 /** 
  字幕1(标题)
  */
-@property (nonatomic, strong) NSString                        *subTitle1;
+@property (nonatomic, strong) NSDictionary                    *subTitle1;
 
 /**
  片头

@@ -307,6 +307,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     return _audioMicInput;
 }
 -(AVCaptureMovieFileOutput *)movieFileOutput{
+    
     if (_movieFileOutput == nil) {
         _movieFileOutput = [[AVCaptureMovieFileOutput alloc]init];
     }
@@ -393,6 +394,31 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     changeAnimation.type = @"oglFlip";
     changeAnimation.subtype = kCATransitionFromTop;
     [self.previewLayer addAnimation:changeAnimation forKey:@"changeAnimation"];
+}
+//顺时针旋转
+- (void)changeCameraRotateClockwiseAnimation {
+    CABasicAnimation *animation =  [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    //默认是顺时针效果，若将fromValue和toValue的值互换，则为逆时针效果
+    animation.fromValue = [NSNumber numberWithFloat:0.f];
+    animation.toValue =  [NSNumber numberWithFloat: M_PI];
+    animation.duration  = 0.2;
+    animation.autoreverses = NO;
+    animation.fillMode =kCAFillModeForwards;
+    animation.repeatCount = 0;
+    [self.previewLayer addAnimation:animation forKey:nil];
+}
+
+//逆时针旋转
+- (void)changeCameraRotateAnticlockwiseAnimation {
+    CABasicAnimation *animation =  [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    //默认是顺时针效果，若将fromValue和toValue的值互换，则为逆时针效果
+    animation.fromValue = [NSNumber numberWithFloat: M_PI];
+    animation.toValue =  [NSNumber numberWithFloat:0.f];
+    animation.duration  = 0.2;
+    animation.autoreverses = NO;
+    animation.fillMode =kCAFillModeForwards;
+    animation.repeatCount = 0;
+    [self.previewLayer addAnimation:animation forKey:nil];
 }
 - (void)animationDidStart:(CAAnimation *)anim {
     [self.captureSession startRunning];
@@ -1414,10 +1440,6 @@ BOOL isOnce = YES;
             default:
                 break;
         }
-//        if (successBlock) {
-//            DLYLog(@"合并配音流程结束!");
-//            successBlock();
-//        }
     }];
 }
 #pragma mark - 标题 -
@@ -1436,23 +1458,40 @@ BOOL isOnce = YES;
     CGSize textSize = [titleText sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
     titleLayer.bounds = CGRectMake(0, 0, textSize.width + 50, textSize.height + 25);
     
-    titleLayer.masksToBounds = YES;
-    titleLayer.cornerRadius = 23.0f;
+    DLYMiniVlogTemplate *template = self.session.currentTemplate;
+    NSDictionary *subTitleDic = template.subTitle1;
+    NSString *subTitleStart = [subTitleDic objectForKey:@"startTime"];
+    NSString *subTitleStop = [subTitleDic objectForKey:@"stopTime"];
+    
+    float _subTitleStart = [self switchTimeWithTemplateString:subTitleStart]/1000;
+    float _subTitleStop = [self switchTimeWithTemplateString:subTitleStop]/1000;
+    float duration = _subTitleStop - _subTitleStart;
     
     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    animation.fromValue = [NSNumber numberWithFloat:1.0f];
+    animation.fromValue = [NSNumber numberWithFloat:0.0f];
     animation.toValue = [NSNumber numberWithFloat:0.0f];
     animation.repeatCount = 0;
-    animation.duration = 8.0f;
+    animation.duration = _subTitleStart;
     [animation setRemovedOnCompletion:NO];
     [animation setFillMode:kCAFillModeForwards];
-    animation.beginTime = 16.0;
+    animation.beginTime = AVCoreAnimationBeginTimeAtZero;
     [titleLayer addAnimation:animation forKey:@"opacityAniamtion"];
+    
+    CABasicAnimation *animation1 = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    animation1.fromValue = [NSNumber numberWithFloat:1.0f];
+    animation1.toValue = [NSNumber numberWithFloat:0.0f];
+    animation1.repeatCount = 0;
+    animation1.duration = duration;
+    [animation1 setRemovedOnCompletion:NO];
+    [animation1 setFillMode:kCAFillModeForwards];
+    animation1.beginTime = _subTitleStart;
+    [titleLayer addAnimation:animation1 forKey:@"opacityAniamtion1"];
     
     [overlayLayer addSublayer:titleLayer];
     
     return overlayLayer;
 }
+
 #pragma mark - 叠加 -
 - (void) overlayVideoForBodyVideoAction{
     
@@ -1553,5 +1592,22 @@ BOOL isOnce = YES;
     
     return assetExportSession;
 }
-
+- (float) switchTimeWithTemplateString:(NSString *)timeSting{
+    
+    float timePoint = 0;
+    NSArray *startArr = [timeSting componentsSeparatedByString:@":"];
+    
+    for (int i = 0; i < 3; i ++) {
+        NSString *timeStr = startArr[i];
+        int time = [timeStr floatValue];
+        if (i == 0) {
+            timePoint = timePoint + time * 60 * 1000;
+        }if (i == 1) {
+            timePoint = timePoint + time * 1000;
+        }else {
+            timePoint = timePoint + time;
+        }
+    }
+    return timePoint;
+}
 @end

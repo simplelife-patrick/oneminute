@@ -63,6 +63,16 @@ typedef void(^FailureBlock)(NSError *error);
  切换摄像头动画
  */
 - (void)changeCameraAnimation;
+
+/**
+ 左右手模式切换预览画面顺时针旋转动画
+ */
+- (void)changeCameraRotateClockwiseAnimation;
+
+/**
+ 左右手模式切换预览画面逆时针旋转动画
+ */
+- (void)changeCameraRotateAnticlockwiseAnimation;
 /**
  按传入的片段信息开始录制
 
