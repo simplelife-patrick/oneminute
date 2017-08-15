@@ -307,6 +307,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     return _audioMicInput;
 }
 -(AVCaptureMovieFileOutput *)movieFileOutput{
+    
     if (_movieFileOutput == nil) {
         _movieFileOutput = [[AVCaptureMovieFileOutput alloc]init];
     }
@@ -393,6 +394,31 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     changeAnimation.type = @"oglFlip";
     changeAnimation.subtype = kCATransitionFromTop;
     [self.previewLayer addAnimation:changeAnimation forKey:@"changeAnimation"];
+}
+//顺时针旋转
+- (void)changeCameraRotateClockwiseAnimation {
+    CABasicAnimation *animation =  [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    //默认是顺时针效果，若将fromValue和toValue的值互换，则为逆时针效果
+    animation.fromValue = [NSNumber numberWithFloat:0.f];
+    animation.toValue =  [NSNumber numberWithFloat: M_PI];
+    animation.duration  = 0.2;
+    animation.autoreverses = NO;
+    animation.fillMode =kCAFillModeForwards;
+    animation.repeatCount = 0;
+    [self.previewLayer addAnimation:animation forKey:nil];
+}
+
+//逆时针旋转
+- (void)changeCameraRotateAnticlockwiseAnimation {
+    CABasicAnimation *animation =  [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    //默认是顺时针效果，若将fromValue和toValue的值互换，则为逆时针效果
+    animation.fromValue = [NSNumber numberWithFloat: M_PI];
+    animation.toValue =  [NSNumber numberWithFloat:0.f];
+    animation.duration  = 0.2;
+    animation.autoreverses = NO;
+    animation.fillMode =kCAFillModeForwards;
+    animation.repeatCount = 0;
+    [self.previewLayer addAnimation:animation forKey:nil];
 }
 - (void)animationDidStart:(CAAnimation *)anim {
     [self.captureSession startRunning];
