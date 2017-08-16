@@ -1260,10 +1260,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //数据 url也放在这里
     DLYMiniVlogTemplate *template = typeModelArray[num];
     NSString *videoName = [template.sampleVideoName stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
-    NSArray *urlArr = @[@"http://flv1.bn.netease.com/tvmrepo/2017/8/5/5/ECQD6GG55/SD/ECQD6GG55-mobile.mp4",
-                        @"http://flv3.bn.netease.com/tvmrepo/2017/8/P/9/ECQSCHRP9/SD/ECQSCHRP9-mobile.mp4",
-                        @"http://flv1.bn.netease.com/tvmrepo/2017/8/O/I/ECQSCRKOI/SD/ECQSCRKOI-mobile.mp4",
-                        @"http://flv3.bn.netease.com/videolib3/1708/14/pCFcf4418/SD/pCFcf4418-mobile.mp4"];
+    NSArray *urlArr = @[@"https://dlyvlog.oss-cn-hangzhou.aliyuncs.com/UniversalTemplateSample.mp4",
+                        @"https://dlyvlog.oss-cn-hangzhou.aliyuncs.com/GourmandismTemplateSample.mp4",
+                        @"https://dlyvlog.oss-cn-hangzhou.aliyuncs.com/TravelerTemplateSample.mp4",
+                        @"https://dlyvlog.oss-cn-hangzhou.aliyuncs.com/ColorLifeTemplateSample.mp4"];
     NSString *videoUrl = urlArr[num];
     //路径
     NSString *finishPath = [kPathDocument stringByAppendingFormat:@"/FinishVideo/%@.mp4", videoName];
