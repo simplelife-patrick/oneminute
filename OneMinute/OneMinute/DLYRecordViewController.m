@@ -169,7 +169,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
     [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus atPoint:cameraPoint];
     
-    if (draftNum == 6) {
+    if (draftNum == partModelArray.count) {
         self.recordBtn.hidden = YES;
         self.isSuccess = YES;
         if (self.newState == 1) {
@@ -1260,10 +1260,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //数据 url也放在这里
     DLYMiniVlogTemplate *template = typeModelArray[num];
     NSString *videoName = [template.sampleVideoName stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
-    NSArray *urlArr = @[@"https://dlyvlog.oss-cn-hangzhou.aliyuncs.com/UniversalTemplateSample.mp4",
-                        @"https://dlyvlog.oss-cn-hangzhou.aliyuncs.com/GourmandismTemplateSample.mp4",
-                        @"https://dlyvlog.oss-cn-hangzhou.aliyuncs.com/TravelerTemplateSample.mp4",
-                        @"https://dlyvlog.oss-cn-hangzhou.aliyuncs.com/ColorLifeTemplateSample.mp4"];
+    NSArray *urlArr = @[@"http://dly.oss-cn-shanghai.aliyuncs.com/UniversalTemplateSample.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/GourmandismTemplateSample.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/TravelerTemplateSample.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/ColorLifeTemplateSample.mp4"];
     NSString *videoUrl = urlArr[num];
     //路径
     NSString *finishPath = [kPathDocument stringByAppendingFormat:@"/FinishVideo/%@.mp4", videoName];
