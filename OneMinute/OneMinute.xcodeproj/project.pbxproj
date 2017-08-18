@@ -37,14 +37,14 @@
 		6F8925DF1F1B142300256093 /* DLYPopupMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DA1F1B142300256093 /* DLYPopupMenu.m */; };
 		6F8925E01F1B142300256093 /* DLYPopupMenuPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DC1F1B142300256093 /* DLYPopupMenuPath.m */; };
 		6F8925E11F1B142300256093 /* DLYRectConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DE1F1B142300256093 /* DLYRectConst.m */; };
-		AD0E2BC21F4196E600A95DAF /* Universal_001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD0E2BC11F4196E600A95DAF /* Universal_001.json */; };
+		AD0E2BC21F4196E600A95DAF /* Universal001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD0E2BC11F4196E600A95DAF /* Universal001.json */; };
 		AD13AC381F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = AD13AC371F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m */; };
-		AD5A06A31F33058A00F26693 /* ColorLife.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A01F33058A00F26693 /* ColorLife.json */; };
+		AD5A06A31F33058A00F26693 /* ColorLife001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A01F33058A00F26693 /* ColorLife001.json */; };
 		AD5A06A41F33058A00F26693 /* Travele001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A11F33058A00F26693 /* Travele001.json */; };
 		AD5A06A51F33058A00F26693 /* Gourmandism001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A21F33058A00F26693 /* Gourmandism001.json */; };
 		AD5B80AB1F34133B0094922B /* ColorLifeTemplateBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80A51F34133B0094922B /* ColorLifeTemplateBGM.m4a */; };
 		AD5B80AC1F34133B0094922B /* GourmandismTemplateBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80A61F34133B0094922B /* GourmandismTemplateBGM.m4a */; };
-		AD5B80AD1F34133B0094922B /* TravelerTemplateSample.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80A71F34133B0094922B /* TravelerTemplateSample.m4a */; };
+		AD5B80AD1F34133B0094922B /* TravelerTemplateBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80A71F34133B0094922B /* TravelerTemplateBGM.m4a */; };
 		AD5B80AF1F34133B0094922B /* header001.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80AA1F34133B0094922B /* header001.mp4 */; };
 		AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5B80B11F3443080094922B /* UIColor+Hex.m */; };
 		AD5B80B51F344C750094922B /* advertisementVideo(5s).mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80B31F344C750094922B /* advertisementVideo(5s).mp4 */; };
@@ -147,15 +147,15 @@
 		6F8925DD1F1B142300256093 /* DLYRectConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRectConst.h; sourceTree = "<group>"; };
 		6F8925DE1F1B142300256093 /* DLYRectConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRectConst.m; sourceTree = "<group>"; };
 		7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneMinute.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute.debug.xcconfig"; sourceTree = "<group>"; };
-		AD0E2BC11F4196E600A95DAF /* Universal_001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Universal_001.json; sourceTree = "<group>"; };
+		AD0E2BC11F4196E600A95DAF /* Universal001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Universal001.json; sourceTree = "<group>"; };
 		AD13AC361F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALAssetsLibrary+CustomPhotoAlbum.h"; sourceTree = "<group>"; };
 		AD13AC371F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ALAssetsLibrary+CustomPhotoAlbum.m"; sourceTree = "<group>"; };
-		AD5A06A01F33058A00F26693 /* ColorLife.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ColorLife.json; sourceTree = "<group>"; };
+		AD5A06A01F33058A00F26693 /* ColorLife001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ColorLife001.json; sourceTree = "<group>"; };
 		AD5A06A11F33058A00F26693 /* Travele001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Travele001.json; sourceTree = "<group>"; };
 		AD5A06A21F33058A00F26693 /* Gourmandism001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Gourmandism001.json; sourceTree = "<group>"; };
 		AD5B80A51F34133B0094922B /* ColorLifeTemplateBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorLifeTemplateBGM.m4a; sourceTree = "<group>"; };
 		AD5B80A61F34133B0094922B /* GourmandismTemplateBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = GourmandismTemplateBGM.m4a; sourceTree = "<group>"; };
-		AD5B80A71F34133B0094922B /* TravelerTemplateSample.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = TravelerTemplateSample.m4a; sourceTree = "<group>"; };
+		AD5B80A71F34133B0094922B /* TravelerTemplateBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = TravelerTemplateBGM.m4a; sourceTree = "<group>"; };
 		AD5B80AA1F34133B0094922B /* header001.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = header001.mp4; sourceTree = "<group>"; };
 		AD5B80B01F3443080094922B /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		AD5B80B11F3443080094922B /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
@@ -469,7 +469,7 @@
 			children = (
 				AD5B80A51F34133B0094922B /* ColorLifeTemplateBGM.m4a */,
 				AD5B80A61F34133B0094922B /* GourmandismTemplateBGM.m4a */,
-				AD5B80A71F34133B0094922B /* TravelerTemplateSample.m4a */,
+				AD5B80A71F34133B0094922B /* TravelerTemplateBGM.m4a */,
 				AD6972F01F3BF82C007EC4E9 /* UniversalTemplateBGM.m4a */,
 			);
 			path = BGM;
@@ -551,8 +551,8 @@
 		ADFFF18F1F18A33000FB5BF7 /* Template */ = {
 			isa = PBXGroup;
 			children = (
-				AD0E2BC11F4196E600A95DAF /* Universal_001.json */,
-				AD5A06A01F33058A00F26693 /* ColorLife.json */,
+				AD0E2BC11F4196E600A95DAF /* Universal001.json */,
+				AD5A06A01F33058A00F26693 /* ColorLife001.json */,
 				AD5A06A11F33058A00F26693 /* Travele001.json */,
 				AD5A06A21F33058A00F26693 /* Gourmandism001.json */,
 			);
@@ -690,7 +690,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AD5A06A51F33058A00F26693 /* Gourmandism001.json in Resources */,
-				AD0E2BC21F4196E600A95DAF /* Universal_001.json in Resources */,
+				AD0E2BC21F4196E600A95DAF /* Universal001.json in Resources */,
 				AD5B80AC1F34133B0094922B /* GourmandismTemplateBGM.m4a in Resources */,
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
 				AD6972F11F3BF82C007EC4E9 /* UniversalTemplateBGM.m4a in Resources */,
@@ -701,9 +701,9 @@
 				AD5B80AB1F34133B0094922B /* ColorLifeTemplateBGM.m4a in Resources */,
 				AD5A06A41F33058A00F26693 /* Travele001.json in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
-				AD5A06A31F33058A00F26693 /* ColorLife.json in Resources */,
+				AD5A06A31F33058A00F26693 /* ColorLife001.json in Resources */,
 				6F8925961F1B11A800256093 /* iconfont.ttf in Resources */,
-				AD5B80AD1F34133B0094922B /* TravelerTemplateSample.m4a in Resources */,
+				AD5B80AD1F34133B0094922B /* TravelerTemplateBGM.m4a in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

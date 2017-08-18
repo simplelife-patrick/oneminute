@@ -57,7 +57,7 @@ static const int ddLogLevel = DDLogLevelError;
 #define kSoundEffectFolder @"SoundEffect"
 
 //默认模板
-#define kDEFAULTTEMPLATENAME  @"Universal_001.json"
+#define kDEFAULTTEMPLATENAME  @"Universal001.json"
 //全局当前模板
 #define kCURRENTTEMPLATEKEY  @"CURRENTTEMPLATEKEY"
 

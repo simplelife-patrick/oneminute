@@ -1,5 +1,5 @@
 {
-  "id": "Universal_001.json",
+  "id": "Universal001.json",
   "title":"通用",
   "type": 0,
   "info": [
@@ -8,7 +8,7 @@
       "startTime": "00:00:00",
       "stopTime": "00:09:00",
       "dubStartTime": "00:00:00",
-      "dubStopTime": "00:08:00",
+      "dubStopTime": "00:08:01",
       "recordType": 1,
       "soundType": 0,
       "transitionType": 1

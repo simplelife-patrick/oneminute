@@ -6,56 +6,62 @@
     {
       "partNum": 0,
       "startTime": "00:00:00",
-      "stopTime": "00:08:00",
+      "stopTime": "00:02:00",
+      "dubStartTime": "00:00:00",
+      "dubStopTime": "00:02:00",
       "recordType": 1,
       "soundType": 0,
       "transitionType": 0
     },
     {
       "partNum": 1,
-      "startTime": "00:08:01",
-      "stopTime": "00:16:19",
-      "recordType": 2,
+      "startTime": "00:02:00",
+      "stopTime": "00:05:00",
+      "dubStartTime": "00:02:00",
+      "dubStopTime": "00:05:00",
+      "recordType": 1,
       "soundType": 0,
-      "transitionType": 1
+      "transitionType": 0
     },
     {
       "partNum": 2,
-      "startTime": "00:16:20",
-      "stopTime": "00:27:11",
-      "recordType": 0,
+      "startTime": "00:05:00",
+      "stopTime": "00:09:00",
+      "dubStartTime": "00:05:00",
+      "dubStopTime": "00:09:00",
+      "recordType": 1,
       "soundType": 1,
-      "transitionType": 2
+      "transitionType": 0
     },
     {
       "partNum": 3,
-      "startTime": "00:27:12",
-      "stopTime": "00:32:11",
-      "recordType": 2,
+      "startTime": "00:09:00",
+      "stopTime": "00:19:00",
+      "dubStartTime": "00:09:00",
+      "dubStopTime": "00:19:00",
+      "recordType": 0,
       "soundType": 0,
-      "transitionType": 3
+      "transitionType": 0
     },
     {
       "partNum": 4,
-      "startTime": "00:32:12",
-      "stopTime": "00:47:06",
+      "startTime": "00:19:00",
+      "stopTime": "01:00:00",
+      "dubStartTime": "00:19:00",
+      "dubStopTime": "01:00:00",
       "recordType": 0,
       "soundType": 1,
-      "transitionType": 4
-    },
-    {
-      "partNum": 5,
-      "startTime": "00:47:07",
-      "stopTime": "01:00:00",
-      "recordType": 2,
-      "soundType": 0,
-      "transitionType":""
+      "transitionType": 0
     }
   ],
+  "subTitle1": {
+    "startTime": "00:05:00",
+    "stopTime": "00:08:00"
+  },
   "BGM": "GourmandismTemplateBGM",
   "header": "header001",
   "tailer": "tail001",
-  "templateDescription": "我是美食模板,拉啦啦",
+  "templateDescription": "我是美食模板,啦啦啦",
   "sampleVideoName": "GourmandismTemplateSample.mp4"
 }
 

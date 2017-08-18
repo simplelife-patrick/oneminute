@@ -28,6 +28,7 @@ typedef void(^FailureBlock)(NSError *error);
 - (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
                                       error:(NSError *)error;
 - (void) displayRefrenceRect:(CGRect)faceRegion;
+
 @end
 
 @interface DLYAVEngine : DLYModule
@@ -35,6 +36,8 @@ typedef void(^FailureBlock)(NSError *error);
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *backCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *currentVideoDeviceInput;
 @property (nonatomic, strong) AVCaptureDevice                                         *videoDevice;
+@property (nonatomic, strong) AVCaptureVideoDataOutput                                *videoOutput;
+@property (nonatomic, strong) AVCaptureMovieFileOutput                                *movieFileOutput;
 @property (nonatomic, assign) id                                                      delegate;
 @property (nonatomic, readonly) BOOL                                                  isRecording;
 @property (nonatomic, copy) OnBufferBlock                                             onBuffer;
@@ -51,6 +54,7 @@ typedef void(^FailureBlock)(NSError *error);
 - (void) stopRecording;
 - (void) cancelRecording;
 - (void) pauseRecording;
+
 /**
  初始化录制组件
 
