@@ -10,7 +10,7 @@
 #import "DLYMiniVlogTemplate.h"
 #import "DLYResource.h"
 
-#define kDEFAULTTEMPLATENAME  @"Universal_001.json"
+#define kDEFAULTTEMPLATENAME  @"Universal001.json"
 #define kCURRENTTEMPLATEKEY  @"CURRENTTEMPLATEKEY"
 
 @implementation DLYSession
@@ -82,7 +82,7 @@
         
         _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:currentTemplate.templateName];
     }else{
-        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal_001.json"];
+        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal001.json"];
     }
 }
 

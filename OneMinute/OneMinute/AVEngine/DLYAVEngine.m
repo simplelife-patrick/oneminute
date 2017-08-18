@@ -45,10 +45,8 @@
     BOOL isMicGranted;//麦克风权限是否被允许
 }
 
-@property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;
 @property (nonatomic, strong) AVCaptureAudioDataOutput          *audioOutput;
-@property (nonatomic,strong) AVCaptureMetadataOutput            *metadataOutput;
-@property (nonatomic, strong) AVCaptureMovieFileOutput          *movieFileOutput;
+@property (nonatomic, strong) AVCaptureMetadataOutput           *metadataOutput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *frontCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *audioMicInput;
 @property (nonatomic, strong) AVCaptureDeviceFormat             *defaultFormat;
@@ -156,6 +154,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     if (self = [super init]) {
 
         [self createTimer];
+
         referenceOrientation = (AVCaptureVideoOrientation)UIDeviceOrientationPortrait;
         
         NSError *error;
@@ -207,7 +206,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             self.previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
             [previewView.layer insertSublayer:self.previewLayer atIndex:0];
         }
-        
+
         //添加视频输出
         if ([_captureSession canAddOutput:self.videoOutput]) {
             [_captureSession addOutput:self.videoOutput];
@@ -1151,7 +1150,8 @@ BOOL isOnce = YES;
     [exporter exportAsynchronouslyWithCompletionHandler:^{
         
         DLYLog(@"合并及转场操作成功");
-        DLYMiniVlogTemplate *template = self.session.currentTemplate;
+        DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] init];
+        template = self.session.currentTemplate;
 
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@".m4a"];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
@@ -1284,11 +1284,12 @@ BOOL isOnce = YES;
         
         DLYVideoTransition *transition = [DLYVideoTransition videoTransition];
         
-        if (transitionType == DLYVideoTransitionTypeWipe) {
+        if (transitionType == DLYVideoTransitionTypeNone) {
              
+        }else{
+            transition.type = transitionType;
+            tis.transition = transition;
         }
-        transition.type = transitionType;
-        tis.transition = transition;
     }
     return transitionInstructions;
 }
@@ -1388,8 +1389,11 @@ BOOL isOnce = YES;
         NSString *stopTimeStr = stopArr[1];
         float stopTime = [stopTimeStr floatValue];
         _stopTime = CMTimeMake(stopTime, 1);
-        _prePoint = CMTimeMake(stopTime - 2, 1);
         
+        //时长小于2s的片段音轨平滑特殊处理
+        float rampOffsetValue = 1;
+        
+        _prePoint = CMTimeMake(stopTime - rampOffsetValue, 1);
         CMTime duration = CMTimeSubtract(_stopTime, _prePoint);
         
         CMTimeRange timeRange = CMTimeRangeMake(_startTime, duration);
@@ -1397,13 +1401,13 @@ BOOL isOnce = YES;
         
         if (part.soundType == DLYMiniVlogAudioTypeMusic) {//空镜
             [BGMParameters setVolumeRampFromStartVolume:5.0 toEndVolume:5.0 timeRange:timeRange];
-            [BGMParameters setVolumeRampFromStartVolume:5.0 toEndVolume:0.4 timeRange:preTimeRange];
+//            [BGMParameters setVolumeRampFromStartVolume:5.0 toEndVolume:0.4 timeRange:preTimeRange];
             
             [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:timeRange];
         }else if(part.soundType == DLYMiniVlogAudioTypeNarrate){//人声
             [videoParameters setVolumeRampFromStartVolume:5.0 toEndVolume:5.0 timeRange:timeRange];
             [BGMParameters setVolumeRampFromStartVolume:0.4 toEndVolume:0.4 timeRange:timeRange];
-            [BGMParameters setVolumeRampFromStartVolume:0.4 toEndVolume:5.0 timeRange:preTimeRange];
+//            [BGMParameters setVolumeRampFromStartVolume:0.4 toEndVolume:5.0 timeRange:preTimeRange];
         }
     }
     audioMix.inputParameters = @[videoParameters,BGMParameters];

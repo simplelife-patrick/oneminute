@@ -19,7 +19,7 @@
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
 
-@interface DLYRecordViewController ()<DLYCaptureManagerDelegate,UIAlertViewDelegate>
+@interface DLYRecordViewController ()<DLYCaptureManagerDelegate,UIAlertViewDelegate,UIGestureRecognizerDelegate>
 {
     NSInteger cursorTag;
     //记录选中的样片类型
@@ -36,12 +36,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     BOOL isFront;
     CGFloat _initialPinchZoom;
 }
+@property (nonatomic, assign) CGFloat                           beginGestureScale;//记录开始的缩放比例
+@property (nonatomic, assign) CGFloat                           effectiveScale;//最后的缩放比例
 @property (nonatomic, strong) DLYAVEngine                       *AVEngine;
 @property (nonatomic, strong) UIView                            *previewView;
 @property (nonatomic, strong) UIImageView                       *focusCursorImageView;
 @property (nonatomic, strong) UIImageView                       *faceRegionImageView;
 @property (nonatomic, strong) UIView * sceneView; //选择场景的view
 @property (nonatomic, strong) UIView * shootView; //拍摄界面
+
 
 @property (nonatomic, strong) UIView * timeView;
 @property (nonatomic, strong) NSTimer *shootTimer;          //拍摄读秒计时器
@@ -186,7 +189,94 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.deleteButton.hidden = NO;
     }
 }
+#pragma 创建手势
+- (void)setUpGesture{
+    
+    UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
+    pinch.delegate = self;
+    [self.previewView addGestureRecognizer:pinch];
+}
 
+#pragma mark gestureRecognizer delegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    if ( [gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]] ) {
+        self.beginGestureScale = self.effectiveScale;
+    }
+    return YES;
+}
+//缩放手势 用于调整焦距
+- (void)handlePinchGesture:(UIPinchGestureRecognizer *)recognizer{
+    
+    BOOL allTouchesAreOnThePreviewLayer = YES;
+    NSUInteger numTouches = [recognizer numberOfTouches], i;
+    for ( i = 0; i < numTouches; ++i ) {
+        CGPoint location = [recognizer locationOfTouch:i inView:self.previewView];
+        CGPoint convertedLocation = [self.AVEngine.previewLayer convertPoint:location fromLayer:self.AVEngine.previewLayer.superlayer];
+        if ( ! [self.AVEngine.previewLayer containsPoint:convertedLocation] ) {
+            allTouchesAreOnThePreviewLayer = NO;
+            break;
+        }
+    }
+    if ( allTouchesAreOnThePreviewLayer ) {
+        self.effectiveScale = self.beginGestureScale * recognizer.scale;
+        if (self.effectiveScale < 1.0)
+            self.effectiveScale = 1.0;
+        
+        NSLog(@"%f-------------- %f ------------recognizerScale%f",self.effectiveScale,self.beginGestureScale,recognizer.scale);
+        CGFloat maxScaleAndCropFactor = [[self.AVEngine.videoOutput connectionWithMediaType:AVMediaTypeVideo] videoMaxScaleAndCropFactor];
+        
+        NSLog(@"%f",maxScaleAndCropFactor);
+        if (self.effectiveScale > maxScaleAndCropFactor)
+            self.effectiveScale = maxScaleAndCropFactor;
+
+        [CATransaction begin];
+        [CATransaction setAnimationDuration:.025];
+        [self.AVEngine.previewLayer setAffineTransform:CGAffineTransformMakeScale(2, 2)];
+                [CATransaction commit];
+    }
+}
+- (void)pinchDetected:(UIPinchGestureRecognizer*)recogniser
+{
+    // 1
+//    if (!self.AVEngine.videoDevice)
+//        return;
+    
+    // 2
+    if (recogniser.state == UIGestureRecognizerStateBegan)
+    {
+        _initialPinchZoom = self.AVEngine.videoDevice.videoZoomFactor;
+    }
+    
+    // 3
+    NSError *error = nil;
+    [self.AVEngine.videoDevice lockForConfiguration:&error];
+    
+    if (!error) {
+        CGFloat zoomFactor;
+        CGFloat scale = recogniser.scale;
+        if (scale < 1.0f) {
+            // 4
+            zoomFactor = _initialPinchZoom - pow(self.AVEngine.videoDevice.activeFormat.videoMaxZoomFactor, 1.0f - recogniser.scale);
+        }
+        else
+        {
+            // 5
+            zoomFactor = _initialPinchZoom + pow(self.AVEngine.videoDevice.activeFormat.videoMaxZoomFactor, (recogniser.scale - 1.0f) / 2.0f);
+        }
+        
+        // 6
+        zoomFactor = MIN(10.0f, zoomFactor);
+        zoomFactor = MAX(1.0f, zoomFactor);
+        
+        // 7
+        [self.AVEngine.videoDevice setVideoZoomFactor:zoomFactor];
+        
+        // 8
+        [self.AVEngine.videoDevice unlockForConfiguration];
+    }
+}
 #pragma mark ==== 初始化数据
 - (NSInteger)initDataReadDraft {
     
@@ -195,6 +285,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     if (isExitDraft) {
         NSArray *arr = [self.resource loadDraftParts];
+        
         for (NSURL *url in arr) {
             NSString *partPath = url.path;
             NSString *newPath = [partPath stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
@@ -243,7 +334,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     /////////////////////////////////
     typeModelArray = [[NSMutableArray alloc]init];
     //通用,美食,旅行,生活
-    NSArray *typeNameArray = @[@"Universal_001.json",@"Gourmandism001.json",@"Travele001.json",@"ColorLife.json"];
+    NSArray *typeNameArray = @[@"Universal001.json",@"Gourmandism001.json",@"Travele001.json",@"ColorLife001.json"];
     for(int i = 0; i < typeNameArray.count; i ++)
     {
         DLYMiniVlogTemplate *template = [self.session loadTemplateWithTemplateName:typeNameArray[i]];
@@ -290,7 +381,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     typeModelArray = [[NSMutableArray alloc]init];
     //模板数据
-    NSArray *typeNameArray = @[@"Universal_001.json",@"Gourmandism001.json",@"Travele001.json",@"ColorLife.json"];
+    NSArray *typeNameArray = @[@"Universal001.json",@"Gourmandism001.json",@"Travele001.json",@"ColorLife001.json"];
     for(int i = 0; i < typeNameArray.count; i ++)
     {
         DLYMiniVlogTemplate *template = [self.session loadTemplateWithTemplateName:typeNameArray[i]];
@@ -353,8 +444,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //PreviewView
     self.previewView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     self.previewView.backgroundColor = [UIColor clearColor];
-    UIPinchGestureRecognizer *pinch =[[UIPinchGestureRecognizer alloc]initWithTarget:self action:@selector(pinchDetected:)];
-    [self.previewView addGestureRecognizer:pinch];
     [self.view addSubview:self.previewView];
     
     //通用button 选择场景button
@@ -473,53 +562,55 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //添加捏合事件
 
-- (void)pinchDetected:(UIPinchGestureRecognizer*)recogniser
-{
-    // 1
-    if (!self.AVEngine.videoDevice)
-    {
-        return;
-    }
-    
-    // 2
-    if (recogniser.state == UIGestureRecognizerStateBegan)
-    {
-        _initialPinchZoom = self.AVEngine.videoDevice.videoZoomFactor;
-    }
-    
-    // 3
-    NSError *error = nil;
-    [self.AVEngine.videoDevice lockForConfiguration:&error];
-    
-    if (!error) {
-        CGFloat zoomFactor;
-        CGFloat scale = recogniser.scale;
-        if (scale < 1.0f) {
-            // 4
-            zoomFactor = _initialPinchZoom - pow(self.AVEngine.videoDevice.activeFormat.videoMaxZoomFactor, 1.0f - recogniser.scale);
-        }
-        else
-        {
-            // 5
-            zoomFactor = _initialPinchZoom + pow(self.AVEngine.videoDevice.activeFormat.videoMaxZoomFactor, (recogniser.scale - 1.0f) / 2.0f);
-        }
-        
-        // 6
-        zoomFactor = MIN(10.0f, zoomFactor);
-        zoomFactor = MAX(1.0f, zoomFactor);
-        
-        // 7
-        self.AVEngine.videoDevice.videoZoomFactor = zoomFactor;
-        
-        // 8
-        [self.AVEngine.videoDevice unlockForConfiguration];
-    }
-}
+//- (void)pinchDetected:(UIPinchGestureRecognizer*)recogniser
+//{
+//    // 1
+//    if (!self.AVEngine.videoDevice)
+//    {
+//        return;
+//    }
+//    
+//    // 2
+//    if (recogniser.state == UIGestureRecognizerStateBegan)
+//    {
+//        _initialPinchZoom = self.AVEngine.videoDevice.videoZoomFactor;
+//    }
+//    
+//    // 3
+//    NSError *error = nil;
+//    [self.AVEngine.videoDevice lockForConfiguration:&error];
+//    
+//    if (!error) {
+//        CGFloat zoomFactor;
+//        CGFloat scale = recogniser.scale;
+//        if (scale < 1.0f) {
+//            // 4
+//            zoomFactor = _initialPinchZoom - pow(self.AVEngine.videoDevice.activeFormat.videoMaxZoomFactor, 1.0f - recogniser.scale);
+//        }
+//        else
+//        {
+//            // 5
+//            zoomFactor = _initialPinchZoom + pow(self.AVEngine.videoDevice.activeFormat.videoMaxZoomFactor, (recogniser.scale - 1.0f) / 2.0f);
+//        }
+//        
+//        // 6
+//        zoomFactor = MIN(10.0f, zoomFactor);
+//        zoomFactor = MAX(1.0f, zoomFactor);
+//        
+//        // 7
+//        self.AVEngine.videoDevice.videoZoomFactor = zoomFactor;
+//        
+//        // 8
+//        [self.AVEngine.videoDevice unlockForConfiguration];
+//    }
+//}
 #pragma mark - 初始化相机
 - (void)initializationRecorder {
     
-    self.AVEngine = [[DLYAVEngine alloc] initWithPreviewView:self.previewView];
+    self.AVEngine = [[DLYAVEngine alloc] initWithPreviewView:self.view];
     self.AVEngine.delegate = self;
+    //创建手势
+    [self setUpGesture];
 }
 
 #pragma mark -触屏自动调整曝光-

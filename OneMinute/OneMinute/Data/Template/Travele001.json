@@ -6,60 +6,78 @@
     {
       "partNum": 0,
       "startTime": "00:00:00",
-      "stopTime": "00:04:31",
+      "stopTime": "00:05:31",
+      "dubStartTime": "00:00:00",
+      "dubStopTime": "00:04:31",
       "recordType": 1,
       "soundType": 0,
       "transitionType": 0
     },
     {
       "partNum": 1,
-      "startTime": "00:04:31",
-      "stopTime": "00:09:31",
+      "startTime": "00:05:31",
+      "stopTime": "00:11:31",
+      "dubStartTime": "00:04:31",
+      "dubStopTime": "00:09:31",
       "recordType": 1,
       "soundType": 0,
       "transitionType": 1
     },
     {
       "partNum": 2,
-      "startTime": "00:09:31",
-      "stopTime": "00:15:38",
+      "startTime": "00:11:31",
+      "stopTime": "00:18:38",
+      "dubStartTime": "00:09:31",
+      "dubStopTime": "00:15:38",
       "recordType": 1,
       "soundType": 0,
       "transitionType": 2
     },
     {
       "partNum": 3,
-      "startTime": "00:15:38",
-      "stopTime": "00:37:35",
+      "startTime": "00:18:38",
+      "stopTime": "00:41:35",
+      "dubStartTime": "00:15:38",
+      "dubStopTime": "00:37:35",
       "recordType": 0,
       "soundType": 1,
       "transitionType": 3
     },
     {
       "partNum": 4,
-      "startTime": "00:37:35",
-      "stopTime": "00:43:28",
+      "startTime": "00:41:35",
+      "stopTime": "00:48:28",
+      "dubStartTime": "00:37:35",
+      "dubStopTime": "00:43:28",
       "recordType": 1,
       "soundType": 0,
       "transitionType": 4
     },
     {
       "partNum": 5,
-      "startTime": "00:43:28",
-      "stopTime": "00:47:44",
+      "startTime": "00:48:28",
+      "stopTime": "00:53:44",
+      "dubStartTime": "00:43:28",
+      "dubStopTime": "00:47:44",
       "recordType": 1,
       "soundType": 0,
-      "transitionType":"4"
+      "transitionType": 4
     },
     {
-      "partNum": 5,
-      "startTime": "00:47:44",
-      "stopTime": "01:00:00",
+      "partNum": 6,
+      "startTime": "00:53:44",
+      "stopTime": "01:07:00",
+      "dubStartTime": "00:47:44",
+      "dubStopTime": "01:00:00",
       "recordType": 1,
       "soundType": 0,
-      "transitionType": "0"
+      "transitionType": 0
     }
   ],
+  "subTitle1": {
+    "startTime": "00:02:39",
+    "stopTime": "00:04:31"
+  },
   "BGM": "TravelerTemplateBGM",
   "header": "header001",
   "tailer": "tail001",
