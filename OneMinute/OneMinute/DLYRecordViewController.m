@@ -287,9 +287,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
     }
+    //contentSize更新
+    float episodeHeight = (self.vedioEpisode.height - 10)/6;
+    self.backScrollView.contentSize = CGSizeMake(15, episodeHeight * partModelArray.count + (partModelArray.count - 1) * 2);
     
-    typeModelArray = [[NSMutableArray alloc]init];
     //模板数据
+    typeModelArray = [[NSMutableArray alloc]init];
     NSArray *typeNameArray = @[@"Universal_001.json",@"Gourmandism001.json",@"Travele001.json",@"ColorLife.json"];
     for(int i = 0; i < typeNameArray.count; i ++)
     {
