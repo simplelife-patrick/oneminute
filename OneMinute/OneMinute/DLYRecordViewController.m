@@ -189,15 +189,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.deleteButton.hidden = NO;
     }
 }
-#pragma 创建手势
-- (void)setUpGesture{
-    
-    UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
-    pinch.delegate = self;
-    [self.previewView addGestureRecognizer:pinch];
-}
 
-#pragma mark gestureRecognizer delegate
+#pragma mark - GestureRecognizer Delegate -
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
@@ -221,20 +214,20 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     if ( allTouchesAreOnThePreviewLayer ) {
         self.effectiveScale = self.beginGestureScale * recognizer.scale;
-        if (self.effectiveScale < 1.0)
-            self.effectiveScale = 1.0;
+//        if (self.effectiveScale < 1.0)
+//            self.effectiveScale = 1.0;
         
         NSLog(@"%f-------------- %f ------------recognizerScale%f",self.effectiveScale,self.beginGestureScale,recognizer.scale);
-        CGFloat maxScaleAndCropFactor = [[self.AVEngine.videoOutput connectionWithMediaType:AVMediaTypeVideo] videoMaxScaleAndCropFactor];
+//        CGFloat maxScaleAndCropFactor = [[self.AVEngine.videoOutput connectionWithMediaType:AVMediaTypeVideo] videoMaxScaleAndCropFactor];
         
-        NSLog(@"%f",maxScaleAndCropFactor);
-        if (self.effectiveScale > maxScaleAndCropFactor)
-            self.effectiveScale = maxScaleAndCropFactor;
+//        NSLog(@"%f",maxScaleAndCropFactor);
+//        if (self.effectiveScale > maxScaleAndCropFactor)
+//            self.effectiveScale = maxScaleAndCropFactor;
 
         [CATransaction begin];
         [CATransaction setAnimationDuration:.025];
-        [self.AVEngine.previewLayer setAffineTransform:CGAffineTransformMakeScale(self.effectiveScale, self.effectiveScale)];
-                [CATransaction commit];
+        [self.previewView.layer setAffineTransform:CGAffineTransformMakeScale(self.effectiveScale, self.effectiveScale)];
+        [CATransaction commit];
     }
 }
 - (void)pinchDetected:(UIPinchGestureRecognizer*)recogniser
@@ -444,6 +437,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //PreviewView
     self.previewView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     self.previewView.backgroundColor = [UIColor clearColor];
+    //创建手势
+    
+    UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
+    pinch.delegate = self;
+    [self.previewView addGestureRecognizer:pinch];
     [self.view addSubview:self.previewView];
     
     //通用button 选择场景button
@@ -609,8 +607,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     self.AVEngine = [[DLYAVEngine alloc] initWithPreviewView:self.view];
     self.AVEngine.delegate = self;
-    //创建手势
-    [self setUpGesture];
 }
 
 #pragma mark -触屏自动调整曝光-
