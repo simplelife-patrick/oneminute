@@ -163,6 +163,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     if (self = [super init]) {
 
         [self createTimer];
+        
+        self.effectiveScale = 1.0;
 
         referenceOrientation = (AVCaptureVideoOrientation)UIDeviceOrientationPortrait;
         
@@ -198,7 +200,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             self.previewLayer.frame = previewView.bounds;
             self.previewLayer.contentsGravity = kCAGravityTopLeft;
             self.previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-            [previewView.layer insertSublayer:self.previewLayer atIndex:0];
+            [previewView.layer addSublayer:self.previewLayer];
         }
 
         //添加视频输出
@@ -333,7 +335,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
                                         [NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange], kCVPixelBufferPixelFormatTypeKey,
                                         nil];
         _videoOutput.videoSettings = setcapSettings;
-        dispatch_queue_t videoCaptureQueue = dispatch_queue_create("videocapture", DISPATCH_QUEUE_SERIAL);
+        dispatch_queue_t videoCaptureQueue = dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL);
         [_videoOutput setSampleBufferDelegate:self queue:videoCaptureQueue];
         [_videoOutput setAlwaysDiscardsLateVideoFrames:YES];
     }
@@ -856,7 +858,7 @@ outputSettings:audioCompressionSettings];
 }
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
-    
+
     if (self.onBuffer) {
         self.onBuffer(sampleBuffer);
     }

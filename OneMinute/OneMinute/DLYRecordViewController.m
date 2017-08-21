@@ -36,8 +36,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     BOOL isFront;
     CGFloat _initialPinchZoom;
 }
-@property (nonatomic, assign) CGFloat                           beginGestureScale;//记录开始的缩放比例
-@property (nonatomic, assign) CGFloat                           effectiveScale;//最后的缩放比例
+@property (nonatomic,assign) CGFloat                            beginGestureScale;//记录开始的缩放比例
+@property (nonatomic,assign) CGFloat                            effectiveScale;//最后的缩放比例
 @property (nonatomic, strong) DLYAVEngine                       *AVEngine;
 @property (nonatomic, strong) UIView                            *previewView;
 @property (nonatomic, strong) UIImageView                       *focusCursorImageView;
@@ -153,7 +153,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initializationRecorder];
     
     self.isAppear = YES;
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
@@ -162,6 +161,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //    [self initData];
     NSInteger draftNum = [self initDataReadDraft];
     [self setupUI];
+    [self initializationRecorder];
+
     [self monitorPermission];
     //进入前台
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recordViewWillEnterForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
@@ -206,28 +207,36 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSUInteger numTouches = [recognizer numberOfTouches], i;
     for ( i = 0; i < numTouches; ++i ) {
         CGPoint location = [recognizer locationOfTouch:i inView:self.previewView];
-        CGPoint convertedLocation = [self.AVEngine.previewLayer convertPoint:location fromLayer:self.previewView.layer];
+        CGPoint convertedLocation = [self.AVEngine.previewLayer convertPoint:location fromLayer:self.AVEngine.previewLayer.superlayer];
         if ( ! [self.AVEngine.previewLayer containsPoint:convertedLocation] ) {
             allTouchesAreOnThePreviewLayer = NO;
             break;
         }
     }
+    
     if ( allTouchesAreOnThePreviewLayer ) {
+        
         self.effectiveScale = self.beginGestureScale * recognizer.scale;
-//        if (self.effectiveScale < 1.0)
-//            self.effectiveScale = 1.0;
+        if (self.effectiveScale < 1.0){
+            self.effectiveScale = 1.0;
+        }
         
         NSLog(@"%f-------------- %f ------------recognizerScale%f",self.effectiveScale,self.beginGestureScale,recognizer.scale);
-//        CGFloat maxScaleAndCropFactor = [[self.AVEngine.videoOutput connectionWithMediaType:AVMediaTypeVideo] videoMaxScaleAndCropFactor];
         
-//        NSLog(@"%f",maxScaleAndCropFactor);
+//        CGFloat maxScaleAndCropFactor = self.AVEngine.videoConnection.videoMaxScaleAndCropFactor;
+//        NSLog(@"预览最大倍率: %f",maxScaleAndCropFactor);
+        
 //        if (self.effectiveScale > maxScaleAndCropFactor)
 //            self.effectiveScale = maxScaleAndCropFactor;
-
+//
+//        self.AVEngine.videoConnection.videoScaleAndCropFactor = self.effectiveScale;
+        
         [CATransaction begin];
         [CATransaction setAnimationDuration:.025];
-        [self.previewView.layer setAffineTransform:CGAffineTransformMakeScale(self.effectiveScale, self.effectiveScale)];
+        [self.AVEngine.previewLayer setAffineTransform:CGAffineTransformMakeScale(self.effectiveScale, self.effectiveScale)];
         [CATransaction commit];
+        self.AVEngine.effectiveScale = self.effectiveScale;
+        
     }
 }
 - (void)pinchDetected:(UIPinchGestureRecognizer*)recogniser
@@ -440,12 +449,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //PreviewView
     self.previewView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     self.previewView.backgroundColor = [UIColor clearColor];
-    //创建手势
     
+    [self.view insertSubview:self.previewView atIndex:0];
+    
+    //创建手势
     UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
     pinch.delegate = self;
     [self.previewView addGestureRecognizer:pinch];
-    [self.view addSubview:self.previewView];
+    
     
     //通用button 选择场景button
     self.chooseScene = [[UIButton alloc]initWithFrame:CGRectMake(11, 16, 40, 40)];
@@ -608,7 +619,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark - 初始化相机
 - (void)initializationRecorder {
     
-    self.AVEngine = [[DLYAVEngine alloc] initWithPreviewView:self.view];
+    self.AVEngine = [[DLYAVEngine alloc] initWithPreviewView:self.previewView];
     self.AVEngine.delegate = self;
 }
 
