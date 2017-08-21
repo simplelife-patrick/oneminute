@@ -33,6 +33,7 @@ typedef void(^FailureBlock)(NSError *error);
 
 @interface DLYAVEngine : DLYModule
 
+@property (nonatomic, assign) CGFloat                                                 effectiveScale;//最后的缩放比例
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *backCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *currentVideoDeviceInput;
 @property (nonatomic, strong) AVCaptureDevice                                         *videoDevice;
