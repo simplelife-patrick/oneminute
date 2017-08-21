@@ -56,6 +56,12 @@ typedef void(^FailureBlock)(NSError *error);
 - (void) pauseRecording;
 
 /**
+ 创建单例
+
+ @return 返回单例实例
+ */
++ (instancetype) sharedDLYAVEngine;
+/**
  初始化录制组件
 
  @param previewView 预览视图

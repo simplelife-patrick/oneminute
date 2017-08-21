@@ -153,6 +153,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self initializationRecorder];
     
     self.isAppear = YES;
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
@@ -165,7 +166,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //进入前台
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recordViewWillEnterForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
     
-    [self initializationRecorder];
     
     //According to the preview center focus after launch
     CGPoint point = self.previewView.center;
@@ -213,7 +213,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSUInteger numTouches = [recognizer numberOfTouches], i;
     for ( i = 0; i < numTouches; ++i ) {
         CGPoint location = [recognizer locationOfTouch:i inView:self.previewView];
-        CGPoint convertedLocation = [self.AVEngine.previewLayer convertPoint:location fromLayer:self.AVEngine.previewLayer.superlayer];
+        CGPoint convertedLocation = [self.AVEngine.previewLayer convertPoint:location fromLayer:self.previewView.layer];
         if ( ! [self.AVEngine.previewLayer containsPoint:convertedLocation] ) {
             allTouchesAreOnThePreviewLayer = NO;
             break;
@@ -233,7 +233,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
         [CATransaction begin];
         [CATransaction setAnimationDuration:.025];
-        [self.AVEngine.previewLayer setAffineTransform:CGAffineTransformMakeScale(2, 2)];
+        [self.AVEngine.previewLayer setAffineTransform:CGAffineTransformMakeScale(self.effectiveScale, self.effectiveScale)];
                 [CATransaction commit];
     }
 }
@@ -1108,7 +1108,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
     }
 }
-//切换摄像头
+#pragma mark ==== 切换摄像头
 - (void)toggleCameraAction {
     
     [MobClick event:@"toggleCamera"];
