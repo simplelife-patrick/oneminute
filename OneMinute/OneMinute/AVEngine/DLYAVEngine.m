@@ -87,6 +87,17 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     return UIInterfaceOrientationMaskAll;
 }
 
++ (instancetype) sharedDLYAVEngine{
+    
+    static DLYAVEngine *AVEngine;
+
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        AVEngine = [[DLYAVEngine alloc] init];
+
+    });
+    return AVEngine;
+}
 - (void)dealloc {
     
     [_captureSession stopRunning];
@@ -129,8 +140,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 -(AVCaptureSession *)captureSession{
     if (_captureSession == nil) {
         _captureSession = [[AVCaptureSession alloc] init];
-        _captureSession.sessionPreset = AVCaptureSessionPreset1920x1080;
-        
         //添加后置摄像头的输出
         if ([_captureSession canAddInput:self.backCameraInput]) {
             [_captureSession addInput:self.backCameraInput];
@@ -159,21 +168,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         
         NSError *error;
         
-        self.captureSession = [[AVCaptureSession alloc] init];
-        
-        DLYMobileDevice *mobileDevice = [DLYMobileDevice sharedDevice];
-        DLYPhoneDeviceType phoneType = [mobileDevice iPhoneType];
-        
-        NSString *phoneModel = [mobileDevice iPhoneModel];
-        
-        DLYLog(@"Current Phone Type: %@\n",phoneModel);
-        if (phoneType == PhoneDeviceTypeIphone_7 || phoneType == PhoneDeviceTypeIphone_7_Plus) {
-            self.captureSession.sessionPreset = AVCaptureSessionPreset3840x2160;
-        }else if (phoneType == PhoneDeviceTypeIphone_6 || phoneType == PhoneDeviceTypeIphone_6_Plus){
-            self.captureSession.sessionPreset = AVCaptureSessionPreset1920x1080;
-        }else if (phoneType == PhoneDeviceTypeIphone_6s || phoneType == PhoneDeviceTypeIphone_6s_Plus || phoneType == PhoneDeviceTypeIphone_SE){
-            self.captureSession.sessionPreset = AVCaptureSessionPreset3840x2160;
-        }
         //添加后置摄像头的输入
         if ([_captureSession canAddInput:self.backCameraInput]) {
             [_captureSession addInput:self.backCameraInput];
@@ -275,8 +269,25 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     if (_backCameraInput == nil) {
         NSError *error;
         _backCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self backCamera] error:&error];
+        
+        
         if (error) {
             DLYLog(@"获取后置摄像头失败~");
+        }else{
+        
+            DLYMobileDevice *mobileDevice = [DLYMobileDevice sharedDevice];
+            DLYPhoneDeviceType phoneType = [mobileDevice iPhoneType];
+            
+            NSString *phoneModel = [mobileDevice iPhoneModel];
+            
+            DLYLog(@"Current Phone Type: %@\n",phoneModel);
+            if (phoneType == PhoneDeviceTypeIphone_7 || phoneType == PhoneDeviceTypeIphone_7_Plus) {
+                self.captureSession.sessionPreset = AVCaptureSessionPreset3840x2160;
+            }else if (phoneType == PhoneDeviceTypeIphone_6 || phoneType == PhoneDeviceTypeIphone_6_Plus){
+                self.captureSession.sessionPreset = AVCaptureSessionPreset1920x1080;
+            }else if (phoneType == PhoneDeviceTypeIphone_6s || phoneType == PhoneDeviceTypeIphone_6s_Plus || phoneType == PhoneDeviceTypeIphone_SE){
+                self.captureSession.sessionPreset = AVCaptureSessionPreset3840x2160;
+            }
         }
     }
     return _backCameraInput;
@@ -289,6 +300,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         _frontCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self frontCamera] error:&error];
         if (error) {
             DLYLog(@"获取前置摄像头失败~");
+        }else{
+            self.captureSession.sessionPreset = AVCaptureSessionPreset1280x720;
         }
     }
     return _frontCameraInput;
@@ -738,7 +751,7 @@ outputSettings:audioCompressionSettings];
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
     
 //    CGFloat desiredFps = 0.0;
-//    
+//
 //    if (part.recordType == DLYMiniVlogRecordTypeSlomo) {
 //        
 //        DLYLog(@"The record type is Slomo");
@@ -1177,14 +1190,13 @@ BOOL isOnce = YES;
         
         CGFloat videoWidth = videoComposition.renderSize.width;
         CGFloat videoHeight = videoComposition.renderSize.height;
-        
+        NSLog(@"videoWidth: %f,videoHeight: %f",videoWidth,videoHeight);
         //Transform
         CGAffineTransform fromDestTransform = CGAffineTransformMakeTranslation(-videoWidth, 0.0);
         CGAffineTransform toStartTransform = CGAffineTransformMakeTranslation(videoWidth, 0.0);
         
         CGAffineTransform transform1 = CGAffineTransformMakeRotation(M_PI);
         CGAffineTransform transform2 = CGAffineTransformScale(transform1, 2.0, 2.0);
-        CGAffineTransform transforms = CGAffineTransformTranslate(transform2,400,400);
         
         //Rotation
         CGAffineTransform fromDestTransformRotation = CGAffineTransformMakeRotation(-M_PI);
