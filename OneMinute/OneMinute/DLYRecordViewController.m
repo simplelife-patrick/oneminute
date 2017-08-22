@@ -291,7 +291,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         for (NSURL *url in arr) {
             NSString *partPath = url.path;
             NSString *newPath = [partPath stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
-            NSString *partNum = [newPath substringWithRange:NSMakeRange(newPath.length - 1, 1)];
+            NSArray *arr = [newPath componentsSeparatedByString:@"part"];
+            NSString *partNum = arr.lastObject;
             [draftArr addObject:partNum];
         }
     }
