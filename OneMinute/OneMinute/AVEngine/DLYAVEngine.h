@@ -20,6 +20,8 @@ typedef void (^OnBufferBlock)(CMSampleBufferRef sampleBuffer);
 
 typedef void(^SuccessBlock)(void);
 typedef void(^FailureBlock)(NSError *error);
+typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个block返回
+
 
 @protocol DLYCaptureManagerDelegate <NSObject>
 
