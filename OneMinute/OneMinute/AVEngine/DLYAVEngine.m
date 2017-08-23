@@ -186,18 +186,18 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             [_captureSession addInput:self.backCameraInput];
             _currentVideoDeviceInput = self.backCameraInput;
         }else{
-            DLYLog(@"Back camera intput add faild");
+            DLYLog(@"Backcamera intput add faild !");
         }
         
         //添加麦克风的输入
         if ([_captureSession canAddInput:self.audioMicInput]) {
             [_captureSession addInput:self.audioMicInput];
         }else{
-            DLYLog(@"Mic input add faild");
+            DLYLog(@"Micinput add faild !");
         }
         
         if (error) {
-            DLYLog(@"Video input creation failed");
+            DLYLog(@"Video input creation failed !");
             return nil;
         }
         
@@ -218,19 +218,21 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([_captureSession canAddOutput:self.videoOutput]) {
             [_captureSession addOutput:self.videoOutput];
         }else{
-            DLYLog(@"Video output creation faild");
+            DLYLog(@"Video output creation faild !");
         }
         //添加元数据输出
         if ([_captureSession canAddOutput:self.metadataOutput]) {
             [_captureSession addOutput:self.metadataOutput];
             self.metadataOutput.metadataObjectTypes = @[AVMetadataObjectTypeFace];
+        }else{
+            DLYLog(@"Metadate output add faild !");
         }
 
         //添加音频输出
         if ([_captureSession canAddOutput:self.audioOutput]) {
             [_captureSession addOutput:self.audioOutput];
         }else{
-            DLYLog(@"Audio output creation faild");
+            DLYLog(@"Audio output creation faild !");
         }
         //设置视频录制的方向
         if ([self.videoConnection isVideoOrientationSupported]) {
@@ -451,10 +453,10 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     CABasicAnimation *animation =  [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
     //默认是顺时针效果，若将fromValue和toValue的值互换，则为逆时针效果
     animation.fromValue = [NSNumber numberWithFloat: M_PI];
-    animation.toValue =  [NSNumber numberWithFloat:0.f];
+    animation.toValue = [NSNumber numberWithFloat:0.f];
     animation.duration  = 0.2;
     animation.autoreverses = NO;
-    animation.fillMode =kCAFillModeForwards;
+    animation.fillMode = kCAFillModeForwards;
     animation.repeatCount = 0;
     [self.previewLayer addAnimation:animation forKey:nil];
 }
@@ -551,7 +553,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     
     [self changeDeviceProperty:^(AVCaptureDevice *captureDevice) {
         
-
     }];
 }
 
@@ -776,42 +777,33 @@ outputSettings:audioCompressionSettings];
 #pragma mark - 开始录制 -
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
     
-//    CGFloat desiredFps = 0.0;
-//
-//    if (part.recordType == DLYMiniVlogRecordTypeSlomo) {
-//        
-//        DLYLog(@"The record type is Slomo");
-//        desiredFps = 240.0;
-//    }else if(part.recordType == DLYMiniVlogRecordTypeTimelapse){
-//        
-//        DLYLog(@"The record type is TimeLapse");
-//        desiredFps = 60.0;
-//        _isTime = YES;
-//    }else{
-//        desiredFps = 60.0;
-//        DLYLog(@"The record type is Normal");
-//    }
-//    [self switchFormatWithDesiredFPS:desiredFps];
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        if (desiredFps > 0.0) {
-//            [self switchFormatWithDesiredFPS:desiredFps];
-//        }
-//        else {
-//            [self resetFormat];
-//        }
-//        
-//    });
-//    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-//    dispatch_async(queue, ^{
-//    
-//        if (desiredFps > 0.0) {
-//            [self switchFormatWithDesiredFPS:desiredFps];
-//        }
-//        else {
-//            [self resetFormat];
-//        }
-//    
-//    });
+    CGFloat desiredFps = 0.0;
+
+    if (part.recordType == DLYMiniVlogRecordTypeSlomo) {
+        
+        DLYLog(@"The record type is Slomo");
+        desiredFps = 240.0;
+    }else if(part.recordType == DLYMiniVlogRecordTypeTimelapse){
+        
+        DLYLog(@"The record type is TimeLapse");
+        desiredFps = 60.0;
+        _isTime = YES;
+    }else{
+        desiredFps = 60.0;
+        DLYLog(@"The record type is Normal");
+    }
+
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(queue, ^{
+    
+        if (desiredFps > 0.0) {
+            [self switchFormatWithDesiredFPS:desiredFps];
+        }
+        else {
+            [self resetFormat];
+        }
+    
+    });
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
     
     // Don't update the reference orientation when the device orientation is face up/down or unknown.
