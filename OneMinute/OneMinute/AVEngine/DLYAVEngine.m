@@ -482,7 +482,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     return sqrt(deltaX*deltaX + deltaY*deltaY);
 };
 
-- (void) focusOnceWithPoint:(CGPoint)point{
+- (void)focusOnceWithPoint:(CGPoint)point{
     
     AVCaptureDevice *captureDevice = _currentVideoDeviceInput.device;
     CGPoint currentPoint = CGPointZero;
@@ -911,7 +911,8 @@ outputSettings:audioCompressionSettings];
     if ((self.recordEncoder == nil) && !isVideo) {
         CMFormatDescriptionRef fmt = CMSampleBufferGetFormatDescription(sampleBuffer);
         [self setAudioFormat:fmt];
-        
+        _cx = 1920;
+        _cy = 1080;
         self.recordEncoder = [DLYRecordEncoder encoderForPath:[fileUrl path] Height:_cy width:_cx channels:_channels samples:_samplerate];
     }
     
