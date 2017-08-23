@@ -14,6 +14,7 @@
 @property (nonatomic, strong) AVAssetWriterInput *videoInput;//视频写入
 @property (nonatomic, strong) AVAssetWriterInput *audioInput;//音频写入
 @property (nonatomic, strong) NSString *path;//写入路径
+@property (nonatomic, assign) BOOL isFinsih;
 
 @end
 
@@ -51,6 +52,7 @@
             //初始化音频输出
             [self initAudioInputChannels:ch samples:rate];
         }
+        self.isFinsih = NO;
     }
     return self;
 }
@@ -91,6 +93,7 @@
 
 //完成视频录制时调用
 - (void)finishWithCompletionHandler:(void (^)(void))handler {
+    self.isFinsih = YES;
     [_writer finishWritingWithCompletionHandler: handler];
 }
 
@@ -116,14 +119,19 @@
             //视频输入是否准备接受更多的媒体数据
             if (_videoInput.readyForMoreMediaData == YES) {
                 //拼接数据
-                [_videoInput appendSampleBuffer:sampleBuffer];
+                if (self.isFinsih == NO) {
+                    [_videoInput appendSampleBuffer:sampleBuffer];
+
+                }
                 return YES;
             }
         }else {
             //音频输入是否准备接受更多的媒体数据
             if (_audioInput.readyForMoreMediaData) {
                 //拼接数据
-                [_audioInput appendSampleBuffer:sampleBuffer];
+                if (self.isFinsih == NO) {
+                    [_audioInput appendSampleBuffer:sampleBuffer];
+                }
                 return YES;
             }
         }

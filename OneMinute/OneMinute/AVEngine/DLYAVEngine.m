@@ -1140,8 +1140,8 @@ BOOL isOnce = YES;
     long long totalMilliseconds = interval * 1000;
     return totalMilliseconds;
 }
-#pragma mark - 转场 -
-- (void) addTransitionEffectWithTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
+#pragma mark - 片头 -
+- (void) addVideoHeadertWithTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
     
     NSArray *videoPathArray = [self.resource loadDraftParts];
     NSString *path = @"outputMovie1.mp4";
@@ -1171,7 +1171,7 @@ BOOL isOnce = YES;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf buildVideoEffectsToMP4:mp4OutputFile inputVideoURL:videoPathArray[0] andImageArray:self.imageArr callback:^(NSURL *finalUrl, NSString *filePath) {
                         [weakSelf.imageArr removeAllObjects];
-                        [weakSelf addTransitionWithTitle:videoTitle andNewuRL:finalUrl SuccessBlock:^{
+                        [weakSelf addTransitionEffectWithTitle:videoTitle andURL:finalUrl SuccessBlock:^{
                         } failure:^(NSError *error) {
                         }];
                         
@@ -1183,8 +1183,8 @@ BOOL isOnce = YES;
     });
     
 }
-//原转场动画
-- (void) addTransitionWithTitle:(NSString *)videoTitle andNewuRL:(NSURL*)newUrl SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
+#pragma mark - 转场 -
+- (void) addTransitionEffectWithTitle:(NSString *)videoTitle andURL:(NSURL*)newUrl SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
     
     self.composition = [AVMutableComposition composition];
     
