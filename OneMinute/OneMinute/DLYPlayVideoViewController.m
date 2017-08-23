@@ -154,17 +154,13 @@
     [self setupUI];
     
     //跳过的时候，调用合成接口
-    __weak typeof(self) weakSelf = self;
-    
-    [self.AVEngine addTransitionEffectWithTitle:self.titleField.text SuccessBlock:^{
-        if (!weakSelf.isSuccess && weakSelf.isAll) {
-            
-//            NSDictionary *dict = @{@"playUrl":weakSelf.AVEngine.currentProductUrl};
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"CANPLAY" object:nil userInfo:dict];
-        }
+
+    [self.AVEngine addVideoHeadertWithTitle:self.titleField.text SuccessBlock:^{
+        
     } failure:^(NSError *error) {
         
     }];
+    
 }
 
 - (void)setupUI{
