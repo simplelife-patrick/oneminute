@@ -19,6 +19,7 @@
 		1C7E61BE1EE7E4AC0088F33F /* DLYModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61B91EE7E4AC0088F33F /* DLYModule.m */; };
 		1C7E61BF1EE7E4AC0088F33F /* DLYModuleManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61BB1EE7E4AC0088F33F /* DLYModuleManager.m */; };
 		1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61C21EE7E6730088F33F /* DLYLogModule.m */; };
+		2D45ACA1C73BAFD0826703E9 /* Pods_OneMinute.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 522FE5C0BCD40465B76A67B3 /* Pods_OneMinute.framework */; };
 		6F12AE6C1F3DB78300CE8CB6 /* DLYDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F12AE691F3DB78300CE8CB6 /* DLYDownloader.m */; };
 		6F12AE6D1F3DB78300CE8CB6 /* DLYDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F12AE6B1F3DB78300CE8CB6 /* DLYDownloadManager.m */; };
 		6F752C861F4D15C800A820D6 /* UniversalTemplateBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 6F752C851F4D15C800A820D6 /* UniversalTemplateBGM.m4a */; };
@@ -67,7 +68,6 @@
 		ADFFF1A81F18BFAC00FB5BF7 /* DLYTransitionComposition.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1A71F18BFAC00FB5BF7 /* DLYTransitionComposition.m */; };
 		ADFFF1AB1F18C00200FB5BF7 /* DLYTransitionInstructions.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1AA1F18C00200FB5BF7 /* DLYTransitionInstructions.m */; };
 		ADFFF1AE1F18C04400FB5BF7 /* DLYVideoTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1AD1F18C04400FB5BF7 /* DLYVideoTransition.m */; };
-		FC0D0FE5F4D459BB4D13857E /* libPods-OneMinute.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C4410078F6FC633A4D50FCF1 /* libPods-OneMinute.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -113,6 +113,7 @@
 		1C7E61BC1EE7E4AC0088F33F /* DLYSharedInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DLYSharedInstance.h; path = Common/DLYSharedInstance.h; sourceTree = "<group>"; };
 		1C7E61C11EE7E6730088F33F /* DLYLogModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DLYLogModule.h; path = Log/DLYLogModule.h; sourceTree = "<group>"; };
 		1C7E61C21EE7E6730088F33F /* DLYLogModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DLYLogModule.m; path = Log/DLYLogModule.m; sourceTree = "<group>"; };
+		522FE5C0BCD40465B76A67B3 /* Pods_OneMinute.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OneMinute.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F12AE681F3DB78300CE8CB6 /* DLYDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYDownloader.h; sourceTree = "<group>"; };
 		6F12AE691F3DB78300CE8CB6 /* DLYDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYDownloader.m; sourceTree = "<group>"; };
 		6F12AE6A1F3DB78300CE8CB6 /* DLYDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYDownloadManager.h; sourceTree = "<group>"; };
@@ -199,7 +200,6 @@
 		ADFFF1AA1F18C00200FB5BF7 /* DLYTransitionInstructions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYTransitionInstructions.m; sourceTree = "<group>"; };
 		ADFFF1AC1F18C04400FB5BF7 /* DLYVideoTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYVideoTransition.h; sourceTree = "<group>"; };
 		ADFFF1AD1F18C04400FB5BF7 /* DLYVideoTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYVideoTransition.m; sourceTree = "<group>"; };
-		C4410078F6FC633A4D50FCF1 /* libPods-OneMinute.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OneMinute.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC05C70FE4A35674CFB74552 /* Pods-OneMinute.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneMinute.release.xcconfig"; path = "Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -208,7 +208,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FC0D0FE5F4D459BB4D13857E /* libPods-OneMinute.a in Frameworks */,
+				2D45ACA1C73BAFD0826703E9 /* Pods_OneMinute.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -374,7 +374,7 @@
 		5FEBA52BCEB5FEC50E919499 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C4410078F6FC633A4D50FCF1 /* libPods-OneMinute.a */,
+				522FE5C0BCD40465B76A67B3 /* Pods_OneMinute.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -775,9 +775,26 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
+				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
+				"${BUILT_PRODUCTS_DIR}/CocoaSecurity/CocoaSecurity.framework",
+				"${BUILT_PRODUCTS_DIR}/GPUImage/GPUImage.framework",
+				"${BUILT_PRODUCTS_DIR}/Masonry/Masonry.framework",
+				"${BUILT_PRODUCTS_DIR}/PHImageKit/PHImageKit.framework",
+				"${BUILT_PRODUCTS_DIR}/PhiLipsStack/PhiLipsStack.framework",
+				"${BUILT_PRODUCTS_DIR}/ZipArchive/ZipArchive.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaLumberjack.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaSecurity.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GPUImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Masonry.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PHImageKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PhiLipsStack.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZipArchive.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
