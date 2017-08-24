@@ -20,6 +20,7 @@ pod 'Fabric', '~> 1.6.12'
 pod 'Crashlytics', '~> 3.8.5'
 pod 'AFNetworking', '~> 3.1.0'
 pod 'FFmpeg', '~> 2.8.3'
+
 ########################调试##################################
 # 注意，发appstore的时候一定要全部移除掉
 #pod 'FLEX', '2.1.1-framework'

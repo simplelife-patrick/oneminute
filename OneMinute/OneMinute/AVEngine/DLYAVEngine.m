@@ -387,6 +387,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 //视频连接
 - (AVCaptureConnection *)videoConnection {
     _videoConnection = [self.videoOutput connectionWithMediaType:AVMediaTypeVideo];
+    if ([self.videoDevice.activeFormat isVideoStabilizationModeSupported:AVCaptureVideoStabilizationModeCinematic]) {
+        _videoConnection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationModeCinematic;
+    }
     return _videoConnection;
 }
 
