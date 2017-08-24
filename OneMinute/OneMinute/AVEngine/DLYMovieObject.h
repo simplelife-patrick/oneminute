@@ -12,7 +12,7 @@
 #include <libavformat/avformat.h>
 #include <libswscale//swscale.h>
 
-@interface ZHMovieObject : NSObject
+@interface DLYMovieObject : NSObject
 
 /* 解码后的UIImage */
 @property (nonatomic, strong, readonly) UIImage *currentImage;

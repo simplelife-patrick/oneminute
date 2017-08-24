@@ -16,7 +16,7 @@
 #import "DLYSession.h"
 #import "DLYDownloadManager.h"
 #include <libavformat/avformat.h>
-#import "ZHMovieObject.h"
+#import "DLYMovieObject.h"
 
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
@@ -881,7 +881,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             Duration duration =(UInt32)asset.duration.value / asset.duration.timescale;
             NSLog(@"AVFoundation获取时长 :%d",duration);
             
-            ZHMovieObject *movieObj = [[ZHMovieObject alloc] initWithVideo:recordedFileUrl.absoluteString];
+            DLYMovieObject *movieObj = [[DLYMovieObject alloc] initWithVideo:recordedFileUrl.absoluteString];
             NSLog(@"ffmpeg获取的时长: %f",movieObj.duration);
             
             DLYLog(@"Saved!");

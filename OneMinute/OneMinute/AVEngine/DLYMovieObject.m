@@ -7,15 +7,15 @@
 //  Copyright © 2017 Arex. All rights reserved.
 //
 
-#import "ZHMovieObject.h"
+#import "DLYMovieObject.h"
 
-@interface ZHMovieObject ()
+@interface DLYMovieObject ()
 
 @property (nonatomic, copy) NSString *cruutenPath;
 
 @end
 
-@implementation ZHMovieObject
+@implementation DLYMovieObject
 
 {
 
@@ -34,7 +34,7 @@
 #pragma mark  初始化
 - (instancetype)initWithVideo:(NSString *)moviePath {
     
-    if (!(self=[super init])) return nil;
+    if (!(self = [super init])) return nil;
     if ([self initializeResources:[moviePath UTF8String]]) {
         self.cruutenPath = [moviePath copy];
         return self;
