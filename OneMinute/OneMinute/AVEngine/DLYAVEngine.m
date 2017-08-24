@@ -949,7 +949,7 @@ outputSettings:audioCompressionSettings];
         isDetectedMetadataObjectTarget = YES;
         AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects.firstObject;
         
-        DLYLog(@"检测到 %lu 个人脸",metadataObjects.count);
+//        DLYLog(@"检测到 %lu 个人脸",metadataObjects.count);
         //取到识别到的人脸区域
         AVMetadataObject *transformedMetadataObject = [self.previewLayer transformedMetadataObjectForMetadataObject:metadataObject];
         faceRegion = transformedMetadataObject.bounds;
@@ -958,7 +958,7 @@ outputSettings:audioCompressionSettings];
         if (metadataObject.type == AVMetadataObjectTypeFace) {
             //检测区域
             CGRect referenceRect = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-            DLYLog(@"%d, facePathRect: %@, faceRegion: %@",CGRectContainsRect(referenceRect, faceRegion) ? @"包含人脸":@"不包含人脸",NSStringFromCGRect(referenceRect),NSStringFromCGRect(faceRegion));
+//            DLYLog(@"%d, facePathRect: %@, faceRegion: %@",CGRectContainsRect(referenceRect, faceRegion) ? @"包含人脸":@"不包含人脸",NSStringFromCGRect(referenceRect),NSStringFromCGRect(faceRegion));
         }else{
             faceRegion = CGRectZero;
         }
@@ -1741,13 +1741,13 @@ BOOL isOnce = YES;
         CMTimeRange preTimeRange = CMTimeRangeMake(_prePoint, CMTimeMake(2, 1));
         
         if (part.soundType == DLYMiniVlogAudioTypeMusic) {//空镜
-            [BGMParameters setVolumeRampFromStartVolume:5.0 toEndVolume:5.0 timeRange:timeRange];
+            [BGMParameters setVolumeRampFromStartVolume:1.0 toEndVolume:1.0 timeRange:timeRange];
 //            [BGMParameters setVolumeRampFromStartVolume:5.0 toEndVolume:0.4 timeRange:preTimeRange];
             
             [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:timeRange];
         }else if(part.soundType == DLYMiniVlogAudioTypeNarrate){//人声
-            [videoParameters setVolumeRampFromStartVolume:5.0 toEndVolume:5.0 timeRange:timeRange];
-            [BGMParameters setVolumeRampFromStartVolume:0.4 toEndVolume:0.4 timeRange:timeRange];
+            [videoParameters setVolumeRampFromStartVolume:1.0 toEndVolume:1.0 timeRange:timeRange];
+            [BGMParameters setVolumeRampFromStartVolume:0.3 toEndVolume:0.3 timeRange:timeRange];
 //            [BGMParameters setVolumeRampFromStartVolume:0.4 toEndVolume:5.0 timeRange:preTimeRange];
         }
     }
