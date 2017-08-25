@@ -15,6 +15,8 @@
 #import "DLYAVEngine.h"
 #import "DLYSession.h"
 #import "DLYDownloadManager.h"
+#include <libavformat/avformat.h>
+#import "DLYMovieObject.h"
 
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
@@ -153,6 +155,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    av_register_all();
     
     self.isAppear = YES;
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
@@ -848,6 +852,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.AVEngine.isTime = NO;
             AVAsset  *asset = [AVAsset assetWithURL:recordedFileUrl];
             Duration duration =(UInt32)asset.duration.value / asset.duration.timescale;
+            DLYLog(@"AVFoundation获取时长 :%d",duration);
             
             for (int i=0; i<(int)duration; i++) {
                 UIImage *tempImage = [self getKeyImage:recordedFileUrl intervalTime:i];
@@ -861,19 +866,25 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             
             UISaveVideoAtPathToSavedPhotosAlbum([partUrl path], self, nil, nil);
             
-            
             [self composesVideoUrl:partUrl frameImgs:imageArray fps:30 progressImageBlock:^(CGFloat progress) {
                 
             } completedBlock:^(BOOL success) {
                 NSLog(@"已完成");
-                
+
             }];
             dispatch_async(dispatch_get_main_queue(), ^{
                 DLYLog(@"");
             });
         }else{
             
-             DLYLog(@"Saved!");
+            AVAsset  *asset = [AVAsset assetWithURL:recordedFileUrl];
+            Duration duration =(UInt32)asset.duration.value / asset.duration.timescale;
+            NSLog(@"AVFoundation获取时长 :%d",duration);
+            
+            DLYMovieObject *movieObj = [[DLYMovieObject alloc] initWithVideo:recordedFileUrl.absoluteString];
+            NSLog(@"ffmpeg获取的时长: %f",movieObj.duration);
+            
+            DLYLog(@"Saved!");
         }
     });
 }
