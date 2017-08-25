@@ -112,7 +112,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     [self.AVEngine restartRecording];
     [MobClick beginLogPageView:@"RecordView"];
-
+    
     self.isAppear = YES;
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
@@ -162,11 +162,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
     self.isAppear = NO;
-//    [self initData];
+    //    [self initData];
     NSInteger draftNum = [self initDataReadDraft];
     [self setupUI];
     [self initializationRecorder];
-
+    
     [self monitorPermission];
     //进入前台
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recordViewWillEnterForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
@@ -227,13 +227,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         NSLog(@"%f-------------- %f ------------recognizerScale%f",self.effectiveScale,self.beginGestureScale,recognizer.scale);
         
-//        CGFloat maxScaleAndCropFactor = self.AVEngine.videoConnection.videoMaxScaleAndCropFactor;
-//        NSLog(@"预览最大倍率: %f",maxScaleAndCropFactor);
+        //        CGFloat maxScaleAndCropFactor = self.AVEngine.videoConnection.videoMaxScaleAndCropFactor;
+        //        NSLog(@"预览最大倍率: %f",maxScaleAndCropFactor);
         
-//        if (self.effectiveScale > maxScaleAndCropFactor)
-//            self.effectiveScale = maxScaleAndCropFactor;
-//
-//        self.AVEngine.videoConnection.videoScaleAndCropFactor = self.effectiveScale;
+        //        if (self.effectiveScale > maxScaleAndCropFactor)
+        //            self.effectiveScale = maxScaleAndCropFactor;
+        //
+        //        self.AVEngine.videoConnection.videoScaleAndCropFactor = self.effectiveScale;
         
         [CATransaction begin];
         [CATransaction setAnimationDuration:.025];
@@ -246,8 +246,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)pinchDetected:(UIPinchGestureRecognizer*)recogniser
 {
     // 1
-//    if (!self.AVEngine.videoDevice)
-//        return;
+    //    if (!self.AVEngine.videoDevice)
+    //        return;
     
     // 2
     if (recogniser.state == UIGestureRecognizerStateBegan)
@@ -313,7 +313,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         part.recordStatus = @"0";
         
-        part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
+        if (part.recordType == DLYMiniVlogRecordTypeTimelapse) {
+            part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime withTimelapse:YES];
+        }else {
+            part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime withTimelapse:NO];
+        }
     }
     /////////////////////////////////
     if (isExitDraft) {
@@ -383,7 +387,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         part.recordStatus = @"0";
         
-        part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
+        if (part.recordType == DLYMiniVlogRecordTypeTimelapse) {
+            part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime withTimelapse:YES];
+        }else {
+            part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime withTimelapse:NO];
+        }
     }
     //contentSize更新
     float episodeHeight = (self.vedioEpisode.height - 10)/6;
@@ -413,7 +421,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
 }
 
-- (NSString *)getDurationwithStartTime:(NSString *)startTime andStopTime:(NSString *)stopTime {
+- (NSString *)getDurationwithStartTime:(NSString *)startTime andStopTime:(NSString *)stopTime withTimelapse:(BOOL) isTimelapse {
     
     int startDuration = 0;
     int stopDuation = 0;
@@ -443,7 +451,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
     }
     
-    float duration = (stopDuation - startDuration) * 0.001;
+    float duration;
+    if (isTimelapse == YES) {
+        //30÷16
+        duration = (stopDuation - startDuration) * 0.001 * 1.875;
+    }else {
+        duration = (stopDuation - startDuration) * 0.001;
+    }
     NSString *duraStr = [NSString stringWithFormat:@"%.3f", duration];
     return duraStr;
 }
@@ -484,9 +498,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     //闪光
     self.flashButton = [[UIButton alloc]initWithFrame:CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40)];
-//    self.flashButton.layer.cornerRadius = 20;
-//    self.flashButton.backgroundColor = RGBA(0, 0, 0, 0.4);
-//    self.flashButton.clipsToBounds = YES;
+    //    self.flashButton.layer.cornerRadius = 20;
+    //    self.flashButton.backgroundColor = RGBA(0, 0, 0, 0.4);
+    //    self.flashButton.clipsToBounds = YES;
     [self.flashButton setImage:[UIImage imageNamed:@"flash"] forState:UIControlStateNormal];
     [self.flashButton addTarget:self action:@selector(onClickFlashAction) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.flashButton];
@@ -586,17 +600,17 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //    {
 //        return;
 //    }
-//    
+//
 //    // 2
 //    if (recogniser.state == UIGestureRecognizerStateBegan)
 //    {
 //        _initialPinchZoom = self.AVEngine.videoDevice.videoZoomFactor;
 //    }
-//    
+//
 //    // 3
 //    NSError *error = nil;
 //    [self.AVEngine.videoDevice lockForConfiguration:&error];
-//    
+//
 //    if (!error) {
 //        CGFloat zoomFactor;
 //        CGFloat scale = recogniser.scale;
@@ -609,14 +623,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //            // 5
 //            zoomFactor = _initialPinchZoom + pow(self.AVEngine.videoDevice.activeFormat.videoMaxZoomFactor, (recogniser.scale - 1.0f) / 2.0f);
 //        }
-//        
+//
 //        // 6
 //        zoomFactor = MIN(10.0f, zoomFactor);
 //        zoomFactor = MAX(1.0f, zoomFactor);
-//        
+//
 //        // 7
 //        self.AVEngine.videoDevice.videoZoomFactor = zoomFactor;
-//        
+//
 //        // 8
 //        [self.AVEngine.videoDevice unlockForConfiguration];
 //    }
@@ -662,7 +676,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     CGPoint origin = faceRegion.origin;
     CGSize size = faceRegion.size;
-
+    
     if (size.width != 0 && size.height != 0) {
         self.faceRegionImageView.hidden = NO;
         self.faceRegionImageView.frame = faceRegion;
@@ -678,7 +692,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 - (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL error:(NSError *)error {
-        
+    
     if (error) {
         NSLog(@"error:%@", error);
         return;
@@ -849,32 +863,32 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         NSMutableArray *imageArray = [NSMutableArray array];
         if (self.AVEngine.isTime) {
-            self.AVEngine.isTime = NO;
-            AVAsset  *asset = [AVAsset assetWithURL:recordedFileUrl];
-            Duration duration =(UInt32)asset.duration.value / asset.duration.timescale;
-            DLYLog(@"AVFoundation获取时长 :%d",duration);
-            
-            for (int i=0; i<(int)duration; i++) {
-                UIImage *tempImage = [self getKeyImage:recordedFileUrl intervalTime:i];
-                [imageArray addObject:tempImage];
-            }
-            DLYLog(@"取到 %lu 张图片",imageArray.count);
-            
-            NSInteger partNum = self.AVEngine.currentPart.partNum;
-            
-            NSURL *partUrl = [self.resource getPartUrlWithPartNum:partNum];
-            
-            UISaveVideoAtPathToSavedPhotosAlbum([partUrl path], self, nil, nil);
-            
-            [self composesVideoUrl:partUrl frameImgs:imageArray fps:30 progressImageBlock:^(CGFloat progress) {
-                
-            } completedBlock:^(BOOL success) {
-                NSLog(@"已完成");
-
-            }];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                DLYLog(@"");
-            });
+            //            self.AVEngine.isTime = NO;
+            //            AVAsset  *asset = [AVAsset assetWithURL:recordedFileUrl];
+            //            Duration duration =(UInt32)asset.duration.value / asset.duration.timescale;
+            //            DLYLog(@"AVFoundation获取时长 :%d",duration);
+            //
+            //            for (int i=0; i<(int)duration; i++) {
+            //                UIImage *tempImage = [self getKeyImage:recordedFileUrl intervalTime:i];
+            //                [imageArray addObject:tempImage];
+            //            }
+            //            DLYLog(@"取到 %lu 张图片",imageArray.count);
+            //
+            //            NSInteger partNum = self.AVEngine.currentPart.partNum;
+            //
+            //            NSURL *partUrl = [self.resource getPartUrlWithPartNum:partNum];
+            //
+            //            UISaveVideoAtPathToSavedPhotosAlbum([partUrl path], self, nil, nil);
+            //
+            //            [self composesVideoUrl:partUrl frameImgs:imageArray fps:30 progressImageBlock:^(CGFloat progress) {
+            //
+            //            } completedBlock:^(BOOL success) {
+            //                NSLog(@"已完成");
+            //
+            //            }];
+            //            dispatch_async(dispatch_get_main_queue(), ^{
+            //                DLYLog(@"");
+            //            });
         }else{
             
             AVAsset  *asset = [AVAsset assetWithURL:recordedFileUrl];
@@ -894,14 +908,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)deviceChangeAndHomeOnTheLeft {
     
     if (![self.AVEngine isRecording]) {
-    
+        
         [self.AVEngine.captureSession stopRunning];
         
         [self.AVEngine changeCameraRotateClockwiseAnimation];
-
+        
         self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
         [self.AVEngine.captureSession startRunning];
-
+        
     }else{
         DLYLog(@"⚠️⚠️⚠️录制过程中不再重设录制正方向");
     }
@@ -1070,14 +1084,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)deviceChangeAndHomeOnTheRight {
     
     if (![self.AVEngine isRecording]) {
-    
+        
         [self.AVEngine.captureSession stopRunning];
         
         [self.AVEngine changeCameraRotateAnticlockwiseAnimation];
-
+        
         self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         [self.AVEngine.captureSession startRunning];
-    
+        
     }else{
         DLYLog(@"⚠️⚠️⚠️录制过程中不再重设录制正方向");
     }
@@ -1184,11 +1198,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.sceneView.hidden = NO;
         self.sceneView.alpha = 1;
     }];
-
+    
 }
 //拍摄视频按键
 - (void)startRecordBtnAction {
-
+    
     [MobClick event:@"StartRecord"];
     // REC START
     if (!self.AVEngine.isRecording) {
@@ -1421,7 +1435,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)onClickCancelClick:(UIButton *)sender {
     [MobClick event:@"CancelRecord"];
     [self.AVEngine stopRecording];
-
+    
     NSInteger partNum = selectPartTag - 10000 - 1;
     [self.resource removePartWithPartNum:partNum];
     
@@ -1623,7 +1637,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 [self.backScrollView addSubview:self.prepareView];
                 prepareAlpha = 1;
                 [_prepareShootTimer setFireDate:[NSDate distantPast]];
-
+                
                 //拍摄说明视图
                 UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
                 itemView.centerY = button.centerY;
@@ -2053,7 +2067,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             isEmpty = NO;
         }
     }
-
+    
     if (isEmpty) {
         //数组初始化，view布局 弹出选择
         [self.resource removeCurrentAllPart];
@@ -2078,7 +2092,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.alert.cancelButtonAction = ^{
             return;
         };
-    
+        
     }
 }
 
@@ -2331,7 +2345,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     }
                     self.flashButton.hidden = NO;
                 }
-
+                
                 if (self.newState == 1) {
                     self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
                     self.chooseScene.transform = CGAffineTransformMakeRotation(0);
@@ -2355,7 +2369,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.shootView.hidden = YES;
                 if(n == partModelArray.count) {//视频自动播放
                     self.recordBtn.hidden = YES;
-
+                    
                     __weak typeof(self) weakSelf = self;
                     DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
                     fvc.isAll = YES;

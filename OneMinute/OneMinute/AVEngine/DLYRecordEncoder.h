@@ -15,6 +15,8 @@
 @interface DLYRecordEncoder : NSObject
 
 @property (nonatomic, readonly) NSString *path;
+@property (nonatomic, strong) AVAssetWriter *writer;//媒体写入对象
+
 
 /**
  *  WCLRecordEncoder遍历构造器的
