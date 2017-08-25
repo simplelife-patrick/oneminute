@@ -1382,7 +1382,7 @@ BOOL isOnce = YES;
     
     // 5. Music effect
     // 6. Export to mp4 （Attention: iOS 5.0不支持导出MP4，会crash）
-    NSString *mp4Quality = AVAssetExportPreset1920x1080; //AVAssetExportPresetPassthrough
+    NSString *mp4Quality = AVAssetExportPresetHighestQuality; //AVAssetExportPresetPassthrough
     NSString *exportPath = exportVideoFile;
     NSURL *exportUrl = [NSURL fileURLWithPath:[self returnFormatString:exportPath]];
     
