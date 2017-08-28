@@ -10,7 +10,6 @@
 
 @interface DLYRecordEncoder ()
 
-@property (nonatomic, strong) AVAssetWriter *writer;//媒体写入对象
 @property (nonatomic, strong) AVAssetWriterInput *videoInput;//视频写入
 @property (nonatomic, strong) AVAssetWriterInput *audioInput;//音频写入
 @property (nonatomic, strong) NSString *path;//写入路径
@@ -121,7 +120,7 @@
                 //拼接数据
                 if (self.isFinsih == NO) {
                     [_videoInput appendSampleBuffer:sampleBuffer];
-
+                    
                 }
                 return YES;
             }
