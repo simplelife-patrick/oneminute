@@ -941,31 +941,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     
-    //    if (self.onBuffer) {
-    //        self.onBuffer(sampleBuffer);
-    //    }
-    //    BOOL isVideo = YES;
-    //    if (!self.isCapturing  || self.isPaused) {
-    //        return;
-    //    }
-    //    if (captureOutput != self.videoOutput) {
-    //        isVideo = NO;
-    //    }
-    //    //初始化编码器，当有音频和视频参数时创建编码器
-    //    if ((self.recordEncoder == nil) && !isVideo) {
-    //        CMFormatDescriptionRef fmt = CMSampleBufferGetFormatDescription(sampleBuffer);
-    //        [self setAudioFormat:fmt];
-    //        _cx = 1920;
-    //        _cy = 1080;
-    //        self.recordEncoder = [DLYRecordEncoder encoderForPath:[fileUrl path] Height:_cy width:_cx channels:_channels samples:_samplerate];
-    //    }
-    //
-    //    CFRetain(sampleBuffer);
-    //    [self.recordEncoder encodeFrame:sampleBuffer isVideo:isVideo];
-    //    CFRelease(sampleBuffer);
-    ///////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////
     if (self.onBuffer) {
         self.onBuffer(sampleBuffer);
     }
@@ -1043,7 +1018,86 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         CFRetain(sampleBuffer);
         [self.recordEncoder encodeFrame:sampleBuffer isVideo:isVideo];
         CFRelease(sampleBuffer);
-    }
+    });
+    /*是否加入快镜头*/
+//    if (self.onBuffer) {
+//        self.onBuffer(sampleBuffer);
+//    }
+//    BOOL isVideo = YES;
+//    if (!self.isCapturing  || self.isPaused) {
+//        return;
+//    }
+//    if (captureOutput != self.videoOutput) {
+//        isVideo = NO;
+//    }
+//    //初始化编码器，当有音频和视频参数时创建编码器
+//    if ((self.recordEncoder == nil) && !isVideo) {
+//        CMFormatDescriptionRef fmt = CMSampleBufferGetFormatDescription(sampleBuffer);
+//        [self setAudioFormat:fmt];
+//        _cx = 1920;
+//        _cy = 1080;
+//        self.recordEncoder = [DLYRecordEncoder encoderForPath:[fileUrl path] Height:_cy width:_cx channels:_channels samples:_samplerate];
+//    }
+//
+//    if (self.isTimelapse) {
+////        NSLog(@"我走的是延时");
+//        //判断是否中断录制过
+//        if (self.discont) {
+////            NSLog(@"我会是视频吗:%d", isVideo);
+//            if (isVideo) {
+//                return;
+//            }
+//            self.discont = NO;
+//            // 计算暂停的时间
+//            CMTime pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+//            CMTime last = isVideo ? _lastVideo : _lastAudio;
+//            if (last.flags & kCMTimeFlags_Valid) {
+//                if (_timeOffset.flags & kCMTimeFlags_Valid) {
+//                    pts = CMTimeSubtract(pts, _timeOffset);
+//                }
+//                CMTime offset = CMTimeSubtract(pts, last);
+//                if (_timeOffset.value == 0) {
+//                    _timeOffset = offset;
+//                }else {
+//                    _timeOffset = CMTimeAdd(_timeOffset, offset);
+//                }
+//            }
+//            _lastVideo.flags = 0;
+//            _lastAudio.flags = 0;
+//        }
+//        //增加sampleBuffer的引用计时,这样我们可以释放这个或修改这个数据，防止在修改时被释放
+//        CFRetain(sampleBuffer);
+//        if (_timeOffset.value > 0) {
+//            CFRelease(sampleBuffer);
+//            //根据得到的timeOffset调整
+//            sampleBuffer = [self adjustTime:sampleBuffer by:_timeOffset];
+//        }
+//        // 记录暂停上一次录制的时间
+//        CMTime pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+//        CMTime dur = CMSampleBufferGetDuration(sampleBuffer);
+//        if (dur.value > 0) {
+//            pts = CMTimeAdd(pts, dur);
+//        }
+//        if (isVideo) {
+//            _lastVideo = pts;
+//        }else {
+//            _lastAudio = pts;
+//        }
+//        //    }
+//        // 进行数据编码
+////        NSLog(@"是否为视频:%d", isVideo);
+//        [self.recordEncoder encodeFrame:sampleBuffer isVideo:isVideo];
+//        CFRelease(sampleBuffer);
+//        if (self.recordEncoder.writer.status == AVAssetWriterStatusWriting && isVideo) {
+//            self.isPaused = YES;
+//            self.discont = YES;
+//        }
+//    }else {
+////        NSLog(@"我走的是非延时");
+//        CFRetain(sampleBuffer);
+//        [self.recordEncoder encodeFrame:sampleBuffer isVideo:isVideo];
+//        CFRelease(sampleBuffer);
+//    }
     
 }
 //调整媒体数据的时间
@@ -1549,7 +1603,7 @@ BOOL isOnce = YES;
                     DLYLog(@"MP4 Successful!");
                     callBlock(exportUrl,exportPath);
                     
-                    NSLog(@"Output Mp4 is %@", exportVideoFile);
+//                    NSLog(@"Output Mp4 is %@", exportVideoFile);
                     
                 });
                 
@@ -1560,7 +1614,7 @@ BOOL isOnce = YES;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     
                     // Close timer
-                    NSLog(@"导出失败");
+//                    NSLog(@"导出失败");
                     
                 });
                 

@@ -423,7 +423,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
     }
     //contentSize更新
-    float episodeHeight = (self.vedioEpisode.height - 10)/6;
+    float episodeHeight = (self.vedioEpisode.height - (partModelArray.count - 1) * 2) / partModelArray.count;
     self.backScrollView.contentSize = CGSizeMake(15, episodeHeight * partModelArray.count + (partModelArray.count - 1) * 2);
     
     //模板数据
@@ -587,7 +587,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.backScrollView.showsHorizontalScrollIndicator = NO;
     self.backScrollView.bounces = NO;
     [self.vedioEpisode addSubview:self.backScrollView];
-    float episodeHeight = (self.vedioEpisode.height - 10)/6;
+    float episodeHeight = (self.vedioEpisode.height - (partModelArray.count - 1) * 2) / partModelArray.count;
     self.backScrollView.contentSize = CGSizeMake(15, episodeHeight * partModelArray.count + (partModelArray.count - 1) * 2);
     _prepareShootTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(prepareShootAction) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:_prepareShootTimer forMode:NSRunLoopCommonModes];
@@ -1578,10 +1578,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)createPartView {
     
     [self.backScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    float episodeHeight = (SCREEN_HEIGHT - 30  * SCALE_HEIGHT - 10)/6;
+    float episodeHeight = (SCREEN_HEIGHT - 30  * SCALE_HEIGHT - (partModelArray.count - 1) * 2)/ partModelArray.count;
+
     if(SCREEN_HEIGHT > 420)
     {
-        episodeHeight = (SCREEN_WIDTH - 30  * SCREEN_WIDTH/375 - 10)/6;
+        episodeHeight = (SCREEN_WIDTH - 30  * SCREEN_WIDTH/375 - (partModelArray.count - 1) * 2) / partModelArray.count;
     }
     BOOL isAllPart = YES;
     for(int i = 1; i <= partModelArray.count; i ++)
@@ -1746,13 +1747,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
 }
 - (void)createLeftPartView {
-    //    self.backView.transform = CGAffineTransformMakeRotation(M_PI);
-    
     [self.backScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    float episodeHeight = (SCREEN_HEIGHT - 30  * SCALE_HEIGHT - 10)/6;
+    float episodeHeight = (SCREEN_HEIGHT - 30  * SCALE_HEIGHT - (partModelArray.count - 1) * 2)/ partModelArray.count;
+
     if(SCREEN_HEIGHT > 420)
     {
-        episodeHeight = (SCREEN_WIDTH - 30  * SCREEN_WIDTH/375 - 10)/6;
+        episodeHeight = (SCREEN_WIDTH - 30  * SCREEN_WIDTH/375 - (partModelArray.count - 1) * 2) / partModelArray.count;
     }
     
     NSMutableArray *leftModelArray = [NSMutableArray arrayWithArray:partModelArray];
@@ -1762,7 +1762,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     {
         DLYMiniVlogPart *part = leftModelArray[i - 1];
         UIButton * button = [[UIButton alloc]initWithFrame:CGRectMake(43, (episodeHeight + 2) * (i - 1), 10, episodeHeight)];
-        button.tag = 10000 + (7 - i);
+        button.tag = 10000 + (partModelArray.count + 1 - i);
         UIEdgeInsets edgeInsets = {0, -43, 0, -20};
         [button setHitEdgeInsets:edgeInsets];
         //辨别改变段是否已经拍摄
@@ -1909,7 +1909,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 }
             }
         }
-        //        button.tag = 10000 + i;
         [button addTarget:self action:@selector(vedioEpisodeClick:) forControlEvents:UIControlEventTouchUpInside];
         
         button.clipsToBounds = YES;
