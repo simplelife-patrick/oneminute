@@ -42,6 +42,8 @@
 		822650B2C2F69335E52B0573 /* libPods-OneMinute.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D600523FDE25F6D3C6635F4 /* libPods-OneMinute.a */; };
 		AD0E2BC21F4196E600A95DAF /* Universal001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD0E2BC11F4196E600A95DAF /* Universal001.json */; };
 		AD13AC381F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = AD13AC371F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m */; };
+		AD26F1A81F53E6DE00565E27 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */; };
+		AD26F1AA1F53E70A00565E27 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */; };
 		AD5A06A31F33058A00F26693 /* ColorLife001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A01F33058A00F26693 /* ColorLife001.json */; };
 		AD5A06A41F33058A00F26693 /* Travele001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A11F33058A00F26693 /* Travele001.json */; };
 		AD5A06A51F33058A00F26693 /* Gourmandism001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A21F33058A00F26693 /* Gourmandism001.json */; };
@@ -52,8 +54,6 @@
 		AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5B80B11F3443080094922B /* UIColor+Hex.m */; };
 		AD5B80B51F344C750094922B /* advertisementVideo(5s).mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80B31F344C750094922B /* advertisementVideo(5s).mp4 */; };
 		AD5B80B61F344C750094922B /* advertisementVideo(10s).mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */; };
-		AD63E3CE1F3DD72900CBBC69 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AD63E3CD1F3DD72900CBBC69 /* DLYAVEngine.m */; };
-		ADA370991F2D11500082AEC6 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA370981F2D11500082AEC6 /* DLYRecordViewController.m */; };
 		ADA3709C1F2D11780082AEC6 /* DLYResource.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA3709B1F2D11780082AEC6 /* DLYResource.m */; };
 		ADD0E7D41F2D9F3500996BD6 /* UIImage+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD0E7D31F2D9F3500996BD6 /* UIImage+Extension.m */; };
 		ADFD08BF1F4D5DEB00DAB6A6 /* DLYMovieObject.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFD08BE1F4D5DEB00DAB6A6 /* DLYMovieObject.m */; };
@@ -156,6 +156,9 @@
 		AD0E2BC11F4196E600A95DAF /* Universal001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Universal001.json; sourceTree = "<group>"; };
 		AD13AC361F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALAssetsLibrary+CustomPhotoAlbum.h"; sourceTree = "<group>"; };
 		AD13AC371F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ALAssetsLibrary+CustomPhotoAlbum.m"; sourceTree = "<group>"; };
+		AD26F1A61F53E6DE00565E27 /* DLYAVEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAVEngine.h; sourceTree = "<group>"; };
+		AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAVEngine.m; sourceTree = "<group>"; };
+		AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRecordViewController.m; sourceTree = "<group>"; };
 		AD5A06A01F33058A00F26693 /* ColorLife001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ColorLife001.json; sourceTree = "<group>"; };
 		AD5A06A11F33058A00F26693 /* Travele001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Travele001.json; sourceTree = "<group>"; };
 		AD5A06A21F33058A00F26693 /* Gourmandism001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Gourmandism001.json; sourceTree = "<group>"; };
@@ -167,10 +170,7 @@
 		AD5B80B11F3443080094922B /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		AD5B80B31F344C750094922B /* advertisementVideo(5s).mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "advertisementVideo(5s).mp4"; sourceTree = "<group>"; };
 		AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "advertisementVideo(10s).mp4"; sourceTree = "<group>"; };
-		AD63E3CC1F3DD72900CBBC69 /* DLYAVEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAVEngine.h; sourceTree = "<group>"; };
-		AD63E3CD1F3DD72900CBBC69 /* DLYAVEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAVEngine.m; sourceTree = "<group>"; };
 		ADA370971F2D11500082AEC6 /* DLYRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRecordViewController.h; sourceTree = "<group>"; };
-		ADA370981F2D11500082AEC6 /* DLYRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRecordViewController.m; sourceTree = "<group>"; };
 		ADA3709A1F2D11780082AEC6 /* DLYResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYResource.h; sourceTree = "<group>"; };
 		ADA3709B1F2D11780082AEC6 /* DLYResource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYResource.m; sourceTree = "<group>"; };
 		ADD0E7D21F2D9F3500996BD6 /* UIImage+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Extension.h"; sourceTree = "<group>"; };
@@ -419,7 +419,7 @@
 			isa = PBXGroup;
 			children = (
 				ADA370971F2D11500082AEC6 /* DLYRecordViewController.h */,
-				ADA370981F2D11500082AEC6 /* DLYRecordViewController.m */,
+				AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */,
 				6F5E5D261F1EF7A700D857C9 /* RecordView */,
 			);
 			name = RecordController;
@@ -514,8 +514,8 @@
 		ADFFF17C1F18A33000FB5BF7 /* AVEngine */ = {
 			isa = PBXGroup;
 			children = (
-				AD63E3CC1F3DD72900CBBC69 /* DLYAVEngine.h */,
-				AD63E3CD1F3DD72900CBBC69 /* DLYAVEngine.m */,
+				AD26F1A61F53E6DE00565E27 /* DLYAVEngine.h */,
+				AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */,
 				6F7610E11F4C275B00E36081 /* DLYRecordEncoder.h */,
 				6F7610E21F4C275B00E36081 /* DLYRecordEncoder.m */,
 				ADFFF1811F18A33000FB5BF7 /* DLYMobileDevice.h */,
@@ -838,6 +838,7 @@
 				1C7E61BE1EE7E4AC0088F33F /* DLYModule.m in Sources */,
 				6F8925C61F1B13B400256093 /* DLYLaunchPlayerViewController.m in Sources */,
 				1C7E61BD1EE7E4AC0088F33F /* DLYAsyncQueue.m in Sources */,
+				AD26F1A81F53E6DE00565E27 /* DLYAVEngine.m in Sources */,
 				6F12AE6D1F3DB78300CE8CB6 /* DLYDownloadManager.m in Sources */,
 				ADFD08BF1F4D5DEB00DAB6A6 /* DLYMovieObject.m in Sources */,
 				ADFFF19E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m in Sources */,
@@ -847,7 +848,6 @@
 				ADA3709C1F2D11780082AEC6 /* DLYResource.m in Sources */,
 				1C7E61841EE7DF4F0088F33F /* main.m in Sources */,
 				ADFFF1AE1F18C04400FB5BF7 /* DLYVideoTransition.m in Sources */,
-				ADA370991F2D11500082AEC6 /* DLYRecordViewController.m in Sources */,
 				ADFFF1A11F18A33000FB5BF7 /* DLYSession.m in Sources */,
 				6F8925CC1F1B13CA00256093 /* DLYBaseNavigationController.m in Sources */,
 				ADFFF19D1F18A33000FB5BF7 /* DLYMiniVlogProduct.m in Sources */,
@@ -864,8 +864,8 @@
 				6F8925D51F1B13FF00256093 /* DLYAnnularProgress.m in Sources */,
 				ADFFF19B1F18A33000FB5BF7 /* DLYMiniVlogDraft.m in Sources */,
 				6F12AE6C1F3DB78300CE8CB6 /* DLYDownloader.m in Sources */,
-				AD63E3CE1F3DD72900CBBC69 /* DLYAVEngine.m in Sources */,
 				ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */,
+				AD26F1AA1F53E70A00565E27 /* DLYRecordViewController.m in Sources */,
 				AD13AC381F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m in Sources */,
 				1C7E61BF1EE7E4AC0088F33F /* DLYModuleManager.m in Sources */,
 				6F8925DF1F1B142300256093 /* DLYPopupMenu.m in Sources */,

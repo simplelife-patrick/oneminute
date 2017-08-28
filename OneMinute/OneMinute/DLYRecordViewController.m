@@ -204,6 +204,35 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     return YES;
 }
+#pragma mark - 捏合屏幕改变焦距
+- (void)pinchGestureRecognizerAction:(UIPinchGestureRecognizer *)pin {
+    if (pin.state == UIGestureRecognizerStateBegan) {
+        
+    } else if (pin.state == UIGestureRecognizerStateChanged) {
+        CGFloat newValue;
+        if (pin.scale > 1) {
+            newValue = pin.scale/200;
+            if (newValue > 3) newValue = 3;
+        } else {
+            newValue =  - (3.0 * (1 - pin.scale)) * 0.02;
+            NSLog(@"pin.scale: %f, newValue:%f", pin.scale, newValue);
+            if (newValue < 1) newValue = 1;
+        }
+        [self cameraBackgroundDidChangeZoom:newValue];
+    } else if (pin.state == UIGestureRecognizerStateEnded) {
+        
+    }
+}
+#pragma mark - 数码变焦 1-3倍
+- (void)cameraBackgroundDidChangeZoom:(CGFloat)zoom {
+    AVCaptureDevice *captureDevice = self.AVEngine.videoDevice;
+    NSError *error;
+    if ([captureDevice lockForConfiguration:&error]) {
+        [captureDevice rampToVideoZoomFactor:zoom withRate:50];
+    }else{
+        
+    }
+}
 //缩放手势 用于调整焦距
 - (void)handlePinchGesture:(UIPinchGestureRecognizer *)recognizer{
     
@@ -472,9 +501,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.view insertSubview:self.previewView atIndex:0];
     
     //创建手势
-    UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
-    pinch.delegate = self;
-    [self.previewView addGestureRecognizer:pinch];
+    UIPinchGestureRecognizer *pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchGestureRecognizerAction:)];
+    pinchGestureRecognizer.delegate = self;
+    [self.previewView addGestureRecognizer:pinchGestureRecognizer];
     
     
     //通用button 选择场景button
@@ -910,7 +939,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (![self.AVEngine isRecording]) {
     
         [self.AVEngine.captureSession beginConfiguration];
-        
         
         [self.AVEngine changeCameraRotateClockwiseAnimation];
         
