@@ -972,10 +972,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
     
     if (self.isTimelapse) {
-        NSLog(@"我走的是延时");
+//        NSLog(@"我走的是延时");
         //判断是否中断录制过
         if (self.discont) {
-            NSLog(@"我会是视频吗:%d", isVideo);
+//            NSLog(@"我会是视频吗:%d", isVideo);
             if (isVideo) {
                 return;
             }
@@ -1017,7 +1017,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }
         //    }
         // 进行数据编码
-        NSLog(@"是否为视频:%d", isVideo);
+//        NSLog(@"是否为视频:%d", isVideo);
         [self.recordEncoder encodeFrame:sampleBuffer isVideo:isVideo];
         CFRelease(sampleBuffer);
         if (self.recordEncoder.writer.status == AVAssetWriterStatusWriting && isVideo) {
@@ -1025,7 +1025,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             self.discont = YES;
         }
     }else {
-        NSLog(@"我走的是非延时");
+//        NSLog(@"我走的是非延时");
         CFRetain(sampleBuffer);
         [self.recordEncoder encodeFrame:sampleBuffer isVideo:isVideo];
         CFRelease(sampleBuffer);
