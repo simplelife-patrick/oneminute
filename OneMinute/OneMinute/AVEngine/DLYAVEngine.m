@@ -265,7 +265,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     if (isFront) {
         
-        [self.captureSession stopRunning];
+        [self.captureSession beginConfiguration];
         [self.captureSession removeInput:self.backCameraInput];
         
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
@@ -275,14 +275,14 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         }
     }else {
         
-        [self.captureSession stopRunning];
+        [self.captureSession beginConfiguration];
         [self.captureSession removeInput:self.frontCameraInput];
         if ([self.captureSession canAddInput:self.backCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.backCameraInput];//切换成了后置
         }
     }
-    [self.captureSession startRunning];
+    [self.captureSession commitConfiguration];
 }
 #pragma mark - Recorder初始化相关懒加载 -
 //后置摄像头输入
@@ -916,6 +916,13 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     if (self.captureSession.isRunning) {
         [self.captureSession stopRunning];
     }
+}
+#pragma mark - AVCaptureFileOutputRecordingDelegate -
+-(void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections{
+    DLYLog(@"开始录制");
+}
+-(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error{
+    DLYLog(@"结束录制");
 }
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
@@ -1860,7 +1867,7 @@ BOOL isOnce = YES;
         float stopTime = [stopTimeStr floatValue];
         _stopTime = CMTimeMake(stopTime, 1);
         
-        //时长小于2s的片段音轨平滑特殊处理
+        //时长小于1s的片段音轨平滑特殊处理
         float rampOffsetValue = 1;
         
         _prePoint = CMTimeMake(stopTime - rampOffsetValue, 1);
