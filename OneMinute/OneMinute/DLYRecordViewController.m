@@ -940,7 +940,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
         [self.AVEngine.captureSession beginConfiguration];
         
-        
         [self.AVEngine changeCameraRotateClockwiseAnimation];
         
         self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;

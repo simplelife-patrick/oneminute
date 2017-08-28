@@ -271,6 +271,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.frontCameraInput];//切换成了前置
+             _currentVideoDeviceInput = self.frontCameraInput;
             self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         }
     }else {
@@ -280,6 +281,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([self.captureSession canAddInput:self.backCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.backCameraInput];//切换成了后置
+            _currentVideoDeviceInput = self.backCameraInput;
         }
     }
     [self.captureSession commitConfiguration];
@@ -374,7 +376,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 -(AVCaptureMetadataOutput *)metadataOutput {
     if (_metadataOutput == nil) {
         _metadataOutput = [[AVCaptureMetadataOutput alloc]init];
-        dispatch_queue_t metadataOutputQueue = dispatch_queue_create("metadataOutput", DISPATCH_QUEUE_SERIAL);
+        dispatch_queue_t metadataOutputQueue = dispatch_queue_create("MetadataOutput", DISPATCH_QUEUE_SERIAL);
         [_metadataOutput setMetadataObjectsDelegate:self queue:metadataOutputQueue];
     }
     return _metadataOutput;
@@ -383,8 +385,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 - (AVCaptureAudioDataOutput *)audioOutput {
     if (_audioOutput == nil) {
         _audioOutput = [[AVCaptureAudioDataOutput alloc] init];
-        //        [_audioOutput setSampleBufferDelegate:self queue:self.captureQueue];
-        dispatch_queue_t audioCaptureQueue = dispatch_queue_create("audiocapture", DISPATCH_QUEUE_SERIAL);
+//        [_audioOutput setSampleBufferDelegate:self queue:self.captureQueue];
+        dispatch_queue_t audioCaptureQueue = dispatch_queue_create("Audiocapture", DISPATCH_QUEUE_SERIAL);
         [_audioOutput setSampleBufferDelegate:self queue:audioCaptureQueue];
     }
     return _audioOutput;
@@ -394,6 +396,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 - (AVCaptureConnection *)videoConnection {
     _videoConnection = [self.videoOutput connectionWithMediaType:AVMediaTypeVideo];
     if ([self.videoDevice.activeFormat isVideoStabilizationModeSupported:AVCaptureVideoStabilizationModeCinematic]) {
+        _videoConnection.enablesVideoStabilizationWhenAvailable = YES;
         _videoConnection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationModeCinematic;
     }
     return _videoConnection;
@@ -785,6 +788,17 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 }
 #pragma mark - 开始录制 -
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
+    
+    AVCaptureDevice *device = _currentVideoDeviceInput.device;
+    
+    if (device.isSmoothAutoFocusSupported) {
+        
+        NSError *error;
+        if ([device lockForConfiguration:&error]) {
+            device.smoothAutoFocusEnabled = YES;
+            [device unlockForConfiguration];
+        }
+    }
     
     CGFloat desiredFps = 0.0;
     
