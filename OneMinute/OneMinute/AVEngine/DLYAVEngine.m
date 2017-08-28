@@ -259,7 +259,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     if (isFront) {
         
-        [self.captureSession stopRunning];
+        [self.captureSession beginConfiguration];
         [self.captureSession removeInput:self.backCameraInput];
         
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
@@ -269,14 +269,14 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         }
     }else {
         
-        [self.captureSession stopRunning];
+        [self.captureSession beginConfiguration];
         [self.captureSession removeInput:self.frontCameraInput];
         if ([self.captureSession canAddInput:self.backCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.backCameraInput];//切换成了后置
         }
     }
-    [self.captureSession startRunning];
+    [self.captureSession commitConfiguration];
 }
 #pragma mark - Recorder初始化相关懒加载 -
 //后置摄像头输入
