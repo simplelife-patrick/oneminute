@@ -186,11 +186,11 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         referenceOrientation = (AVCaptureVideoOrientation)UIDeviceOrientationPortrait;
         
         NSError *error;
-        
+    
         //添加后置摄像头的输入
         if ([_captureSession canAddInput:self.backCameraInput]) {
             [_captureSession addInput:self.backCameraInput];
-            _currentVideoDeviceInput = self.backCameraInput;
+
         }else{
             DLYLog(@"Backcamera intput add faild !");
         }
@@ -292,7 +292,17 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     if (_backCameraInput == nil) {
         NSError *error;
         _backCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self backCamera] error:&error];
+        _currentVideoDeviceInput = self.backCameraInput;
         
+        AVCaptureDevice *device = _backCameraInput.device;
+        if (device.isSmoothAutoFocusSupported) {
+            
+            NSError *error;
+            if ([device lockForConfiguration:&error]) {
+                device.smoothAutoFocusEnabled = YES;
+                [device unlockForConfiguration];
+            }
+        }
         
         if (error) {
             DLYLog(@"获取后置摄像头失败~");
@@ -330,6 +340,16 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     if (_frontCameraInput == nil) {
         NSError *error;
         _frontCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self frontCamera] error:&error];
+        AVCaptureDevice *device = _frontCameraInput.device;
+        
+        if (device.isSmoothAutoFocusSupported) {
+            
+            NSError *error;
+            if ([device lockForConfiguration:&error]) {
+                device.smoothAutoFocusEnabled = YES;
+                [device unlockForConfiguration];
+            }
+        }
         if (error) {
             DLYLog(@"获取前置摄像头失败~");
         }else{
@@ -732,7 +752,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     BOOL isRunning = self.captureSession.isRunning;
     
     if (isRunning) {
-        [self.captureSession stopRunning];
+        [self.captureSession beginConfiguration];
     }
     
     [_videoDevice lockForConfiguration:nil];
@@ -741,14 +761,14 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     [_videoDevice unlockForConfiguration];
     
     if (isRunning) {
-        [self.captureSession startRunning];
+        [self.captureSession commitConfiguration];
     }
 }
 
 - (void)switchFormatWithDesiredFPS:(CGFloat)desiredFPS
 {
-    BOOL isRunning = self.captureSession.isRunning;
-    if (isRunning)  [self.captureSession stopRunning];
+    BOOL isRunning = _captureSession.isRunning;
+    if (isRunning)  [_captureSession beginConfiguration];
     
     AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     AVCaptureDeviceFormat *selectedFormat = nil;
@@ -784,21 +804,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }
     }
     
-    if (isRunning) [self.captureSession startRunning];
+    if (isRunning) [_captureSession commitConfiguration];
 }
 #pragma mark - 开始录制 -
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
-    
-    AVCaptureDevice *device = _currentVideoDeviceInput.device;
-    
-    if (device.isSmoothAutoFocusSupported) {
-        
-        NSError *error;
-        if ([device lockForConfiguration:&error]) {
-            device.smoothAutoFocusEnabled = YES;
-            [device unlockForConfiguration];
-        }
-    }
     
     CGFloat desiredFps = 0.0;
     
@@ -822,7 +831,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     dispatch_async(queue, ^{
         
         if (desiredFps > 0.0) {
-            [self switchFormatWithDesiredFPS:desiredFps];
+//            [self switchFormatWithDesiredFPS:desiredFps];
         }
         else {
             [self resetFormat];
@@ -1897,7 +1906,7 @@ BOOL isOnce = YES;
             [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:timeRange];
         }else if(part.soundType == DLYMiniVlogAudioTypeNarrate){//人声
             [videoParameters setVolumeRampFromStartVolume:1.0 toEndVolume:1.0 timeRange:timeRange];
-            [BGMParameters setVolumeRampFromStartVolume:0.3 toEndVolume:0.3 timeRange:timeRange];
+            [BGMParameters setVolumeRampFromStartVolume:0.2 toEndVolume:0.2 timeRange:timeRange];
             //            [BGMParameters setVolumeRampFromStartVolume:0.4 toEndVolume:5.0 timeRange:preTimeRange];
         }
     }
