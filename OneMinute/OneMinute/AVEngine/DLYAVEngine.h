@@ -39,8 +39,8 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个bl
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *backCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *currentVideoDeviceInput;
 @property (nonatomic, strong) AVCaptureDevice                                         *videoDevice;
-@property (nonatomic, strong) AVCaptureVideoDataOutput                                *videoOutput;
-@property (nonatomic, strong) AVCaptureMovieFileOutput                                *movieFileOutput;
+@property (nonatomic, strong) AVCaptureMovieFileOutput                                *captureMovieFileOutput;
+
 @property (nonatomic, assign) id                                                      delegate;
 @property (nonatomic, readonly) BOOL                                                  isRecording;
 @property (nonatomic, copy) OnBufferBlock                                             onBuffer;

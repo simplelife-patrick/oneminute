@@ -976,7 +976,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     [self changeDirectionOfView:M_PI];
-    
 }
 
 - (void)changeDirectionOfView:(CGFloat)num {
