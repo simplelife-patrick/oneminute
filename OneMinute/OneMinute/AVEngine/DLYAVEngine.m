@@ -1906,7 +1906,7 @@ BOOL isOnce = YES;
             [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:timeRange];
         }else if(part.soundType == DLYMiniVlogAudioTypeNarrate){//人声
             [videoParameters setVolumeRampFromStartVolume:1.0 toEndVolume:1.0 timeRange:timeRange];
-            [BGMParameters setVolumeRampFromStartVolume:0.3 toEndVolume:0.3 timeRange:timeRange];
+            [BGMParameters setVolumeRampFromStartVolume:0.2 toEndVolume:0.2 timeRange:timeRange];
             //            [BGMParameters setVolumeRampFromStartVolume:0.4 toEndVolume:5.0 timeRange:preTimeRange];
         }
     }
