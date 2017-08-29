@@ -186,11 +186,11 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         referenceOrientation = (AVCaptureVideoOrientation)UIDeviceOrientationPortrait;
         
         NSError *error;
-        
+    
         //添加后置摄像头的输入
         if ([_captureSession canAddInput:self.backCameraInput]) {
             [_captureSession addInput:self.backCameraInput];
-            _currentVideoDeviceInput = self.backCameraInput;
+
         }else{
             DLYLog(@"Backcamera intput add faild !");
         }
@@ -292,8 +292,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     if (_backCameraInput == nil) {
         NSError *error;
         _backCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self backCamera] error:&error];
-        AVCaptureDevice *device = _backCameraInput.device;
+        _currentVideoDeviceInput = self.backCameraInput;
         
+        AVCaptureDevice *device = _backCameraInput.device;
         if (device.isSmoothAutoFocusSupported) {
             
             NSError *error;
@@ -766,8 +767,8 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
 - (void)switchFormatWithDesiredFPS:(CGFloat)desiredFPS
 {
-    BOOL isRunning = self.captureSession.isRunning;
-    if (isRunning)  [self.captureSession beginConfiguration];
+    BOOL isRunning = _captureSession.isRunning;
+    if (isRunning)  [_captureSession beginConfiguration];
     
     AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     AVCaptureDeviceFormat *selectedFormat = nil;
@@ -803,7 +804,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }
     }
     
-    if (isRunning) [self.captureSession commitConfiguration];
+    if (isRunning) [_captureSession commitConfiguration];
 }
 #pragma mark - 开始录制 -
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
@@ -830,7 +831,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     dispatch_async(queue, ^{
         
         if (desiredFps > 0.0) {
-            [self switchFormatWithDesiredFPS:desiredFps];
+//            [self switchFormatWithDesiredFPS:desiredFps];
         }
         else {
             [self resetFormat];
