@@ -292,7 +292,16 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     if (_backCameraInput == nil) {
         NSError *error;
         _backCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self backCamera] error:&error];
+        AVCaptureDevice *device = _backCameraInput.device;
         
+        if (device.isSmoothAutoFocusSupported) {
+            
+            NSError *error;
+            if ([device lockForConfiguration:&error]) {
+                device.smoothAutoFocusEnabled = YES;
+                [device unlockForConfiguration];
+            }
+        }
         
         if (error) {
             DLYLog(@"获取后置摄像头失败~");
@@ -330,6 +339,16 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     if (_frontCameraInput == nil) {
         NSError *error;
         _frontCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self frontCamera] error:&error];
+        AVCaptureDevice *device = _frontCameraInput.device;
+        
+        if (device.isSmoothAutoFocusSupported) {
+            
+            NSError *error;
+            if ([device lockForConfiguration:&error]) {
+                device.smoothAutoFocusEnabled = YES;
+                [device unlockForConfiguration];
+            }
+        }
         if (error) {
             DLYLog(@"获取前置摄像头失败~");
         }else{
@@ -732,7 +751,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     BOOL isRunning = self.captureSession.isRunning;
     
     if (isRunning) {
-        [self.captureSession stopRunning];
+        [self.captureSession beginConfiguration];
     }
     
     [_videoDevice lockForConfiguration:nil];
@@ -741,14 +760,14 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     [_videoDevice unlockForConfiguration];
     
     if (isRunning) {
-        [self.captureSession startRunning];
+        [self.captureSession commitConfiguration];
     }
 }
 
 - (void)switchFormatWithDesiredFPS:(CGFloat)desiredFPS
 {
     BOOL isRunning = self.captureSession.isRunning;
-    if (isRunning)  [self.captureSession stopRunning];
+    if (isRunning)  [self.captureSession beginConfiguration];
     
     AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     AVCaptureDeviceFormat *selectedFormat = nil;
@@ -784,21 +803,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }
     }
     
-    if (isRunning) [self.captureSession startRunning];
+    if (isRunning) [self.captureSession commitConfiguration];
 }
 #pragma mark - 开始录制 -
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
-    
-    AVCaptureDevice *device = _currentVideoDeviceInput.device;
-    
-    if (device.isSmoothAutoFocusSupported) {
-        
-        NSError *error;
-        if ([device lockForConfiguration:&error]) {
-            device.smoothAutoFocusEnabled = YES;
-            [device unlockForConfiguration];
-        }
-    }
     
     CGFloat desiredFps = 0.0;
     
