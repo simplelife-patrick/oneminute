@@ -22,6 +22,7 @@ typedef void (^SuccessBlock)(void);
 typedef void (^FailureBlock)(NSError *error);
 typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个block返回
 
+typedef void(^setVideoSpeedBlock)();
 
 @protocol DLYCaptureManagerDelegate <NSObject>
 
@@ -52,6 +53,9 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个bl
 @property (nonatomic, strong) NSURL                                                   *currentProductUrl;
 @property (nonatomic, assign) BOOL                                                    isTime;
 @property (nonatomic, strong) NSMutableArray                                          *imageArray;
+@property (nonatomic, strong) NSMutableArray<DLYMiniVlogPart *>   *moviePaths;  // 录制的原始视频数组
+@property (nonatomic, strong) NSMutableArray<NSString *>       *processedVideoPaths; // 处理播放速度后的视频数组
+@property (nonatomic, copy) setVideoSpeedBlock                 setVideoSpeedBlock; // 视频速度处理完成回调
 
 - (void) restartRecording;
 - (void) stopRecording;
@@ -151,4 +155,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个bl
  创建导出会话
  */
 - (void) makeExportable;
+//新方法合成视频
+- (void)mergeVideosWithPaths:(NSArray *)paths completed:(void(^)(NSURL *videoPath))completed;
+- (void)setSpeedWithVideo:(DLYMiniVlogPart *)part completed:(void(^)())completed;
 @end

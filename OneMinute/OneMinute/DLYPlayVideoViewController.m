@@ -13,6 +13,7 @@
 #import "DLYRecordViewController.h"
 #import "DLYAVEngine.h"
 #import "DLYSession.h"
+#import <AssetsLibrary/AssetsLibrary.h>
 
 #define kMaxLength 16
 
@@ -47,7 +48,7 @@
 @property (nonatomic, assign) BOOL isCanOnlinePlay; //准备好了可以播放
 @property (nonatomic, assign) BOOL isSurePlay;      //确定流量播放
 @property (nonatomic, strong) UIImage *frameImage;
-
+@property (nonatomic, assign) int index;
 @end
 
 @implementation DLYPlayVideoViewController
@@ -154,13 +155,39 @@
     [self setupUI];
     
     //跳过的时候，调用合成接口
-
-    [self.AVEngine addVideoHeadertWithTitle:self.titleField.text SuccessBlock:^{
-        
-    } failure:^(NSError *error) {
-        
-    }];
+    self.index = 0;
+    [self setVideoRate];
     
+//    NSArray *videoArray = self.moviePaths;
+    
+}
+- (void)setVideoRate{
+    
+    typeof(self) weakSelf = self;
+    [self.AVEngine setSpeedWithVideo:self.moviePaths[self.index++] completed:^{
+        if (weakSelf.index == weakSelf.moviePaths.count) {
+            DLYLog(@"全部片段完成调速");
+            [self.resource removeCurrentAllPartFromCache];
+//            [weakSelf.AVEngine addVideoHeadertWithTitle:weakSelf.titleField.text SuccessBlock:^{
+//                
+//            } failure:^(NSError *error) {
+//                
+//            }];
+//            [weakSelf.AVEngine addTransitionEffectWithTitle:weakSelf.titleField.text SuccessBlock:^{
+//                
+//            } failure:^(NSError *error) {
+//                
+//            }];
+            [weakSelf.AVEngine mergeVideoWithVideoTitle:weakSelf.titleField.text SuccessBlock:^{
+                
+            } failure:^(NSError *error) {
+                
+            }];
+            return;
+        }else{
+            [weakSelf setVideoRate];
+        }
+    }];
 }
 
 - (void)setupUI{
@@ -283,8 +310,8 @@
 }
 
 - (void)onClickNext {
-    
-    [self.resource removeCurrentAllPart];
+    NSLog(@"成片预览结束");
+    [self.resource removeCurrentAllPartFromDocument];
     //跳转下一步填写标题
     [self pause];
     DLYExportViewController *exportVC = [[DLYExportViewController alloc] init];
@@ -549,7 +576,6 @@
     
     [self pause];
     if (self.isAll) {
-        [self.resource removeCurrentAllPart];
         //跳转下一步填写标题
         DLYExportViewController *exportVC = [[DLYExportViewController alloc] init];
         exportVC.beforeState = self.newState;

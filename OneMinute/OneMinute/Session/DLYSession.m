@@ -49,13 +49,9 @@
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
-    NSArray *homeDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
-    NSString *documentPath = [homeDir objectAtIndex:0];
+    NSString *draftPath = [kCachePath stringByAppendingPathComponent:kDraftFolder];
     
-    NSString *dataPath = [documentPath stringByAppendingPathComponent:kDataFolder];
-    NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
-    
-    if ([fileManager fileExistsAtPath:dataPath] && [fileManager fileExistsAtPath:draftPath]) {
+    if ([fileManager fileExistsAtPath:draftPath]) {
         
         NSArray *draftArray = [fileManager contentsOfDirectoryAtPath:draftPath error:nil];
         DLYLog(@"The current folder have %lu files",(unsigned long)draftArray.count);
