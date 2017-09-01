@@ -19,7 +19,7 @@
       "stopTime": "00:18:00",
       "dubStartTime": "00:08:01",
       "dubStopTime": "00:16:19",
-      "recordType": 0,
+      "recordType": 2,
       "soundType": 0,
       "transitionType": 2
     },
@@ -39,7 +39,7 @@
       "stopTime": "00:36:00",
       "dubStartTime": "00:27:11",
       "dubStopTime": "00:32:11",
-      "recordType": 0,
+      "recordType": 2,
       "soundType": 0,
       "transitionType": 4
     },
@@ -59,7 +59,7 @@
       "stopTime": "01:05:00",
       "dubStartTime": "00:47:06",
       "dubStopTime": "01:00:00",
-      "recordType": 0,
+      "recordType": 2,
       "soundType": 0,
       "transitionType":0
     }
