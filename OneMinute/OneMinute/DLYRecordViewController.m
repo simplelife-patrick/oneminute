@@ -28,6 +28,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSInteger selectType;
     //记录白色闪动条的透明度
     NSInteger prepareAlpha;
+    //记录闪烁的tag
+    NSInteger prepareTag;
     //选择的片段
     NSInteger selectPartTag;
     double _shootTime;
@@ -68,7 +70,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIButton *playButton;         //播放单个视频
 @property (nonatomic, strong) UIButton *deletePartButton;   //删除单个视频
 @property (nonatomic, strong) UIButton *scenceDisapper;     //取消选择模板
-@property (nonatomic, strong) UIView *prepareView;          //光标
 @property (nonatomic, strong) UIImageView *warningIcon;     //拍摄指导
 @property (nonatomic, strong) UILabel *shootGuide;          //拍摄指导
 @property (nonatomic, strong) UIButton *cancelButton;       //取消拍摄
@@ -527,10 +528,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     //闪光
     self.flashButton = [[UIButton alloc]initWithFrame:CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40)];
-    //    self.flashButton.layer.cornerRadius = 20;
-    //    self.flashButton.backgroundColor = RGBA(0, 0, 0, 0.4);
-    //    self.flashButton.clipsToBounds = YES;
-    [self.flashButton setImage:[UIImage imageNamed:@"flash"] forState:UIControlStateNormal];
+    self.flashButton.layer.cornerRadius = 20;
+    self.flashButton.backgroundColor = RGBA(0, 0, 0, 0.4);
+    self.flashButton.clipsToBounds = YES;
+    [self.flashButton setImage:[UIImage imageWithIcon:@"\U0000e600" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
     [self.flashButton addTarget:self action:@selector(onClickFlashAction) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.flashButton];
     
@@ -907,13 +908,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)deviceChangeAndHomeOnTheLeft {
     
     if (![self.AVEngine isRecording]) {
-    
+        
         [self.AVEngine.captureSession beginConfiguration];
         
         [self.AVEngine changeCameraRotateClockwiseAnimation];
         
         self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
-
+        
         [self.AVEngine.captureSession commitConfiguration];
         
     }else{
@@ -933,8 +934,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         UIButton *button = (UIButton *)[self.view viewWithTag:cursorTag];
         selectPartTag = cursorTag;
         //点击哪个item，光标移动到当前item
-        self.prepareView.frame = CGRectMake(button.x, button.y + button.height - 2, 10, 2);
-        [self.backScrollView insertSubview:button belowSubview:self.prepareView];
+        prepareTag = button.tag;
         
         for (DLYMiniVlogPart *part in partModelArray) {
             if ([part.prepareRecord isEqualToString:@"1"]) {
@@ -1083,15 +1083,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)deviceChangeAndHomeOnTheRight {
     
     if (![self.AVEngine isRecording]) {
-    
+        
         [self.AVEngine.captureSession beginConfiguration];
         
         [self.AVEngine changeCameraRotateAnticlockwiseAnimation];
         
         self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
-
+        
         [self.AVEngine.captureSession commitConfiguration];
-
+        
     }else{
         DLYLog(@"⚠️⚠️⚠️录制过程中不再重设录制正方向");
     }
@@ -1109,8 +1109,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         UIButton *button = (UIButton *)[self.view viewWithTag:cursorTag];
         selectPartTag = cursorTag;
         //点击哪个item，光标移动到当前item
-        self.prepareView.frame = CGRectMake(button.x, button.y, 10, 2);
-        [self.backScrollView insertSubview:button belowSubview:self.prepareView];
+        prepareTag = button.tag;
         
         for (DLYMiniVlogPart *part in partModelArray) {
             if ([part.prepareRecord isEqualToString:@"1"]) {
@@ -1131,12 +1130,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     AVCaptureDevice *device = self.AVEngine.backCameraInput.device;
     NSError *error = nil;
     if (self.flashButton.selected == YES) { //打开闪光灯
+        [self.flashButton setImage:[UIImage imageWithIcon:@"\U0000e601" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
         if ([device hasTorch]) {
             [device lockForConfiguration:&error];
             [device setTorchMode:AVCaptureTorchModeOn];
             [device unlockForConfiguration];
         }
     }else{//关闭闪光灯
+        [self.flashButton setImage:[UIImage imageWithIcon:@"\U0000e600" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
         if ([device hasTorch]) {
             [device lockForConfiguration:&error];
             [device setTorchMode:AVCaptureTorchModeOff];
@@ -1550,7 +1551,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     [self.backScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     float episodeHeight = (SCREEN_HEIGHT - 30  * SCALE_HEIGHT - (partModelArray.count - 1) * 2)/ partModelArray.count;
-
+    
     if(SCREEN_HEIGHT > 420)
     {
         episodeHeight = (SCREEN_WIDTH - 30  * SCREEN_WIDTH/375 - (partModelArray.count - 1) * 2) / partModelArray.count;
@@ -1635,9 +1636,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 isAllPart = NO;
                 selectPartTag = button.tag;
                 //光标
-                self.prepareView = [[UIView alloc]initWithFrame:CGRectMake(button.x, button.y, 10, 2)];
-                self.prepareView.backgroundColor = [UIColor whiteColor];
-                [self.backScrollView addSubview:self.prepareView];
+                button.backgroundColor = RGB(168, 175, 180);
+                prepareTag = button.tag;
                 prepareAlpha = 1;
                 [_prepareShootTimer setFireDate:[NSDate distantPast]];
                 
@@ -1707,20 +1707,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
     }
     if (isAllPart) {
-        UIButton *button = (UIButton *)[self.view viewWithTag:10001];
         //光标
-        self.prepareView = [[UIView alloc]initWithFrame:CGRectMake(button.x, button.y, 10, 2)];
-        self.prepareView.backgroundColor = [UIColor whiteColor];
-        [self.backScrollView addSubview:self.prepareView];
+        prepareTag = 10001;
         prepareAlpha = 1;
         [_prepareShootTimer setFireDate:[NSDate distantPast]];
-        //拍摄说明视图
     }
 }
 - (void)createLeftPartView {
     [self.backScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     float episodeHeight = (SCREEN_HEIGHT - 30  * SCALE_HEIGHT - (partModelArray.count - 1) * 2)/ partModelArray.count;
-
+    
     if(SCREEN_HEIGHT > 420)
     {
         episodeHeight = (SCREEN_WIDTH - 30  * SCREEN_WIDTH/375 - (partModelArray.count - 1) * 2) / partModelArray.count;
@@ -1815,9 +1811,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 isAllPart = NO;
                 selectPartTag = button.tag;
                 //光标
-                self.prepareView = [[UIView alloc]initWithFrame:CGRectMake(button.x, button.y + button.height - 2, 10, 2)];
-                self.prepareView.backgroundColor = [UIColor whiteColor];
-                [self.backScrollView addSubview:self.prepareView];
+                button.backgroundColor = RGB(168, 175, 180);
+                prepareTag = button.tag;
                 prepareAlpha = 1;
                 [_prepareShootTimer setFireDate:[NSDate distantPast]];
                 //拍摄说明视图
@@ -1888,14 +1883,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     if (isAllPart) {
-        UIButton *button = (UIButton *)[self.view viewWithTag:10001];
         //光标
-        self.prepareView = [[UIView alloc]initWithFrame:CGRectMake(button.x, button.y + button.height - 2, 10, 2)];
-        self.prepareView.backgroundColor = [UIColor whiteColor];
-        [self.backScrollView addSubview:self.prepareView];
+        prepareTag = 10001;
         prepareAlpha = 1;
         [_prepareShootTimer setFireDate:[NSDate distantPast]];
-        //拍摄说明视图
     }
 }
 
@@ -1904,10 +1895,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [UIView animateWithDuration:0.1f animations:^{
         if(prepareAlpha == 1)
         {
-            self.prepareView.alpha = 0;
+            UIButton *button = (UIButton *)[self.view viewWithTag:prepareTag];
+            button.alpha = 0;
         }else
         {
-            self.prepareView.alpha = 1;
+            UIButton *button = (UIButton *)[self.view viewWithTag:prepareTag];
+            button.alpha = 1;
         }
     } completion:^(BOOL finished) {
         if(prepareAlpha == 1)
@@ -1928,13 +1921,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     selectPartTag = button.tag;
     DLYMiniVlogPart *part = partModelArray[i-1];
     //点击哪个item，光标移动到当前item
-    if (self.newState == 1) {
-        self.prepareView.frame = CGRectMake(button.x, button.y, 10, 2);
-        [self.backScrollView insertSubview:button belowSubview:self.prepareView];
-    }else if (self.newState == 2){
-        self.prepareView.frame = CGRectMake(button.x, button.y + button.height - 2, 10, 2);
-        [self.backScrollView insertSubview:button belowSubview:self.prepareView];
-    }
+    prepareTag = button.tag;
     
     if([part.recordStatus isEqualToString:@"1"])
     {//说明时已拍摄片段
@@ -2557,7 +2544,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 - (void)dealloc {
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self];    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end
