@@ -141,7 +141,9 @@
     
     [self.player seekToTime:kCMTimeZero];
     [self.player play];
-    _enterMainButton.hidden = NO;
+    if (_enterMainButton.isHidden) {
+        _enterMainButton.hidden = NO;
+    }
 }
 
 //进入主界面，对视频做完成操作
