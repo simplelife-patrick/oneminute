@@ -7,6 +7,7 @@
 //
 
 #import "DLYBaseViewController.h"
+#import "DLYMiniVlogPart.h"
 
 @interface DLYPlayVideoViewController : DLYBaseViewController
 
@@ -17,5 +18,6 @@
 @property (nonatomic, assign) BOOL isSuccess;
 @property (nonatomic, assign) BOOL isOnline;
 @property (nonatomic, assign) NSInteger beforeState;
+@property (nonatomic, copy) NSArray<DLYMiniVlogPart *>   *moviePaths;  // 录制的原始视频数组
 
 @end

@@ -56,6 +56,17 @@ static const int ddLogLevel = DDLogLevelError;
 #define kVideoTailerFolder @"VideoTailer"
 #define kSoundEffectFolder @"SoundEffect"
 
+#define kPartNum @"kPartNum"
+#define kMoviePath @"kMoviePath"
+#define kMovieTime @"kMovieTime"
+#define kMovieSpeed @"kMovieSpeed"
+#define kMovieIndex @"kMovieIndex"
+#define kMovieSpeed_Normal @"kMovieSpeed_Normal"
+#define kMovieSpeed_Fast @"kMovieSpeed_Fast"
+#define kMovieSpeed_Slow @"kMovieSpeed_Slow"
+// 合成视频本地存储路径
+#define kVideoPath NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).lastObject
+
 //默认模板
 #define kDEFAULTTEMPLATENAME  @"Universal001.json"
 //全局当前模板

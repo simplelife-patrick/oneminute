@@ -320,7 +320,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSMutableArray *draftArr = [NSMutableArray array];
     
     if (isExitDraft) {
-        NSArray *arr = [self.resource loadDraftParts];
+        NSArray *arr = [self.resource loadDraftPartsFromeCache];
         
         for (NSURL *url in arr) {
             NSString *partPath = url.path;
@@ -891,45 +891,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
         
-        NSMutableArray *imageArray = [NSMutableArray array];
-        if (self.AVEngine.isTime) {
-            //            self.AVEngine.isTime = NO;
-            //            AVAsset  *asset = [AVAsset assetWithURL:recordedFileUrl];
-            //            Duration duration =(UInt32)asset.duration.value / asset.duration.timescale;
-            //            DLYLog(@"AVFoundation获取时长 :%d",duration);
-            //
-            //            for (int i=0; i<(int)duration; i++) {
-            //                UIImage *tempImage = [self getKeyImage:recordedFileUrl intervalTime:i];
-            //                [imageArray addObject:tempImage];
-            //            }
-            //            DLYLog(@"取到 %lu 张图片",imageArray.count);
-            //
-            //            NSInteger partNum = self.AVEngine.currentPart.partNum;
-            //
-            //            NSURL *partUrl = [self.resource getPartUrlWithPartNum:partNum];
-            //
-            //            UISaveVideoAtPathToSavedPhotosAlbum([partUrl path], self, nil, nil);
-            //
-            //            [self composesVideoUrl:partUrl frameImgs:imageArray fps:30 progressImageBlock:^(CGFloat progress) {
-            //
-            //            } completedBlock:^(BOOL success) {
-            //                NSLog(@"已完成");
-            //
-            //            }];
-            //            dispatch_async(dispatch_get_main_queue(), ^{
-            //                DLYLog(@"");
-            //            });
-        }else{
             
-            AVAsset  *asset = [AVAsset assetWithURL:recordedFileUrl];
-            Duration duration =(UInt32)asset.duration.value / asset.duration.timescale;
-            NSLog(@"AVFoundation获取时长 :%d",duration);
-            
-            DLYMovieObject *movieObj = [[DLYMovieObject alloc] initWithVideo:recordedFileUrl.absoluteString];
-            NSLog(@"ffmpeg获取的时长: %f",movieObj.duration);
-            
-            DLYLog(@"Saved!");
-        }
+        AVAsset  *asset = [AVAsset assetWithURL:recordedFileUrl];
+        Duration duration =(UInt32)asset.duration.value / asset.duration.timescale;
+        NSLog(@"AVFoundation获取时长 :%d",duration);
+        
+        DLYMovieObject *movieObj = [[DLYMovieObject alloc] initWithVideo:recordedFileUrl.absoluteString];
+        NSLog(@"ffmpeg获取的时长: %f",movieObj.duration);
+        
+        DLYLog(@"Saved!");
     });
 }
 #pragma mark ==== 左手模式重新布局
@@ -976,7 +946,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     [self changeDirectionOfView:M_PI];
-    
 }
 
 - (void)changeDirectionOfView:(CGFloat)num {
@@ -1294,6 +1263,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     fvc.isSuccess = NO;
     fvc.beforeState = self.newState;
     self.isPlayer = YES;
+    fvc.moviePaths = self.AVEngine.moviePaths;
     [self.navigationController pushViewController:fvc animated:YES];
 }
 //删除全部视频
@@ -1307,7 +1277,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     __weak typeof(self) weakSelf = self;
     self.alert.sureButtonAction = ^{
-        [weakSelf.resource removeCurrentAllPart];
+        [weakSelf.resource removeCurrentAllPartFromCache];
         //数组初始化，view布局
         if (!weakSelf.playView.isHidden && weakSelf.playView) {
             weakSelf.playView.hidden = YES;
@@ -1433,6 +1403,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     DLYPlayVideoViewController *playVC = [[DLYPlayVideoViewController alloc] init];
+    playVC.moviePaths = self.AVEngine.moviePaths;
     BOOL isExist = [[DLYDownloadManager shredManager] isExistLocalVideo:videoName andVideoURLString:videoUrl];
     if (isExist) {
         NSURL *url = [NSURL fileURLWithPath:finishPath];
@@ -2087,7 +2058,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     if (isEmpty) {
         //数组初始化，view布局 弹出选择
-        [self.resource removeCurrentAllPart];
+        [self.resource removeCurrentAllPartFromCache];
         [self changeSceneWithSelectNum:num];
         [self initData];
         [self createPartViewLayout];
@@ -2101,7 +2072,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         self.alert.sureButtonAction = ^{
             //数组初始化，view布局 弹出选择
-            [weakSelf.resource removeCurrentAllPart];
+            [weakSelf.resource removeCurrentAllPartFromCache];
             [weakSelf changeSceneWithSelectNum:num];
             [weakSelf initData];
             [weakSelf createPartViewLayout];
@@ -2409,6 +2380,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         self.deleteButton.hidden = NO;
                         self.isSuccess = YES;
                     };
+                    fvc.moviePaths = self.AVEngine.moviePaths;
                     [weakSelf.navigationController pushViewController:fvc animated:YES];
                 }
             } completion:^(BOOL finished) {

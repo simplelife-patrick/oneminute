@@ -40,6 +40,11 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
 
 
 /**
+ 片段地址
+ */
+@property (nonatomic, strong)   NSString                      *partPath;
+
+/**
  拍摄时长
  */
 @property (nonatomic, copy)   NSString                      *duration;
