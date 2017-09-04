@@ -94,6 +94,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 @property (nonatomic) CMTime                                   defaultMinFrameDuration;
 @property (nonatomic) CMTime                                   defaultMaxFrameDuration;
 @property (nonatomic, strong) NSString                         *currentMoviePath; // 当前到出的视频路径
+@property (nonatomic, strong) NSString                         *plistPath;
+@property (nonatomic, strong) NSMutableArray                   *moviePathsArray;
 
 
 @end
@@ -163,12 +165,12 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     return _session;
 }
--(NSMutableArray<DLYMiniVlogPart *> *)moviePaths{
-    if (!_moviePaths) {
-        _moviePaths = [NSMutableArray array];
-    }
-    return _moviePaths;
-}
+//-(NSMutableArray<DLYMiniVlogPart *> *)moviePaths{
+//    if (!_moviePaths) {
+//        _moviePaths = [NSMutableArray array];
+//    }
+//    return _moviePaths;
+//}
 -(NSMutableArray<NSString *> *)processedVideoPaths{
     if (!_processedVideoPaths) {
         _processedVideoPaths = [NSMutableArray array];
@@ -340,6 +342,14 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         [self createTimer];
         
         av_register_all();
+        
+        //创建存储moviePaths的plist文件
+        NSString *cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString *plistPath = [cachePath stringByAppendingPathComponent:@"moviePaths.plist"];
+        
+        _plistPath = plistPath;
+        
+        _moviePathsArray = [NSMutableArray array];
         
         self.effectiveScale = 1.0;
         
@@ -617,13 +627,19 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         [self cameraBackgroundDidClickCloseSlow];
     }
     
-    NSString *outputStr = [self.resource getSaveDraftPartWithPartNum:part.partNum];
-    NSURL *fileURL = [NSURL fileURLWithPath:outputStr];
+    NSString *outputPath = [self.resource getSaveDraftPartWithPartNum:part.partNum];
+    NSURL *fileURL = [NSURL fileURLWithPath:outputPath];
     [self.captureMovieFileOutput startRecordingToOutputFileURL:fileURL recordingDelegate:self];
-//    _currentMoviePath = outputStr;
     
-    part.partPath = outputStr;
-    [self.moviePaths addObject:part];
+    
+    NSMutableDictionary *addData = [NSMutableDictionary dictionary];
+    [addData setObject:outputPath forKey:[NSString stringWithFormat:@"part%luPath",part.partNum]];
+    [addData setObject:@(part.recordType) forKey:@"recordType"];
+    [addData setObject:@(part.partNum) forKey:@"partNum"];
+    
+    [_moviePathsArray addObject:addData];
+
+    [_moviePathsArray writeToFile:_plistPath atomically:YES];
 }
 #pragma mark - 停止录制 -
 - (void)stopRecording {

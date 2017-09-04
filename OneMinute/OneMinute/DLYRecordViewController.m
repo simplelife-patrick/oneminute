@@ -590,7 +590,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.vedioEpisode addSubview:self.backScrollView];
     float episodeHeight = (self.vedioEpisode.height - (partModelArray.count - 1) * 2) / partModelArray.count;
     self.backScrollView.contentSize = CGSizeMake(15, episodeHeight * partModelArray.count + (partModelArray.count - 1) * 2);
-    _prepareShootTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(prepareShootAction) userInfo:nil repeats:YES];
+    _prepareShootTimer = [NSTimer scheduledTimerWithTimeInterval:0.6 target:self selector:@selector(prepareShootAction) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:_prepareShootTimer forMode:NSRunLoopCommonModes];
     [_prepareShootTimer setFireDate:[NSDate distantFuture]];
     
@@ -1263,7 +1263,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     fvc.isSuccess = NO;
     fvc.beforeState = self.newState;
     self.isPlayer = YES;
-    fvc.moviePaths = self.AVEngine.moviePaths;
     [self.navigationController pushViewController:fvc animated:YES];
 }
 //删除全部视频
@@ -1403,7 +1402,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     DLYPlayVideoViewController *playVC = [[DLYPlayVideoViewController alloc] init];
-    playVC.moviePaths = self.AVEngine.moviePaths;
     BOOL isExist = [[DLYDownloadManager shredManager] isExistLocalVideo:videoName andVideoURLString:videoUrl];
     if (isExist) {
         NSURL *url = [NSURL fileURLWithPath:finishPath];
@@ -2380,7 +2378,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         self.deleteButton.hidden = NO;
                         self.isSuccess = YES;
                     };
-                    fvc.moviePaths = self.AVEngine.moviePaths;
                     [weakSelf.navigationController pushViewController:fvc animated:YES];
                 }
             } completion:^(BOOL finished) {

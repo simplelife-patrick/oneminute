@@ -53,7 +53,7 @@ typedef void(^setVideoSpeedBlock)();
 @property (nonatomic, strong) NSURL                                                   *currentProductUrl;
 @property (nonatomic, assign) BOOL                                                    isTime;
 @property (nonatomic, strong) NSMutableArray                                          *imageArray;
-@property (nonatomic, strong) NSMutableArray<DLYMiniVlogPart *>   *moviePaths;  // 录制的原始视频数组
+//@property (nonatomic, strong) NSMutableArray<DLYMiniVlogPart *>   *moviePaths;  // 录制的原始视频数组
 @property (nonatomic, strong) NSMutableArray<NSString *>       *processedVideoPaths; // 处理播放速度后的视频数组
 @property (nonatomic, copy) setVideoSpeedBlock                 setVideoSpeedBlock; // 视频速度处理完成回调
 
