@@ -130,12 +130,13 @@
     [self.view addSubview:self.skipButton];
     
     //跳过button
-    self.skipTestBtn = [[UIButton alloc] init];
+    self.skipTestBtn = [[UIButton alloc] initWithFrame:CGRectMake(599.5 * SCALE_WIDTH, self.skipButton.bottom + 30, 44, 44)];
+    self.skipTestBtn.backgroundColor = RGBA(0, 0, 0, 0.3);
+    self.skipTestBtn.layer.cornerRadius = 22;
+    self.skipTestBtn.clipsToBounds = YES;
     [self.skipTestBtn setTitle:@"跳过" forState:UIControlStateNormal];
-    [self.skipTestBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.skipTestBtn setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
     self.skipTestBtn.titleLabel.font = FONT_SYSTEM(14);
-    [self.skipTestBtn sizeToFit];
-    self.skipTestBtn.frame = CGRectMake(599.5 * SCALE_WIDTH, self.skipButton.bottom + 3, self.skipTestBtn.width, self.skipTestBtn.height);
     self.skipTestBtn.centerX = self.skipButton.centerX;
     [self.skipTestBtn addTarget:self action:@selector(onClickSkip) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.skipTestBtn];
