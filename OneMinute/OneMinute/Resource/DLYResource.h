@@ -40,18 +40,25 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
 - (NSURL *) loadResourceWithType:(DLYResourceType )resourceType fileName:(NSString *)fileName;
 
 /**
- 加载草稿视频片段文件
-
- @return 返回草稿片段
+ 加载草稿片段从Cache中
+ 
+ @return 返回草稿全部片段
  */
--(NSArray *)loadDraftParts;
+- (NSArray *)loadDraftPartsFromeCache;
 
+/**
+ 加载草稿片段从Document
+
+ @return 返回全部草稿片段
+ */
+- (NSArray *) loadDraftPartsFromeDocument;
 /**
  保存草稿片段到沙盒中
 
  @param partNum 片段序号
  @return 返回片段保存地址
  */
+
 - (NSURL *) saveDraftPartWithPartNum:(NSInteger)partNum;
 
 /**
@@ -87,10 +94,14 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
 - (void) removePartWithPartNum:(NSInteger)partNum;
 
 /**
- 删除所有草稿片段
+ 删除Cache中全部草稿片段
  */
-- (void) removeCurrentAllPart;
+- (void) removeCurrentAllPartFromCache;
 
+/**
+  删除Document中全部草稿片段
+ */
+- (void) removeCurrentAllPartFromDocument;
 /**
  获取单个片段的播放地址
 
@@ -102,5 +113,16 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
  获取成片视频的播放地址
  */
 - (NSURL *) getProductWithProductName:(NSString *)productName;
+
+
+
+
+
+
+
+
+
+
+- (NSString *) getSaveDraftPartWithPartNum:(NSInteger)partNum;
 
 @end

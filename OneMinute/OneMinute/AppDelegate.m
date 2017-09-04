@@ -37,20 +37,11 @@
         DLYLog(@"📱📱📱The Application Did First Finish Launch !");
         
         NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSArray *homeDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
-        
-        NSString *documentPath = [homeDir objectAtIndex:0];
-        NSString *dataPath = [documentPath stringByAppendingPathComponent:kDataFolder];
+        NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
         
         if (![fileManager fileExistsAtPath:dataPath]) {
             
             [fileManager createDirectoryAtPath:dataPath withIntermediateDirectories:YES attributes:nil error:nil];
-            
-            NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
-            
-            if (![fileManager fileExistsAtPath:draftPath]) {
-                [fileManager createDirectoryAtPath:draftPath withIntermediateDirectories:YES attributes:nil error:nil];
-            }
             
             NSString *templatePath = [dataPath stringByAppendingPathComponent:kTemplateFolder];
             
@@ -62,6 +53,12 @@
             
             if (![fileManager fileExistsAtPath:samplesPath]) {
                 [fileManager createDirectoryAtPath:samplesPath withIntermediateDirectories:YES attributes:nil error:nil];
+            }
+            
+            NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
+            
+            if (![fileManager fileExistsAtPath:draftPath]) {
+                [fileManager createDirectoryAtPath:draftPath withIntermediateDirectories:YES attributes:nil error:nil];
             }
             
             NSString *productsPath = [dataPath stringByAppendingPathComponent:kProductFolder];
@@ -77,7 +74,13 @@
             }
         }
         NSArray *dataFolderArray = [fileManager contentsOfDirectoryAtPath:dataPath error:nil];
-        DLYLog(@"当前Data目录下有 %lu 个文件夹\n %@",dataFolderArray.count,dataFolderArray);
+        DLYLog(@"当前Document/Data目录下有 %lu 个文件夹\n %@",dataFolderArray.count,dataFolderArray);
+        
+        NSString *draftPath = [kCachePath stringByAppendingPathComponent:kDraftFolder];
+        if (![fileManager fileExistsAtPath:draftPath]) {
+            [fileManager createDirectoryAtPath:draftPath withIntermediateDirectories:YES attributes:nil error:nil];
+        }
+        DLYLog(@"%@",[fileManager fileExistsAtPath:draftPath]? @"Library/Cache/目录下Draft文件夹已成功创建":@"Library/Cache/目录下Draft文件夹创建失败");
         
         DLYLaunchPlayerViewController *vc = [[DLYLaunchPlayerViewController alloc] init];
         self.window.rootViewController = vc;
