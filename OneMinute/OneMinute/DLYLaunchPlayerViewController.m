@@ -53,6 +53,7 @@
     _enterMainButton.backgroundColor = RGBA(0, 0, 0, 0.7);
     [_enterMainButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [_enterMainButton setTitle:@"开启Vlog" forState:UIControlStateNormal];
+    _enterMainButton.hidden = YES;
     [self.view addSubview:_enterMainButton];
     [_enterMainButton addTarget:self action:@selector(enterMainAction:) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -140,7 +141,7 @@
     
     [self.player seekToTime:kCMTimeZero];
     [self.player play];
-
+    _enterMainButton.hidden = NO;
 }
 
 //进入主界面，对视频做完成操作

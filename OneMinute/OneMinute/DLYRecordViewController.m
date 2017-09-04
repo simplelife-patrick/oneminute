@@ -1042,9 +1042,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     if (!self.cancelButton.isHidden && self.cancelButton) {
         if (num == 0) {
-            self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 10, 30, 15);
+            self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 40, 44, 44);
         }else {
-            self.cancelButton.frame = CGRectMake(0, _timeView.top - 25, 30, 15);
+            self.cancelButton.frame = CGRectMake(0, _timeView.top - 84, 44, 44);
         }
         self.cancelButton.centerX = _timeView.centerX;
         self.cancelButton.transform = CGAffineTransformMakeRotation(num);
@@ -2178,19 +2178,20 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     self.cancelButton = [[UIButton alloc] init];
     if (self.newState == 1) {
-        self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 10, 30, 15);
+        self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 40, 44, 44);
         self.cancelButton.centerX = _timeView.centerX;
         self.cancelButton.transform = CGAffineTransformMakeRotation(0);
-        
     }else {
-        self.cancelButton.frame = CGRectMake(0, _timeView.top - 25, 30, 15);
+        self.cancelButton.frame = CGRectMake(0, _timeView.top - 84, 44, 44);
         self.cancelButton.centerX = _timeView.centerX;
         self.cancelButton.transform = CGAffineTransformMakeRotation(M_PI);
     }
-    
+    self.cancelButton.backgroundColor = RGBA(0, 0, 0, 0.3);
+    self.cancelButton.layer.cornerRadius = 22;
+    self.cancelButton.clipsToBounds = YES;
     [self.cancelButton addTarget:self action:@selector(onClickCancelClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.cancelButton setTitle:@"取消" forState:UIControlStateNormal];
-    [self.cancelButton setTitleColor:RGB(0, 0, 0) forState:UIControlStateNormal];
+    [self.cancelButton setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
     self.cancelButton.titleLabel.font = FONT_SYSTEM(14);
     self.cancelButton.hidden = YES;
     UIEdgeInsets edgeInsets = {-20, -20, -20, -20};
@@ -2240,12 +2241,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:_shootTimer forMode:NSRunLoopCommonModes];
     if (self.newState == 1) {
-        self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 10, 30, 15);
+        self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 40, 44, 44);
         self.cancelButton.centerX = _timeView.centerX;
         self.cancelButton.transform = CGAffineTransformMakeRotation(0);
         
     }else {
-        self.cancelButton.frame = CGRectMake(0, _timeView.top - 25, 30, 15);
+        self.cancelButton.frame = CGRectMake(0, _timeView.top - 84, 44, 44);
         self.cancelButton.centerX = _timeView.centerX;
         self.cancelButton.transform = CGAffineTransformMakeRotation(M_PI);
     }
