@@ -51,6 +51,8 @@
 @property (nonatomic, assign) BOOL isSurePlay;      //确定流量播放
 @property (nonatomic, strong) UIImage *frameImage;
 @property (nonatomic, assign) int index;
+@property (nonatomic, strong) NSArray                *moviePathArray;
+
 @end
 
 @implementation DLYPlayVideoViewController
@@ -159,18 +161,33 @@
     
     //跳过的时候，调用合成接口
     self.index = 0;
+    NSString *cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *plistPath = [cachePath stringByAppendingPathComponent:@"moviePaths.plist"];
+    
+    //newsTest.plist文件
+    NSMutableArray *dataArray = [[NSMutableArray alloc] initWithContentsOfFile:plistPath];
+    
+    NSInteger index = 0;
+    NSMutableArray *moviePathArray = [NSMutableArray array];
+    
+    for (NSDictionary *dic in dataArray) {
+        DLYMiniVlogPart *part = [[DLYMiniVlogPart alloc] init];
+        part.partPath = [dic objectForKey:[NSString stringWithFormat:@"part%luPath",index]];
+        part.recordType = [[dic objectForKey:@"recordType"] intValue];
+        part.partNum = [[dic objectForKey:@"partNum"] intValue];
+        [moviePathArray addObject:part];
+        index++;
+    }
+    _moviePathArray = moviePathArray;
     [self setVideoRate];
-    
-//    NSArray *videoArray = self.moviePaths;
-    
 }
 - (void)setVideoRate{
     
     typeof(self) weakSelf = self;
-    [self.AVEngine setSpeedWithVideo:self.moviePaths[self.index++] completed:^{
-        if (weakSelf.index == weakSelf.moviePaths.count) {
+    [self.AVEngine setSpeedWithVideo:_moviePathArray[self.index++] completed:^{
+        if (weakSelf.index == [_moviePathArray count]) {
             DLYLog(@"全部片段完成调速");
-            [self.resource removeCurrentAllPartFromCache];
+            [weakSelf.resource removeCurrentAllPartFromCache];
 //            [weakSelf.AVEngine addVideoHeadertWithTitle:weakSelf.titleField.text SuccessBlock:^{
 //                
 //            } failure:^(NSError *error) {
