@@ -32,6 +32,8 @@
 /** 播放器对象 */
 @property (nonatomic, strong) UISlider *progressSlider;
 @property (nonatomic, strong) UIButton *playButton;
+@property (nonatomic, strong) UILabel *currentLabel;
+@property (nonatomic, strong) UILabel *durationLabel;
 //控件
 @property (nonatomic, strong) UIActivityIndicatorView *waitIndicator;
 @property (nonatomic, strong) UIButton *nextButton;
@@ -128,12 +130,13 @@
     [self.view addSubview:self.skipButton];
     
     //跳过button
-    self.skipTestBtn = [[UIButton alloc] init];
+    self.skipTestBtn = [[UIButton alloc] initWithFrame:CGRectMake(599.5 * SCALE_WIDTH, self.skipButton.bottom + 30, 44, 44)];
+    self.skipTestBtn.backgroundColor = RGBA(0, 0, 0, 0.3);
+    self.skipTestBtn.layer.cornerRadius = 22;
+    self.skipTestBtn.clipsToBounds = YES;
     [self.skipTestBtn setTitle:@"跳过" forState:UIControlStateNormal];
-    [self.skipTestBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.skipTestBtn setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
     self.skipTestBtn.titleLabel.font = FONT_SYSTEM(14);
-    [self.skipTestBtn sizeToFit];
-    self.skipTestBtn.frame = CGRectMake(599.5 * SCALE_WIDTH, self.skipButton.bottom + 3, self.skipTestBtn.width, self.skipTestBtn.height);
     self.skipTestBtn.centerX = self.skipButton.centerX;
     [self.skipTestBtn addTarget:self action:@selector(onClickSkip) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.skipTestBtn];
@@ -254,7 +257,7 @@
         [self.waitIndicator startAnimating];
     }
     //滑块
-    self.progressSlider = [[UISlider alloc] initWithFrame:CGRectMake(32, SCREEN_HEIGHT - 45, SCREEN_WIDTH - 64, 20)];
+    self.progressSlider = [[UISlider alloc] initWithFrame:CGRectMake(85, SCREEN_HEIGHT - 45, SCREEN_WIDTH - 170, 20)];
     self.progressSlider.centerY = SCREEN_HEIGHT - 44;
     self.progressSlider.maximumTrackTintColor = [UIColor whiteColor];
     self.progressSlider.minimumTrackTintColor = [UIColor redColor];
@@ -266,17 +269,39 @@
     [self.progressSlider addTarget:self action:@selector(beginScrubbing:) forControlEvents:UIControlEventTouchDown];
     [self.progressSlider addTarget:self action:@selector(endScrubbing:) forControlEvents:UIControlEventTouchUpInside];
     [self.progressSlider addTarget:self action:@selector(endScrubbing:) forControlEvents:UIControlEventTouchUpOutside];
-    
     [self.view addSubview:self.progressSlider];
+    
+    //当前时间
+    self.currentLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 40, 14)];
+    self.currentLabel.centerY = SCREEN_HEIGHT - 44;
+    self.currentLabel.right = self.progressSlider.left - 13;
+    [self.view addSubview:self.currentLabel];
+    self.currentLabel.font = [UIFont systemFontOfSize:12];
+    self.currentLabel.textColor = RGB(255, 255, 255);
+    self.currentLabel.textAlignment = NSTextAlignmentRight;
+    self.currentLabel.text = @"00:00";
+    
+    //总时间
+    self.durationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 40, 14)];
+    self.durationLabel.centerY = SCREEN_HEIGHT - 44;
+    self.durationLabel.left = self.progressSlider.right + 13;
+    [self.view addSubview:self.durationLabel];
+    self.durationLabel.font = [UIFont systemFontOfSize:12];
+    self.durationLabel.textColor = RGB(255, 255, 255);
+    self.durationLabel.textAlignment = NSTextAlignmentLeft;
+    self.durationLabel.text = @"00:00";
+    
     if (!self.isOnline && self.waitIndicator.isAnimating) {
         self.progressSlider.hidden = YES;
+        self.currentLabel.hidden = YES;
+        self.durationLabel.hidden = YES;
         self.backButton.hidden = YES;
         self.playButton.hidden = YES;
     }
     if (self.isOnline && self.waitIndicator.isAnimating) {
         self.playButton.hidden = YES;
     }
-    
+
     //手势
     UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleControls:)];
     [self.view addGestureRecognizer:singleTap];
@@ -491,10 +516,20 @@
         float maxValue = [_progressSlider maximumValue];
         double time = CMTimeGetSeconds([_player currentTime]);
         
-//        [_progressSlider setValue:(maxValue - minValue) * time / duration + minValue];
         [_progressSlider setValue:(maxValue - minValue) * time / duration + minValue animated:YES];
+        self.currentLabel.text = [self formatTimeToString:time];
+        self.durationLabel.text = [self formatTimeToString:duration];
     }
 }
+
+#pragma mark 转成时间字符串
+-(NSString *)formatTimeToString:(NSTimeInterval)time{
+//    NSInteger hours = time/3600;
+    NSInteger minutes = (NSInteger)time%3600/60;
+    NSInteger seconds = (NSInteger)time%60;
+    return [NSString stringWithFormat:@"%02ld:%02ld", (long)minutes, (long)seconds];
+}
+
 
 - (void)enableScrubber {
     _progressSlider.enabled = YES;
@@ -611,6 +646,8 @@
                 [self.waitIndicator stopAnimating];
                 self.backButton.hidden = NO;
                 self.progressSlider.hidden = NO;
+                self.currentLabel.hidden = NO;
+                self.durationLabel.hidden = NO;
                 self.playButton.hidden = NO;
             }
             if (self.isOnline && self.waitIndicator.isAnimating) {
@@ -648,12 +685,12 @@
             [self disablePlayerButtons];
         }
     } else if ([keyPath isEqualToString:@"loadedTimeRanges"]) {
-        NSArray *array = playerItem.loadedTimeRanges;
-        CMTimeRange timeRange = [array.firstObject CMTimeRangeValue];//本次缓存时间范围
-        float startSeconds = CMTimeGetSeconds(timeRange.start);
-        float durationSeconds = CMTimeGetSeconds(timeRange.duration);
-        NSTimeInterval totalBuffer = startSeconds + durationSeconds;
-        NSLog(@"共缓存: %.2f",totalBuffer);
+//        NSArray *array = playerItem.loadedTimeRanges;
+//        CMTimeRange timeRange = [array.firstObject CMTimeRangeValue];//本次缓存时间范围
+//        float startSeconds = CMTimeGetSeconds(timeRange.start);
+//        float durationSeconds = CMTimeGetSeconds(timeRange.duration);
+//        NSTimeInterval totalBuffer = startSeconds + durationSeconds;
+//        NSLog(@"共缓存: %.2f",totalBuffer);
     } else if ([keyPath isEqualToString:@"playbackBufferEmpty"]) {
         //        [self.loadingView startAnimating];
         // 当缓冲是空的时候
@@ -822,10 +859,18 @@
     self.progressSlider.alpha = 0.0;
     self.progressSlider.hidden = NO;
     
+    self.currentLabel.alpha = 0.0;
+    self.currentLabel.hidden = NO;
+    
+    self.durationLabel.alpha = 0.0;
+    self.durationLabel.hidden = NO;
+    
     [UIView animateWithDuration:0.2 animations:^{
         self.playButton.alpha = 1.0;
         self.backButton.alpha = 1.0;
         self.progressSlider.alpha = 1.0;
+        self.currentLabel.alpha = 1.0;
+        self.durationLabel.alpha = 1.0;
         if (self.nextButton) {
             self.nextButton.alpha = 1.0;
         }
@@ -845,6 +890,8 @@
     self.playButton.alpha = 1.0;
     self.backButton.alpha = 1.0;
     self.progressSlider.alpha = 1.0;
+    self.currentLabel.alpha = 1.0;
+    self.durationLabel.alpha = 1.0;
     if (self.nextButton) {
         self.nextButton.alpha = 1.0;
     }
@@ -853,6 +900,8 @@
         self.playButton.alpha = 0.0;
         self.backButton.alpha = 0.0;
         self.progressSlider.alpha = 0.0;
+        self.currentLabel.alpha = 0.0;
+        self.durationLabel.alpha = 0.0;
         if (self.nextButton) {
             self.nextButton.alpha = 0.0;
         }
@@ -860,6 +909,8 @@
         self.playButton.hidden = YES;
         self.backButton.hidden = YES;
         self.progressSlider.hidden = YES;
+        self.currentLabel.hidden = YES;
+        self.durationLabel.hidden = YES;
         if (self.nextButton) {
             self.nextButton.hidden = YES;
         }
