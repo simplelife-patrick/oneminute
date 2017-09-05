@@ -17,6 +17,7 @@
 #import "DLYDownloadManager.h"
 #include <libavformat/avformat.h>
 #import "DLYMovieObject.h"
+#import "DLYTitleView.h"
 
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
@@ -56,6 +57,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) DLYAnnularProgress * progressView;    //环形进度条
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) DLYAlertView *alert;          //警告框
+@property (nonatomic, strong) DLYTitleView *titleView;      //拍摄说明
 @property (nonatomic, strong) UIButton *chooseScene;        //选择场景
 @property (nonatomic, strong) UILabel *chooseSceneLabel;    //选择场景文字
 @property (nonatomic, strong) UIButton *toggleCameraBtn;    //切换摄像头
@@ -891,7 +893,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
         
-            
+        
         AVAsset  *asset = [AVAsset assetWithURL:recordedFileUrl];
         Duration duration =(UInt32)asset.duration.value / asset.duration.timescale;
         NSLog(@"AVFoundation获取时长 :%d",duration);
@@ -967,6 +969,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.shootGuide.centerX = _shootView.centerX;
         self.shootGuide.transform = CGAffineTransformMakeRotation(num);
     }
+    if (!self.titleView.isHidden && self.titleView) {
+        if (num == 0) {
+            self.titleView.frame = CGRectMake(SCREEN_WIDTH - 190, 20, 180, 30);
+        }else {
+            self.titleView.frame = CGRectMake(SCREEN_WIDTH - 190, SCREEN_HEIGHT - 50, 180, 30);
+        }
+        self.titleView.transform = CGAffineTransformMakeRotation(num);
+    }
+    
     if (!self.progressView.isHidden && self.progressView) {
         [UIView animateWithDuration:0.5f animations:^{
             self.progressView.transform = CGAffineTransformMakeRotation(num);
@@ -1832,7 +1843,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     [itemView addSubview:timeLabel];
                     
                 }else if(part.recordType == DLYMiniVlogRecordTypeSlomo)
-                {//快进
+                {//慢镜
                     UILabel * timeLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 39, 12)];
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
@@ -2233,10 +2244,30 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.timeNumber.font = FONT_SYSTEM(20);
     self.timeNumber.textAlignment = NSTextAlignmentCenter;
     self.timeNumber.backgroundColor = RGBA(0, 0, 0, 0.3);
-    self.timeNumber.layer.cornerRadius = 27
-    ;
+    self.timeNumber.layer.cornerRadius = 27;
     self.timeNumber.clipsToBounds = YES;
     [_timeView addSubview:self.timeNumber];
+    ////
+    NSString *partTitle = [NSString stringWithFormat:@"第%ld段",part.partNum + 1];
+    NSString *timeTitle = [NSString stringWithFormat:@"%@秒",timeArr[0]];
+    NSString *typeTitle;
+    if (part.recordType == DLYMiniVlogRecordTypeNormal) {
+        typeTitle = @"正常";
+    }else if (part.recordType == DLYMiniVlogRecordTypeSlomo) {
+        typeTitle = @"慢镜头";
+    }else {
+        typeTitle = @"延时";
+    }
+    self.titleView = [[DLYTitleView alloc] initWithPartTitle:partTitle timeTitle:timeTitle typeTitle:typeTitle];
+    if (self.newState == 1) {
+        self.titleView.frame = CGRectMake(SCREEN_WIDTH - 190, 20, 180, 30);
+        self.titleView.transform = CGAffineTransformMakeRotation(0);
+    }else {
+        self.titleView.frame = CGRectMake(SCREEN_WIDTH - 190, SCREEN_HEIGHT - 50, 180, 30);
+        self.titleView.transform = CGAffineTransformMakeRotation(M_PI);
+    }
+    [self.shootView addSubview:self.titleView];
+    
     
     _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:_shootTimer forMode:NSRunLoopCommonModes];
