@@ -21,7 +21,6 @@
 		1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61C21EE7E6730088F33F /* DLYLogModule.m */; };
 		6F12AE6C1F3DB78300CE8CB6 /* DLYDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F12AE691F3DB78300CE8CB6 /* DLYDownloader.m */; };
 		6F12AE6D1F3DB78300CE8CB6 /* DLYDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F12AE6B1F3DB78300CE8CB6 /* DLYDownloadManager.m */; };
-		6F54182D1F57DFDD000F3A16 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6F54182C1F57DFDD000F3A16 /* iconfont.ttf */; };
 		6F752C861F4D15C800A820D6 /* UniversalTemplateBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 6F752C851F4D15C800A820D6 /* UniversalTemplateBGM.m4a */; };
 		6F7610E31F4C275B00E36081 /* DLYRecordEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F7610E21F4C275B00E36081 /* DLYRecordEncoder.m */; };
 		6F89259C1F1B12A100256093 /* DLYExportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F89259B1F1B12A100256093 /* DLYExportViewController.m */; };
@@ -40,6 +39,7 @@
 		6F8925E01F1B142300256093 /* DLYPopupMenuPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DC1F1B142300256093 /* DLYPopupMenuPath.m */; };
 		6F8925E11F1B142300256093 /* DLYRectConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DE1F1B142300256093 /* DLYRectConst.m */; };
 		6FA74E871F5E48B800114C93 /* DLYTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA74E861F5E48B800114C93 /* DLYTitleView.m */; };
+		6FA74E8B1F5EC0F100114C93 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6FA74E8A1F5EC0F100114C93 /* iconfont.ttf */; };
 		822650B2C2F69335E52B0573 /* libPods-OneMinute.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D600523FDE25F6D3C6635F4 /* libPods-OneMinute.a */; };
 		AD0E2BC21F4196E600A95DAF /* Universal001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD0E2BC11F4196E600A95DAF /* Universal001.json */; };
 		AD13AC381F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = AD13AC371F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m */; };
@@ -119,7 +119,6 @@
 		6F12AE691F3DB78300CE8CB6 /* DLYDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYDownloader.m; sourceTree = "<group>"; };
 		6F12AE6A1F3DB78300CE8CB6 /* DLYDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYDownloadManager.h; sourceTree = "<group>"; };
 		6F12AE6B1F3DB78300CE8CB6 /* DLYDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYDownloadManager.m; sourceTree = "<group>"; };
-		6F54182C1F57DFDD000F3A16 /* iconfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = iconfont.ttf; sourceTree = "<group>"; };
 		6F752C851F4D15C800A820D6 /* UniversalTemplateBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = UniversalTemplateBGM.m4a; sourceTree = "<group>"; };
 		6F7610E11F4C275B00E36081 /* DLYRecordEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRecordEncoder.h; sourceTree = "<group>"; };
 		6F7610E21F4C275B00E36081 /* DLYRecordEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRecordEncoder.m; sourceTree = "<group>"; };
@@ -155,6 +154,7 @@
 		6F8925DE1F1B142300256093 /* DLYRectConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRectConst.m; sourceTree = "<group>"; };
 		6FA74E851F5E48B800114C93 /* DLYTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYTitleView.h; sourceTree = "<group>"; };
 		6FA74E861F5E48B800114C93 /* DLYTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYTitleView.m; sourceTree = "<group>"; };
+		6FA74E8A1F5EC0F100114C93 /* iconfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = iconfont.ttf; sourceTree = "<group>"; };
 		7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneMinute.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute.debug.xcconfig"; sourceTree = "<group>"; };
 		AD0E2BC11F4196E600A95DAF /* Universal001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Universal001.json; sourceTree = "<group>"; };
 		AD13AC361F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALAssetsLibrary+CustomPhotoAlbum.h"; sourceTree = "<group>"; };
@@ -305,7 +305,7 @@
 			children = (
 				AD5B80B31F344C750094922B /* advertisementVideo(5s).mp4 */,
 				AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */,
-				6F54182C1F57DFDD000F3A16 /* iconfont.ttf */,
+				6FA74E8A1F5EC0F100114C93 /* iconfont.ttf */,
 				ADFFF1A51F18A36700FB5BF7 /* DLYPrefixHeader.pch */,
 				1C7E61831EE7DF4F0088F33F /* main.m */,
 			);
@@ -712,7 +712,7 @@
 				AD5B80AF1F34133B0094922B /* header001.mp4 in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				AD5B80B61F344C750094922B /* advertisementVideo(10s).mp4 in Resources */,
-				6F54182D1F57DFDD000F3A16 /* iconfont.ttf in Resources */,
+				6FA74E8B1F5EC0F100114C93 /* iconfont.ttf in Resources */,
 				AD5B80B51F344C750094922B /* advertisementVideo(5s).mp4 in Resources */,
 				AD5B80AB1F34133B0094922B /* ColorLifeTemplateBGM.m4a in Resources */,
 				AD5A06A41F33058A00F26693 /* Travele001.json in Resources */,
