@@ -179,6 +179,9 @@
         index++;
     }
     _moviePathArray = moviePathArray;
+    
+    //获取开始时刻统计合成耗时
+    self.AVEngine.startOperation = [self.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
     [self setVideoRate];
 }
 - (void)setVideoRate{
@@ -209,7 +212,8 @@
 //                
 //            }];
             [weakSelf.AVEngine mergeVideoWithVideoTitle:weakSelf.titleField.text SuccessBlock:^{
-                
+                weakSelf.AVEngine.finishOperation = [weakSelf.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
+                NSLog(@"🥇🥇🥇⚡️⚡️⚡️成片耗时: %lld ms",weakSelf.AVEngine.finishOperation - weakSelf.AVEngine.startOperation);
             } failure:^(NSError *error) {
                 
             }];

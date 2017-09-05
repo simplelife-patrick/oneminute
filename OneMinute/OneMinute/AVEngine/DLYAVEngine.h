@@ -36,7 +36,11 @@ typedef void(^setVideoSpeedBlock)();
 
 @interface DLYAVEngine : DLYModule
 
-@property (nonatomic, assign) CGFloat                                                 effectiveScale;//最后的缩放比例
+//统计耗时用
+@property (nonatomic, assign) long long                                               startOperation;
+@property (nonatomic, assign) long long                                               finishOperation;
+
+@property (nonatomic, assign) CGFloat                                                 effectiveScale;
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *backCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *currentVideoDeviceInput;
 @property (nonatomic, strong) AVCaptureDevice                                         *videoDevice;
@@ -157,4 +161,5 @@ typedef void(^setVideoSpeedBlock)();
 //新方法合成视频
 - (void)mergeVideosWithPaths:(NSArray *)paths completed:(void(^)(NSURL *videoPath))completed;
 - (void)setSpeedWithVideo:(DLYMiniVlogPart *)part completed:(void(^)())completed;
+-(long long)getDateTimeTOMilliSeconds:(NSDate *)datetime;
 @end

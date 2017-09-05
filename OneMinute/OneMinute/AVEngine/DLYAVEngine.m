@@ -51,6 +51,7 @@
     CMTime _timeOffset;//录制的偏移CMTime
     CMTime _lastVideo;//记录上一次视频数据文件的CMTime
     CMTime _lastAudio;//记录上一次音频数据文件的CMTime
+
 }
 
 @property (nonatomic, strong) AVCaptureAudioDataOutput          *audioOutput;
@@ -1718,6 +1719,7 @@ BOOL isOnce = YES;
                 DLYLog(@"配音失败: %@",[[assetExportSession error] description]);
             }break;
             case AVAssetExportSessionStatusCompleted:{
+                successBlock();
                 if ([self.delegate  respondsToSelector:@selector(didFinishEdititProductUrl:)]) {
                     [self.delegate didFinishEdititProductUrl:outPutUrl];
                 }
