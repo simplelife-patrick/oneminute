@@ -213,7 +213,7 @@
 //            }];
             [weakSelf.AVEngine mergeVideoWithVideoTitle:weakSelf.titleField.text SuccessBlock:^{
                 weakSelf.AVEngine.finishOperation = [weakSelf.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
-                NSLog(@"🥇🥇🥇⚡️⚡️⚡️成片耗时: %lld ms",weakSelf.AVEngine.finishOperation - weakSelf.AVEngine.startOperation);
+                NSLog(@"🥇🥇🥇⚡️⚡️⚡️成片耗时: %lld s",(weakSelf.AVEngine.finishOperation - weakSelf.AVEngine.startOperation)/1000);
             } failure:^(NSError *error) {
                 
             }];
