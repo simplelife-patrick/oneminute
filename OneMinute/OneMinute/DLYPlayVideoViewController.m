@@ -804,7 +804,7 @@
     }
     
     NSString *lang = [[textField textInputMode] primaryLanguage]; // 获取当前键盘输入模式
-    NSLog(@"%@",lang);
+//    NSLog(@"%@",lang);
     if([lang isEqualToString:@"zh-Hans"]) { //简体中文输入,第三方输入法（搜狗）所有模式下都会显示“zh-Hans”
         UITextRange *selectedRange = [textField markedTextRange];
         //获取高亮部分
