@@ -60,6 +60,7 @@ typedef void(^setVideoSpeedBlock)();
 @property (nonatomic, strong) NSMutableArray<NSString *>       *processedVideoPaths; // 处理播放速度后的视频数组
 @property (nonatomic, copy) setVideoSpeedBlock                 setVideoSpeedBlock; // 视频速度处理完成回调
 
+
 - (void) restartRecording;
 - (void) stopRecording;
 - (void) cancelRecording;

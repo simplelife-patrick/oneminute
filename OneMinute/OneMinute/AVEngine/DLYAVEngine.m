@@ -96,9 +96,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 @property (nonatomic) CMTime                                   defaultMaxFrameDuration;
 @property (nonatomic, strong) NSString                         *currentMoviePath; // 当前到出的视频路径
 @property (nonatomic, strong) NSString                         *plistPath;
-@property (nonatomic, strong) NSMutableArray                   *moviePathsArray;
 @property (nonatomic, strong) DLYMiniVlogPart                  *currentPart;
-@property (nonatomic, assign) DLYPhoneDeviceType                currentPhoneModel;
+@property (nonatomic, assign) DLYPhoneDeviceType               currentPhoneModel;
+@property (nonatomic, strong) NSMutableArray                   *moviePathsArray;
 
 @end
 
@@ -167,12 +167,12 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     return _session;
 }
-//-(NSMutableArray<DLYMiniVlogPart *> *)moviePaths{
-//    if (!_moviePaths) {
-//        _moviePaths = [NSMutableArray array];
-//    }
-//    return _moviePaths;
-//}
+-(NSMutableArray *)moviePathsArray{
+    if (!_moviePathsArray) {
+        _moviePathsArray = [NSMutableArray array];
+    }
+    return _moviePathsArray;
+}
 -(NSMutableArray<NSString *> *)processedVideoPaths{
     if (!_processedVideoPaths) {
         _processedVideoPaths = [NSMutableArray array];
@@ -349,13 +349,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         
         _plistPath = plistPath;
         
-        _moviePathsArray = [NSMutableArray array];
-        
         self.effectiveScale = 1.0;
         
         referenceOrientation = (AVCaptureVideoOrientation)UIDeviceOrientationPortrait;
-        
-
         
         if (previewView) {
             self.previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.captureSession];
@@ -645,9 +641,14 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     [addData setObject:@(part.recordType) forKey:@"recordType"];
     [addData setObject:@(part.partNum) forKey:@"partNum"];
     
-    [_moviePathsArray addObject:addData];
+    NSInteger partCount = [self.session.currentTemplate.parts count];
+    if (self.moviePathsArray.count >= partCount) {
+        [self.moviePathsArray removeAllObjects];
+    }else{
+        [self.moviePathsArray addObject:addData];
+    }
 
-    [_moviePathsArray writeToFile:_plistPath atomically:YES];
+    [self.moviePathsArray writeToFile:_plistPath atomically:YES];
 }
 #pragma mark - 停止录制 -
 - (void)stopRecording {
