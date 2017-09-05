@@ -36,7 +36,11 @@ typedef void(^setVideoSpeedBlock)();
 
 @interface DLYAVEngine : DLYModule
 
-@property (nonatomic, assign) CGFloat                                                 effectiveScale;//最后的缩放比例
+//统计耗时用
+@property (nonatomic, assign) long long                                               startOperation;
+@property (nonatomic, assign) long long                                               finishOperation;
+
+@property (nonatomic, assign) CGFloat                                                 effectiveScale;
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *backCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *currentVideoDeviceInput;
 @property (nonatomic, strong) AVCaptureDevice                                         *videoDevice;
@@ -49,13 +53,13 @@ typedef void(^setVideoSpeedBlock)();
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer                              *previewLayer;
 @property (nonatomic, strong) AVCaptureConnection                                     *videoConnection;
 @property (nonatomic, strong) AVCaptureSession                                        *captureSession;
-@property (nonatomic, strong) DLYMiniVlogPart                                         *currentPart;
 @property (nonatomic, strong) NSURL                                                   *currentProductUrl;
 @property (nonatomic, assign) BOOL                                                    isTime;
 @property (nonatomic, strong) NSMutableArray                                          *imageArray;
 //@property (nonatomic, strong) NSMutableArray<DLYMiniVlogPart *>   *moviePaths;  // 录制的原始视频数组
 @property (nonatomic, strong) NSMutableArray<NSString *>       *processedVideoPaths; // 处理播放速度后的视频数组
 @property (nonatomic, copy) setVideoSpeedBlock                 setVideoSpeedBlock; // 视频速度处理完成回调
+
 
 - (void) restartRecording;
 - (void) stopRecording;
@@ -158,4 +162,5 @@ typedef void(^setVideoSpeedBlock)();
 //新方法合成视频
 - (void)mergeVideosWithPaths:(NSArray *)paths completed:(void(^)(NSURL *videoPath))completed;
 - (void)setSpeedWithVideo:(DLYMiniVlogPart *)part completed:(void(^)())completed;
+-(long long)getDateTimeTOMilliSeconds:(NSDate *)datetime;
 @end
