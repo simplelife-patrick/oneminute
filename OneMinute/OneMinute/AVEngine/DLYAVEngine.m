@@ -301,12 +301,14 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 -(AVCaptureSession *)captureSession{
     if (_captureSession == nil) {
         _captureSession = [[AVCaptureSession alloc] init];
+
         //添加后置摄像头的输入
-        if ([_captureSession canAddInput:self.backCameraInput]) {
-            [_captureSession addInput:self.backCameraInput];
+        if ([self.captureSession canAddInput:self.backCameraInput]) {
+            [self.captureSession addInput:self.backCameraInput];
         }else{
             DLYLog(@"Backcamera intput add faild !");
         }
+        
         //添加麦克风的输入
         if ([_captureSession canAddInput:self.audioMicInput]) {
             [_captureSession addInput:self.audioMicInput];
@@ -353,6 +355,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         self.effectiveScale = 1.0;
         
         referenceOrientation = (AVCaptureVideoOrientation)UIDeviceOrientationPortrait;
+        
+
         
         if (previewView) {
             self.previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.captureSession];
