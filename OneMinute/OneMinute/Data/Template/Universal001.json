@@ -6,7 +6,7 @@
     {
       "partNum": 0,
       "startTime": "00:00:00",
-      "stopTime": "00:02:00",
+      "stopTime": "00:02:30",
       "dubStartTime": "00:00:00",
       "dubStopTime": "00:08:01",
       "recordType": 1,
@@ -15,8 +15,8 @@
     },
     {
       "partNum": 1,
-      "startTime": "00:09:00",
-      "stopTime": "00:18:00",
+      "startTime": "00:02:30",
+      "stopTime": "00:11:00",
       "dubStartTime": "00:08:01",
       "dubStopTime": "00:16:19",
       "recordType": 2,

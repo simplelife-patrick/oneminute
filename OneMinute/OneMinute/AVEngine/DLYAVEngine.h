@@ -49,7 +49,6 @@ typedef void(^setVideoSpeedBlock)();
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer                              *previewLayer;
 @property (nonatomic, strong) AVCaptureConnection                                     *videoConnection;
 @property (nonatomic, strong) AVCaptureSession                                        *captureSession;
-@property (nonatomic, strong) DLYMiniVlogPart                                         *currentPart;
 @property (nonatomic, strong) NSURL                                                   *currentProductUrl;
 @property (nonatomic, assign) BOOL                                                    isTime;
 @property (nonatomic, strong) NSMutableArray                                          *imageArray;

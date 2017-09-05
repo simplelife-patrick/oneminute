@@ -56,7 +56,7 @@ static float const kModuleWeightFactorDefault = 0.1;
     [self setModuleIdentity:moduleName];
     [self.serviceThread setName:moduleName];
     
-    NSLog(@"%@ - initModule", self.moduleIdentity);
+//    NSLog(@"%@ - initModule", self.moduleIdentity);
     
     [self registerNotifications];
     
@@ -65,7 +65,7 @@ static float const kModuleWeightFactorDefault = 0.1;
 
 -(void) releaseModule
 {
-    NSLog(@"%@ - releaseModule", self.moduleIdentity);
+//    NSLog(@"%@ - releaseModule", self.moduleIdentity);
     
     [self unregisterNotifications];
     
@@ -143,7 +143,7 @@ static float const kModuleWeightFactorDefault = 0.1;
 
 -(void) unregisterNotifications
 {
-    NSLog(@"%@ - unregisterNotifications", self.moduleIdentity);
+//    NSLog(@"%@ - unregisterNotifications", self.moduleIdentity);
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];

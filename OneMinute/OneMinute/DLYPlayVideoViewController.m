@@ -188,6 +188,16 @@
         if (weakSelf.index == [_moviePathArray count]) {
             DLYLog(@"全部片段完成调速");
             [weakSelf.resource removeCurrentAllPartFromCache];
+            NSString *cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSString *plistPath = [cachePath stringByAppendingPathComponent:@"moviePaths.plist"];
+            
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            
+            if ([[NSFileManager defaultManager] fileExistsAtPath:plistPath]) {
+                
+                BOOL isSuccess = [fileManager removeItemAtPath:plistPath error:nil];
+                DLYLog(@"%@",isSuccess?@"成功删除保存片段信息的plist文件":@"保存片段信息的plist文件删除失败");
+            }
 //            [weakSelf.AVEngine addVideoHeadertWithTitle:weakSelf.titleField.text SuccessBlock:^{
 //                
 //            } failure:^(NSError *error) {
