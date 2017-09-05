@@ -185,7 +185,13 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 - (AVCaptureDeviceInput *)backCameraInput {
     if (_backCameraInput == nil) {
         NSError *error;
-        _backCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self backCamera] error:&error];
+        AVCaptureDevice *videoCaptureDevice = [self backCamera];
+        
+        _defaultFormat = videoCaptureDevice.activeFormat;
+        _defaultMinFrameDuration = videoCaptureDevice.activeVideoMinFrameDuration;
+        _defaultMaxFrameDuration = videoCaptureDevice.activeVideoMaxFrameDuration;
+        
+        _backCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:videoCaptureDevice error:&error];
         _currentVideoDeviceInput = self.backCameraInput;
         
         AVCaptureDevice *device = _backCameraInput.device;
@@ -223,7 +229,13 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 - (AVCaptureDeviceInput *)frontCameraInput {
     if (_frontCameraInput == nil) {
         NSError *error;
-        _frontCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self frontCamera] error:&error];
+        AVCaptureDevice *videoCaptureDevice = [self frontCamera];
+        
+        _defaultFormat = videoCaptureDevice.activeFormat;
+        _defaultMinFrameDuration = videoCaptureDevice.activeVideoMinFrameDuration;
+        _defaultMaxFrameDuration = videoCaptureDevice.activeVideoMaxFrameDuration;
+        
+        _frontCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:videoCaptureDevice error:&error];
         AVCaptureDevice *device = _frontCameraInput.device;
         
         if (device.isSmoothAutoFocusSupported) {
@@ -433,12 +445,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     for (AVCaptureDevice *device in devices) {
         if ([device position] == position) {
             
-            // save the default format
-            _defaultFormat = device.activeFormat;
-            _defaultMinFrameDuration = device.activeVideoMinFrameDuration;
-            _defaultMaxFrameDuration = device.activeVideoMaxFrameDuration;
-            
-            DLYLog(@"videoDevice.activeFormat:%@", device.activeFormat);
             return device;
         }
     }
