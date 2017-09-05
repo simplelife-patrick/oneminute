@@ -642,8 +642,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     [addData setObject:@(part.partNum) forKey:@"partNum"];
     
     NSInteger partCount = [self.session.currentTemplate.parts count];
-    if (self.moviePathsArray.count >= partCount) {
+    if (partCount != 0 && [self.moviePathsArray count] >= partCount) {
         [self.moviePathsArray removeAllObjects];
+        [self.moviePathsArray addObject:addData];
     }else{
         [self.moviePathsArray addObject:addData];
     }
