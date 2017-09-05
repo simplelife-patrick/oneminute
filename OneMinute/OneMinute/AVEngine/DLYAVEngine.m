@@ -89,7 +89,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 @property (atomic, assign) BOOL discont;//是否中断
 @property (nonatomic, strong) NSMutableArray *imageArr;
 @property (nonatomic, strong) NSTimer *recordTimer; //准备拍摄片段闪烁的计时器
-@property (nonatomic, assign) BOOL isTimelapse;//是否为延时
 
 //Reconstruction fast and slow
 @property (nonatomic) CMTime                                   defaultMinFrameDuration;
@@ -662,9 +661,16 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     
     [self.captureMovieFileOutput stopRecording];
     
-    if (self.isTimelapse) {
-        [_recordTimer setFireDate:[NSDate distantFuture]];
+    if (self.isCapturing) {
+        self.isPaused = YES;
     }
+    _isRecording = NO;
+}
+#pragma mark - 取消录制 -
+- (void)cancelRecording{
+    [self.captureMovieFileOutput stopRecording];
+    [self.moviePathsArray removeLastObject];
+    [self.moviePathsArray writeToFile:_plistPath atomically:YES];
     
     if (self.isCapturing) {
         self.isPaused = YES;
@@ -741,15 +747,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }
     }
     [self.captureSession startRunning];
-}
-
-#pragma mark - 取消录制 -
-- (void)cancelRecording{
-    [self.captureMovieFileOutput stopRecording];
-    dispatch_async(movieWritingQueue, ^{
-        
-        _isRecording = NO;
-    });
 }
 #pragma mark - 重置录制session -
 - (void) restartRecording{
