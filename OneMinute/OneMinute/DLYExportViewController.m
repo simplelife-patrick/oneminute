@@ -85,7 +85,7 @@
     //完成按钮
     self.completeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.remindLabel.bottom + 32, 120, 40)];
     self.completeButton.centerX = self.view.centerX;
-    self.completeButton.layer.cornerRadius = 25;
+    self.completeButton.layer.cornerRadius = 22;
     self.completeButton.clipsToBounds = YES;
     self.completeButton.layer.borderWidth = 1;
     self.completeButton.layer.borderColor = RGB(255, 255, 255).CGColor;

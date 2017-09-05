@@ -17,6 +17,7 @@
 #import "DLYDownloadManager.h"
 #include <libavformat/avformat.h>
 #import "DLYMovieObject.h"
+#import "DLYTitleView.h"
 
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
@@ -56,6 +57,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) DLYAnnularProgress * progressView;    //环形进度条
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) DLYAlertView *alert;          //警告框
+@property (nonatomic, strong) DLYTitleView *titleView;      //拍摄说明
 @property (nonatomic, strong) UIButton *chooseScene;        //选择场景
 @property (nonatomic, strong) UILabel *chooseSceneLabel;    //选择场景文字
 @property (nonatomic, strong) UIButton *toggleCameraBtn;    //切换摄像头
@@ -77,6 +79,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UILabel *timeNumber;          //倒计时显示label
 @property (nonatomic, strong) DLYResource  *resource;       //资源管理类
 @property (nonatomic, strong) DLYSession *session;          //录制会话管理类
+@property (nonatomic, strong) UILabel *chooseTitleLabel;    //选择场景说明
+@property (nonatomic, strong) UIButton *seeRush;            //观看样片
+@property (nonatomic, copy) NSArray *btnImg;                //场景对应的图片
 
 @end
 
@@ -316,6 +321,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark ==== 初始化数据
 - (NSInteger)initDataReadDraft {
     
+    self.btnImg = @[@"\U0000e665", @"\U0000e780", @"\U0000e6f1", @"\U0000e671", @"\U0000e7b0"];
+    
     BOOL isExitDraft = [self.session isExitdraftAtFile];
     NSMutableArray *draftArr = [NSMutableArray array];
     
@@ -403,6 +410,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
 }
 - (void)initData {
+    
+    self.btnImg = @[@"\U0000e665", @"\U0000e780", @"\U0000e6f1", @"\U0000e671", @"\U0000e7b0"];
     
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     [self.session saveCurrentTemplateWithName:template.templateName];
@@ -510,7 +519,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //通用button 选择场景button
     self.chooseScene = [[UIButton alloc]initWithFrame:CGRectMake(11, 16, 40, 40)];
     self.chooseScene.backgroundColor = RGBA(0, 0, 0, 0.4);
-    [self.chooseScene setImage:[UIImage imageWithIcon:@"\U0000e665" inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    //    [self.chooseScene setImage:[UIImage imageWithIcon:@"\U0000e665" inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
     [self.chooseScene addTarget:self action:@selector(onClickChooseScene:) forControlEvents:UIControlEventTouchUpInside];
     self.chooseScene.layer.cornerRadius = 20;
     self.chooseScene.clipsToBounds = YES;
@@ -525,6 +534,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.chooseSceneLabel.textColor = RGBA(255, 255, 255, 1);
     self.chooseSceneLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:self.chooseSceneLabel];
+    
+    NSArray *typeNameArray = @[@"Universal001.json",@"Gourmandism001.json",@"Travele001.json",@"ColorLife001.json"];
+    for (int i = 0; i < typeNameArray.count; i ++) {
+        if ([template.templateName isEqualToString:typeNameArray[i]]) {
+            [self.chooseScene setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+        }
+    }
     
     //闪光
     self.flashButton = [[UIButton alloc]initWithFrame:CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40)];
@@ -891,7 +907,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
         
-            
+        
         AVAsset  *asset = [AVAsset assetWithURL:recordedFileUrl];
         Duration duration =(UInt32)asset.duration.value / asset.duration.timescale;
         NSLog(@"AVFoundation获取时长 :%d",duration);
@@ -967,6 +983,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.shootGuide.centerX = _shootView.centerX;
         self.shootGuide.transform = CGAffineTransformMakeRotation(num);
     }
+    if (!self.titleView.isHidden && self.titleView) {
+        if (num == 0) {
+            self.titleView.frame = CGRectMake(SCREEN_WIDTH - 190, 20, 180, 30);
+        }else {
+            self.titleView.frame = CGRectMake(SCREEN_WIDTH - 190, SCREEN_HEIGHT - 50, 180, 30);
+        }
+        self.titleView.transform = CGAffineTransformMakeRotation(num);
+    }
+    
     if (!self.progressView.isHidden && self.progressView) {
         [UIView animateWithDuration:0.5f animations:^{
             self.progressView.transform = CGAffineTransformMakeRotation(num);
@@ -1062,7 +1087,28 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.scenceDisapper.transform = CGAffineTransformMakeRotation(num);
             }];
         }
-        
+        if (!self.chooseTitleLabel.isHidden && self.chooseTitleLabel) {
+            if (num == 0) {
+                self.chooseTitleLabel.frame = CGRectMake(0, 19, 130, 20);
+                self.chooseTitleLabel.centerX = self.sceneView.centerX;
+            }else {
+                self.chooseTitleLabel.frame = CGRectMake(0, SCREEN_HEIGHT - 39, 130, 20);
+                self.chooseTitleLabel.centerX = self.sceneView.centerX;
+            }
+            [UIView animateWithDuration:0.5f animations:^{
+                self.chooseTitleLabel.transform = CGAffineTransformMakeRotation(num);
+            }];
+        }
+        if (!self.seeRush.isHidden && self.seeRush) {
+            if (num == 0) {
+                self.seeRush.frame = CGRectMake(SCREEN_WIDTH - 70, 21, 50, 17);
+            }else {
+                self.seeRush.frame = CGRectMake(SCREEN_WIDTH - 70, SCREEN_HEIGHT - 38, 50, 17);
+            }
+            [UIView animateWithDuration:0.5f animations:^{
+                self.seeRush.transform = CGAffineTransformMakeRotation(num);
+            }];
+        }
         for(int i = 0; i < typeModelArray.count; i++)
         {
             UIView *view = (UIView *)[self.view viewWithTag:101 + i];
@@ -1181,6 +1227,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         if (self.newState == 1) {
             self.scenceDisapper.frame = CGRectMake(20, 20, 14, 14);
             self.scenceDisapper.transform = CGAffineTransformMakeRotation(0);
+            self.chooseTitleLabel.frame = CGRectMake(0, 19, 130, 20);
+            self.chooseTitleLabel.centerX = self.sceneView.centerX;
+            self.chooseTitleLabel.transform = CGAffineTransformMakeRotation(0);
+            self.seeRush.frame = CGRectMake(SCREEN_WIDTH - 70, 21, 50, 17);
+            self.seeRush.transform = CGAffineTransformMakeRotation(0);
             for(int i = 0; i < typeModelArray.count; i++)
             {
                 UIView *view = (UIView *)[self.view viewWithTag:101 + i];
@@ -1189,6 +1240,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }else {
             self.scenceDisapper.frame = CGRectMake(20, SCREEN_HEIGHT - 34, 14, 14);
             self.scenceDisapper.transform = CGAffineTransformMakeRotation(M_PI);
+            self.chooseTitleLabel.frame = CGRectMake(0, SCREEN_HEIGHT - 39, 130, 20);
+            self.chooseTitleLabel.centerX = self.sceneView.centerX;
+            self.chooseTitleLabel.transform = CGAffineTransformMakeRotation(M_PI);
+            self.seeRush.frame = CGRectMake(SCREEN_WIDTH - 70, SCREEN_HEIGHT - 38, 50, 17);
+            self.seeRush.transform = CGAffineTransformMakeRotation(M_PI);
             for(int i = 0; i < typeModelArray.count; i++)
             {
                 UIView *view = (UIView *)[self.view viewWithTag:101 + i];
@@ -1370,21 +1426,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }];
     
 }
-//选择场景页面点击事件
-- (void)sceneViewClick : (UIButton *)sender {
-    
-    NSInteger selectNum = sender.tag/100;
-    if(selectNum == 4)
-    {//点击的事观看样片
-        [self changeTypeToPlayWithTag:sender.tag -400];
-    }else if(selectNum == 3)
-    {//点击的事某个片段
-        [self changeTypeStatusWithTag:sender.tag -300];
-        
-    }
-}
 
-- (void)changeTypeToPlayWithTag:(NSInteger)num {
+- (void)changeTypeToPlay {
+    NSInteger num = selectType;
     //数据 url也放在这里
     DLYMiniVlogTemplate *template = typeModelArray[num];
     NSString *videoName = [template.sampleVideoName stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
@@ -1832,7 +1876,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     [itemView addSubview:timeLabel];
                     
                 }else if(part.recordType == DLYMiniVlogRecordTypeSlomo)
-                {//快进
+                {//慢镜
                     UILabel * timeLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 39, 12)];
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
@@ -1973,6 +2017,26 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.scenceDisapper addTarget:self action:@selector(onClickCancelSelect:) forControlEvents:UIControlEventTouchUpInside];
     [self.sceneView addSubview:self.scenceDisapper];
     
+    self.chooseTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 19, 130, 28)];
+    self.chooseTitleLabel.centerX = self.sceneView.centerX;
+    self.chooseTitleLabel.textColor = RGB(255, 255, 255);
+    self.chooseTitleLabel.textAlignment = NSTextAlignmentCenter;
+    self.chooseTitleLabel.font = FONT_SYSTEM(20);
+    self.chooseTitleLabel.text = @"选择拍摄场景";
+    [self.sceneView addSubview:self.chooseTitleLabel];
+    
+    self.seeRush = [[UIButton alloc]initWithFrame:CGRectMake(SCREEN_WIDTH - 70, 21, 50, 17)];
+    [self.seeRush setImage:[UIImage imageWithIcon:@"\U0000e63f" inFont:ICONFONT size:12 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.seeRush setTitle:@"样片" forState:UIControlStateNormal];
+    [self.seeRush setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
+    self.seeRush.titleLabel.font = FONT_SYSTEM(12);
+    [self.seeRush setTitleEdgeInsets:UIEdgeInsetsMake(0, 4, 0, -4)];
+    [self.seeRush setContentEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 4)];
+    UIEdgeInsets seeRushedgeInsets = {-10, -10, -10, -10};
+    [self.seeRush setHitEdgeInsets:seeRushedgeInsets];
+    [self.seeRush addTarget:self action:@selector(changeTypeToPlay) forControlEvents:UIControlEventTouchUpInside];
+    [self.sceneView addSubview:self.seeRush];
+    
     UIView * typeView = [[UIView alloc]initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH - 80, 162 * SCALE_HEIGHT)];
     typeView.centerY = self.sceneView.centerY;
     [self.sceneView addSubview:typeView];
@@ -1987,61 +2051,42 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     for(int i = 0; i < typeModelArray.count; i ++)
     {
         DLYMiniVlogTemplate *templateModel = typeModelArray[i];
-        UIView * view = [[UIView alloc]initWithFrame:CGRectMake((width + 10) * i, 0, width, typeView.height)];
-        view.layer.cornerRadius = 5;
-        view.clipsToBounds = YES;
+        UIView *view = [[UIView alloc]initWithFrame:CGRectMake((width + 10) * i, 0, width, typeView.height)];
         view.tag = 101 + i;
         [typeScrollView addSubview:view];
         
-        UILabel * typeName = [[UILabel alloc]initWithFrame:CGRectMake(12, 19, 42, 21)];
+        UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 61, 61)];
+        btn.tag = 1002 + i;
+        btn.centerX = view.width / 2;
+        [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(changeTypeStatus:) forControlEvents:UIControlEventTouchUpInside];
+        btn.layer.cornerRadius = 30.5;
+        btn.clipsToBounds = YES;
+        btn.layer.borderWidth = 1,0;
+        btn.layer.borderColor = RGB(255, 255, 255).CGColor;
+        [view addSubview:btn];
+        
+        UILabel *typeName = [[UILabel alloc]initWithFrame:CGRectMake(0, btn.bottom + 7, 40, 22)];
+        typeName.tag = 2002 + i;
+        typeName.centerX = view.width / 2;
         typeName.text = templateModel.templateTitle;
         typeName.textColor = RGB(255, 255, 255);
-        typeName.font = FONT_BOLD(20);
+        typeName.font = FONT_SYSTEM(16);
+        typeName.textAlignment = NSTextAlignmentCenter;
         [view addSubview:typeName];
         
-        UIImageView * selectImage = [[UIImageView alloc]initWithFrame:CGRectMake(view.width - 31, 20, 20, 16)];
-        selectImage.image = [UIImage imageWithIcon:@"\U0000e66b" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)];
-        selectImage.tag = 10 + i;
-        [view addSubview:selectImage];
-        
-        UILabel * detailLabel = [[UILabel alloc]initWithFrame:CGRectMake(11, typeName.bottom + 15, view.width - 26, 34)];
-        detailLabel.text = templateModel.templateDescription;
-        detailLabel.font = FONT_SYSTEM(14);
-        detailLabel.textColor = RGBA(255, 255, 255, 0.6);
-        detailLabel.numberOfLines = 2;
-        [view addSubview:detailLabel];
-        
-        UIButton * button = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, view.width, view.height)];
-        button.tag = 300 + i;
-        [button addTarget:self action:@selector(sceneViewClick:) forControlEvents:UIControlEventTouchUpInside];
-        [view addSubview:button];
-        
-        UIButton * seeRush = [[UIButton alloc]initWithFrame:CGRectMake(0, view.height - 30, view.width - 10 * SCALE_WIDTH, 15)];
-        [seeRush setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:12 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
-        [seeRush setTitle:@"观看样片" forState:UIControlStateNormal];
-        [seeRush setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
-        seeRush.titleLabel.font = FONT_SYSTEM(12);
-        seeRush.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
-        seeRush.tag = 400 + i;
-        UIEdgeInsets seeRushedgeInsets = {-10, 0, -10, -3};
-        [seeRush setHitEdgeInsets:seeRushedgeInsets];
-        [seeRush addTarget:self action:@selector(sceneViewClick:) forControlEvents:UIControlEventTouchUpInside];
-        [view addSubview:seeRush];
-        
-        if(i == selectType)
-        {
-            view.backgroundColor = RGB(24, 160, 230);
-            selectImage.hidden = NO;
-        }else
-        {
-            view.backgroundColor = RGBA(0, 0, 0, 0.5);
-            selectImage.hidden = YES;
+        if(i == selectType) {
+            [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 122, 0, 1)] forState:UIControlStateNormal];
+            btn.layer.borderColor = RGB(255, 122, 0).CGColor;
+            typeName.textColor = RGB(255, 122, 0);
         }
     }
 }
 
 #pragma mark === 更改样片选中状态
-- (void)changeTypeStatusWithTag:(NSInteger)num {
+- (void)changeTypeStatus:(UIButton *)sender {
+    
+    NSInteger num = sender.tag - 1002;
     
     if(num == selectType) {
         return;
@@ -2090,16 +2135,20 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.session saveCurrentTemplateWithName:template.templateName];
     
     for(int i = 0; i < typeModelArray.count; i++) {
-        UIView * view = (UIView *)[self.view viewWithTag:101 + i];
-        UIImageView * imageView = (UIImageView *)[self.view viewWithTag:10 + i];
+        UIButton *btn = (UIButton *)[self.view viewWithTag:1002 + i];
+        UILabel * typeName = (UILabel *)[self.view viewWithTag:2002 + i];
         if(num == i)
         {
-            view.backgroundColor = RGB(24, 160, 230);
-            imageView.hidden = NO;
+            [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 122, 0, 1)] forState:UIControlStateNormal];
+            btn.layer.borderColor = RGB(255, 122, 0).CGColor;
+            typeName.textColor = RGB(255, 122, 0);
+            [self.chooseScene setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+            
         }else
         {
-            view.backgroundColor = RGBA(0, 0, 0, 0.5);
-            imageView.hidden = YES;
+            [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+            btn.layer.borderColor = RGB(255, 255, 255).CGColor;
+            typeName.textColor = RGB(255, 255, 255);
         }
     }
     [UIView animateWithDuration:0.5f animations:^{
@@ -2233,10 +2282,30 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.timeNumber.font = FONT_SYSTEM(20);
     self.timeNumber.textAlignment = NSTextAlignmentCenter;
     self.timeNumber.backgroundColor = RGBA(0, 0, 0, 0.3);
-    self.timeNumber.layer.cornerRadius = 27
-    ;
+    self.timeNumber.layer.cornerRadius = 27;
     self.timeNumber.clipsToBounds = YES;
     [_timeView addSubview:self.timeNumber];
+    ////
+    NSString *partTitle = [NSString stringWithFormat:@"第%ld段",part.partNum + 1];
+    NSString *timeTitle = [NSString stringWithFormat:@"%@秒",timeArr[0]];
+    NSString *typeTitle;
+    if (part.recordType == DLYMiniVlogRecordTypeNormal) {
+        typeTitle = @"正常";
+    }else if (part.recordType == DLYMiniVlogRecordTypeSlomo) {
+        typeTitle = @"慢镜头";
+    }else {
+        typeTitle = @"延时";
+    }
+    self.titleView = [[DLYTitleView alloc] initWithPartTitle:partTitle timeTitle:timeTitle typeTitle:typeTitle];
+    if (self.newState == 1) {
+        self.titleView.frame = CGRectMake(SCREEN_WIDTH - 190, 20, 180, 30);
+        self.titleView.transform = CGAffineTransformMakeRotation(0);
+    }else {
+        self.titleView.frame = CGRectMake(SCREEN_WIDTH - 190, SCREEN_HEIGHT - 50, 180, 30);
+        self.titleView.transform = CGAffineTransformMakeRotation(M_PI);
+    }
+    [self.shootView addSubview:self.titleView];
+    
     
     _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:_shootTimer forMode:NSRunLoopCommonModes];
