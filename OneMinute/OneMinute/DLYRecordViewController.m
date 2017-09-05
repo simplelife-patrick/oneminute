@@ -1435,7 +1435,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //取消拍摄按键
 - (void)onClickCancelClick:(UIButton *)sender {
     [MobClick event:@"CancelRecord"];
-    [self.AVEngine stopRecording];
+    [self.AVEngine cancelRecording];
     
     NSInteger partNum = selectPartTag - 10000 - 1;
     [self.resource removePartWithPartNum:partNum];
