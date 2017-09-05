@@ -6,7 +6,7 @@
     {
       "partNum": 0,
       "startTime": "00:00:00",
-      "stopTime": "00:02:00",
+      "stopTime": "00:02:30",
       "dubStartTime": "00:00:00",
       "dubStopTime": "00:08:01",
       "recordType": 1,
@@ -15,13 +15,13 @@
     },
     {
       "partNum": 1,
-      "startTime": "00:09:00",
-      "stopTime": "00:18:00",
+      "startTime": "00:02:30",
+      "stopTime": "00:11:00",
       "dubStartTime": "00:08:01",
       "dubStopTime": "00:16:19",
       "recordType": 2,
       "soundType": 0,
-      "transitionType": 2
+      "transitionType": 1
     },
     {
       "partNum": 2,
@@ -31,7 +31,7 @@
       "dubStopTime": "00:27:11",
       "recordType": 0,
       "soundType": 1,
-      "transitionType": 3
+      "transitionType": 1
     },
     {
       "partNum": 3,
@@ -41,7 +41,7 @@
       "dubStopTime": "00:32:11",
       "recordType": 2,
       "soundType": 0,
-      "transitionType": 4
+      "transitionType": 1
     },
     {
       "partNum": 4,
@@ -51,7 +51,7 @@
       "dubStopTime": "00:47:06",
       "recordType": 0,
       "soundType": 1,
-      "transitionType": 5
+      "transitionType": 1
     },
     {
       "partNum": 5,

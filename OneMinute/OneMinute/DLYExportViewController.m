@@ -10,6 +10,7 @@
 #import "DLYAnnularProgress.h"
 #import "ViewController.h"
 #import "DLYRecordViewController.h"
+#import "DLYResource.h"
 
 @interface DLYExportViewController (){
     
@@ -103,6 +104,8 @@
 
 - (void)onClickComplete {
 
+    DLYResource *resource = [[DLYResource alloc] init];
+    [resource removeCurrentAllPartFromDocument];
     NSArray *arr = self.navigationController.viewControllers;
     DLYRecordViewController *recoedVC = arr[0];
     recoedVC.isExport = YES;

@@ -161,8 +161,7 @@
     
     //跳过的时候，调用合成接口
     self.index = 0;
-    NSString *cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *plistPath = [cachePath stringByAppendingPathComponent:@"moviePaths.plist"];
+    NSString *plistPath = [kPathDocument stringByAppendingPathComponent:@"moviePaths.plist"];
     
     //newsTest.plist文件
     NSMutableArray *dataArray = [[NSMutableArray alloc] initWithContentsOfFile:plistPath];
@@ -179,6 +178,9 @@
         index++;
     }
     _moviePathArray = moviePathArray;
+    
+    //获取开始时刻统计合成耗时
+    self.AVEngine.startOperation = [self.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
     [self setVideoRate];
 }
 - (void)setVideoRate{
@@ -188,18 +190,16 @@
         if (weakSelf.index == [_moviePathArray count]) {
             DLYLog(@"全部片段完成调速");
             [weakSelf.resource removeCurrentAllPartFromCache];
-//            [weakSelf.AVEngine addVideoHeadertWithTitle:weakSelf.titleField.text SuccessBlock:^{
-//                
-//            } failure:^(NSError *error) {
-//                
-//            }];
-//            [weakSelf.AVEngine addTransitionEffectWithTitle:weakSelf.titleField.text SuccessBlock:^{
-//                
-//            } failure:^(NSError *error) {
-//                
-//            }];
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            
+            NSString *plistPath = [kPathDocument stringByAppendingFormat:@"/moviePaths.plist"];
+            
+            BOOL isSuccess = [fileManager removeItemAtPath:plistPath error:nil];
+            DLYLog(@"%@",isSuccess ? @"成功删除保存片段信息的plist文件":@"保存片段信息的plist文件删除失败");
+            
             [weakSelf.AVEngine mergeVideoWithVideoTitle:weakSelf.titleField.text SuccessBlock:^{
-                
+                weakSelf.AVEngine.finishOperation = [weakSelf.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
+                NSLog(@"🥇🥇🥇⚡️⚡️⚡️成片耗时: %lld s",(weakSelf.AVEngine.finishOperation - weakSelf.AVEngine.startOperation)/1000);
             } failure:^(NSError *error) {
                 
             }];
@@ -353,7 +353,6 @@
 
 - (void)onClickNext {
     NSLog(@"成片预览结束");
-    [self.resource removeCurrentAllPartFromDocument];
     //跳转下一步填写标题
     [self pause];
     DLYExportViewController *exportVC = [[DLYExportViewController alloc] init];
@@ -790,7 +789,7 @@
     }
     
     NSString *lang = [[textField textInputMode] primaryLanguage]; // 获取当前键盘输入模式
-    NSLog(@"%@",lang);
+//    NSLog(@"%@",lang);
     if([lang isEqualToString:@"zh-Hans"]) { //简体中文输入,第三方输入法（搜狗）所有模式下都会显示“zh-Hans”
         UITextRange *selectedRange = [textField markedTextRange];
         //获取高亮部分
