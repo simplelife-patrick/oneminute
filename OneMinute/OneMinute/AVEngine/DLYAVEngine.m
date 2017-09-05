@@ -345,8 +345,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         av_register_all();
         
         //创建存储moviePaths的plist文件
-        NSString *cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        NSString *plistPath = [cachePath stringByAppendingPathComponent:@"moviePaths.plist"];
+        NSString *plistPath = [kPathDocument stringByAppendingPathComponent:@"moviePaths.plist"];
         
         _plistPath = plistPath;
         

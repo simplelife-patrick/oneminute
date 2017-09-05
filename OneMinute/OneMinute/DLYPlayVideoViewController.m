@@ -161,8 +161,7 @@
     
     //跳过的时候，调用合成接口
     self.index = 0;
-    NSString *cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *plistPath = [cachePath stringByAppendingPathComponent:@"moviePaths.plist"];
+    NSString *plistPath = [kPathDocument stringByAppendingPathComponent:@"moviePaths.plist"];
     
     //newsTest.plist文件
     NSMutableArray *dataArray = [[NSMutableArray alloc] initWithContentsOfFile:plistPath];
@@ -193,15 +192,14 @@
             [weakSelf.resource removeCurrentAllPartFromCache];
             NSFileManager *fileManager = [NSFileManager defaultManager];
             
-            NSString *cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-            NSString *plistPath = [cachePath stringByAppendingFormat:@"/moviePaths.plist"];
+            NSString *plistPath = [kPathDocument stringByAppendingFormat:@"/moviePaths.plist"];
             
             BOOL isSuccess = [fileManager removeItemAtPath:plistPath error:nil];
             DLYLog(@"%@",isSuccess ? @"成功删除保存片段信息的plist文件":@"保存片段信息的plist文件删除失败");
             
             [weakSelf.AVEngine mergeVideoWithVideoTitle:weakSelf.titleField.text SuccessBlock:^{
                 weakSelf.AVEngine.finishOperation = [weakSelf.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
-                NSLog(@"🥇🥇🥇⚡️⚡️⚡️成片耗时: %.3lld s",(weakSelf.AVEngine.finishOperation - weakSelf.AVEngine.startOperation)/1000);
+                NSLog(@"🥇🥇🥇⚡️⚡️⚡️成片耗时: %lld s",(weakSelf.AVEngine.finishOperation - weakSelf.AVEngine.startOperation)/1000);
             } failure:^(NSError *error) {
                 
             }];
@@ -355,7 +353,6 @@
 
 - (void)onClickNext {
     NSLog(@"成片预览结束");
-    [self.resource removeCurrentAllPartFromDocument];
     //跳转下一步填写标题
     [self pause];
     DLYExportViewController *exportVC = [[DLYExportViewController alloc] init];
