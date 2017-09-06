@@ -97,7 +97,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 @property (nonatomic, strong) NSString                         *plistPath;
 @property (nonatomic, strong) DLYMiniVlogPart                  *currentPart;
 @property (nonatomic, assign) DLYPhoneDeviceType               currentPhoneModel;
-@property (nonatomic, strong) NSMutableArray                   *moviePathsArray;
 
 @end
 
@@ -631,20 +630,24 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         [self cameraBackgroundDidClickCloseSlow];
     }
     
-    NSString *outputPath = [self.resource getSaveDraftPartWithPartNum:part.partNum];
+    NSString *outputPath = [self.resource getSaveDraftPartWithPartNum:_currentPart.partNum];
     if (outputPath) {
         _currentPart.partPath = outputPath;
         DLYLog(@"第 %lu 个片段的地址 :%@",_currentPart.partNum + 1,_currentPart.partPath);
     }else{
         DLYLog(@"片段地址获取为空");
     }
-    
     [self.captureMovieFileOutput startRecordingToOutputFileURL:[NSURL fileURLWithPath:_currentPart.partPath] recordingDelegate:self];
+}
+#pragma mark - 停止录制 -
+- (void)stopRecording {
     
+    [self.captureMovieFileOutput stopRecording];
+
     NSMutableDictionary *addData = [NSMutableDictionary dictionary];
-    [addData setObject:outputPath forKey:[NSString stringWithFormat:@"part%luPath",part.partNum]];
-    [addData setObject:@(part.recordType) forKey:@"recordType"];
-    [addData setObject:@(part.partNum) forKey:@"partNum"];
+    [addData setObject:_currentPart.partPath forKey:[NSString stringWithFormat:@"part%luPath",_currentPart.partNum]];
+    [addData setObject:@(_currentPart.recordType) forKey:@"recordType"];
+    [addData setObject:@(_currentPart.partNum) forKey:@"partNum"];
     
     NSInteger partCount = [self.session.currentTemplate.parts count];
     if (partCount != 0 && [self.moviePathsArray count] >= partCount) {
@@ -653,13 +656,8 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }else{
         [self.moviePathsArray addObject:addData];
     }
-
-    [self.moviePathsArray writeToFile:_plistPath atomically:YES];
-}
-#pragma mark - 停止录制 -
-- (void)stopRecording {
     
-    [self.captureMovieFileOutput stopRecording];
+    [self.moviePathsArray writeToFile:_plistPath atomically:YES];
     
     if (self.isCapturing) {
         self.isPaused = YES;
@@ -668,9 +666,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 }
 #pragma mark - 取消录制 -
 - (void)cancelRecording{
+    
     [self.captureMovieFileOutput stopRecording];
-    [self.moviePathsArray removeLastObject];
-    [self.moviePathsArray writeToFile:_plistPath atomically:YES];
+//    [self.moviePathsArray removeLastObject];
+//    [self.moviePathsArray writeToFile:_plistPath atomically:YES];
     
     if (self.isCapturing) {
         self.isPaused = YES;

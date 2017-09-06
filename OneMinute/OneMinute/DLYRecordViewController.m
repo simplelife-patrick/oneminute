@@ -2108,6 +2108,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }else {
         __weak typeof(self) weakSelf = self;
         self.alert = [[DLYAlertView alloc] initWithMessage:@"切换模板后已经拍摄的视频会清空，确定吗?" andCancelButton:@"取消" andSureButton:@"确定"];
+        
         if (self.newState == 1) {
             self.alert.transform = CGAffineTransformMakeRotation(0);
         }else {
@@ -2115,6 +2116,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         self.alert.sureButtonAction = ^{
             //数组初始化，view布局 弹出选择
+            [weakSelf.AVEngine.moviePathsArray removeAllObjects];
+            
+            NSString *plistPath = [kPathDocument stringByAppendingFormat:@"/moviePaths.plist"];
+            [weakSelf.AVEngine.moviePathsArray writeToFile:plistPath atomically:YES];
+            DLYLog(@"⚠️⚠️⚠️当前已经有% lu个片段",weakSelf.AVEngine.moviePathsArray.count);
             [weakSelf.resource removeCurrentAllPartFromCache];
             [weakSelf changeSceneWithSelectNum:num];
             [weakSelf initData];
