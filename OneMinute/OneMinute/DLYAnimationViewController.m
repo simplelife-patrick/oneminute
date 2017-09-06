@@ -12,10 +12,12 @@
 #import "DLYBaseNavigationController.h"
 #import "AppDelegate.h"
 
-@interface DLYAnimationViewController ()
+@interface DLYAnimationViewController (){
+    //上一个
+    NSInteger oldTag;
+}
 
 @property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) UIView *flashView;
 @property (nonatomic, strong) NSTimer *flashTimer;
 @property (nonatomic, assign) NSInteger num;
 
@@ -35,27 +37,51 @@
     self.imageView.image = [UIImage imageNamed:@"animation"];
     [self.view addSubview:self.imageView];
     
-    self.flashView = [[UIView alloc] initWithFrame:CGRectMake(227 * SCALE_WIDTH, 164 * SCALE_HEIGHT, 30 * SCALE_WIDTH, 4 * SCALE_HEIGHT)];
-    self.flashView.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:self.flashView];
-    
-    self.flashTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(flashAnimation) userInfo:nil repeats:YES];
+    for (int i = 0; i < 6; i++) {
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(227 * SCALE_WIDTH + (35 * SCALE_WIDTH) * i, 164 * SCALE_HEIGHT, 30 * SCALE_WIDTH, 4 * SCALE_HEIGHT)];
+        view.tag = 10000 + i;
+        view.backgroundColor = RGB(238, 111, 45);
+        if (i == 0) {
+            view.alpha = 1;
+            oldTag = 10000;
+        }else {
+            view.alpha = 0;
+        }
+        [self.view addSubview:view];
+    }
+    self.flashTimer = [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(flashAnimation) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.flashTimer forMode:NSRunLoopCommonModes];
     self.num = 0;
-    
 }
 
 - (void)flashAnimation {
     
     self.num ++;
     if (self.num >= 18) {
-        self.flashView.hidden = YES;
+        UIView *oldView = (UIView *)[self.view viewWithTag:oldTag];
+        oldView.alpha = 0;
         [self.flashTimer invalidate];
         self.flashTimer = nil;
-        [self enterNextViewController];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self enterNextViewController];
+        });
     }else {
         int i = self.num % 6;
-        self.flashView.frame = CGRectMake(227 * SCALE_WIDTH + (35 * SCALE_WIDTH) * i, 164 * SCALE_HEIGHT, 30 * SCALE_WIDTH, 4 * SCALE_HEIGHT);
+        
+        UIView *view = (UIView *)[self.view viewWithTag:10000 + i];
+        view.alpha = 1;
+        
+        if (self.num == 15) {
+            UIView *view = (UIView *)[self.view viewWithTag:10002];
+            view.alpha = 1;
+        }else if (self.num == 16){
+            UIView *view = (UIView *)[self.view viewWithTag:10003];
+            view.alpha = 1;
+        }else {
+            UIView *oldView = (UIView *)[self.view viewWithTag:oldTag];
+            oldView.alpha = 0;
+        }
+        oldTag = 10000 + i;
         
         if (self.newState == 1) {
             NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
