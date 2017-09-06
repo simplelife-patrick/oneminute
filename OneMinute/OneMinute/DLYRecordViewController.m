@@ -32,6 +32,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSInteger prepareAlpha;
     //记录闪烁的tag
     NSInteger prepareTag;
+    //记录上次闪烁的tag
+    NSInteger oldPrepareTag;
     //选择的片段
     NSInteger selectPartTag;
     //将要更换最新片段
@@ -1712,6 +1714,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 //光标
                 button.backgroundColor = RGB(168, 175, 180);
                 prepareTag = button.tag;
+                oldPrepareTag = prepareTag;
                 prepareAlpha = 1;
                 [_prepareShootTimer setFireDate:[NSDate distantPast]];
                 
@@ -1783,6 +1786,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (isAllPart) {
         //光标
         prepareTag = 10001;
+        oldPrepareTag = prepareTag;
         prepareAlpha = 1;
         [_prepareShootTimer setFireDate:[NSDate distantPast]];
     }
@@ -1887,6 +1891,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 //光标
                 button.backgroundColor = RGB(168, 175, 180);
                 prepareTag = button.tag;
+                oldPrepareTag = prepareTag;
                 prepareAlpha = 1;
                 [_prepareShootTimer setFireDate:[NSDate distantPast]];
                 //拍摄说明视图
@@ -1959,6 +1964,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (isAllPart) {
         //光标
         prepareTag = 10001;
+        oldPrepareTag = prepareTag;
         prepareAlpha = 1;
         [_prepareShootTimer setFireDate:[NSDate distantPast]];
     }
@@ -1966,6 +1972,19 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 - (void)prepareShootAction {
     
+    if (oldPrepareTag != prepareTag) {
+        DLYMiniVlogPart *part = partModelArray[oldPrepareTag - 10001];
+        if([part.recordStatus isEqualToString:@"1"]){
+            UIButton *button = (UIButton *)[self.view viewWithTag:oldPrepareTag];
+            button.backgroundColor = RGB(255, 0, 0);
+            button.alpha = 1;
+        }else {
+            UIButton *button = (UIButton *)[self.view viewWithTag:oldPrepareTag];
+            button.backgroundColor = RGBA_HEX(0xc9c9c9, 0.1);
+            button.alpha = 1;
+        }
+    }
+    oldPrepareTag = prepareTag;
     [UIView animateWithDuration:0.1f animations:^{
         if(prepareAlpha == 1)
         {
