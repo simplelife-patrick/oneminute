@@ -435,7 +435,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             }
             
             _defaultFormat = device.activeFormat;
-            DLYLog(@"当前选择的Capture");
+            DLYLog(@"当前选择的device.activeFormat :",_defaultFormat);
             _defaultMinFrameDuration = device.activeVideoMinFrameDuration;
             _defaultMaxFrameDuration = device.activeVideoMaxFrameDuration;
             
@@ -1054,7 +1054,7 @@ BOOL isOnce = YES;
     AVAssetExportSession *exporter = [self makeExportableWithAsset:mixComposition outputUrl:outputUrl videoComposition:nil andAudioMax:nil];
     
     [exporter exportAsynchronouslyWithCompletionHandler:^{
-        DLYLog(@"全部片段merge成功");
+        DLYLog(@"⛳️⛳️⛳️全部片段merge成功");
         DLYMiniVlogTemplate *template = self.session.currentTemplate;
         
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@".m4a"];
@@ -1724,7 +1724,7 @@ BOOL isOnce = YES;
                 ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
                 [assetLibrary saveVideo:outPutUrl toAlbum:@"OneMinute" completionBlock:^(NSURL *assetURL, NSError *error) {
                     
-                    DLYLog(@"配音完成后保存在手机相册");
+                    DLYLog(@"⛳️⛳️⛳️配音完成后保存在手机相册");
                 } failureBlock:^(NSError *error) {
                     
                 }];
