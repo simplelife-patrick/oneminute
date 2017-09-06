@@ -42,7 +42,7 @@ typedef void(^setVideoSpeedBlock)();
 
 @property (nonatomic, assign) CGFloat                                                 effectiveScale;
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *backCameraInput;
-@property (nonatomic, strong) AVCaptureDeviceInput                                    *currentVideoDeviceInput;
+@property (nonatomic, strong) AVCaptureDeviceInput                                    *captureDeviceInput;
 @property (nonatomic, strong) AVCaptureDevice                                         *videoDevice;
 @property (nonatomic, strong) AVCaptureMovieFileOutput                                *captureMovieFileOutput;
 
@@ -59,6 +59,7 @@ typedef void(^setVideoSpeedBlock)();
 //@property (nonatomic, strong) NSMutableArray<DLYMiniVlogPart *>   *moviePaths;  // 录制的原始视频数组
 @property (nonatomic, strong) NSMutableArray<NSString *>       *processedVideoPaths; // 处理播放速度后的视频数组
 @property (nonatomic, copy) setVideoSpeedBlock                 setVideoSpeedBlock; // 视频速度处理完成回调
+@property (nonatomic, strong) NSMutableArray                   *moviePathsArray;
 
 
 - (void) restartRecording;

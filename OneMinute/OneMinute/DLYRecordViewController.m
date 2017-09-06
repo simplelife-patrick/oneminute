@@ -2168,7 +2168,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //确定切换模板
 - (void)onSureClickChangeTypeStatus {
     
+    [self.AVEngine.moviePathsArray removeAllObjects];
+    
+    NSString *plistPath = [kPathDocument stringByAppendingFormat:@"/moviePaths.plist"];
+    [self.AVEngine.moviePathsArray writeToFile:plistPath atomically:YES];
+    DLYLog(@"⚠️⚠️⚠️当前已经有% lu个片段",self.AVEngine.moviePathsArray.count);
     [self.resource removeCurrentAllPartFromCache];
+    
     [self changeSceneWithSelectNum:selectNewPartTag];
     [self initData];
     [self createPartViewLayout];
@@ -2213,6 +2219,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self initData];
         [self createPartViewLayout];
     }else {
+        
         selectNewPartTag = num;
         self.typeView.hidden = YES;
         self.seeRush.hidden = YES;

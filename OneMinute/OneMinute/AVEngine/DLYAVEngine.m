@@ -28,10 +28,7 @@
 
 @interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate>
 {
-    BOOL readyToRecordAudio;
-    BOOL readyToRecordVideo;
     AVCaptureVideoOrientation videoOrientation;
-    AVCaptureVideoOrientation referenceOrientation;
     dispatch_queue_t movieWritingQueue;
     CMBufferQueueRef previewBufferQueue;
     
@@ -51,7 +48,6 @@
     CMTime _timeOffset;//录制的偏移CMTime
     CMTime _lastVideo;//记录上一次视频数据文件的CMTime
     CMTime _lastAudio;//记录上一次音频数据文件的CMTime
-
 }
 
 @property (nonatomic, strong) AVCaptureAudioDataOutput          *audioOutput;
@@ -97,7 +93,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 @property (nonatomic, strong) NSString                         *plistPath;
 @property (nonatomic, strong) DLYMiniVlogPart                  *currentPart;
 @property (nonatomic, assign) DLYPhoneDeviceType               currentPhoneModel;
-@property (nonatomic, strong) NSMutableArray                   *moviePathsArray;
 
 @end
 
@@ -184,14 +179,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 - (AVCaptureDeviceInput *)backCameraInput {
     if (_backCameraInput == nil) {
         NSError *error;
-        AVCaptureDevice *videoCaptureDevice = [self backCamera];
         
-        _defaultFormat = videoCaptureDevice.activeFormat;
-        _defaultMinFrameDuration = videoCaptureDevice.activeVideoMinFrameDuration;
-        _defaultMaxFrameDuration = videoCaptureDevice.activeVideoMaxFrameDuration;
-        
-        _backCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:videoCaptureDevice error:&error];
-        _currentVideoDeviceInput = self.backCameraInput;
+        _backCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self backCamera] error:&error];
         
         AVCaptureDevice *device = _backCameraInput.device;
         if (device.isSmoothAutoFocusSupported) {
@@ -228,13 +217,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 - (AVCaptureDeviceInput *)frontCameraInput {
     if (_frontCameraInput == nil) {
         NSError *error;
-        AVCaptureDevice *videoCaptureDevice = [self frontCamera];
         
-        _defaultFormat = videoCaptureDevice.activeFormat;
-        _defaultMinFrameDuration = videoCaptureDevice.activeVideoMinFrameDuration;
-        _defaultMaxFrameDuration = videoCaptureDevice.activeVideoMaxFrameDuration;
-        
-        _frontCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:videoCaptureDevice error:&error];
+        _frontCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self frontCamera] error:&error];
         AVCaptureDevice *device = _frontCameraInput.device;
         
         if (device.isSmoothAutoFocusSupported) {
@@ -362,8 +346,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         
         self.effectiveScale = 1.0;
         
-        referenceOrientation = (AVCaptureVideoOrientation)UIDeviceOrientationPortrait;
-        
         if (previewView) {
             self.previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.captureSession];
             self.previewLayer.orientation = UIDeviceOrientationLandscapeLeft;
@@ -374,7 +356,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         }
         
         // 判断当前视频设备是否支持光学防抖
-        if ([self.currentVideoDeviceInput.device.activeFormat isVideoStabilizationModeSupported:AVCaptureVideoStabilizationModeCinematic]) {
+        if ([_captureDeviceInput.device.activeFormat isVideoStabilizationModeSupported:AVCaptureVideoStabilizationModeCinematic]) {
             // 如果支持防抖就打开防抖模式
             self.videoConnection.preferredVideoStabilizationMode = AVCaptureVideoStabilizationModeCinematic;
         }
@@ -386,7 +368,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         }
         //视频录制队列
         movieWritingQueue = dispatch_queue_create("moviewriting", DISPATCH_QUEUE_SERIAL);
-//        videoOrientation = [self.videoConnection videoOrientation];
         
         // BufferQueue
         OSStatus err = CMBufferQueueCreate(kCFAllocatorDefault, 1, CMBufferQueueGetCallbacksForUnsortedSampleBuffers(), &previewBufferQueue);
@@ -402,6 +383,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 #pragma mark - 切换摄像头 -
 - (void)changeCameraInputDeviceisFront:(BOOL)isFront {
     
+    NSLog(@"切换摄像头 <<<前>>> 的录制方向 :%ld",(long)self.videoConnection.videoOrientation);
     if (isFront) {
         
         [self.captureSession beginConfiguration];
@@ -410,7 +392,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.frontCameraInput];//切换成了前置
-             self.currentVideoDeviceInput = self.frontCameraInput;
+            self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         }
     }else {
         
@@ -419,11 +401,11 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([self.captureSession canAddInput:self.backCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.backCameraInput];//切换成了后置
-            self.currentVideoDeviceInput = self.backCameraInput;
+            self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         }
     }
-    self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
     [self.captureSession commitConfiguration];
+    NSLog(@"切换摄像头 <<<后>>> 的录制方向 :%ld",(long)self.videoConnection.videoOrientation);
 }
 
 //返回前置摄像头
@@ -443,6 +425,21 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     for (AVCaptureDevice *device in devices) {
         if ([device position] == position) {
+            
+            AVCaptureDevice *videoCaptureDevice = device;
+            
+            // 获取视频输入流
+            NSError *error = nil;
+            _captureDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:videoCaptureDevice error:&error];
+            if (error) {
+                // Handle the error appropriately.
+                DLYLog(@"To Gain CaptureDevice Intput failed !");
+            }
+            
+            _defaultFormat = device.activeFormat;
+            DLYLog(@"当前选择的device.activeFormat :",_defaultFormat);
+            _defaultMinFrameDuration = device.activeVideoMinFrameDuration;
+            _defaultMaxFrameDuration = device.activeVideoMaxFrameDuration;
             
             return device;
         }
@@ -497,9 +494,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
 - (void)focusOnceWithPoint:(CGPoint)point{
     
-    AVCaptureDevice *captureDevice = _currentVideoDeviceInput.device;
+    AVCaptureDevice *captureDevice = _captureDeviceInput.device;
     
-    if ([_currentVideoDeviceInput.device lockForConfiguration:nil]) {
+    if ([captureDevice lockForConfiguration:nil]) {
         
         // 设置对焦
         if ([captureDevice isFocusModeSupported:AVCaptureFocusModeLocked]) {
@@ -521,16 +518,16 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         if ([captureDevice isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeLocked]) {
             [captureDevice setWhiteBalanceMode:AVCaptureWhiteBalanceModeLocked];
         }
-        [_currentVideoDeviceInput.device unlockForConfiguration];
+        [captureDevice unlockForConfiguration];
     }
 }
 
 -(void)focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point{
     
-    AVCaptureDevice *captureDevice = _currentVideoDeviceInput.device;
+    AVCaptureDevice *captureDevice = _captureDeviceInput.device;
     CGPoint currentPoint = CGPointZero;
     
-    if ([_currentVideoDeviceInput.device lockForConfiguration:nil]) {
+    if ([captureDevice lockForConfiguration:nil]) {
         
         //        CGFloat distance = distanceBetweenPoints(currentPoint, point);
         // 设置对焦
@@ -553,7 +550,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         if ([captureDevice isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeAutoWhiteBalance]) {
             [captureDevice setWhiteBalanceMode:AVCaptureWhiteBalanceModeAutoWhiteBalance];
         }
-        [_currentVideoDeviceInput.device unlockForConfiguration];
+        [captureDevice unlockForConfiguration];
         currentPoint = point;
         NSLog(@"Current point of the capture device is :x = %f,y = %f",currentPoint.x,currentPoint.y);
     }
@@ -568,7 +565,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
 -(void)changeDeviceProperty:(void(^)(AVCaptureDevice *captureDevice))propertyChange{
     
-    AVCaptureDevice *captureDevice= [self.currentVideoDeviceInput device];
+    AVCaptureDevice *captureDevice= [_captureDeviceInput device];
     NSError *error;
     
     if ([captureDevice lockForConfiguration:&error]) {
@@ -591,13 +588,13 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         [self.captureSession beginConfiguration];
     }
     
-    [_currentVideoDeviceInput.device lockForConfiguration:nil];
+    [_captureDeviceInput.device lockForConfiguration:nil];
     
-    _currentVideoDeviceInput.device.activeFormat = self.defaultFormat;
-    _currentVideoDeviceInput.device.activeVideoMaxFrameDuration = _defaultMaxFrameDuration;
-    _currentVideoDeviceInput.device.activeVideoMinFrameDuration = _defaultMinFrameDuration;
+    _captureDeviceInput.device.activeFormat = self.defaultFormat;
+    _captureDeviceInput.device.activeVideoMaxFrameDuration = _defaultMaxFrameDuration;
+    _captureDeviceInput.device.activeVideoMinFrameDuration = _defaultMinFrameDuration;
     
-    [_currentVideoDeviceInput.device  unlockForConfiguration];
+    [_captureDeviceInput.device  unlockForConfiguration];
     
     if (isRunning) {
         [self.captureSession commitConfiguration];
@@ -606,17 +603,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
 #pragma mark - 开始录制 -
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
-    
     _currentPart = part;
     if (!self.isCapturing) {
         self.isPaused = NO;
         self.isCapturing = YES;
-    }
-    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-    
-    // Don't update the reference orientation when the device orientation is face up/down or unknown.
-    if (UIDeviceOrientationIsLandscape(orientation)) {
-        referenceOrientation = (AVCaptureVideoOrientation)orientation;
     }
     
     if (part.recordType == DLYMiniVlogRecordTypeSlomo) {
@@ -631,20 +621,25 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         [self cameraBackgroundDidClickCloseSlow];
     }
     
-    NSString *outputPath = [self.resource getSaveDraftPartWithPartNum:part.partNum];
+    NSString *outputPath = [self.resource getSaveDraftPartWithPartNum:_currentPart.partNum];
     if (outputPath) {
         _currentPart.partPath = outputPath;
         DLYLog(@"第 %lu 个片段的地址 :%@",_currentPart.partNum + 1,_currentPart.partPath);
     }else{
         DLYLog(@"片段地址获取为空");
     }
-    
     [self.captureMovieFileOutput startRecordingToOutputFileURL:[NSURL fileURLWithPath:_currentPart.partPath] recordingDelegate:self];
+}
+
+#pragma mark - 停止录制 -
+- (void)stopRecording {
     
+    [self.captureMovieFileOutput stopRecording];
+
     NSMutableDictionary *addData = [NSMutableDictionary dictionary];
-    [addData setObject:outputPath forKey:[NSString stringWithFormat:@"part%luPath",part.partNum]];
-    [addData setObject:@(part.recordType) forKey:@"recordType"];
-    [addData setObject:@(part.partNum) forKey:@"partNum"];
+    [addData setObject:_currentPart.partPath forKey:[NSString stringWithFormat:@"part%luPath",_currentPart.partNum]];
+    [addData setObject:@(_currentPart.recordType) forKey:@"recordType"];
+    [addData setObject:@(_currentPart.partNum) forKey:@"partNum"];
     
     NSInteger partCount = [self.session.currentTemplate.parts count];
     if (partCount != 0 && [self.moviePathsArray count] >= partCount) {
@@ -653,13 +648,8 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }else{
         [self.moviePathsArray addObject:addData];
     }
-
-    [self.moviePathsArray writeToFile:_plistPath atomically:YES];
-}
-#pragma mark - 停止录制 -
-- (void)stopRecording {
     
-    [self.captureMovieFileOutput stopRecording];
+    [self.moviePathsArray writeToFile:_plistPath atomically:YES];
     
     if (self.isCapturing) {
         self.isPaused = YES;
@@ -669,8 +659,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 #pragma mark - 取消录制 -
 - (void)cancelRecording{
     [self.captureMovieFileOutput stopRecording];
-    [self.moviePathsArray removeLastObject];
-    [self.moviePathsArray writeToFile:_plistPath atomically:YES];
     
     if (self.isCapturing) {
         self.isPaused = YES;
@@ -688,12 +676,12 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 - (void)cameraBackgroundDidClickOpenSlow {
 
     [self.captureSession stopRunning];
-    CGFloat desiredFPS = 120.0;
-    AVCaptureDevice *videoDevice = _currentVideoDeviceInput.device;
+    CGFloat desiredFPS = 240.0;
+    NSLog(@"当前设置的录制帧率是: %f",desiredFPS);
     AVCaptureDeviceFormat *selectedFormat = nil;
     int32_t maxWidth = 0;
     AVFrameRateRange *frameRateRange = nil;
-    for (AVCaptureDeviceFormat *format in [videoDevice formats]) {
+    for (AVCaptureDeviceFormat *format in [_captureDeviceInput.device formats]) {
         for (AVFrameRateRange *range in format.videoSupportedFrameRateRanges) {
             CMFormatDescriptionRef desc = format.formatDescription;
             CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(desc);
@@ -706,12 +694,12 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }
     }
     if (selectedFormat) {
-        if ([videoDevice lockForConfiguration:nil]) {
+        if ([_captureDeviceInput.device lockForConfiguration:nil]) {
             NSLog(@"selected format: %@", selectedFormat);
-            videoDevice.activeFormat = selectedFormat;
-            videoDevice.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
-            videoDevice.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
-            [videoDevice unlockForConfiguration];
+            _captureDeviceInput.device.activeFormat = selectedFormat;
+            _captureDeviceInput.device.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+            _captureDeviceInput.device.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+            [_captureDeviceInput.device unlockForConfiguration];
         }
     }
     [self.captureSession startRunning];
@@ -720,12 +708,12 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 - (void)cameraBackgroundDidClickCloseSlow {
     
     [self.captureSession stopRunning];
-    CGFloat desiredFPS = 60.0;
-    AVCaptureDevice *videoDevice = _currentVideoDeviceInput.device;
+    CGFloat desiredFPS = 60.0f;
+    NSLog(@"当前设置的录制帧率是: %f",desiredFPS);
     AVCaptureDeviceFormat *selectedFormat = nil;
     int32_t maxWidth = 0;
     AVFrameRateRange *frameRateRange = nil;
-    for (AVCaptureDeviceFormat *format in [videoDevice formats]) {
+    for (AVCaptureDeviceFormat *format in [_captureDeviceInput.device formats]) {
         for (AVFrameRateRange *range in format.videoSupportedFrameRateRanges) {
             CMFormatDescriptionRef desc = format.formatDescription;
             CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(desc);
@@ -738,12 +726,16 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }
     }
     if (selectedFormat) {
-        if ([videoDevice lockForConfiguration:nil]) {
-            NSLog(@"selected format: %@", selectedFormat);
-            videoDevice.activeFormat = _defaultFormat;
-            videoDevice.activeVideoMinFrameDuration = _defaultMinFrameDuration;
-            videoDevice.activeVideoMaxFrameDuration = _defaultMaxFrameDuration;
-            [videoDevice unlockForConfiguration];
+        if ([_captureDeviceInput.device lockForConfiguration:nil]) {
+            
+//            _captureDeviceInput.device.activeFormat = _defaultFormat;
+//            _captureDeviceInput.device.activeVideoMinFrameDuration = _defaultMinFrameDuration;
+//            _captureDeviceInput.device.activeVideoMaxFrameDuration = _defaultMaxFrameDuration;
+//            [_captureDeviceInput.device unlockForConfiguration];
+            _captureDeviceInput.device.activeFormat = selectedFormat;
+            _captureDeviceInput.device.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+            _captureDeviceInput.device.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+            [_captureDeviceInput.device unlockForConfiguration];
         }
     }
     [self.captureSession startRunning];
@@ -927,7 +919,7 @@ BOOL isOnce = YES;
 
 // 处理速度视频
 - (void)setSpeedWithVideo:(DLYMiniVlogPart *)part completed:(void(^)())completed {
-    NSLog(@"处理视频速度>>>>>>>>>>>>>>>>>>>>");
+    NSLog(@"处理视频速度🚀🚀🚀🚀🚀🚀🚀🚀🚀");
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         NSLog(@"video set thread: %@", [NSThread currentThread]);
         // 获取视频
@@ -950,11 +942,13 @@ BOOL isOnce = YES;
             [compositionAudioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeAudio] firstObject] atTime:kCMTimeZero error:nil];
             
             // 适配视频速度比率
-            CGFloat scale = 1.0;
+            CGFloat scale = 0;
             if(part.recordType == DLYMiniVlogRecordTypeTimelapse){
-                scale = 0.2f;  // 快速 x5
+                scale = 0.4f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(地震率)
             } else if (part.recordType == DLYMiniVlogRecordTypeSlomo) {
-                scale = 4.0f;  // 慢速 x4
+                scale = 4.0f;  // 慢速 x4   播放时间拉长帧率平均(高帧率)
+            }else{
+                scale = 1.0f;
             }
             
             // 根据速度比率调节音频和视频
@@ -1064,7 +1058,7 @@ BOOL isOnce = YES;
     AVAssetExportSession *exporter = [self makeExportableWithAsset:mixComposition outputUrl:outputUrl videoComposition:nil andAudioMax:nil];
     
     [exporter exportAsynchronouslyWithCompletionHandler:^{
-        DLYLog(@"全部片段merge成功");
+        DLYLog(@"⛳️⛳️⛳️全部片段merge成功");
         DLYMiniVlogTemplate *template = self.session.currentTemplate;
         
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@".m4a"];
@@ -1734,7 +1728,7 @@ BOOL isOnce = YES;
                 ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
                 [assetLibrary saveVideo:outPutUrl toAlbum:@"OneMinute" completionBlock:^(NSURL *assetURL, NSError *error) {
                     
-                    DLYLog(@"配音完成后保存在手机相册");
+                    DLYLog(@"⛳️⛳️⛳️配音完成后保存在手机相册");
                 } failureBlock:^(NSError *error) {
                     
                 }];

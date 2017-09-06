@@ -188,18 +188,18 @@
     typeof(self) weakSelf = self;
     [self.AVEngine setSpeedWithVideo:_moviePathArray[self.index++] completed:^{
         if (weakSelf.index == [_moviePathArray count]) {
-            DLYLog(@"全部片段完成调速");
+            DLYLog(@"⛳️⛳️⛳️全部片段完成调速");
             [weakSelf.resource removeCurrentAllPartFromCache];
             NSFileManager *fileManager = [NSFileManager defaultManager];
             
             NSString *plistPath = [kPathDocument stringByAppendingFormat:@"/moviePaths.plist"];
             
             BOOL isSuccess = [fileManager removeItemAtPath:plistPath error:nil];
-            DLYLog(@"%@",isSuccess ? @"成功删除保存片段信息的plist文件":@"保存片段信息的plist文件删除失败");
+            DLYLog(@"%@",isSuccess ? @"⛳️⛳️⛳️成功删除保存片段信息的plist文件":@"保存片段信息的plist文件删除失败");
             
             [weakSelf.AVEngine mergeVideoWithVideoTitle:weakSelf.titleField.text SuccessBlock:^{
                 weakSelf.AVEngine.finishOperation = [weakSelf.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
-                NSLog(@"🥇🥇🥇⚡️⚡️⚡️成片耗时: %lld s",(weakSelf.AVEngine.finishOperation - weakSelf.AVEngine.startOperation)/1000);
+                NSLog(@"🥇🥇🥇成片耗时: %lld s ⚡️⚡️⚡️",(weakSelf.AVEngine.finishOperation - weakSelf.AVEngine.startOperation)/1000);
             } failure:^(NSError *error) {
                 
             }];

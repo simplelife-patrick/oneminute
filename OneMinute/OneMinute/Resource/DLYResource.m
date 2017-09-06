@@ -279,7 +279,7 @@
                 isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
             }
         }
-        DLYLog(@"%@",isSuccess?@"成功删除Cache中全部草稿片段":@"删除Cache中全部草稿片段失败");
+        DLYLog(@"%@",isSuccess?@"⛳️⛳️⛳️成功删除Cache中全部草稿片段":@"删除Cache中全部草稿片段失败");
     }
 }
 - (void) removeCurrentAllPartFromDocument{
@@ -297,7 +297,7 @@
                 isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
             }
         }
-        DLYLog(@"%@",isSuccess?@"成功删除Document全部草稿片段":@"删除Document全部草稿片段失败");
+        DLYLog(@"%@",isSuccess?@"⛳️⛳️⛳️成功删除Document全部草稿片段":@"删除Document全部草稿片段失败");
     }
 }
 - (NSURL *) getPartUrlWithPartNum:(NSInteger)partNum{
