@@ -18,11 +18,12 @@
 #include <libavformat/avformat.h>
 #import "DLYMovieObject.h"
 #import "DLYTitleView.h"
+#import "DLYPopupMenu.h"
 
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
 
-@interface DLYRecordViewController ()<DLYCaptureManagerDelegate,UIAlertViewDelegate,UIGestureRecognizerDelegate>
+@interface DLYRecordViewController ()<DLYCaptureManagerDelegate,UIAlertViewDelegate,UIGestureRecognizerDelegate,YBPopupMenuDelegate>
 {
     NSInteger cursorTag;
     //记录选中的样片类型
@@ -31,8 +32,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSInteger prepareAlpha;
     //记录闪烁的tag
     NSInteger prepareTag;
+    //记录上次闪烁的tag
+    NSInteger oldPrepareTag;
     //选择的片段
     NSInteger selectPartTag;
+    //将要更换最新片段
+    NSInteger selectNewPartTag;
     double _shootTime;
     NSMutableArray * partModelArray; //模拟存放拍摄片段的模型数组
     NSMutableArray * typeModelArray; //模拟选择样式的模型数组
@@ -43,14 +48,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 @property (nonatomic,assign) CGFloat                            beginGestureScale;//记录开始的缩放比例
 @property (nonatomic,assign) CGFloat                            effectiveScale;//最后的缩放比例
+@property (nonatomic, copy) NSArray                             *btnImg;//场景对应的图片
 @property (nonatomic, strong) DLYAVEngine                       *AVEngine;
 @property (nonatomic, strong) UIView                            *previewView;
 @property (nonatomic, strong) UIImageView                       *focusCursorImageView;
 @property (nonatomic, strong) UIImageView                       *faceRegionImageView;
 @property (nonatomic, strong) UIView * sceneView; //选择场景的view
 @property (nonatomic, strong) UIView * shootView; //拍摄界面
-
-
 @property (nonatomic, strong) UIView * timeView;
 @property (nonatomic, strong) NSTimer *shootTimer;          //拍摄读秒计时器
 @property (nonatomic, strong) NSTimer * prepareShootTimer; //准备拍摄片段闪烁的计时器
@@ -81,7 +85,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) DLYSession *session;          //录制会话管理类
 @property (nonatomic, strong) UILabel *chooseTitleLabel;    //选择场景说明
 @property (nonatomic, strong) UIButton *seeRush;            //观看样片
-@property (nonatomic, copy) NSArray *btnImg;                //场景对应的图片
+@property (nonatomic, strong) UILabel *alertLabel;          //提示文字
+@property (nonatomic, strong) UIButton *sureBtn;            //确定切换场景
+@property (nonatomic, strong) UIButton *giveUpBtn;          //放弃切换场景
+@property (nonatomic, strong) UIView *typeView;             //场景view
 
 @end
 
@@ -1109,6 +1116,28 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.seeRush.transform = CGAffineTransformMakeRotation(num);
             }];
         }
+        if (!self.alertLabel.isHidden && self.alertLabel) {
+            if (num == 0) {
+                self.alertLabel.frame = CGRectMake(0, 210, 368, 22);
+                self.alertLabel.centerX = self.sceneView.centerX;
+                self.sureBtn.frame = CGRectMake(0, self.alertLabel.bottom + 20, 61, 61);
+                self.sureBtn.centerX = self.sceneView.centerX - 46;
+                self.giveUpBtn.frame = CGRectMake(0, self.alertLabel.bottom + 20, 61, 61);
+                self.giveUpBtn.centerX = self.sceneView.centerX  + 46;
+            }else {
+                self.alertLabel.frame = CGRectMake(0, SCREEN_HEIGHT - 232, 368, 22);
+                self.alertLabel.centerX = self.sceneView.centerX;
+                self.sureBtn.frame = CGRectMake(0, self.alertLabel.top - 81, 61, 61);
+                self.sureBtn.centerX = self.sceneView.centerX + 46;
+                self.giveUpBtn.frame = CGRectMake(0, self.alertLabel.top - 81, 61, 61);
+                self.giveUpBtn.centerX = self.sceneView.centerX - 46;
+            }
+            [UIView animateWithDuration:0.5f animations:^{
+                self.alertLabel.transform = CGAffineTransformMakeRotation(num);
+                self.sureBtn.transform = CGAffineTransformMakeRotation(num);
+                self.giveUpBtn.transform = CGAffineTransformMakeRotation(num);
+            }];
+        }
         for(int i = 0; i < typeModelArray.count; i++)
         {
             UIView *view = (UIView *)[self.view viewWithTag:101 + i];
@@ -1324,30 +1353,31 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //删除全部视频
 - (void)onClickDelete:(UIButton *)sender {
     [MobClick event:@"DeleteAll"];
-    self.alert = [[DLYAlertView alloc] initWithMessage:@"确定删除全部片段?" andCancelButton:@"取消" andSureButton:@"确定"];
-    if (self.newState == 1) {
-        self.alert.transform = CGAffineTransformMakeRotation(0);
-    }else {
-        self.alert.transform = CGAffineTransformMakeRotation(M_PI);
+
+    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"deleteAllPopup"]){
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"deleteAllPopup"];
+        [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除全部片段"] icons:nil menuWidth:120 delegate:self];
     }
-    __weak typeof(self) weakSelf = self;
-    self.alert.sureButtonAction = ^{
-        [weakSelf.resource removeCurrentAllPartFromCache];
+    if (sender.selected == NO) {
+        self.deleteButton.backgroundColor = RGBA(255, 0, 0, 1);
+    }else {
+        sender.backgroundColor = RGBA(0, 0, 0, 0.4);
+        [self.resource removeCurrentAllPartFromCache];
         //数组初始化，view布局
-        if (!weakSelf.playView.isHidden && weakSelf.playView) {
-            weakSelf.playView.hidden = YES;
+        if (!self.playView.isHidden && self.playView) {
+            self.playView.hidden = YES;
         }
-        if (weakSelf.recordBtn.isHidden && weakSelf.recordBtn) {
-            weakSelf.recordBtn.hidden = NO;
+        if (self.recordBtn.isHidden && self.recordBtn) {
+            self.recordBtn.hidden = NO;
         }
-        weakSelf.nextButton.hidden = YES;
-        weakSelf.deleteButton.hidden = YES;
-        [weakSelf initData];
-        [weakSelf createPartViewLayout];
-        weakSelf.isSuccess = NO;
-    };
-    self.alert.cancelButtonAction = ^{
-    };
+        self.nextButton.hidden = YES;
+        self.deleteButton.hidden = YES;
+        [self initData];
+        [self createPartViewLayout];
+        self.isSuccess = NO;
+    }
+    sender.selected = !sender.selected;
+    
 }
 //播放某个片段
 - (void)onClickPlayPartVideo:(UIButton *)sender{
@@ -1364,21 +1394,22 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //删除某个片段
 - (void)onClickDeletePartVideo:(UIButton *)sender {
     [MobClick event:@"DeletePart"];
-    __weak typeof(self) weakSelf = self;
-    self.alert = [[DLYAlertView alloc] initWithMessage:@"确定删除此片段?" andCancelButton:@"取消" andSureButton:@"确定"];
-    if (self.newState == 1) {
-        self.alert.transform = CGAffineTransformMakeRotation(0);
-    }else {
-        self.alert.transform = CGAffineTransformMakeRotation(M_PI);
+
+    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"deletePartPopup"]){
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"deletePartPopup"];
+        [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除该片段"] icons:nil menuWidth:120 delegate:self];
     }
-    self.alert.sureButtonAction = ^{
+    if (sender.selected == NO) {
+        [sender setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 0, 0)] forState:UIControlStateNormal];
+        sender.layer.borderColor = RGBA(255, 0, 0, 1).CGColor;
+    }else {
+        [sender setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+        sender.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
         NSInteger partNum = selectPartTag - 10000 - 1;
-        [weakSelf.resource removePartWithPartNum:partNum];
-        [weakSelf deleteSelectPartVideo];
-    };
-    self.alert.cancelButtonAction = ^{
-    };
-    
+        [self.resource removePartWithPartNum:partNum];
+        [self deleteSelectPartVideo];
+    }
+    sender.selected = !sender.selected;
 }
 //取消选择场景
 - (void)onClickCancelSelect:(UIButton *)sender {
@@ -1422,9 +1453,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.sceneView.alpha = 0;
     } completion:^(BOOL finished) {
         self.sceneView.hidden = YES;
-        
+        self.alertLabel.hidden = YES;
+        self.sureBtn.hidden = YES;
+        self.giveUpBtn.hidden = YES;
+        self.typeView.hidden = NO;
+        self.seeRush.hidden = NO;
     }];
-    
 }
 
 - (void)changeTypeToPlay {
@@ -1680,6 +1714,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 //光标
                 button.backgroundColor = RGB(168, 175, 180);
                 prepareTag = button.tag;
+                oldPrepareTag = prepareTag;
                 prepareAlpha = 1;
                 [_prepareShootTimer setFireDate:[NSDate distantPast]];
                 
@@ -1751,6 +1786,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (isAllPart) {
         //光标
         prepareTag = 10001;
+        oldPrepareTag = prepareTag;
         prepareAlpha = 1;
         [_prepareShootTimer setFireDate:[NSDate distantPast]];
     }
@@ -1855,6 +1891,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 //光标
                 button.backgroundColor = RGB(168, 175, 180);
                 prepareTag = button.tag;
+                oldPrepareTag = prepareTag;
                 prepareAlpha = 1;
                 [_prepareShootTimer setFireDate:[NSDate distantPast]];
                 //拍摄说明视图
@@ -1927,6 +1964,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (isAllPart) {
         //光标
         prepareTag = 10001;
+        oldPrepareTag = prepareTag;
         prepareAlpha = 1;
         [_prepareShootTimer setFireDate:[NSDate distantPast]];
     }
@@ -1934,6 +1972,19 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 - (void)prepareShootAction {
     
+    if (oldPrepareTag != prepareTag) {
+        DLYMiniVlogPart *part = partModelArray[oldPrepareTag - 10001];
+        if([part.recordStatus isEqualToString:@"1"]){
+            UIButton *button = (UIButton *)[self.view viewWithTag:oldPrepareTag];
+            button.backgroundColor = RGB(255, 0, 0);
+            button.alpha = 1;
+        }else {
+            UIButton *button = (UIButton *)[self.view viewWithTag:oldPrepareTag];
+            button.backgroundColor = RGBA_HEX(0xc9c9c9, 0.1);
+            button.alpha = 1;
+        }
+    }
+    oldPrepareTag = prepareTag;
     [UIView animateWithDuration:0.1f animations:^{
         if(prepareAlpha == 1)
         {
@@ -2037,21 +2088,21 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.seeRush addTarget:self action:@selector(changeTypeToPlay) forControlEvents:UIControlEventTouchUpInside];
     [self.sceneView addSubview:self.seeRush];
     
-    UIView * typeView = [[UIView alloc]initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH - 80, 162 * SCALE_HEIGHT)];
-    typeView.centerY = self.sceneView.centerY;
-    [self.sceneView addSubview:typeView];
-    UIScrollView * typeScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, typeView.width, typeView.height)];
+    self.typeView = [[UIView alloc]initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH - 80, 162 * SCALE_HEIGHT)];
+    self.typeView.centerY = self.sceneView.centerY;
+    [self.sceneView addSubview:self.typeView];
+    UIScrollView * typeScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.typeView.width, self.typeView.height)];
     typeScrollView.showsVerticalScrollIndicator = NO;
     typeScrollView.showsHorizontalScrollIndicator = NO;
     typeScrollView.bounces = NO;
-    [typeView addSubview:typeScrollView];
+    [self.typeView addSubview:typeScrollView];
     
-    float width = (typeView.width - 40)/5;
+    float width = (self.typeView.width - 40)/5;
     typeScrollView.contentSize = CGSizeMake(width * typeModelArray.count + 10 * (typeModelArray.count - 1), typeScrollView.height);
     for(int i = 0; i < typeModelArray.count; i ++)
     {
         DLYMiniVlogTemplate *templateModel = typeModelArray[i];
-        UIView *view = [[UIView alloc]initWithFrame:CGRectMake((width + 10) * i, 0, width, typeView.height)];
+        UIView *view = [[UIView alloc]initWithFrame:CGRectMake((width + 10) * i, 0, width, self.typeView.height)];
         view.tag = 101 + i;
         [typeScrollView addSubview:view];
         
@@ -2081,7 +2132,63 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             typeName.textColor = RGB(255, 122, 0);
         }
     }
+    
+    self.alertLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 210, 368, 22)];
+    self.alertLabel.centerX = self.sceneView.centerX;
+    self.alertLabel.textColor = RGB(255, 255, 255);
+    self.alertLabel.textAlignment = NSTextAlignmentCenter;
+    self.alertLabel.font = FONT_SYSTEM(16);
+    self.alertLabel.text = @"之前拍摄的不会保存,确定切换模板,重新拍摄?";
+    self.alertLabel.hidden = YES;
+    [self.sceneView addSubview:self.alertLabel];
+    
+    self.sureBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, self.alertLabel.bottom + 20, 61, 61)];
+    self.sureBtn.centerX = self.sceneView.centerX - 46;
+    [self.sureBtn setImage:[UIImage imageWithIcon:@"\U0000e602" inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.sureBtn addTarget:self action:@selector(onSureClickChangeTypeStatus) forControlEvents:UIControlEventTouchUpInside];
+    self.sureBtn.layer.cornerRadius = 30.5;
+    self.sureBtn.clipsToBounds = YES;
+    self.sureBtn.layer.borderWidth = 1,0;
+    self.sureBtn.layer.borderColor = RGB(255, 255, 255).CGColor;
+    self.sureBtn.hidden = YES;
+    [self.sceneView addSubview:self.sureBtn];
+    
+    self.giveUpBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, self.alertLabel.bottom + 20, 61, 61)];
+    self.giveUpBtn.centerX = self.sceneView.centerX  + 46;
+    [self.giveUpBtn setImage:[UIImage imageWithIcon:@"\U0000e666" inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.giveUpBtn addTarget:self action:@selector(onGiveUpClickChangeTypeStatus) forControlEvents:UIControlEventTouchUpInside];
+    self.giveUpBtn.layer.cornerRadius = 30.5;
+    self.giveUpBtn.clipsToBounds = YES;
+    self.giveUpBtn.layer.borderWidth = 1,0;
+    self.giveUpBtn.layer.borderColor = RGB(255, 255, 255).CGColor;
+    self.giveUpBtn.hidden = YES;
+    [self.sceneView addSubview:self.giveUpBtn];
+    
 }
+//确定切换模板
+- (void)onSureClickChangeTypeStatus {
+    
+    [self.resource removeCurrentAllPartFromCache];
+    [self changeSceneWithSelectNum:selectNewPartTag];
+    [self initData];
+    [self createPartViewLayout];
+    
+    self.alertLabel.hidden = YES;
+    self.sureBtn.hidden = YES;
+    self.giveUpBtn.hidden = YES;
+    self.typeView.hidden = NO;
+    self.seeRush.hidden = NO;
+}
+//放弃切换模板
+- (void)onGiveUpClickChangeTypeStatus {
+    
+    self.alertLabel.hidden = YES;
+    self.sureBtn.hidden = YES;
+    self.giveUpBtn.hidden = YES;
+    self.typeView.hidden = NO;
+    self.seeRush.hidden = NO;
+}
+
 
 #pragma mark === 更改样片选中状态
 - (void)changeTypeStatus:(UIButton *)sender {
@@ -2106,24 +2213,33 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self initData];
         [self createPartViewLayout];
     }else {
-        __weak typeof(self) weakSelf = self;
-        self.alert = [[DLYAlertView alloc] initWithMessage:@"切换模板后已经拍摄的视频会清空，确定吗?" andCancelButton:@"取消" andSureButton:@"确定"];
+        selectNewPartTag = num;
+        self.typeView.hidden = YES;
+        self.seeRush.hidden = YES;
         if (self.newState == 1) {
-            self.alert.transform = CGAffineTransformMakeRotation(0);
+            self.alertLabel.frame = CGRectMake(0, 210, 368, 22);
+            self.alertLabel.centerX = self.sceneView.centerX;
+            self.alertLabel.transform = CGAffineTransformMakeRotation(0);
+            self.sureBtn.frame = CGRectMake(0, self.alertLabel.bottom + 20, 61, 61);
+            self.sureBtn.centerX = self.sceneView.centerX - 46;
+            self.sureBtn.transform = CGAffineTransformMakeRotation(0);
+            self.giveUpBtn.frame = CGRectMake(0, self.alertLabel.bottom + 20, 61, 61);
+            self.giveUpBtn.centerX = self.sceneView.centerX  + 46;
+            self.giveUpBtn.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.alert.transform = CGAffineTransformMakeRotation(M_PI);
+            self.alertLabel.frame = CGRectMake(0, SCREEN_HEIGHT - 232, 368, 22);
+            self.alertLabel.centerX = self.sceneView.centerX;
+            self.alertLabel.transform = CGAffineTransformMakeRotation(M_PI);
+            self.sureBtn.frame = CGRectMake(0, self.alertLabel.top - 81, 61, 61);
+            self.sureBtn.centerX = self.sceneView.centerX + 46;
+            self.sureBtn.transform = CGAffineTransformMakeRotation(M_PI);
+            self.giveUpBtn.frame = CGRectMake(0, self.alertLabel.top - 81, 61, 61);
+            self.giveUpBtn.centerX = self.sceneView.centerX - 46;
+            self.giveUpBtn.transform = CGAffineTransformMakeRotation(M_PI);
         }
-        self.alert.sureButtonAction = ^{
-            //数组初始化，view布局 弹出选择
-            [weakSelf.resource removeCurrentAllPartFromCache];
-            [weakSelf changeSceneWithSelectNum:num];
-            [weakSelf initData];
-            [weakSelf createPartViewLayout];
-        };
-        self.alert.cancelButtonAction = ^{
-            return;
-        };
-        
+        self.alertLabel.hidden = NO;
+        self.sureBtn.hidden = NO;
+        self.giveUpBtn.hidden = NO;
     }
 }
 

@@ -10,6 +10,7 @@
 #import "DLYLaunchPlayerViewController.h"
 #import "DLYRecordViewController.h"
 #import "DLYBaseNavigationController.h"
+#import "DLYAnimationViewController.h"
 
 @interface AppDelegate ()
 
@@ -81,20 +82,15 @@
             [fileManager createDirectoryAtPath:draftPath withIntermediateDirectories:YES attributes:nil error:nil];
         }
         DLYLog(@"%@",[fileManager fileExistsAtPath:draftPath]? @"Library/Cache/目录下Draft文件夹已成功创建":@"Library/Cache/目录下Draft文件夹创建失败");
-        
-        DLYLaunchPlayerViewController *vc = [[DLYLaunchPlayerViewController alloc] init];
-        self.window.rootViewController = vc;
-        [self.window makeKeyAndVisible];
+
     }else{
         DLYLog(@"📱📱📱The Application isn't First Finish Launch !");
-        //不是首次启动
-        DLYRecordViewController *vc = [[DLYRecordViewController alloc] init];
-        DLYBaseNavigationController *nvc = [[DLYBaseNavigationController alloc] initWithRootViewController:vc];
-        self.window.rootViewController = nvc;
-        [self.window makeKeyAndVisible];
     }
     
-    [NSThread sleepForTimeInterval:3]; // 设置启动页面停留时间
+    DLYAnimationViewController *vc = [[DLYAnimationViewController alloc] init];
+    self.window.rootViewController = vc;
+    [self.window makeKeyAndVisible];
+    
     ///申请麦克风权限
     [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
     }];

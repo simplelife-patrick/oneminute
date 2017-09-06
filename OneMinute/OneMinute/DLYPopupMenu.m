@@ -249,7 +249,7 @@ UITableViewDataSource
     [UIView animateWithDuration: 0.25 animations:^{
         self.layer.affineTransform = CGAffineTransformMakeScale(1.0, 1.0);
         self.alpha = 1;
-        _menuBackView.alpha = 1;
+        _menuBackView.alpha = 0;
     } completion:^(BOOL finished) {
         if (self.delegate && [self.delegate respondsToSelector:@selector(ybPopupMenuDidShow)]) {
             [self.delegate ybPopupMenuDidShow];
@@ -265,7 +265,7 @@ UITableViewDataSource
     _dismissOnSelected = YES;
     _dismissOnTouchOutside = YES;
     _fontSize = 15;
-    _textColor = [UIColor blackColor];
+    _textColor = [UIColor whiteColor];
     _offset = 0.0;
     _relyRect = CGRectZero;
     _point = CGPointZero;
@@ -273,7 +273,7 @@ UITableViewDataSource
     _borderColor = [UIColor lightGrayColor];
     _arrowWidth = 15.0;
     _arrowHeight = 10.0;
-    _backColor = [UIColor whiteColor];
+    _backColor = [UIColor blackColor];
     _type = YBPopupMenuTypeDefault;
     _arrowDirection = YBPopupMenuArrowDirectionTop;
     _priorityDirection = YBPopupMenuPriorityDirectionTop;
