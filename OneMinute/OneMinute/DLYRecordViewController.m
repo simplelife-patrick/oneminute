@@ -18,11 +18,12 @@
 #include <libavformat/avformat.h>
 #import "DLYMovieObject.h"
 #import "DLYTitleView.h"
+#import "DLYPopupMenu.h"
 
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
 
-@interface DLYRecordViewController ()<DLYCaptureManagerDelegate,UIAlertViewDelegate,UIGestureRecognizerDelegate>
+@interface DLYRecordViewController ()<DLYCaptureManagerDelegate,UIAlertViewDelegate,UIGestureRecognizerDelegate,YBPopupMenuDelegate>
 {
     NSInteger cursorTag;
     //记录选中的样片类型
@@ -1350,30 +1351,31 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //删除全部视频
 - (void)onClickDelete:(UIButton *)sender {
     [MobClick event:@"DeleteAll"];
-    self.alert = [[DLYAlertView alloc] initWithMessage:@"确定删除全部片段?" andCancelButton:@"取消" andSureButton:@"确定"];
-    if (self.newState == 1) {
-        self.alert.transform = CGAffineTransformMakeRotation(0);
-    }else {
-        self.alert.transform = CGAffineTransformMakeRotation(M_PI);
+
+    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"deleteAllPopup"]){
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"deleteAllPopup"];
+        [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除全部片段"] icons:nil menuWidth:120 delegate:self];
     }
-    __weak typeof(self) weakSelf = self;
-    self.alert.sureButtonAction = ^{
-        [weakSelf.resource removeCurrentAllPartFromCache];
+    if (sender.selected == NO) {
+        self.deleteButton.backgroundColor = RGBA(255, 0, 0, 1);
+    }else {
+        sender.backgroundColor = RGBA(0, 0, 0, 0.4);
+        [self.resource removeCurrentAllPartFromCache];
         //数组初始化，view布局
-        if (!weakSelf.playView.isHidden && weakSelf.playView) {
-            weakSelf.playView.hidden = YES;
+        if (!self.playView.isHidden && self.playView) {
+            self.playView.hidden = YES;
         }
-        if (weakSelf.recordBtn.isHidden && weakSelf.recordBtn) {
-            weakSelf.recordBtn.hidden = NO;
+        if (self.recordBtn.isHidden && self.recordBtn) {
+            self.recordBtn.hidden = NO;
         }
-        weakSelf.nextButton.hidden = YES;
-        weakSelf.deleteButton.hidden = YES;
-        [weakSelf initData];
-        [weakSelf createPartViewLayout];
-        weakSelf.isSuccess = NO;
-    };
-    self.alert.cancelButtonAction = ^{
-    };
+        self.nextButton.hidden = YES;
+        self.deleteButton.hidden = YES;
+        [self initData];
+        [self createPartViewLayout];
+        self.isSuccess = NO;
+    }
+    sender.selected = !sender.selected;
+    
 }
 //播放某个片段
 - (void)onClickPlayPartVideo:(UIButton *)sender{
@@ -1390,21 +1392,22 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //删除某个片段
 - (void)onClickDeletePartVideo:(UIButton *)sender {
     [MobClick event:@"DeletePart"];
-    __weak typeof(self) weakSelf = self;
-    self.alert = [[DLYAlertView alloc] initWithMessage:@"确定删除此片段?" andCancelButton:@"取消" andSureButton:@"确定"];
-    if (self.newState == 1) {
-        self.alert.transform = CGAffineTransformMakeRotation(0);
-    }else {
-        self.alert.transform = CGAffineTransformMakeRotation(M_PI);
+
+    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"deletePartPopup"]){
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"deletePartPopup"];
+        [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除该片段"] icons:nil menuWidth:120 delegate:self];
     }
-    self.alert.sureButtonAction = ^{
+    if (sender.selected == NO) {
+        [sender setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 0, 0)] forState:UIControlStateNormal];
+        sender.layer.borderColor = RGBA(255, 0, 0, 1).CGColor;
+    }else {
+        [sender setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+        sender.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
         NSInteger partNum = selectPartTag - 10000 - 1;
-        [weakSelf.resource removePartWithPartNum:partNum];
-        [weakSelf deleteSelectPartVideo];
-    };
-    self.alert.cancelButtonAction = ^{
-    };
-    
+        [self.resource removePartWithPartNum:partNum];
+        [self deleteSelectPartVideo];
+    }
+    sender.selected = !sender.selected;
 }
 //取消选择场景
 - (void)onClickCancelSelect:(UIButton *)sender {
