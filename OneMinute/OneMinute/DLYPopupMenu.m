@@ -249,7 +249,8 @@ UITableViewDataSource
     [UIView animateWithDuration: 0.25 animations:^{
         self.layer.affineTransform = CGAffineTransformMakeScale(1.0, 1.0);
         self.alpha = 1;
-        _menuBackView.alpha = 0;
+        //蒙版的透明度，暂时不显示蒙版
+        _menuBackView.alpha = 1;
     } completion:^(BOOL finished) {
         if (self.delegate && [self.delegate respondsToSelector:@selector(ybPopupMenuDidShow)]) {
             [self.delegate ybPopupMenuDidShow];
@@ -283,7 +284,7 @@ UITableViewDataSource
     _isCornerChanged = NO;
     _showMaskView = YES;
     _menuBackView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-    _menuBackView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
+    _menuBackView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0];
     _menuBackView.alpha = 0;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget: self action: @selector(touchOutSide)];
     [_menuBackView addGestureRecognizer: tap];
@@ -323,7 +324,7 @@ UITableViewDataSource
 - (void)setShowMaskView:(BOOL)showMaskView
 {
     _showMaskView = showMaskView;
-    _menuBackView.backgroundColor = showMaskView ? [[UIColor blackColor] colorWithAlphaComponent:0.5] : [UIColor clearColor];
+    _menuBackView.backgroundColor = showMaskView ? [[UIColor blackColor] colorWithAlphaComponent:0] : [UIColor clearColor];
 }
 
 - (void)setType:(YBPopupMenuType)type
