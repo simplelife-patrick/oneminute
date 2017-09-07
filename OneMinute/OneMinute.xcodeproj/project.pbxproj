@@ -40,6 +40,7 @@
 		6FA74E871F5E48B800114C93 /* DLYTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA74E861F5E48B800114C93 /* DLYTitleView.m */; };
 		6FA74E8B1F5EC0F100114C93 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6FA74E8A1F5EC0F100114C93 /* iconfont.ttf */; };
 		6FD13ABE1F5FDAF4000B72FC /* DLYAnimationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FD13ABD1F5FDAF4000B72FC /* DLYAnimationViewController.m */; };
+		6FD13AC41F60EC02000B72FC /* DLYIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FD13AC31F60EC02000B72FC /* DLYIndicatorView.m */; };
 		822650B2C2F69335E52B0573 /* libPods-OneMinute.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D600523FDE25F6D3C6635F4 /* libPods-OneMinute.a */; };
 		AD0E2BC21F4196E600A95DAF /* Universal001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD0E2BC11F4196E600A95DAF /* Universal001.json */; };
 		AD13AC381F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = AD13AC371F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m */; };
@@ -155,6 +156,8 @@
 		6FA74E8A1F5EC0F100114C93 /* iconfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = iconfont.ttf; sourceTree = "<group>"; };
 		6FD13ABC1F5FDAF4000B72FC /* DLYAnimationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAnimationViewController.h; sourceTree = "<group>"; };
 		6FD13ABD1F5FDAF4000B72FC /* DLYAnimationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAnimationViewController.m; sourceTree = "<group>"; };
+		6FD13AC21F60EC02000B72FC /* DLYIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYIndicatorView.h; sourceTree = "<group>"; };
+		6FD13AC31F60EC02000B72FC /* DLYIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYIndicatorView.m; sourceTree = "<group>"; };
 		7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneMinute.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute.debug.xcconfig"; sourceTree = "<group>"; };
 		AD0E2BC11F4196E600A95DAF /* Universal001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Universal001.json; sourceTree = "<group>"; };
 		AD13AC361F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALAssetsLibrary+CustomPhotoAlbum.h"; sourceTree = "<group>"; };
@@ -460,6 +463,8 @@
 				6F8925D21F1B13FF00256093 /* DLYAlertView.m */,
 				6FA74E851F5E48B800114C93 /* DLYTitleView.h */,
 				6FA74E861F5E48B800114C93 /* DLYTitleView.m */,
+				6FD13AC21F60EC02000B72FC /* DLYIndicatorView.h */,
+				6FD13AC31F60EC02000B72FC /* DLYIndicatorView.m */,
 			);
 			name = Tool;
 			sourceTree = "<group>";
@@ -833,6 +838,7 @@
 			files = (
 				ADFFF1A41F18A33C00FB5BF7 /* DLYCommon.m in Sources */,
 				AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */,
+				6FD13AC41F60EC02000B72FC /* DLYIndicatorView.m in Sources */,
 				1C7E618A1EE7DF4F0088F33F /* ViewController.m in Sources */,
 				1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */,
 				ADFFF1AB1F18C00200FB5BF7 /* DLYTransitionInstructions.m in Sources */,
