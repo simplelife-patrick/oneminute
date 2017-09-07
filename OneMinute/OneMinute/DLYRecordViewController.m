@@ -397,7 +397,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     _shootTime = 0;
-    cursorTag = 0;
+    cursorTag = 10001;
     self.isSuccess = NO;
     selectPartTag = 10001; //也不影响吧
     
@@ -454,7 +454,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     _shootTime = 0;
     selectPartTag = 10001;
-    cursorTag = 0;
+    cursorTag = 10001;
     self.isSuccess = NO;
     
     selectType = 0; //暂时先这么写
@@ -1898,7 +1898,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
                 itemView.centerY = button.centerY;
                 itemView.transform = CGAffineTransformMakeRotation(M_PI);
-                itemView.tag = 30000 + (7 - i);
+                itemView.tag = 30000 + (partModelArray.count + 1 - i);
                 [self.backScrollView addSubview:itemView];
                 //判断拍摄状态
                 if(part.recordType == DLYMiniVlogRecordTypeNormal)
@@ -1985,6 +1985,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
     }
     oldPrepareTag = prepareTag;
+    if (prepareTag == 0) {
+        return;
+    }
     [UIView animateWithDuration:0.1f animations:^{
         if(prepareAlpha == 1)
         {
@@ -2175,6 +2178,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     DLYLog(@"⚠️⚠️⚠️当前已经有% lu个片段",self.AVEngine.moviePathsArray.count);
     [self.resource removeCurrentAllPartFromCache];
     
+    //数组初始化，view布局
+    if (!self.playView.isHidden && self.playView) {
+        self.playView.hidden = YES;
+    }
+    if (self.recordBtn.isHidden && self.recordBtn) {
+        self.recordBtn.hidden = NO;
+    }
     [self changeSceneWithSelectNum:selectNewPartTag];
     [self initData];
     [self createPartViewLayout];
