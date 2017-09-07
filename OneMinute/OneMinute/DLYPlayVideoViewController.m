@@ -509,15 +509,10 @@
         interval = 0.5f * duration / width;
     }
     
-    
     __weak typeof(self) weakSelf = self;
-    _timeObserver = [_player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(0.1, NSEC_PER_SEC)
-                                                          queue:NULL /* If you pass NULL, the main queue is used. */
-                                                     usingBlock:^(CMTime time)
-                     {
-                         [weakSelf syncScrubber];
-                     }];
-    
+    _timeObserver = [_player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(0.1, NSEC_PER_SEC) queue:NULL usingBlock:^(CMTime time) {
+        [weakSelf syncScrubber];
+    }];
 }
 - (void)syncScrubber {
     CMTime playerDuration = [self playerItemDuration];

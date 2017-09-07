@@ -249,6 +249,7 @@ UITableViewDataSource
     [UIView animateWithDuration: 0.25 animations:^{
         self.layer.affineTransform = CGAffineTransformMakeScale(1.0, 1.0);
         self.alpha = 1;
+        //蒙版的透明度，暂时不显示蒙版
         _menuBackView.alpha = 0;
     } completion:^(BOOL finished) {
         if (self.delegate && [self.delegate respondsToSelector:@selector(ybPopupMenuDidShow)]) {
