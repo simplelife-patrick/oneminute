@@ -21,8 +21,6 @@
 #import "DLYSession.h"
 #import "ALAssetsLibrary+CustomPhotoAlbum.h"
 #import <math.h>
-#import "DLYRecordEncoder.h"
-#include <libavformat/avformat.h>
 #import "DLYMovieObject.h"
 
 
@@ -79,7 +77,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 @property (nonatomic, strong) AVMutableVideoComposition         *videoComposition;
 @property (nonatomic, strong) AVAssetExportSession              *assetExporter;
 
-@property (strong, nonatomic) DLYRecordEncoder                  *recordEncoder;//录制编码
 @property (atomic, assign) BOOL isCapturing;//正在录制
 @property (atomic, assign) BOOL isPaused;//是否暂停
 @property (atomic, assign) BOOL discont;//是否中断
@@ -173,8 +170,48 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     return _processedVideoPaths;
 }
+#pragma mark - 创建Recorder录制会话 -
+-(AVCaptureSession *)captureSession{
+    if (_captureSession == nil) {
+        _captureSession = [[AVCaptureSession alloc] init];
+        
+        //添加后置摄像头的输入
+        if ([self.captureSession canAddInput:self.backCameraInput]) {
+            [self.captureSession addInput:self.backCameraInput];
+        }else{
+            DLYLog(@"Backcamera intput add faild !");
+        }
+        
+        //添加麦克风的输入
+        if ([_captureSession canAddInput:self.audioMicInput]) {
+            [_captureSession addInput:self.audioMicInput];
+        }else{
+            DLYLog(@"Audio input add faild !");
+        }
+        
+        //添加视频文件输出
+        if ([_captureSession canAddOutput:self.captureMovieFileOutput]) {
+            [_captureSession addOutput:self.captureMovieFileOutput];
+            
+        }
+        //添加音频输出
+        if ([_captureSession canAddOutput:self.audioOutput]) {
+            [_captureSession addOutput:self.audioOutput];
+        }else{
+            DLYLog(@"Audio output add faild !");
+        }
+        //添加元数据输出
+        if ([_captureSession canAddOutput:self.metadataOutput]) {
+            [_captureSession addOutput:self.metadataOutput];
+            self.metadataOutput.metadataObjectTypes = @[AVMetadataObjectTypeFace];
+        }else{
+            DLYLog(@"Metadate output add faild !");
+        }
+    }
+    return _captureSession;
+}
 
-#pragma mark - Recorder初始化相关懒加载 -
+#pragma mark - Recorder录制会话 输入 配置 -
 //后置摄像头输入
 - (AVCaptureDeviceInput *)backCameraInput {
     if (_backCameraInput == nil) {
@@ -249,6 +286,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     return _audioMicInput;
 }
+
+#pragma mark - Recorder录制会话 输出 配置 -
 //视频文件输出
 -(AVCaptureMovieFileOutput *)captureMovieFileOutput{
     
@@ -277,6 +316,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     return _audioOutput;
 }
 
+#pragma mark - Recorder录制会话 连接 配置 -
 //视频连接
 - (AVCaptureConnection *)videoConnection {
     if (!_videoConnection) {
@@ -293,51 +333,11 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     return _audioConnection;
 }
 
--(AVCaptureSession *)captureSession{
-    if (_captureSession == nil) {
-        _captureSession = [[AVCaptureSession alloc] init];
-
-        //添加后置摄像头的输入
-        if ([self.captureSession canAddInput:self.backCameraInput]) {
-            [self.captureSession addInput:self.backCameraInput];
-        }else{
-            DLYLog(@"Backcamera intput add faild !");
-        }
-        
-        //添加麦克风的输入
-        if ([_captureSession canAddInput:self.audioMicInput]) {
-            [_captureSession addInput:self.audioMicInput];
-        }else{
-            DLYLog(@"Audio input add faild !");
-        }
-        
-        //添加视频文件输出
-        if ([_captureSession canAddOutput:self.captureMovieFileOutput]) {
-            [_captureSession addOutput:self.captureMovieFileOutput];
-
-        }
-        //添加音频输出
-        if ([_captureSession canAddOutput:self.audioOutput]) {
-            [_captureSession addOutput:self.audioOutput];
-        }else{
-            DLYLog(@"Audio output add faild !");
-        }
-        //添加元数据输出
-        if ([_captureSession canAddOutput:self.metadataOutput]) {
-            [_captureSession addOutput:self.metadataOutput];
-            self.metadataOutput.metadataObjectTypes = @[AVMetadataObjectTypeFace];
-        }else{
-            DLYLog(@"Metadate output add faild !");
-        }
-    }
-    return _captureSession;
-}
+#pragma mark - 初始化AVEngine -
 - (instancetype)initWithPreviewView:(UIView *)previewView{
     if (self = [super init]) {
         
         [self createTimer];
-        
-        av_register_all();
         
         //创建存储moviePaths的plist文件
         NSString *plistPath = [kPathDocument stringByAppendingPathComponent:@"moviePaths.plist"];
@@ -392,8 +392,12 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.frontCameraInput];//切换成了前置
+            self.previewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+
             self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         }
+        NSLog(@"✅✅✅当前视频连接的视频方向为 :%lu",self.videoConnection.videoOrientation);
+        NSLog(@"✅✅✅当前预览方向为 :%lu",self.videoConnection.videoPreviewLayer.orientation);
     }else {
         
         [self.captureSession beginConfiguration];
@@ -401,6 +405,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([self.captureSession canAddInput:self.backCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.backCameraInput];//切换成了后置
+            self.previewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+
             self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         }
     }
@@ -578,8 +584,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
 }
 
-#pragma mark - Public -
-
 - (void)resetFormat {
     
     BOOL isRunning = self.captureSession.isRunning;
@@ -656,6 +660,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
     _isRecording = NO;
 }
+
 #pragma mark - 取消录制 -
 - (void)cancelRecording{
     [self.captureMovieFileOutput stopRecording];
@@ -665,11 +670,12 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
     _isRecording = NO;
 }
-#pragma mark - 内部处理方法
-- (NSString *)movieName {
-    NSDate *datenow = [NSDate date];
-    NSString *timeSp = [NSString stringWithFormat:@"time_%ld", (long)[datenow timeIntervalSince1970]];
-    return [timeSp stringByAppendingString:@".mov"];
+
+#pragma mark - 暂停录制 -
+- (void) pauseRecording{
+    if (self.captureSession.isRunning) {
+        [self.captureSession stopRunning];
+    }
 }
 
 #pragma mark - 打开慢动作录制 -
@@ -740,18 +746,19 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
     [self.captureSession startRunning];
 }
+#pragma mark - 内部处理方法
+- (NSString *)movieName {
+    NSDate *datenow = [NSDate date];
+    NSString *timeSp = [NSString stringWithFormat:@"time_%ld", (long)[datenow timeIntervalSince1970]];
+    return [timeSp stringByAppendingString:@".mov"];
+}
 #pragma mark - 重置录制session -
 - (void) restartRecording{
     if (!self.captureSession.isRunning) {
         [self.captureSession startRunning];
     }
 }
-#pragma mark - 暂停录制 -
-- (void) pauseRecording{
-    if (self.captureSession.isRunning) {
-        [self.captureSession stopRunning];
-    }
-}
+
 #pragma mark - AVCaptureFileOutputRecordingDelegate -
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections{
     DLYLog(@"开始录制...");
@@ -1738,7 +1745,7 @@ BOOL isOnce = YES;
         }
     }];
 }
-#pragma mark - 设置标题 -
+#pragma mark - 水印标题设置 -
 - (CALayer *) addTitleForVideoWith:(NSString *)titleText size:(CGSize)renderSize{
     
     CALayer *overlayLayer = [CALayer layer];
