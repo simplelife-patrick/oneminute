@@ -14,6 +14,7 @@
 #import "DLYAVEngine.h"
 #import "DLYSession.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "DLYIndicatorView.h"
 
 #define kMaxLength 16
 
@@ -36,6 +37,7 @@
 @property (nonatomic, strong) UILabel *durationLabel;
 //控件
 @property (nonatomic, strong) UIActivityIndicatorView *waitIndicator;
+@property (nonatomic, strong) DLYIndicatorView *flashIndicator;
 @property (nonatomic, strong) UIButton *nextButton;
 @property (nonatomic, strong) UIButton *backButton;
 //标题
@@ -67,7 +69,6 @@
     if (!self.isSuccess && self.isAll) {
         [self initializationRecorder];
         [self createMainView];
-
     }else {
         //这个页面 先不加载
         [self setupUI];
@@ -85,7 +86,7 @@
     self.AVEngine = [[DLYAVEngine alloc] init];
     self.AVEngine.delegate = self;
 }
--(void)didFinishEdititProductUrl:(NSURL *)productUrl{
+- (void)didFinishEdititProductUrl:(NSURL *)productUrl{
     
     NSDictionary *dict = @{@"playUrl":self.AVEngine.currentProductUrl};
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CANPLAY" object:nil userInfo:dict];
@@ -147,7 +148,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeContentViewPosition:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hidechangeContentViewPosition:) name:UIKeyboardWillHideNotification object:nil];
 }
-
 - (void)onClickSkip {
     
     [MobClick event:@"Skip"];
@@ -224,7 +224,6 @@
     self.playerLayer.videoGravity = AVLayerVideoGravityResize;
 //    [self.view.layer insertSublayer:self.playerLayer atIndex:0];
     [self.view.layer addSublayer:self.playerLayer];
-
     
     //返回
     self.backButton = [[UIButton alloc]initWithFrame:CGRectMake(28, 0, 60, 60)];
@@ -264,14 +263,20 @@
             self.nextButton.hidden = YES;
         }
     }
-    if ((self.isAll && self.isSuccess == NO) || self.isOnline) {
-        
+    //这里要改1
+    if (self.isOnline) {
         self.waitIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         self.waitIndicator.frame = CGRectMake(0, 0, 65, 65);
         self.waitIndicator.center = self.view.center;
         [self.view addSubview:self.waitIndicator];
-        
         [self.waitIndicator startAnimating];
+    }
+    if (self.isAll && self.isSuccess == NO) {
+        self.flashIndicator = [[DLYIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 180, 210)];
+        self.flashIndicator.centerY = self.view.centerY + 20;
+        self.flashIndicator.centerX = self.view.centerX;
+        [self.view addSubview:self.flashIndicator];
+        [self.flashIndicator startFlashAnimating];
     }
     //滑块
     self.progressSlider = [[UISlider alloc] initWithFrame:CGRectMake(85, SCREEN_HEIGHT - 45, SCREEN_WIDTH - 170, 20)];
@@ -308,14 +313,14 @@
     self.durationLabel.textAlignment = NSTextAlignmentLeft;
     self.durationLabel.text = @"00:00";
     
-    if (!self.isOnline && self.waitIndicator.isAnimating) {
+    if (!self.flashIndicator.isHidden && self.flashIndicator) {
         self.progressSlider.hidden = YES;
         self.currentLabel.hidden = YES;
         self.durationLabel.hidden = YES;
         self.backButton.hidden = YES;
         self.playButton.hidden = YES;
     }
-    if (self.isOnline && self.waitIndicator.isAnimating) {
+    if (self.waitIndicator.isAnimating) {
         self.playButton.hidden = YES;
     }
 
@@ -326,16 +331,12 @@
 
 - (void)onClickBack:(UIButton *)sender{
     
-//    if (!self.waitIndicator.isAnimating) {
-
-        [MobClick event:@"BackView"];
-        //返回
-        if(self.DismissBlock){
-            self.DismissBlock();
-        }
-        [self.navigationController popViewControllerAnimated:YES];
-//    }
-
+    [MobClick event:@"BackView"];
+    //返回
+    if(self.DismissBlock){
+        self.DismissBlock();
+    }
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)onClickPlayOrPause:(UIButton *)sender {
@@ -352,7 +353,6 @@
 }
 
 - (void)onClickNext {
-    NSLog(@"成片预览结束");
     //跳转下一步填写标题
     [self pause];
     DLYExportViewController *exportVC = [[DLYExportViewController alloc] init];
@@ -592,7 +592,6 @@
         [UIView animateWithDuration:0.5 animations:^{
             NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeRight];
             [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-            NSLog(@"视频播放左转");
         }];
     }
 
@@ -603,7 +602,6 @@
         [UIView animateWithDuration:0.5 animations:^{
             NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
             [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-            NSLog(@"视频播放右转");
         }];
     }
 }
@@ -653,15 +651,16 @@
             //添加各种通知和观察者
             [self addNotification];
 //            [self addProgressObserver];
-            if (!self.isOnline && self.waitIndicator.isAnimating) {
-                [self.waitIndicator stopAnimating];
+            if (!self.flashIndicator.isHidden && self.flashIndicator) {
+                [self.flashIndicator stopFlashAnimating];
+                self.flashIndicator.hidden = YES;
                 self.backButton.hidden = NO;
                 self.progressSlider.hidden = NO;
                 self.currentLabel.hidden = NO;
                 self.durationLabel.hidden = NO;
                 self.playButton.hidden = NO;
             }
-            if (self.isOnline && self.waitIndicator.isAnimating) {
+            if (self.waitIndicator.isAnimating) {
                 [self.waitIndicator stopAnimating];
                 self.playButton.hidden = NO;
             }
@@ -840,7 +839,7 @@
 
 - (void)toggleControls:(UITapGestureRecognizer *)recognizer {
     //转菊花判断
-    if (self.waitIndicator.isAnimating) {
+    if (!self.flashIndicator.isHidden && self.flashIndicator) {
         return;
     }else {
         if(self.progressSlider.isHidden){
