@@ -274,7 +274,7 @@ UITableViewDataSource
     _borderColor = [UIColor lightGrayColor];
     _arrowWidth = 15.0;
     _arrowHeight = 10.0;
-    _backColor = [UIColor blackColor];
+    _backColor = RGBA(0, 0, 0, 0.7);
     _type = YBPopupMenuTypeDefault;
     _arrowDirection = YBPopupMenuArrowDirectionTop;
     _priorityDirection = YBPopupMenuPriorityDirectionTop;

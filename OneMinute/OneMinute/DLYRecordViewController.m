@@ -1400,7 +1400,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除该片段"] icons:nil menuWidth:120 delegate:self];
     }
     if (sender.selected == NO) {
-        [sender setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 0, 0)] forState:UIControlStateNormal];
+        [sender setImage:[UIImage imageWithIcon:@"\U0000e669" inFont:ICONFONT size:24 color:RGB(255, 0, 0)] forState:UIControlStateNormal];
         sender.layer.borderColor = RGBA(255, 0, 0, 1).CGColor;
     }else {
         [sender setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
