@@ -50,7 +50,7 @@ typedef void(^setVideoSpeedBlock)();
 @property (nonatomic, readonly) BOOL                                                  isRecording;
 @property (nonatomic, copy) OnBufferBlock                                             onBuffer;
 @property (nonatomic, copy) TimeLapseSamplebufferBlock                                timeLapseSamplebufferBlock;
-@property (nonatomic, strong) AVCaptureVideoPreviewLayer                              *previewLayer;
+@property (nonatomic, strong) AVCaptureVideoPreviewLayer                              *captureVideoPreviewLayer;
 @property (nonatomic, strong) AVCaptureConnection                                     *videoConnection;
 @property (nonatomic, strong) AVCaptureSession                                        *captureSession;
 @property (nonatomic, strong) NSURL                                                   *currentProductUrl;

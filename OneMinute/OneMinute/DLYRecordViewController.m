@@ -187,7 +187,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     //According to the preview center focus after launch
     CGPoint point = self.previewView.center;
-    CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
+    CGPoint cameraPoint = [self.AVEngine.captureVideoPreviewLayer captureDevicePointOfInterestForPoint:point];
     [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus atPoint:cameraPoint];
     
     if (draftNum == partModelArray.count) {
@@ -253,8 +253,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSUInteger numTouches = [recognizer numberOfTouches], i;
     for ( i = 0; i < numTouches; ++i ) {
         CGPoint location = [recognizer locationOfTouch:i inView:self.previewView];
-        CGPoint convertedLocation = [self.AVEngine.previewLayer convertPoint:location fromLayer:self.AVEngine.previewLayer.superlayer];
-        if ( ! [self.AVEngine.previewLayer containsPoint:convertedLocation] ) {
+        CGPoint convertedLocation = [self.AVEngine.captureVideoPreviewLayer convertPoint:location fromLayer:self.AVEngine.captureVideoPreviewLayer.superlayer];
+        if ( ! [self.AVEngine.captureVideoPreviewLayer containsPoint:convertedLocation] ) {
             allTouchesAreOnThePreviewLayer = NO;
             break;
         }
@@ -279,7 +279,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         [CATransaction begin];
         [CATransaction setAnimationDuration:.025];
-        [self.AVEngine.previewLayer setAffineTransform:CGAffineTransformMakeScale(self.effectiveScale, self.effectiveScale)];
+        [self.AVEngine.captureVideoPreviewLayer setAffineTransform:CGAffineTransformMakeScale(self.effectiveScale, self.effectiveScale)];
         [CATransaction commit];
         self.AVEngine.effectiveScale = self.effectiveScale;
         
@@ -702,7 +702,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (touch.view != self.backView && touch.view != self.sceneView && touch.view != self.playView)
     {
         CGPoint point = [touch locationInView:self.previewView];
-        CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
+        CGPoint cameraPoint = [self.AVEngine.captureVideoPreviewLayer captureDevicePointOfInterestForPoint:point];
         [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus atPoint:cameraPoint];
         [self setFocusCursorWithPoint:point];
     }

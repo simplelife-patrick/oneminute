@@ -119,7 +119,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     [_captureSession stopRunning];
     _captureSession             = nil;
-    _previewLayer               = nil;
+    _captureVideoPreviewLayer   = nil;
     
     _backCameraInput            = nil;
     _frontCameraInput           = nil;
@@ -347,12 +347,12 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         self.effectiveScale = 1.0;
         
         if (previewView) {
-            self.previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.captureSession];
-            self.previewLayer.orientation = UIDeviceOrientationLandscapeLeft;
-            self.previewLayer.frame = previewView.bounds;
-            self.previewLayer.contentsGravity = kCAGravityTopLeft;
-            self.previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-            [previewView.layer addSublayer:self.previewLayer];
+            self.captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.captureSession];
+            self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+            self.captureVideoPreviewLayer.frame = previewView.bounds;
+            self.captureVideoPreviewLayer.contentsGravity = kCAGravityTopLeft;
+            self.captureVideoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+            [previewView.layer addSublayer:self.captureVideoPreviewLayer];
         }
         
         // 判断当前视频设备是否支持光学防抖
@@ -373,7 +373,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         OSStatus err = CMBufferQueueCreate(kCFAllocatorDefault, 1, CMBufferQueueGetCallbacksForUnsortedSampleBuffers(), &previewBufferQueue);
         DLYLog(@"CMBufferQueueCreate error:%d", (int)err);
         
-        self.metadataOutput.rectOfInterest = [self.previewLayer metadataOutputRectOfInterestForRect:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        self.metadataOutput.rectOfInterest = [self.captureVideoPreviewLayer metadataOutputRectOfInterestForRect:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
         
         [self.captureSession startRunning];
     }
@@ -392,7 +392,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.frontCameraInput];//切换成了前置
-            self.previewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+            self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
 
             self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         }
@@ -405,7 +405,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([self.captureSession canAddInput:self.backCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.backCameraInput];//切换成了后置
-            self.previewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+            self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
 
             self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         }
@@ -459,7 +459,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     changeAnimation.duration = 0.3;
     changeAnimation.type = @"oglFlip";
     changeAnimation.subtype = kCATransitionFromTop;
-    [self.previewLayer addAnimation:changeAnimation forKey:@"changeAnimation"];
+    [self.captureVideoPreviewLayer addAnimation:changeAnimation forKey:@"changeAnimation"];
 }
 //顺时针旋转
 - (void)changeCameraRotateClockwiseAnimation {
@@ -471,7 +471,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     animation.autoreverses = NO;
     animation.fillMode =kCAFillModeForwards;
     animation.repeatCount = 0;
-    [self.previewLayer addAnimation:animation forKey:nil];
+    [self.captureVideoPreviewLayer addAnimation:animation forKey:nil];
 }
 
 //逆时针旋转
@@ -484,7 +484,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     animation.autoreverses = NO;
     animation.fillMode = kCAFillModeForwards;
     animation.repeatCount = 0;
-    [self.previewLayer addAnimation:animation forKey:nil];
+    [self.captureVideoPreviewLayer addAnimation:animation forKey:nil];
 }
 - (void)animationDidStart:(CAAnimation *)anim {
     [self.captureSession startRunning];
@@ -761,10 +761,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
 #pragma mark - AVCaptureFileOutputRecordingDelegate -
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections{
-    DLYLog(@"开始录制...");
+    DLYLog(@"开始录制,正在写入...");
 }
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error{
-    DLYLog(@"结束录制!!!");
+    DLYLog(@"结束录制,写入完成!!!");
 }
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
@@ -797,7 +797,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         
         //        DLYLog(@"检测到 %lu 个人脸",metadataObjects.count);
         //取到识别到的人脸区域
-        AVMetadataObject *transformedMetadataObject = [self.previewLayer transformedMetadataObjectForMetadataObject:metadataObject];
+        AVMetadataObject *transformedMetadataObject = [self.captureVideoPreviewLayer transformedMetadataObjectForMetadataObject:metadataObject];
         faceRegion = transformedMetadataObject.bounds;
         
         //检测到人脸
