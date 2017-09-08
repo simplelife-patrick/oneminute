@@ -160,53 +160,16 @@
     [self setupUI];
     
     //跳过的时候，调用合成接口
-    self.index = 0;
-    NSString *plistPath = [kPathDocument stringByAppendingPathComponent:@"moviePaths.plist"];
-    
-    //newsTest.plist文件
-    NSMutableArray *dataArray = [[NSMutableArray alloc] initWithContentsOfFile:plistPath];
-    
-    NSInteger index = 0;
-    NSMutableArray *moviePathArray = [NSMutableArray array];
-    
-    for (NSDictionary *dic in dataArray) {
-        DLYMiniVlogPart *part = [[DLYMiniVlogPart alloc] init];
-        part.partPath = [dic objectForKey:[NSString stringWithFormat:@"part%luPath",index]];
-        part.recordType = [[dic objectForKey:@"recordType"] intValue];
-        part.partNum = [[dic objectForKey:@"partNum"] intValue];
-        [moviePathArray addObject:part];
-        index++;
-    }
-    _moviePathArray = moviePathArray;
     
     //获取开始时刻统计合成耗时
     self.AVEngine.startOperation = [self.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
-    [self setVideoRate];
-}
-- (void)setVideoRate{
     
     typeof(self) weakSelf = self;
-    [self.AVEngine setSpeedWithVideo:_moviePathArray[self.index++] completed:^{
-        if (weakSelf.index == [_moviePathArray count]) {
-            DLYLog(@"⛳️⛳️⛳️全部片段完成调速");
-            [weakSelf.resource removeCurrentAllPartFromCache];
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            
-            NSString *plistPath = [kPathDocument stringByAppendingFormat:@"/moviePaths.plist"];
-            
-            BOOL isSuccess = [fileManager removeItemAtPath:plistPath error:nil];
-            DLYLog(@"%@",isSuccess ? @"⛳️⛳️⛳️成功删除保存片段信息的plist文件":@"保存片段信息的plist文件删除失败");
-            
-            [weakSelf.AVEngine mergeVideoWithVideoTitle:weakSelf.titleField.text SuccessBlock:^{
-                weakSelf.AVEngine.finishOperation = [weakSelf.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
-                NSLog(@"🥇🥇🥇成片耗时: %lld s ⚡️⚡️⚡️",(weakSelf.AVEngine.finishOperation - weakSelf.AVEngine.startOperation)/1000);
-            } failure:^(NSError *error) {
-                
-            }];
-            return;
-        }else{
-            [weakSelf setVideoRate];
-        }
+    [weakSelf.AVEngine mergeVideoWithVideoTitle:weakSelf.titleField.text SuccessBlock:^{
+        weakSelf.AVEngine.finishOperation = [weakSelf.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
+        NSLog(@"🥇🥇🥇成片耗时: %lld s ⚡️⚡️⚡️",(weakSelf.AVEngine.finishOperation - weakSelf.AVEngine.startOperation)/1000);
+    } failure:^(NSError *error) {
+        
     }];
 }
 

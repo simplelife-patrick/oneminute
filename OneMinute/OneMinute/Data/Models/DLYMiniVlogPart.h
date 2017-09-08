@@ -42,7 +42,7 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
 /**
  片段地址
  */
-@property (nonatomic, strong) NSString                      *partPath;
+@property (nonatomic, strong) NSURL                         *partUrl;
 
 /**
  拍摄时长

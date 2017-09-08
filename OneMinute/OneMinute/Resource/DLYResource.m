@@ -174,14 +174,13 @@
 }
 - (NSString *) getSaveDraftPartWithPartNum:(NSInteger)partNum{
     
-    NSString *outPutUrl = nil;
     NSString *draftPath = [kCachePath stringByAppendingPathComponent:kDraftFolder];
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
         
         NSString *outputPath = [NSString stringWithFormat:@"%@/part%lu%@",draftPath,partNum,@".mov"];
-        outPutUrl = outputPath;
+        return outputPath;
     }
-    return outPutUrl;
+    return nil;
 }
 - (NSURL *) saveDraftPartWithPartNum:(NSInteger)partNum{
     
@@ -251,7 +250,7 @@
     }
     return outPutUrl;
 }
-- (void) removePartWithPartNum:(NSInteger)partNum{
+- (void) removePartWithPartNumFormCache:(NSInteger)partNum{
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
@@ -260,6 +259,19 @@
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
         
         NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mov",partNum];
+        
+        [fileManager removeItemAtPath:targetPath error:nil];
+    }
+}
+- (void) removePartWithPartNumFromDocument:(NSInteger)partNum{
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    NSString *draftPath = [self getDraftFolderDocument];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
+        
+        NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mp4",partNum];
         
         [fileManager removeItemAtPath:targetPath error:nil];
     }
@@ -302,11 +314,11 @@
 }
 - (NSURL *) getPartUrlWithPartNum:(NSInteger)partNum{
     
-    NSString *draftPath = [self getDraftFolderCache];
+    NSString *draftPath = [self getDraftFolderDocument];
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
         
-        NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mov",partNum];
+        NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mp4",partNum];
         NSURL *targetUrl = [NSURL fileURLWithPath:targetPath];
         return targetUrl;
     }

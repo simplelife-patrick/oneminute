@@ -1406,7 +1406,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [sender setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
         sender.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
         NSInteger partNum = selectPartTag - 10000 - 1;
-        [self.resource removePartWithPartNum:partNum];
+        [self.resource removePartWithPartNumFormCache:partNum];
+        [self.resource removePartWithPartNumFromDocument:partNum];
         [self deleteSelectPartVideo];
     }
     sender.selected = !sender.selected;
@@ -1516,7 +1517,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.AVEngine cancelRecording];
     
     NSInteger partNum = selectPartTag - 10000 - 1;
-    [self.resource removePartWithPartNum:partNum];
+    [self.resource removePartWithPartNumFormCache:partNum];
     
     [_shootTimer invalidate];
     [UIView animateWithDuration:0.5f animations:^{
@@ -2171,11 +2172,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //确定切换模板
 - (void)onSureClickChangeTypeStatus {
     
-    [self.AVEngine.moviePathsArray removeAllObjects];
-    
-    NSString *plistPath = [kPathDocument stringByAppendingFormat:@"/moviePaths.plist"];
-    [self.AVEngine.moviePathsArray writeToFile:plistPath atomically:YES];
-    DLYLog(@"⚠️⚠️⚠️当前已经有% lu个片段",self.AVEngine.moviePathsArray.count);
     [self.resource removeCurrentAllPartFromCache];
     
     //数组初始化，view布局

@@ -162,6 +162,5 @@ typedef void(^setVideoSpeedBlock)();
 - (void) makeExportable;
 //新方法合成视频
 - (void)mergeVideosWithPaths:(NSArray *)paths completed:(void(^)(NSURL *videoPath))completed;
-- (void)setSpeedWithVideo:(DLYMiniVlogPart *)part completed:(void(^)())completed;
 -(long long)getDateTimeTOMilliSeconds:(NSDate *)datetime;
 @end
