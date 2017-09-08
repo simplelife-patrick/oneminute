@@ -158,18 +158,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     return _session;
 }
--(NSMutableArray *)moviePathsArray{
-    if (!_moviePathsArray) {
-        _moviePathsArray = [NSMutableArray array];
-    }
-    return _moviePathsArray;
-}
--(NSMutableArray<NSString *> *)processedVideoPaths{
-    if (!_processedVideoPaths) {
-        _processedVideoPaths = [NSMutableArray array];
-    }
-    return _processedVideoPaths;
-}
+
 #pragma mark - 创建Recorder录制会话 -
 -(AVCaptureSession *)captureSession{
     if (_captureSession == nil) {
@@ -822,15 +811,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     [addData setObject:@(_currentPart.recordType) forKey:@"recordType"];
     [addData setObject:@(_currentPart.partNum) forKey:@"partNum"];
     
-    NSInteger partCount = [self.session.currentTemplate.parts count];
-    if (partCount != 0 && [self.moviePathsArray count] >= partCount) {
-        [self.moviePathsArray removeAllObjects];
-        [self.moviePathsArray addObject:addData];
-    }else{
-        [self.moviePathsArray addObject:addData];
-    }
-    
-    [self.moviePathsArray writeToFile:_plistPath atomically:YES];
+    [addData writeToFile:_plistPath atomically:YES];
     
     typeof(self) weakSelf = self;
     [self setSpeedWithVideo:_currentPart.partUrl completed:^{
