@@ -999,7 +999,7 @@ BOOL isOnce = YES;
             }
         }
     }
-    
+    DLYLog(@"待合成的视频片段: %@",videoArray);
     AVMutableComposition *mixComposition = [AVMutableComposition composition];
     
     AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
@@ -1042,9 +1042,12 @@ BOOL isOnce = YES;
     
     NSURL *outputUrl = [self.resource saveProductToSandbox];
     
-    AVAssetExportSession *exporter = [self makeExportableWithAsset:mixComposition outputUrl:outputUrl videoComposition:nil andAudioMax:nil];
-    
-    [exporter exportAsynchronouslyWithCompletionHandler:^{
+    AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
+    assetExportSession.outputURL = outputUrl;
+    assetExportSession.outputFileType = AVFileTypeMPEG4;
+    assetExportSession.shouldOptimizeForNetworkUse = YES;
+        
+    [assetExportSession exportAsynchronouslyWithCompletionHandler:^{
         DLYLog(@"⛳️⛳️⛳️全部片段merge成功");
         DLYMiniVlogTemplate *template = self.session.currentTemplate;
         
@@ -1713,7 +1716,7 @@ BOOL isOnce = YES;
                     [self.delegate didFinishEdititProductUrl:outPutUrl];
                 }
                 ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
-                [assetLibrary saveVideo:outPutUrl toAlbum:@"OneMinute" completionBlock:^(NSURL *assetURL, NSError *error) {
+                [assetLibrary saveVideo:outPutUrl toAlbum:@"一分" completionBlock:^(NSURL *assetURL, NSError *error) {
                     
                     DLYLog(@"⛳️⛳️⛳️配音完成后保存在手机相册");
                 } failureBlock:^(NSError *error) {

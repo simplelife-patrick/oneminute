@@ -356,12 +356,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             part.prepareRecord = @"0";
         }
         part.recordStatus = @"0";
-        
-        if (part.recordType == DLYMiniVlogRecordTypeTimelapse) {
-            part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime withTimelapse:YES];
-        }else {
-            part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime withTimelapse:NO];
-        }
+        part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
+
     }
     /////////////////////////////////
     if (isExitDraft) {
@@ -432,12 +428,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             part.prepareRecord = @"0";
         }
         part.recordStatus = @"0";
-        
-        if (part.recordType == DLYMiniVlogRecordTypeTimelapse) {
-            part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime withTimelapse:YES];
-        }else {
-            part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime withTimelapse:NO];
-        }
+        part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
+
     }
     //contentSize更新
     float episodeHeight = (self.vedioEpisode.height - (partModelArray.count - 1) * 2) / partModelArray.count;
@@ -467,7 +459,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
 }
 
-- (NSString *)getDurationwithStartTime:(NSString *)startTime andStopTime:(NSString *)stopTime withTimelapse:(BOOL) isTimelapse {
+- (NSString *)getDurationwithStartTime:(NSString *)startTime andStopTime:(NSString *)stopTime {
     
     int startDuration = 0;
     int stopDuation = 0;
@@ -497,13 +489,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
     }
     
-    float duration;
-    if (isTimelapse == YES) {
-        //30÷16
-        duration = (stopDuation - startDuration) * 0.001 * 1.875;
-    }else {
-        duration = (stopDuation - startDuration) * 0.001;
-    }
+    float duration = (stopDuation - startDuration) * 0.001;
     NSString *duraStr = [NSString stringWithFormat:@"%.3f", duration];
     return duraStr;
 }
@@ -1363,6 +1349,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }else {
         sender.backgroundColor = RGBA(0, 0, 0, 0.4);
         [self.resource removeCurrentAllPartFromCache];
+        [self.resource removeCurrentAllPartFromDocument];
         //数组初始化，view布局
         if (!self.playView.isHidden && self.playView) {
             self.playView.hidden = YES;

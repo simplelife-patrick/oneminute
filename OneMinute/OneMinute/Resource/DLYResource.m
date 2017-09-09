@@ -304,7 +304,7 @@
         NSArray *draftArray = [self.fileManager contentsOfDirectoryAtPath:draftPath error:nil];
         BOOL isSuccess = false;
         for (NSString *path in draftArray) {
-            if ([path hasSuffix:@"mov"]) {
+            if ([path hasSuffix:@"mp4"]) {
                 NSString *targetPath = [draftPath stringByAppendingFormat:@"/%@",path];
                 isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
             }
