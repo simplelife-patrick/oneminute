@@ -815,7 +815,8 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     
     typeof(self) weakSelf = self;
     [self setSpeedWithVideo:_currentPart.partUrl completed:^{
-        DLYLog(@"第 %lu 个片段调速完成",weakSelf.currentPart.partNum + 1);
+        DLYLog(@"第 %lu 个片段调速完成",weakSelf.currentPart.partNum);
+        [self.resource removePartWithPartNumFormCache:weakSelf.currentPart.partNum];
     }];
 }
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate

@@ -49,15 +49,20 @@
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
-    NSString *draftPath = [kCachePath stringByAppendingPathComponent:kDraftFolder];
+    NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
     
-    if ([fileManager fileExistsAtPath:draftPath]) {
+    if ([fileManager fileExistsAtPath:dataPath]) {
         
-        NSArray *draftArray = [fileManager contentsOfDirectoryAtPath:draftPath error:nil];
-        DLYLog(@"The current folder have %lu files",(unsigned long)draftArray.count);
-        if ([draftArray count]) {
-            //Draft box is not empty
-            return YES;
+        NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
+        
+        if ([fileManager fileExistsAtPath:draftPath]) {
+        
+            NSArray *draftArray = [fileManager contentsOfDirectoryAtPath:draftPath error:nil];
+            DLYLog(@"The current folder have %lu files",(unsigned long)draftArray.count);
+            if ([draftArray count]) {
+                //Draft box is not empty
+                return YES;
+            }
         }
     }
     return NO;

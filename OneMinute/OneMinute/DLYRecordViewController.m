@@ -334,7 +334,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSMutableArray *draftArr = [NSMutableArray array];
     
     if (isExitDraft) {
-        NSArray *arr = [self.resource loadDraftPartsFromeCache];
+        NSArray *arr = [self.resource loadDraftPartsFromeDocument];
         
         for (NSURL *url in arr) {
             NSString *partPath = url.path;
