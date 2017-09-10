@@ -655,7 +655,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 #pragma mark - 视频速度处理 -
 
 // 处理速度视频
-- (void)setSpeedWithVideo:(NSURL *)videoPartUrl completed:(void(^)())completed {
+- (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl completed:(void(^)())completed {
     NSLog(@"处理视频速度🚀🚀🚀🚀🚀🚀🚀🚀🚀");
     // 获取视频
     if (!videoPartUrl) {
@@ -693,22 +693,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         
         // 配置导出
         AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1920x1080];
-        // 导出视频的临时保存路径
-        
-        NSString *exportPath;
-        
-        NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
-        
-        if ([[NSFileManager defaultManager] fileExistsAtPath:dataPath]) {
-            NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
-            if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
-                exportPath = [NSString stringWithFormat:@"%@/part%lu.mp4",draftPath,_currentPart.partNum];
-            }
-        }
-        NSURL *exportUrl = [NSURL fileURLWithPath:exportPath];
         
         _assetExport.outputFileType = AVFileTypeMPEG4;
-        _assetExport.outputURL = exportUrl;
+        _assetExport.outputURL = outputUrl;
         _assetExport.shouldOptimizeForNetworkUse = YES;
         
         // 导出视频
@@ -812,9 +799,23 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     
     [addData writeToFile:_plistPath atomically:YES];
     
+    // 导出视频的临时保存路径
+    
+    NSString *exportPath;
+    
+    NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:dataPath]) {
+        NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
+            exportPath = [NSString stringWithFormat:@"%@/part%lu.mp4",draftPath,_currentPart.partNum];
+        }
+    }
+    NSURL *exportUrl = [NSURL fileURLWithPath:exportPath];
+    
     typeof(self) weakSelf = self;
-    [self setSpeedWithVideo:_currentPart.partUrl completed:^{
-        DLYLog(@"第 %lu 个片段调速完成",weakSelf.currentPart.partNum);
+    [self setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl completed:^{
+        DLYLog(@"第 %lu 个片段调速完成",weakSelf.currentPart.partNum + 1);
         [self.resource removePartWithPartNumFormCache:weakSelf.currentPart.partNum];
     }];
 }
