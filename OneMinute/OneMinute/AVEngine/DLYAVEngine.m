@@ -79,7 +79,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 
 @property (atomic, assign) BOOL isCapturing;//正在录制
 @property (atomic, assign) BOOL isPaused;//是否暂停
-@property (atomic, assign) BOOL discont;//是否中断
 @property (nonatomic, strong) NSMutableArray *imageArr;
 @property (nonatomic, strong) NSTimer *recordTimer; //准备拍摄片段闪烁的计时器
 

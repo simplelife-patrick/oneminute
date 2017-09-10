@@ -89,6 +89,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIButton *sureBtn;            //确定切换场景
 @property (nonatomic, strong) UIButton *giveUpBtn;          //放弃切换场景
 @property (nonatomic, strong) UIView *typeView;             //场景view
+@property (nonatomic, strong) DLYPopupMenu *partBubble;     //删除单个气泡
+@property (nonatomic, strong) DLYPopupMenu *allBubble;      //删除全部气泡
 
 @end
 
@@ -141,6 +143,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         [self initData];
         if (!self.deleteButton.isHidden && self.deleteButton) {
+            if (self.allBubble) {
+                [self.allBubble removeFromSuperview];
+                self.allBubble = nil;
+            }
+            self.deleteButton.selected = NO;
+            self.deleteButton.backgroundColor = RGBA(0, 0, 0, 0.4);
             self.deleteButton.hidden = YES;
         }
         if (!self.nextButton.isHidden && self.nextButton) {
@@ -150,6 +158,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.recordBtn.hidden = NO;
         }
         if (!self.playView.isHidden && self.playView) {
+            if (self.partBubble) {
+                [self.partBubble removeFromSuperview];
+                self.partBubble = nil;
+            }
+            self.deletePartButton.selected = NO;
+            [self.deletePartButton setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+            self.deletePartButton.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
             self.playView.hidden = YES;
         }
         [self createPartViewLayout];
@@ -1342,16 +1357,27 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"deleteAllPopup"]){
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"deleteAllPopup"];
-        [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除全部片段"] icons:nil menuWidth:120 delegate:self];
+        self.allBubble = [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除全部片段"] icons:nil menuWidth:120 delegate:self];
     }
     if (sender.selected == NO) {
         self.deleteButton.backgroundColor = RGBA(255, 0, 0, 1);
     }else {
+        if (self.allBubble) {
+            [self.allBubble removeFromSuperview];
+            self.allBubble = nil;
+        }
         sender.backgroundColor = RGBA(0, 0, 0, 0.4);
         [self.resource removeCurrentAllPartFromCache];
         [self.resource removeCurrentAllPartFromDocument];
         //数组初始化，view布局
         if (!self.playView.isHidden && self.playView) {
+            if (self.partBubble) {
+                [self.partBubble removeFromSuperview];
+                self.partBubble = nil;
+            }
+            self.deletePartButton.selected = NO;
+            [self.deletePartButton setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+            self.deletePartButton.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
             self.playView.hidden = YES;
         }
         if (self.recordBtn.isHidden && self.recordBtn) {
@@ -1384,12 +1410,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"deletePartPopup"]){
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"deletePartPopup"];
-        [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除该片段"] icons:nil menuWidth:120 delegate:self];
+        self.partBubble = [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除该片段"] icons:nil menuWidth:120 delegate:self];
     }
     if (sender.selected == NO) {
-        [sender setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 0, 0)] forState:UIControlStateNormal];
+        [sender setImage:[UIImage imageWithIcon:@"\U0000e669" inFont:ICONFONT size:24 color:RGB(255, 0, 0)] forState:UIControlStateNormal];
         sender.layer.borderColor = RGBA(255, 0, 0, 1).CGColor;
     }else {
+        if (self.partBubble) {
+            [self.partBubble removeFromSuperview];
+            self.partBubble = nil;
+        }
         [sender setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
         sender.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
         NSInteger partNum = selectPartTag - 10000 - 1;
@@ -1561,6 +1591,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     DLYMiniVlogPart *part = partModelArray[i-1];
     
     [UIView animateWithDuration:0.5f animations:^{
+        
         self.playView.hidden = YES;
         self.recordBtn.hidden = NO;
     } completion:^(BOOL finished) {
@@ -1594,6 +1625,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     for (DLYMiniVlogPart *part3 in partModelArray) {
         if ([part3.recordStatus isEqualToString:@"0"]) {
             self.nextButton.hidden = YES;
+            if (self.allBubble) {
+                [self.allBubble removeFromSuperview];
+                self.allBubble = nil;
+            }
+            self.deleteButton.selected = NO;
+            self.deleteButton.backgroundColor = RGBA(0, 0, 0, 0.4);
             self.deleteButton.hidden = YES;
             self.isSuccess = NO;
         }
@@ -2035,7 +2072,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }];
     }else
     {
-        self.playView.hidden = YES;
+        if (!self.playView.isHidden && self.playView) {
+            if (self.partBubble) {
+                [self.partBubble removeFromSuperview];
+                self.partBubble = nil;
+            }
+            self.deletePartButton.selected = NO;
+            [self.deletePartButton setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+            self.deletePartButton.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
+            self.playView.hidden = YES;
+        }
         self.recordBtn.hidden = NO;
         for(int i = 0; i < partModelArray.count; i++)
         {
@@ -2162,7 +2208,26 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.resource removeCurrentAllPartFromCache];
     
     //数组初始化，view布局
+    if (!self.deleteButton.isHidden && self.deleteButton) {
+        if (self.allBubble) {
+            [self.allBubble removeFromSuperview];
+            self.allBubble = nil;
+        }
+        self.deleteButton.selected = NO;
+        self.deleteButton.backgroundColor = RGBA(0, 0, 0, 0.4);
+        self.deleteButton.hidden = YES;
+    }
+    if (!self.nextButton.isHidden && self.nextButton) {
+        self.nextButton.hidden = YES;
+    }
     if (!self.playView.isHidden && self.playView) {
+        if (self.partBubble) {
+            [self.partBubble removeFromSuperview];
+            self.partBubble = nil;
+        }
+        self.deletePartButton.selected = NO;
+        [self.deletePartButton setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+        self.deletePartButton.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
         self.playView.hidden = YES;
     }
     if (self.recordBtn.isHidden && self.recordBtn) {
