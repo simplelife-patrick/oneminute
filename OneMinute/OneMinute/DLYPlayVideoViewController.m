@@ -116,10 +116,10 @@
         self.titleField.text = text;
     }
     self.titleField.textAlignment = NSTextAlignmentCenter;
-    [self.titleField setValue:RGB(255, 255, 255) forKeyPath:@"_placeholderLabel.textColor"];
-    self.titleField.tintColor = RGB(255, 255, 255);
+    [self.titleField setValue:RGBA(255, 255, 255, 0.7) forKeyPath:@"_placeholderLabel.textColor"];
+    self.titleField.tintColor = RGBA(255, 255, 255, 0.7);
     self.titleField.font = FONT_SYSTEM(40);
-    self.titleField.textColor = RGB(255, 255, 255);
+    self.titleField.textColor = RGBA(255, 255, 255, 0.7);
     [self.view addSubview:self.titleField];
     [self.titleField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     

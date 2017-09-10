@@ -176,6 +176,7 @@ UITableViewDataSource
         cell = [[YBPopupMenuCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:identifier];
         cell.textLabel.numberOfLines = 0;
     }
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundColor = [UIColor clearColor];
     cell.textLabel.textColor = _textColor;
     cell.textLabel.font = [UIFont systemFontOfSize:_fontSize];
@@ -250,7 +251,7 @@ UITableViewDataSource
         self.layer.affineTransform = CGAffineTransformMakeScale(1.0, 1.0);
         self.alpha = 1;
         //蒙版的透明度，暂时不显示蒙版
-        _menuBackView.alpha = 1;
+        _menuBackView.alpha = 0;
     } completion:^(BOOL finished) {
         if (self.delegate && [self.delegate respondsToSelector:@selector(ybPopupMenuDidShow)]) {
             [self.delegate ybPopupMenuDidShow];
@@ -263,8 +264,8 @@ UITableViewDataSource
     _cornerRadius = 5.0;
     _rectCorner = UIRectCornerAllCorners;
     self.isShowShadow = YES;
-    _dismissOnSelected = YES;
-    _dismissOnTouchOutside = YES;
+    _dismissOnSelected = NO;
+    _dismissOnTouchOutside = NO;
     _fontSize = 15;
     _textColor = [UIColor whiteColor];
     _offset = 0.0;
@@ -274,7 +275,7 @@ UITableViewDataSource
     _borderColor = [UIColor lightGrayColor];
     _arrowWidth = 15.0;
     _arrowHeight = 10.0;
-    _backColor = [UIColor blackColor];
+    _backColor = RGBA(0, 0, 0, 0.7);
     _type = YBPopupMenuTypeDefault;
     _arrowDirection = YBPopupMenuArrowDirectionTop;
     _priorityDirection = YBPopupMenuPriorityDirectionTop;
