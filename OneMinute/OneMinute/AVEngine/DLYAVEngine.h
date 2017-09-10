@@ -50,17 +50,12 @@ typedef void(^setVideoSpeedBlock)();
 @property (nonatomic, readonly) BOOL                                                  isRecording;
 @property (nonatomic, copy) OnBufferBlock                                             onBuffer;
 @property (nonatomic, copy) TimeLapseSamplebufferBlock                                timeLapseSamplebufferBlock;
-@property (nonatomic, strong) AVCaptureVideoPreviewLayer                              *previewLayer;
+@property (nonatomic, strong) AVCaptureVideoPreviewLayer                              *captureVideoPreviewLayer;
 @property (nonatomic, strong) AVCaptureConnection                                     *videoConnection;
 @property (nonatomic, strong) AVCaptureSession                                        *captureSession;
 @property (nonatomic, strong) NSURL                                                   *currentProductUrl;
 @property (nonatomic, assign) BOOL                                                    isTime;
 @property (nonatomic, strong) NSMutableArray                                          *imageArray;
-//@property (nonatomic, strong) NSMutableArray<DLYMiniVlogPart *>   *moviePaths;  // 录制的原始视频数组
-@property (nonatomic, strong) NSMutableArray<NSString *>       *processedVideoPaths; // 处理播放速度后的视频数组
-@property (nonatomic, copy) setVideoSpeedBlock                 setVideoSpeedBlock; // 视频速度处理完成回调
-@property (nonatomic, strong) NSMutableArray                   *moviePathsArray;
-
 
 - (void) restartRecording;
 - (void) stopRecording;
@@ -162,6 +157,5 @@ typedef void(^setVideoSpeedBlock)();
 - (void) makeExportable;
 //新方法合成视频
 - (void)mergeVideosWithPaths:(NSArray *)paths completed:(void(^)(NSURL *videoPath))completed;
-- (void)setSpeedWithVideo:(DLYMiniVlogPart *)part completed:(void(^)())completed;
 -(long long)getDateTimeTOMilliSeconds:(NSDate *)datetime;
 @end
