@@ -202,7 +202,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     //According to the preview center focus after launch
     CGPoint point = self.previewView.center;
-    CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
+    CGPoint cameraPoint = [self.AVEngine.captureVideoPreviewLayer captureDevicePointOfInterestForPoint:point];
     [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus atPoint:cameraPoint];
     
     if (draftNum == partModelArray.count) {
@@ -268,8 +268,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSUInteger numTouches = [recognizer numberOfTouches], i;
     for ( i = 0; i < numTouches; ++i ) {
         CGPoint location = [recognizer locationOfTouch:i inView:self.previewView];
-        CGPoint convertedLocation = [self.AVEngine.previewLayer convertPoint:location fromLayer:self.AVEngine.previewLayer.superlayer];
-        if ( ! [self.AVEngine.previewLayer containsPoint:convertedLocation] ) {
+        CGPoint convertedLocation = [self.AVEngine.captureVideoPreviewLayer convertPoint:location fromLayer:self.AVEngine.captureVideoPreviewLayer.superlayer];
+        if ( ! [self.AVEngine.captureVideoPreviewLayer containsPoint:convertedLocation] ) {
             allTouchesAreOnThePreviewLayer = NO;
             break;
         }
@@ -294,7 +294,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         [CATransaction begin];
         [CATransaction setAnimationDuration:.025];
-        [self.AVEngine.previewLayer setAffineTransform:CGAffineTransformMakeScale(self.effectiveScale, self.effectiveScale)];
+        [self.AVEngine.captureVideoPreviewLayer setAffineTransform:CGAffineTransformMakeScale(self.effectiveScale, self.effectiveScale)];
         [CATransaction commit];
         self.AVEngine.effectiveScale = self.effectiveScale;
         
@@ -349,7 +349,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSMutableArray *draftArr = [NSMutableArray array];
     
     if (isExitDraft) {
-        NSArray *arr = [self.resource loadDraftPartsFromeCache];
+        NSArray *arr = [self.resource loadDraftPartsFromeDocument];
         
         for (NSURL *url in arr) {
             NSString *partPath = url.path;
@@ -372,6 +372,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         part.recordStatus = @"0";
         part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
+
     }
     /////////////////////////////////
     if (isExitDraft) {
@@ -443,6 +444,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         part.recordStatus = @"0";
         part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
+
     }
     //contentSize更新
     float episodeHeight = (self.vedioEpisode.height - (partModelArray.count - 1) * 2) / partModelArray.count;
@@ -701,7 +703,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (touch.view != self.backView && touch.view != self.sceneView && touch.view != self.playView)
     {
         CGPoint point = [touch locationInView:self.previewView];
-        CGPoint cameraPoint = [self.AVEngine.previewLayer captureDevicePointOfInterestForPoint:point];
+        CGPoint cameraPoint = [self.AVEngine.captureVideoPreviewLayer captureDevicePointOfInterestForPoint:point];
         [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus atPoint:cameraPoint];
         [self setFocusCursorWithPoint:point];
     }
@@ -1366,6 +1368,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         sender.backgroundColor = RGBA(0, 0, 0, 0.4);
         [self.resource removeCurrentAllPartFromCache];
+        [self.resource removeCurrentAllPartFromDocument];
         //数组初始化，view布局
         if (!self.playView.isHidden && self.playView) {
             if (self.partBubble) {
@@ -1420,7 +1423,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [sender setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
         sender.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
         NSInteger partNum = selectPartTag - 10000 - 1;
-        [self.resource removePartWithPartNum:partNum];
+        [self.resource removePartWithPartNumFormCache:partNum];
+        [self.resource removePartWithPartNumFromDocument:partNum];
         [self deleteSelectPartVideo];
     }
     sender.selected = !sender.selected;
@@ -1530,7 +1534,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.AVEngine cancelRecording];
     
     NSInteger partNum = selectPartTag - 10000 - 1;
-    [self.resource removePartWithPartNum:partNum];
+    [self.resource removePartWithPartNumFormCache:partNum];
     
     [_shootTimer invalidate];
     [UIView animateWithDuration:0.5f animations:^{
@@ -2201,11 +2205,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //确定切换模板
 - (void)onSureClickChangeTypeStatus {
     
-    [self.AVEngine.moviePathsArray removeAllObjects];
-    
-    NSString *plistPath = [kPathDocument stringByAppendingFormat:@"/moviePaths.plist"];
-    [self.AVEngine.moviePathsArray writeToFile:plistPath atomically:YES];
-    DLYLog(@"⚠️⚠️⚠️当前已经有% lu个片段",self.AVEngine.moviePathsArray.count);
     [self.resource removeCurrentAllPartFromCache];
     
     //数组初始化，view布局

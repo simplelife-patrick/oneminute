@@ -22,7 +22,6 @@
 		6F12AE6C1F3DB78300CE8CB6 /* DLYDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F12AE691F3DB78300CE8CB6 /* DLYDownloader.m */; };
 		6F12AE6D1F3DB78300CE8CB6 /* DLYDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F12AE6B1F3DB78300CE8CB6 /* DLYDownloadManager.m */; };
 		6F752C861F4D15C800A820D6 /* UniversalTemplateBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 6F752C851F4D15C800A820D6 /* UniversalTemplateBGM.m4a */; };
-		6F7610E31F4C275B00E36081 /* DLYRecordEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F7610E21F4C275B00E36081 /* DLYRecordEncoder.m */; };
 		6F89259C1F1B12A100256093 /* DLYExportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F89259B1F1B12A100256093 /* DLYExportViewController.m */; };
 		6F8925AF1F1B135100256093 /* DLYPlayVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925AE1F1B135100256093 /* DLYPlayVideoViewController.m */; };
 		6F8925BE1F1B139500256093 /* NSObject+JSONCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925B51F1B139500256093 /* NSObject+JSONCategories.m */; };
@@ -122,8 +121,6 @@
 		6F12AE6A1F3DB78300CE8CB6 /* DLYDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYDownloadManager.h; sourceTree = "<group>"; };
 		6F12AE6B1F3DB78300CE8CB6 /* DLYDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYDownloadManager.m; sourceTree = "<group>"; };
 		6F752C851F4D15C800A820D6 /* UniversalTemplateBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = UniversalTemplateBGM.m4a; sourceTree = "<group>"; };
-		6F7610E11F4C275B00E36081 /* DLYRecordEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRecordEncoder.h; sourceTree = "<group>"; };
-		6F7610E21F4C275B00E36081 /* DLYRecordEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRecordEncoder.m; sourceTree = "<group>"; };
 		6F89259A1F1B12A100256093 /* DLYExportViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYExportViewController.h; sourceTree = "<group>"; };
 		6F89259B1F1B12A100256093 /* DLYExportViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYExportViewController.m; sourceTree = "<group>"; };
 		6F8925AD1F1B135100256093 /* DLYPlayVideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYPlayVideoViewController.h; sourceTree = "<group>"; };
@@ -531,8 +528,6 @@
 			children = (
 				AD26F1A61F53E6DE00565E27 /* DLYAVEngine.h */,
 				AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */,
-				6F7610E11F4C275B00E36081 /* DLYRecordEncoder.h */,
-				6F7610E21F4C275B00E36081 /* DLYRecordEncoder.m */,
 				ADFFF1811F18A33000FB5BF7 /* DLYMobileDevice.h */,
 				ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */,
 				ADFFF1831F18A33000FB5BF7 /* DLYVolumeAutomation.h */,
@@ -845,7 +840,6 @@
 				AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */,
 				6FD13AC41F60EC02000B72FC /* DLYIndicatorView.m in Sources */,
 				1C7E618A1EE7DF4F0088F33F /* ViewController.m in Sources */,
-				6F7610E31F4C275B00E36081 /* DLYRecordEncoder.m in Sources */,
 				1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */,
 				ADFFF1AB1F18C00200FB5BF7 /* DLYTransitionInstructions.m in Sources */,
 				6F8925BE1F1B139500256093 /* NSObject+JSONCategories.m in Sources */,

@@ -86,12 +86,20 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
  @return 返回保存URL
  */
 - (NSURL *) saveToSandboxFolderType:(NSSearchPathDirectory)sandboxFolderType subfolderName:(NSString *)subfolderName suffixType:(NSString *)suffixName;
+
 /**
- 按片段序号删除草稿片段
+ 按片段序号删除Cache中的草稿片段
 
  @param partNum 草稿片段序号
  */
-- (void) removePartWithPartNum:(NSInteger)partNum;
+- (void) removePartWithPartNumFormCache:(NSInteger)partNum;
+
+/**
+ 按片段序号删除Document中的草稿片段
+
+ @param partNum 草稿片段序号
+ */
+- (void) removePartWithPartNumFromDocument:(NSInteger)partNum;
 
 /**
  删除Cache中全部草稿片段
