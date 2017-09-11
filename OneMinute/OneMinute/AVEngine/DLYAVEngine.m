@@ -189,14 +189,41 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             DLYLog(@"Audio output add faild !");
         }
         //添加元数据输出
-        if ([_captureSession canAddOutput:self.metadataOutput]) {
-            [_captureSession addOutput:self.metadataOutput];
-            self.metadataOutput.metadataObjectTypes = @[AVMetadataObjectTypeFace];
-        }else{
-            DLYLog(@"Metadate output add faild !");
+        BOOL isCameraAvalible = [self checkCameraAuthorization];
+        if (isCameraAvalible) {
+            if ([_captureSession canAddOutput:self.metadataOutput]) {
+                [_captureSession addOutput:self.metadataOutput];
+                self.metadataOutput.metadataObjectTypes = @[AVMetadataObjectTypeFace];
+            }else{
+                DLYLog(@"Metadate output add faild !");
+            }
         }
     }
     return _captureSession;
+}
+
+- (BOOL)checkCameraAuthorization {
+    __block BOOL isAvalible = NO;
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    switch (status) {
+        case AVAuthorizationStatusAuthorized: //授权
+            isAvalible = YES;
+            break;
+        case AVAuthorizationStatusDenied:   //拒绝，弹框
+        {
+            isAvalible = NO;
+        }
+            break;
+        case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动默认弹框
+        {
+            isAvalible = NO;
+        }
+            break;
+        case AVAuthorizationStatusRestricted:  //受限制，家长控制器
+            isAvalible = NO;
+            break;
+    }
+    return isAvalible;
 }
 
 #pragma mark - Recorder录制会话 输入 配置 -
