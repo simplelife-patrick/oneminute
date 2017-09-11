@@ -678,7 +678,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         // 适配视频速度比率
         CGFloat scale = 0;
         if(_currentPart.recordType == DLYMiniVlogRecordTypeTimelapse){
-            scale = 0.08f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(低帧率)
+            scale = 0.2f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(低帧率)
         } else if (_currentPart.recordType == DLYMiniVlogRecordTypeSlomo) {
             scale = 4.0f;  // 慢速 x4   播放时间拉长帧率平均(高帧率)
         }else{
