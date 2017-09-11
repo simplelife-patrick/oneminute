@@ -48,7 +48,6 @@ static const int ddLogLevel = DDLogLevelError;
 #define kDataFolder @"Data"
 #define kTemplateFolder @"Template"
 #define kResourceFolder @"Resource"
-#define kSampleFolder @"Sample"
 #define kProductFolder @"Product"
 #define kDraftFolder @"Draft"
 #define kBGMFolder @"BGM"
