@@ -105,6 +105,7 @@
 - (void)onClickComplete {
 
     DLYResource *resource = [[DLYResource alloc] init];
+    [resource removeCurrentAllPartFromCache];
     [resource removeCurrentAllPartFromDocument];
     NSArray *arr = self.navigationController.viewControllers;
     DLYRecordViewController *recoedVC = arr[0];

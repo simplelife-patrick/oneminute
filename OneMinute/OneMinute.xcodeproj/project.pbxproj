@@ -54,7 +54,6 @@
 		AD5B80AD1F34133B0094922B /* TravelerTemplateBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80A71F34133B0094922B /* TravelerTemplateBGM.m4a */; };
 		AD5B80AF1F34133B0094922B /* header001.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80AA1F34133B0094922B /* header001.mp4 */; };
 		AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5B80B11F3443080094922B /* UIColor+Hex.m */; };
-		AD5B80B51F344C750094922B /* advertisementVideo(5s).mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80B31F344C750094922B /* advertisementVideo(5s).mp4 */; };
 		AD5B80B61F344C750094922B /* advertisementVideo(10s).mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */; };
 		ADA3709C1F2D11780082AEC6 /* DLYResource.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA3709B1F2D11780082AEC6 /* DLYResource.m */; };
 		ADD0E7D41F2D9F3500996BD6 /* UIImage+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD0E7D31F2D9F3500996BD6 /* UIImage+Extension.m */; };
@@ -174,7 +173,6 @@
 		AD5B80AA1F34133B0094922B /* header001.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = header001.mp4; sourceTree = "<group>"; };
 		AD5B80B01F3443080094922B /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		AD5B80B11F3443080094922B /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
-		AD5B80B31F344C750094922B /* advertisementVideo(5s).mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "advertisementVideo(5s).mp4"; sourceTree = "<group>"; };
 		AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "advertisementVideo(10s).mp4"; sourceTree = "<group>"; };
 		ADA370971F2D11500082AEC6 /* DLYRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRecordViewController.h; sourceTree = "<group>"; };
 		ADA3709A1F2D11780082AEC6 /* DLYResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYResource.h; sourceTree = "<group>"; };
@@ -306,7 +304,6 @@
 		1C7E61821EE7DF4F0088F33F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				AD5B80B31F344C750094922B /* advertisementVideo(5s).mp4 */,
 				AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */,
 				6FA74E8A1F5EC0F100114C93 /* iconfont.ttf */,
 				ADFFF1A51F18A36700FB5BF7 /* DLYPrefixHeader.pch */,
@@ -718,7 +715,6 @@
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				AD5B80B61F344C750094922B /* advertisementVideo(10s).mp4 in Resources */,
 				6FA74E8B1F5EC0F100114C93 /* iconfont.ttf in Resources */,
-				AD5B80B51F344C750094922B /* advertisementVideo(5s).mp4 in Resources */,
 				AD5B80AB1F34133B0094922B /* ColorLifeTemplateBGM.m4a in Resources */,
 				AD5A06A41F33058A00F26693 /* Travele001.json in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
