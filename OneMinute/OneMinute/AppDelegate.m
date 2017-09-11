@@ -50,12 +50,6 @@
                 [fileManager createDirectoryAtPath:templatePath withIntermediateDirectories:YES attributes:nil error:nil];
             }
             
-            NSString *samplesPath = [dataPath stringByAppendingPathComponent:kSampleFolder];
-            
-            if (![fileManager fileExistsAtPath:samplesPath]) {
-                [fileManager createDirectoryAtPath:samplesPath withIntermediateDirectories:YES attributes:nil error:nil];
-            }
-            
             NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
             
             if (![fileManager fileExistsAtPath:draftPath]) {

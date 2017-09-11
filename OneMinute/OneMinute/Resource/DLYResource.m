@@ -284,32 +284,41 @@
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
         
         NSArray *draftArray = [self.fileManager contentsOfDirectoryAtPath:draftPath error:nil];
-        BOOL isSuccess = false;
-        for (NSString *path in draftArray) {
-            if ([path hasSuffix:@"mov"]) {
-                NSString *targetPath = [draftPath stringByAppendingFormat:@"/%@",path];
-                isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
+        BOOL isSuccess = NO;
+        if ([draftArray count] != 0) {
+            for (NSString *path in draftArray) {
+                if ([path hasSuffix:@"mov"]) {
+                    NSString *targetPath = [draftPath stringByAppendingFormat:@"/%@",path];
+                    isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
+                }
             }
+            DLYLog(@"%@",isSuccess?@"⛳️⛳️⛳️成功删除Cache中全部草稿片段":@"删除Cache中全部草稿片段失败");
+        }else{
+            DLYLog(@"现在Cache中无视频片段");
         }
-        DLYLog(@"%@",isSuccess?@"⛳️⛳️⛳️成功删除Cache中全部草稿片段":@"删除Cache中全部草稿片段失败");
     }
 }
 - (void) removeCurrentAllPartFromDocument{
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    
+
     NSString *draftPath = [self getDraftFolderDocument];
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
         
         NSArray *draftArray = [self.fileManager contentsOfDirectoryAtPath:draftPath error:nil];
-        BOOL isSuccess = false;
-        for (NSString *path in draftArray) {
-            if ([path hasSuffix:@"mp4"]) {
-                NSString *targetPath = [draftPath stringByAppendingFormat:@"/%@",path];
-                isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
+        BOOL isSuccess = NO;
+        
+        if ([draftArray count] != 0) {
+            for (NSString *path in draftArray) {
+                if ([path hasSuffix:@"mp4"]) {
+                    NSString *targetPath = [draftPath stringByAppendingFormat:@"/%@",path];
+                    isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
+                }
             }
+            DLYLog(@"%@",isSuccess?@"⛳️⛳️⛳️成功删除Document全部草稿片段":@"删除Document全部草稿片段失败");
+        }else{
+            DLYLog(@"现在Document中无视频片段");
         }
-        DLYLog(@"%@",isSuccess?@"⛳️⛳️⛳️成功删除Document全部草稿片段":@"删除Document全部草稿片段失败");
     }
 }
 - (NSURL *) getPartUrlWithPartNum:(NSInteger)partNum{
