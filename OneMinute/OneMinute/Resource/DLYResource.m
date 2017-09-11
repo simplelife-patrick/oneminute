@@ -284,7 +284,7 @@
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
         
         NSArray *draftArray = [self.fileManager contentsOfDirectoryAtPath:draftPath error:nil];
-        BOOL isSuccess = false;
+        BOOL isSuccess = NO;
         for (NSString *path in draftArray) {
             if ([path hasSuffix:@"mov"]) {
                 NSString *targetPath = [draftPath stringByAppendingFormat:@"/%@",path];
@@ -302,7 +302,7 @@
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
         
         NSArray *draftArray = [self.fileManager contentsOfDirectoryAtPath:draftPath error:nil];
-        BOOL isSuccess = false;
+        BOOL isSuccess = NO;
         for (NSString *path in draftArray) {
             if ([path hasSuffix:@"mp4"]) {
                 NSString *targetPath = [draftPath stringByAppendingFormat:@"/%@",path];
