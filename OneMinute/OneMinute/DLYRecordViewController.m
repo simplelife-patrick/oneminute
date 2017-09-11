@@ -44,6 +44,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     BOOL isNeededToSave;
     BOOL isMicGranted;//麦克风权限是否被允许
     BOOL isFront;
+    BOOL isSlomoCamera;
     CGFloat _initialPinchZoom;
 }
 @property (nonatomic,assign) CGFloat                            beginGestureScale;//记录开始的缩放比例
@@ -373,7 +374,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         part.recordStatus = @"0";
         part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
-
+        
     }
     /////////////////////////////////
     if (isExitDraft) {
@@ -445,7 +446,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         part.recordStatus = @"0";
         part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
-
+        
     }
     //contentSize更新
     float episodeHeight = (self.vedioEpisode.height - (partModelArray.count - 1) * 2) / partModelArray.count;
@@ -1226,6 +1227,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)toggleCameraAction {
     
     [MobClick event:@"toggleCamera"];
+    if (isSlomoCamera) {
+        return;
+    }
     self.toggleCameraBtn.selected = !self.toggleCameraBtn.selected;
     if (self.toggleCameraBtn.selected) {
         [self.AVEngine changeCameraInputDeviceisFront:YES];
@@ -1355,7 +1359,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //删除全部视频
 - (void)onClickDelete:(UIButton *)sender {
     [MobClick event:@"DeleteAll"];
-
+    
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"deleteAllPopup"]){
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"deleteAllPopup"];
         self.allBubble = [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除全部片段"] icons:nil menuWidth:120 delegate:self];
@@ -1408,7 +1412,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //删除某个片段
 - (void)onClickDeletePartVideo:(UIButton *)sender {
     [MobClick event:@"DeletePart"];
-
+    
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"deletePartPopup"]){
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"deletePartPopup"];
         self.partBubble = [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除该片段"] icons:nil menuWidth:120 delegate:self];
@@ -1658,6 +1662,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     {
         episodeHeight = (SCREEN_WIDTH - 30  * SCREEN_WIDTH/375 - (partModelArray.count - 1) * 2) / partModelArray.count;
     }
+    [self.toggleCameraBtn setImage:[UIImage imageWithIcon:@"\U0000e668" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    isSlomoCamera = NO;
     BOOL isAllPart = YES;
     for(int i = 1; i <= partModelArray.count; i ++)
     {
@@ -1780,6 +1786,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
                     icon.image = [UIImage imageWithIcon:@"\U0000e670" inFont:ICONFONT size:19 color:[UIColor whiteColor]];
                     [itemView addSubview:icon];
+                    
+                    //判断切换摄像头
+                    if (self.toggleCameraBtn.selected) {
+                        [self.AVEngine changeCameraInputDeviceisFront:NO];
+                        self.toggleCameraBtn.selected = NO;
+                    }
+                    [self.toggleCameraBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateNormal];
+                    isSlomoCamera = YES;
                 }else
                 {//延时
                     UILabel * timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 39, 12)];
@@ -1828,6 +1842,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     NSMutableArray *leftModelArray = [NSMutableArray arrayWithArray:partModelArray];
     leftModelArray = (NSMutableArray *)[[leftModelArray reverseObjectEnumerator] allObjects];
+    [self.toggleCameraBtn setImage:[UIImage imageWithIcon:@"\U0000e668" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    isSlomoCamera = NO;
     BOOL isAllPart = YES;
     for(int i = 1; i <= leftModelArray.count; i ++)
     {
@@ -1958,6 +1974,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     icon.image = [UIImage imageWithIcon:@"\U0000e670" inFont:ICONFONT size:19 color:[UIColor whiteColor]];
                     [itemView addSubview:icon];
                     
+                    //判断切换摄像头
+                    if (self.toggleCameraBtn.selected) {
+                        [self.AVEngine changeCameraInputDeviceisFront:NO];
+                        self.toggleCameraBtn.selected = NO;
+                    }
+                    [self.toggleCameraBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateNormal];
+                    isSlomoCamera = YES;
                 }else
                 {//延时
                     UILabel * timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 39, 12)];
