@@ -2206,6 +2206,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)onSureClickChangeTypeStatus {
     
     [self.resource removeCurrentAllPartFromCache];
+    [self.resource removeCurrentAllPartFromDocument];
     
     //数组初始化，view布局
     if (!self.deleteButton.isHidden && self.deleteButton) {
