@@ -519,14 +519,12 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 -(void)focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point{
     
     AVCaptureDevice *captureDevice = _captureDeviceInput.device;
-    CGPoint currentPoint = CGPointZero;
     
     if ([captureDevice lockForConfiguration:nil]) {
         
-        //        CGFloat distance = distanceBetweenPoints(currentPoint, point);
         // 设置对焦
-        if ([captureDevice isFocusModeSupported:AVCaptureFocusModeAutoFocus]) {
-            [captureDevice setFocusMode:AVCaptureFocusModeAutoFocus];
+        if ([captureDevice isFocusModeSupported:AVCaptureFocusModeContinuousAutoFocus]) {
+            [captureDevice setFocusMode:AVCaptureFocusModeContinuousAutoFocus];
         }
         if ([captureDevice isFocusPointOfInterestSupported]) {
             [captureDevice setFocusPointOfInterest:point];
@@ -545,8 +543,8 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             [captureDevice setWhiteBalanceMode:AVCaptureWhiteBalanceModeAutoWhiteBalance];
         }
         [captureDevice unlockForConfiguration];
-        currentPoint = point;
-        NSLog(@"Current point of the capture device is :x = %f,y = %f",currentPoint.x,currentPoint.y);
+        
+        NSLog(@"Current point of the capture device is :x = %f,y = %f",point.x,point.y);
     }
 }
 
@@ -680,7 +678,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         // 适配视频速度比率
         CGFloat scale = 0;
         if(_currentPart.recordType == DLYMiniVlogRecordTypeTimelapse){
-            scale = 0.4f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(低帧率)
+            scale = 0.08f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(低帧率)
         } else if (_currentPart.recordType == DLYMiniVlogRecordTypeSlomo) {
             scale = 4.0f;  // 慢速 x4   播放时间拉长帧率平均(高帧率)
         }else{
@@ -740,7 +738,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 - (void)cameraBackgroundDidClickCloseSlow {
     
     [self.captureSession stopRunning];
-    CGFloat desiredFPS = 60.0f;
+    CGFloat desiredFPS = 50.0f;
     NSLog(@"当前设置的录制帧率是: %f",desiredFPS);
     AVCaptureDeviceFormat *selectedFormat = nil;
     int32_t maxWidth = 0;
