@@ -22,7 +22,7 @@
 #import "ALAssetsLibrary+CustomPhotoAlbum.h"
 #import <math.h>
 #import "DLYMovieObject.h"
-
+#import "DLYIndicatorView.h"
 
 @interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate>
 {
@@ -48,7 +48,6 @@
     CMTime _lastAudio;//记录上一次音频数据文件的CMTime
 }
 
-@property (nonatomic, strong) AVCaptureVideoDataOutput          *videoDataOutput;
 @property (nonatomic, strong) AVCaptureAudioDataOutput          *audioDataOutput;
 @property (nonatomic, strong) AVCaptureMetadataOutput           *metadataOutput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *frontCameraInput;
@@ -85,7 +84,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 @property (nonatomic) CMTime                                   defaultMinFrameDuration;
 @property (nonatomic) CMTime                                   defaultMaxFrameDuration;
 @property (nonatomic, strong) NSString                         *plistPath;
-@property (nonatomic, strong) DLYMiniVlogPart                  *currentPart;
 @property (nonatomic, assign) DLYPhoneDeviceType               currentPhoneModel;
 
 @end
@@ -400,28 +398,28 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     NSLog(@"切换摄像头 <<<前>>> 的录制方向 :%ld",(long)self.videoConnection.videoOrientation);
     if (isFront) {
         
+        self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         [self.captureSession beginConfiguration];
         [self.captureSession removeInput:self.backCameraInput];
         
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.frontCameraInput];//切换成了前置
-            self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+//            self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
 
-            self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         }
         NSLog(@"✅✅✅当前视频连接的视频方向为 :%lu",self.videoConnection.videoOrientation);
         NSLog(@"✅✅✅当前预览方向为 :%lu",self.videoConnection.videoPreviewLayer.orientation);
     }else {
         
+        self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
         [self.captureSession beginConfiguration];
         [self.captureSession removeInput:self.frontCameraInput];
         if ([self.captureSession canAddInput:self.backCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.backCameraInput];//切换成了后置
-            self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+//            self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
 
-            self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         }
     }
     [self.captureSession commitConfiguration];
@@ -828,7 +826,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     [addData writeToFile:_plistPath atomically:YES];
     
     // 导出视频的临时保存路径
-    
     NSString *exportPath;
     
     NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
@@ -841,11 +838,22 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
     NSURL *exportUrl = [NSURL fileURLWithPath:exportPath];
     
-    typeof(self) weakSelf = self;
-    [self setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl completed:^{
-        DLYLog(@"第 %lu 个片段调速完成",weakSelf.currentPart.partNum + 1);
-        [self.resource removePartWithPartNumFormCache:weakSelf.currentPart.partNum];
-    }];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        __block DLYIndicatorView *tipView = nil;
+        UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+        tipView = [[DLYIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 180, 210)];
+        tipView.titlelabel.text = @"片段处理中...";
+        tipView.center = keyWindow.center;
+        [keyWindow addSubview:tipView];
+        [tipView startFlashAnimating];
+        typeof(self) weakSelf = self;
+        [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl completed:^{
+            DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
+            [self.resource removePartWithPartNumFormCache:self.currentPart.partNum];
+            [tipView stopFlashAnimating];
+            [tipView removeFromSuperview];
+        }];
+    });
 }
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{

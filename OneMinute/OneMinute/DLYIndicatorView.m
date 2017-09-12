@@ -14,8 +14,6 @@
 }
 
 @property (nonatomic, strong) UIView *mainView;
-@property (nonatomic, strong) UILabel *titlelabel;
-
 @property (nonatomic, strong) NSTimer *flashTimer;
 @property (nonatomic, assign) NSInteger num;
 

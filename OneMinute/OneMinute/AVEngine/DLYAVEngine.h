@@ -56,6 +56,7 @@ typedef void(^setVideoSpeedBlock)();
 @property (nonatomic, strong) NSURL                                                   *currentProductUrl;
 @property (nonatomic, assign) BOOL                                                    isTime;
 @property (nonatomic, strong) NSMutableArray                                          *imageArray;
+@property (nonatomic, strong) DLYMiniVlogPart                  *currentPart;
 
 - (void) restartRecording;
 - (void) stopRecording;
@@ -150,6 +151,7 @@ typedef void(^setVideoSpeedBlock)();
 
 - (void) focusOnceWithPoint:(CGPoint)point;
 -(void)focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point;
+- (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl completed:(void(^)())completed;
 
 //新方法合成视频
 -(long long)getDateTimeTOMilliSeconds:(NSDate *)datetime;
