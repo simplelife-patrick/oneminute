@@ -56,6 +56,7 @@ typedef void(^setVideoSpeedBlock)();
 @property (nonatomic, strong) NSURL                                                   *currentProductUrl;
 @property (nonatomic, assign) BOOL                                                    isTime;
 @property (nonatomic, strong) NSMutableArray                                          *imageArray;
+@property (nonatomic, strong) DLYMiniVlogPart                  *currentPart;
 
 - (void) restartRecording;
 - (void) stopRecording;
@@ -116,11 +117,11 @@ typedef void(^setVideoSpeedBlock)();
  合并并添加转场效果
 
  @param videoTitle 视频标题
+ @param newUrl  片头要添加上去的片段地址(需要传入单独处理)
  @param successBlock 成功回调
  @param failureBlcok 失败回调
  */
-- (void) addTransitionEffectWithTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
-
+- (void) addTransitionEffectWithTitle:(NSString *)videoTitle andURL:(NSURL*)newUrl SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
 /**
  添加片头
  
@@ -150,12 +151,8 @@ typedef void(^setVideoSpeedBlock)();
 
 - (void) focusOnceWithPoint:(CGPoint)point;
 -(void)focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point;
+- (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl completed:(void(^)())completed;
 
-/**
- 创建导出会话
- */
-- (void) makeExportable;
 //新方法合成视频
-- (void)mergeVideosWithPaths:(NSArray *)paths completed:(void(^)(NSURL *videoPath))completed;
 -(long long)getDateTimeTOMilliSeconds:(NSDate *)datetime;
 @end

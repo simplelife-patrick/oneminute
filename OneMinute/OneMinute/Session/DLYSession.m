@@ -45,7 +45,7 @@
     return currentTemplate;
 
 }
-- (BOOL) isExitdraftAtFile{
+- (BOOL) isExistDraftAtFile{
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
@@ -58,9 +58,8 @@
         if ([fileManager fileExistsAtPath:draftPath]) {
         
             NSArray *draftArray = [fileManager contentsOfDirectoryAtPath:draftPath error:nil];
-            DLYLog(@"The current folder have %lu files",(unsigned long)draftArray.count);
+            DLYLog(@"当前模板已经有 %lu 个完成的片段",[draftArray count]);
             if ([draftArray count]) {
-                //Draft box is not empty
                 return YES;
             }
         }
@@ -77,7 +76,7 @@
 
 - (void)resetSession{
     
-    if ([self isExitdraftAtFile]) {
+    if ([self isExistDraftAtFile]) {
         
         DLYMiniVlogTemplate *currentTemplate = [self currentTemplate];
         
