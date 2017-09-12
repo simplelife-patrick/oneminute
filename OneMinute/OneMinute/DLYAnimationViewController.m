@@ -70,8 +70,19 @@
         
         UIView *view = (UIView *)[self.view viewWithTag:10000 + i];
         view.alpha = 1;
-        
-        if (self.num == 15) {
+        if (self.num == 3) {
+            UIView *view = (UIView *)[self.view viewWithTag:10002];
+            view.alpha = 0.3;
+        }else if (self.num == 4){
+            UIView *view = (UIView *)[self.view viewWithTag:10003];
+            view.alpha = 0.3;
+        }else if (self.num == 9){
+            UIView *view = (UIView *)[self.view viewWithTag:10002];
+            view.alpha = 0.7;
+        }else if (self.num == 10){
+            UIView *view = (UIView *)[self.view viewWithTag:10003];
+            view.alpha = 0.7;
+        }else if (self.num == 15){
             UIView *view = (UIView *)[self.view viewWithTag:10002];
             view.alpha = 1;
         }else if (self.num == 16){
