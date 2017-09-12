@@ -346,7 +346,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     self.btnImg = @[@"\U0000e665", @"\U0000e780", @"\U0000e6f1", @"\U0000e671", @"\U0000e7b0"];
     
-    BOOL isExitDraft = [self.session isExitdraftAtFile];
+    BOOL isExitDraft = [self.session isExitDraftAtFile];
     NSMutableArray *draftArr = [NSMutableArray array];
     
     if (isExitDraft) {

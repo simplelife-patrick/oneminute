@@ -36,7 +36,7 @@
 
  @return 返回结果
  */
-- (BOOL) isExitdraftAtFile;
+- (BOOL) isExitDraftAtFile;
 
 /**
  传入模板编号返回模板数据
