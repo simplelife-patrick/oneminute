@@ -45,7 +45,7 @@
     return currentTemplate;
 
 }
-- (BOOL) isExitDraftAtFile{
+- (BOOL) isExistDraftAtFile{
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
@@ -76,7 +76,7 @@
 
 - (void)resetSession{
     
-    if ([self isExitDraftAtFile]) {
+    if ([self isExistDraftAtFile]) {
         
         DLYMiniVlogTemplate *currentTemplate = [self currentTemplate];
         
