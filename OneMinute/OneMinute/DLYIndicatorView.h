@@ -10,6 +10,8 @@
 
 @interface DLYIndicatorView : UIView
 
+@property (nonatomic, strong) UILabel *titlelabel;
+
 - (void)startFlashAnimating;
 
 - (void)stopFlashAnimating;
