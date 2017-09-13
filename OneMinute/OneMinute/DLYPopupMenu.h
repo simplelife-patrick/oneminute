@@ -70,6 +70,11 @@ typedef NS_ENUM(NSInteger , YBPopupMenuPriorityDirection) {
 @property (nonatomic, assign) BOOL showMaskView;
 
 /**
+ 覆盖层透明度 Default is 0
+ */
+@property (nonatomic, assign) float showMaskAlpha;
+
+/**
  选择菜单项后消失 Default is YES
  */
 @property (nonatomic, assign) BOOL dismissOnSelected;
@@ -171,10 +176,10 @@ typedef NS_ENUM(NSInteger , YBPopupMenuPriorityDirection) {
  @param delegate  代理
  */
 + (DLYPopupMenu *)showAtPoint:(CGPoint)point
-                      titles:(NSArray *)titles
-                       icons:(NSArray *)icons
-                   menuWidth:(CGFloat)itemWidth
-                    delegate:(id<YBPopupMenuDelegate>)delegate;
+                       titles:(NSArray *)titles
+                        icons:(NSArray *)icons
+                    menuWidth:(CGFloat)itemWidth
+                     delegate:(id<YBPopupMenuDelegate>)delegate;
 
 /**
  在指定位置弹出(推荐方法)
@@ -186,10 +191,10 @@ typedef NS_ENUM(NSInteger , YBPopupMenuPriorityDirection) {
  @param otherSetting   其他设置
  */
 + (DLYPopupMenu *)showAtPoint:(CGPoint)point
-                      titles:(NSArray *)titles
-                       icons:(NSArray *)icons
-                   menuWidth:(CGFloat)itemWidth
-               otherSettings:(void (^) (DLYPopupMenu * popupMenu))otherSetting;
+                       titles:(NSArray *)titles
+                        icons:(NSArray *)icons
+                    menuWidth:(CGFloat)itemWidth
+                otherSettings:(void (^) (DLYPopupMenu * popupMenu))otherSetting;
 
 /**
  依赖指定view弹出
@@ -200,10 +205,10 @@ typedef NS_ENUM(NSInteger , YBPopupMenuPriorityDirection) {
  @param delegate  代理
  */
 + (DLYPopupMenu *)showRelyOnView:(UIView *)view
-                         titles:(NSArray *)titles
-                          icons:(NSArray *)icons
-                      menuWidth:(CGFloat)itemWidth
-                       delegate:(id<YBPopupMenuDelegate>)delegate;
+                          titles:(NSArray *)titles
+                           icons:(NSArray *)icons
+                       menuWidth:(CGFloat)itemWidth
+                        delegate:(id<YBPopupMenuDelegate>)delegate;
 
 /**
  依赖指定view弹出(推荐方法)
@@ -214,10 +219,10 @@ typedef NS_ENUM(NSInteger , YBPopupMenuPriorityDirection) {
  @param otherSetting   其他设置
  */
 + (DLYPopupMenu *)showRelyOnView:(UIView *)view
-                         titles:(NSArray *)titles
-                          icons:(NSArray *)icons
-                      menuWidth:(CGFloat)itemWidth
-                  otherSettings:(void (^) (DLYPopupMenu * popupMenu))otherSetting;
+                          titles:(NSArray *)titles
+                           icons:(NSArray *)icons
+                       menuWidth:(CGFloat)itemWidth
+                   otherSettings:(void (^) (DLYPopupMenu * popupMenu))otherSetting;
 
 /**
  消失

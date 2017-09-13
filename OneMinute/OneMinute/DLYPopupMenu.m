@@ -151,14 +151,15 @@ UITableViewDataSource
     [UIView animateWithDuration: 0.25 animations:^{
         self.layer.affineTransform = CGAffineTransformMakeScale(0.1, 0.1);
         self.alpha = 0;
-        _menuBackView.alpha = 0;
+        _menuBackView.alpha = 1;
+        [self removeFromSuperview];
+        [_menuBackView removeFromSuperview];
     } completion:^(BOOL finished) {
         if (self.delegate && [self.delegate respondsToSelector:@selector(ybPopupMenuDidDismiss)]) {
             [self.delegate ybPopupMenuDidDismiss];
         }
         self.delegate = nil;
-        [self removeFromSuperview];
-        [_menuBackView removeFromSuperview];
+        
     }];
 }
 
@@ -264,8 +265,8 @@ UITableViewDataSource
     _cornerRadius = 5.0;
     _rectCorner = UIRectCornerAllCorners;
     self.isShowShadow = YES;
-    _dismissOnSelected = NO;
-    _dismissOnTouchOutside = NO;
+    _dismissOnSelected = YES;
+    _dismissOnTouchOutside = YES;
     _fontSize = 15;
     _textColor = [UIColor whiteColor];
     _offset = 0.0;
@@ -361,6 +362,12 @@ UITableViewDataSource
 {
     _textColor = textColor;
     [self.tableView reloadData];
+}
+
+- (void)setShowMaskAlpha:(float)showMaskAlpha
+{
+    _showMaskAlpha = showMaskAlpha;
+    _menuBackView.alpha = _showMaskAlpha;
 }
 
 - (void)setPoint:(CGPoint)point
