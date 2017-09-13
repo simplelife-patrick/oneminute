@@ -850,8 +850,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl completed:^{
             DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
             [self.resource removePartWithPartNumFormCache:self.currentPart.partNum];
-            [tipView stopFlashAnimating];
-            [tipView removeFromSuperview];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [tipView stopFlashAnimating];
+                [tipView removeFromSuperview];
+            });
         }];
     });
 }
