@@ -92,6 +92,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIView *typeView;             //场景view
 @property (nonatomic, strong) DLYPopupMenu *partBubble;     //删除单个气泡
 @property (nonatomic, strong) DLYPopupMenu *allBubble;      //删除全部气泡
+@property (nonatomic, strong) NSMutableArray *viewArr;      //视图数组
+@property (nonatomic, strong) NSMutableArray *bubbleTitleArr;//视图数组
+@property (nonatomic, assign) BOOL isAvalible;              //权限都已经许可
 
 @end
 
@@ -185,8 +188,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self monitorPermission];
-
+    self.isAvalible = [self monitorPermission];
+    
     av_register_all();
     
     self.isAppear = YES;
@@ -215,6 +218,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.nextButton.transform = CGAffineTransformMakeRotation(M_PI);
         }
         self.nextButton.hidden = NO;
+        if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showNextButtonPopup"]){
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showNextButtonPopup"];
+            DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.nextButton titles:@[@"去合成视频"] icons:nil menuWidth:120 delegate:self];
+            normalBubble.showMaskAlpha = 1;
+        }
         if (self.newState == 1) {
             self.deleteButton.transform = CGAffineTransformMakeRotation(0);
         }else {
@@ -222,6 +230,46 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         self.deleteButton.hidden = NO;
     }
+}
+#pragma mark ==== 气泡
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    if (self.isAvalible) {
+        [self showCueBubble];
+    }
+}
+
+- (void)showCueBubble {
+    
+    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showFirstPopup"]){
+        
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showFirstPopup"];
+        NSArray *arr = @[self.chooseScene, self.flashButton, self.toggleCameraBtn, self.recordBtn];
+        self.viewArr = [NSMutableArray arrayWithArray:arr];
+        NSArray *titleArr = @[@"选择场景", @"闪光灯", @"切换摄像头", @"录制视频"];
+        self.bubbleTitleArr = [NSMutableArray arrayWithArray:titleArr];
+        [self showPopupMenu];
+    }
+}
+
+- (void)showPopupMenu {
+    
+    if (self.viewArr.count == 0) {
+        return;
+    }
+    UIButton *btn = self.viewArr[0];
+    NSString *title = self.bubbleTitleArr[0];
+    NSArray *titles = @[title];
+    DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:btn titles:titles icons:nil menuWidth:120 delegate:self];
+    normalBubble.showMaskAlpha = 1;
+    [self.viewArr removeObjectAtIndex:0];
+    [self.bubbleTitleArr removeObjectAtIndex:0];
+}
+//气泡消失的代理方法
+- (void)ybPopupMenuDidDismiss {
+    [self showPopupMenu];
 }
 
 #pragma mark - GestureRecognizer Delegate -
@@ -1227,6 +1275,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     [MobClick event:@"toggleCamera"];
     if (isSlomoCamera) {
+        if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showSlomoCameraPopup"]){
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showSlomoCameraPopup"];
+            DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.toggleCameraBtn titles:@[@"慢镜头不能摄像头"] icons:nil menuWidth:120 delegate:self];
+            normalBubble.showMaskAlpha = 1;
+        }
         return;
     }
     self.toggleCameraBtn.selected = !self.toggleCameraBtn.selected;
@@ -1288,6 +1341,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     } completion:^(BOOL finished) {
         self.sceneView.hidden = NO;
         self.sceneView.alpha = 1;
+        //气泡
+        if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showSeeRushPopup"]){
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showSeeRushPopup"];
+            DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.seeRush titles:@[@"观看样片"] icons:nil menuWidth:120 delegate:self];
+            normalBubble.showMaskAlpha = 1;
+        }
     }];
     
 }
@@ -1362,6 +1421,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"deleteAllPopup"]){
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"deleteAllPopup"];
         self.allBubble = [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除全部片段"] icons:nil menuWidth:120 delegate:self];
+        self.allBubble.showMaskAlpha = 0;
+        self.allBubble.dismissOnTouchOutside = NO;
+        self.allBubble.dismissOnSelected = NO;
     }
     if (sender.selected == NO) {
         self.deleteButton.backgroundColor = RGBA(255, 0, 0, 1);
@@ -1415,6 +1477,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"deletePartPopup"]){
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"deletePartPopup"];
         self.partBubble = [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除该片段"] icons:nil menuWidth:120 delegate:self];
+        self.partBubble.showMaskAlpha = 0;
+        self.partBubble.dismissOnTouchOutside = NO;
+        self.partBubble.dismissOnSelected = NO;
+        
     }
     if (sender.selected == NO) {
         [sender setImage:[UIImage imageWithIcon:@"\U0000e669" inFont:ICONFONT size:24 color:RGB(255, 0, 0)] forState:UIControlStateNormal];
@@ -2090,6 +2156,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             cursorTag = selectPartTag;
             self.playView.hidden = NO;
             self.recordBtn.hidden = YES;
+            if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showPlayButtonPopup"]){
+                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showPlayButtonPopup"];
+                DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.playButton titles:@[@"预览视频片段"] icons:nil menuWidth:120 delegate:self];
+                normalBubble.showMaskAlpha = 1;
+            }
         } completion:^(BOOL finished) {
             
         }];
@@ -2645,6 +2716,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                             self.nextButton.transform = CGAffineTransformMakeRotation(M_PI);
                         }
                         self.nextButton.hidden = NO;
+                        if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showNextButtonPopup"]){
+                            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showNextButtonPopup"];
+                            DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.nextButton titles:@[@"去合成视频"] icons:nil menuWidth:120 delegate:self];
+                            normalBubble.showMaskAlpha = 1;
+                        }
                         if (self.newState == 1) {
                             self.deleteButton.transform = CGAffineTransformMakeRotation(0);
                         }else {
@@ -2662,11 +2738,17 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 #pragma mark ==== 权限访问
-- (void)monitorPermission {
+- (BOOL)monitorPermission {
     //相机 麦克风 相册
-    [self checkVideoCameraAuthorization];
-    [self checkVideoMicrophoneAudioAuthorization];
-    [self checkVideoPhotoAuthorization];
+    BOOL isCamera = [self checkVideoCameraAuthorization];
+    BOOL isMicrophone = [self checkVideoMicrophoneAudioAuthorization];
+    BOOL isPhoto = [self checkVideoPhotoAuthorization];
+    
+    if(isCamera && isMicrophone && isPhoto){
+        return YES;
+    }else {
+        return NO;
+    }
 }
 //监听通知，APP进入前台
 - (void)recordViewWillEnterForeground {
@@ -2696,6 +2778,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
                 if (status == PHAuthorizationStatusAuthorized) {
                     isAvalible = YES;
+                    BOOL isCamera = [self checkVideoCameraAuthorization];
+                    BOOL isMicrophone = [self checkVideoMicrophoneAudioAuthorization];
+                    if (isCamera && isMicrophone) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self showCueBubble];
+                        });
+                    }
                 }else{
                     isAvalible = NO;  //回到主线程
                     dispatch_async(dispatch_get_main_queue(), ^{
