@@ -128,7 +128,7 @@
     }
     return nil;
 }
--(NSArray *)loadDraftPartsFromeCache{
+-(NSArray *)loadDraftPartsFromCache{
     
     NSString *draftPath = [kCachePath stringByAppendingPathComponent:kDraftFolder];
     if ([self.fileManager fileExistsAtPath:draftPath]) {
@@ -147,7 +147,7 @@
     }
     return nil;
 }
-- (NSArray *) loadDraftPartsFromeDocument{
+- (NSArray *) loadDraftPartsFromDocument{
     NSMutableArray *videoArray = [NSMutableArray array];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];

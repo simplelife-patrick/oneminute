@@ -1106,7 +1106,7 @@ BOOL isOnce = YES;
 #pragma mark - 片头 -
 - (void) addVideoHeadertWithTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
     
-    NSArray *videoPathArray = [self.resource loadDraftPartsFromeDocument];
+    NSArray *videoPathArray = [self.resource loadDraftPartsFromDocument];
     NSString *path = @"outputMovie1.mp4";
     
     unlink([path UTF8String]);
@@ -1405,7 +1405,7 @@ BOOL isOnce = YES;
     CMTime transitionDuration = CMTimeMake(1, 1);
     CMTime audioCursorTime = kCMTimeZero;
     
-    NSArray *videoPathArray = [self.resource loadDraftPartsFromeDocument];
+    NSArray *videoPathArray = [self.resource loadDraftPartsFromDocument];
     
     for (NSUInteger i = 0; i < videoPathArray.count; i++) {
         

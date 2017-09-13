@@ -44,14 +44,14 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
  
  @return 返回草稿全部片段
  */
-- (NSArray *)loadDraftPartsFromeCache;
+- (NSArray *)loadDraftPartsFromCache;
 
 /**
  加载草稿片段从Document
 
  @return 返回全部草稿片段
  */
-- (NSArray *) loadDraftPartsFromeDocument;
+- (NSArray *) loadDraftPartsFromDocument;
 /**
  保存草稿片段到沙盒中
 
