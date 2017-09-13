@@ -406,8 +406,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.frontCameraInput];//切换成了前置
-//            self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
-
+            //            self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+            
         }
         NSLog(@"✅✅✅当前视频连接的视频方向为 :%lu",self.videoConnection.videoOrientation);
         NSLog(@"✅✅✅当前预览方向为 :%lu",self.videoConnection.videoPreviewLayer.orientation);
@@ -419,8 +419,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([self.captureSession canAddInput:self.backCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.backCameraInput];//切换成了后置
-//            self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
-
+            //            self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+            
         }
     }
     [self.captureSession commitConfiguration];
@@ -656,7 +656,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         self.isPaused = YES;
     }
     _isRecording = NO;
-
+    
 }
 
 #pragma mark - 取消录制 -
@@ -734,7 +734,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 }
 #pragma mark - 打开慢动作录制 -
 - (void)cameraBackgroundDidClickOpenSlow {
-
+    
     [self.captureSession stopRunning];
     CGFloat desiredFPS = 240.0;
     NSLog(@"当前设置的录制帧率是: %f",desiredFPS);
@@ -788,10 +788,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     if (selectedFormat) {
         if ([_captureDeviceInput.device lockForConfiguration:nil]) {
             
-//            _captureDeviceInput.device.activeFormat = _defaultFormat;
-//            _captureDeviceInput.device.activeVideoMinFrameDuration = _defaultMinFrameDuration;
-//            _captureDeviceInput.device.activeVideoMaxFrameDuration = _defaultMaxFrameDuration;
-//            [_captureDeviceInput.device unlockForConfiguration];
+            //            _captureDeviceInput.device.activeFormat = _defaultFormat;
+            //            _captureDeviceInput.device.activeVideoMinFrameDuration = _defaultMinFrameDuration;
+            //            _captureDeviceInput.device.activeVideoMaxFrameDuration = _defaultMaxFrameDuration;
+            //            [_captureDeviceInput.device unlockForConfiguration];
             _captureDeviceInput.device.activeFormat = selectedFormat;
             _captureDeviceInput.device.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
             _captureDeviceInput.device.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
@@ -843,7 +843,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     dispatch_async(dispatch_get_main_queue(), ^{
         __block DLYIndicatorView *tipView = nil;
         UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
-        tipView = [[DLYIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 180, 210)];
+        tipView = [[DLYIndicatorView alloc] init];
         tipView.titlelabel.text = @"片段处理中...";
         tipView.center = keyWindow.center;
         [keyWindow addSubview:tipView];
@@ -1048,7 +1048,7 @@ BOOL isOnce = YES;
     AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     
     //可以改变视频方向,待测试使用
-//    compositionVideoTrack.preferredTransform = CGAffineTransformRotate(CGAffineTransformIdentity, M_PI_2);
+    //    compositionVideoTrack.preferredTransform = CGAffineTransformRotate(CGAffineTransformIdentity, M_PI_2);
     
     Float64 tmpDuration =0.0f;
     
@@ -1099,7 +1099,7 @@ BOOL isOnce = YES;
     assetExportSession.outputURL = productOutputUrl;
     assetExportSession.outputFileType = AVFileTypeMPEG4;
     assetExportSession.shouldOptimizeForNetworkUse = YES;
-        
+    
     [assetExportSession exportAsynchronouslyWithCompletionHandler:^{
         DLYLog(@"⛳️⛳️⛳️全部片段merge成功");
         DLYMiniVlogTemplate *template = self.session.currentTemplate;
@@ -1303,7 +1303,7 @@ BOOL isOnce = YES;
                     DLYLog(@"MP4 Successful!");
                     callBlock(exportUrl,exportPath);
                     
-//                    NSLog(@"Output Mp4 is %@", exportVideoFile);
+                    //                    NSLog(@"Output Mp4 is %@", exportVideoFile);
                     
                 });
                 
@@ -1314,7 +1314,7 @@ BOOL isOnce = YES;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     
                     // Close timer
-//                    NSLog(@"导出失败");
+                    //                    NSLog(@"导出失败");
                     
                 });
                 
@@ -1445,7 +1445,7 @@ BOOL isOnce = YES;
             DLYMovieObject *movieObj = [[DLYMovieObject alloc] initWithVideo:videoUrl.absoluteString];
             NSLog(@"ffmpeg获取的时长: %f",movieObj.duration);
         }
-
+        
         
         AVAssetTrack *assetVideoTrack = nil;
         AVAssetTrack *assetAudioTrack = nil;
@@ -1461,11 +1461,11 @@ BOOL isOnce = YES;
         CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero, assetVideoTrack.timeRange.duration);
         
         BOOL isInsertVideoSuccess = [currentTrack insertTimeRange:timeRange
-                              ofTrack:assetVideoTrack
-                               atTime:videoCursorTime error:nil];
+                                                          ofTrack:assetVideoTrack
+                                                           atTime:videoCursorTime error:nil];
         BOOL isInsertAudioSuccess = [compositionTrackAudio insertTimeRange:timeRange
-                                       ofTrack:assetAudioTrack
-                                        atTime:audioCursorTime error:nil];
+                                                                   ofTrack:assetAudioTrack
+                                                                    atTime:audioCursorTime error:nil];
         
         videoCursorTime = CMTimeAdd(videoCursorTime, timeRange.duration);
         videoCursorTime = CMTimeSubtract(videoCursorTime, transitionDuration);

@@ -11,9 +11,9 @@
 #import "DLYPopupMenu.h"
 
 
-@interface DLYBaseViewController ()<YBPopupMenuDelegate>
+@interface DLYBaseViewController ()
 @property (nonatomic, strong) CMMotionManager * motionManager;
-@property (nonatomic, strong) NSMutableArray *viewArr;
+//@property (nonatomic, strong) NSMutableArray *viewArr;
 @end
 
 @implementation DLYBaseViewController
@@ -26,55 +26,55 @@
     [self startMotionManager];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewControllerWillEnterForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
-
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     
     [super viewDidAppear:animated];
     
-    self.viewArr = [NSMutableArray arrayWithArray:[self.view subviews]];
-    [self listSubviewsOfView:self.view];
-    
-    [self showPopupMenu];
-    
-}
-
-- (void)showPopupMenu {
-    
-    for (UIView *view in self.viewArr) {
-        
-        if (view.isPopover == YES && view.isHidden == NO) {
-            view.isPopover = NO;
-            [DLYPopupMenu showRelyOnView:view titles:@[@"气泡"] icons:nil menuWidth:120 delegate:self];
-            return;
-        }
-    }
+    //    self.viewArr = [NSMutableArray arrayWithArray:[self.view subviews]];
+    //    [self listSubviewsOfView:self.view];
+    //
+    //    [self showPopupMenu];
     
 }
 
-- (void)listSubviewsOfView:(UIView *)view {
-    
-    // Get the subviews of the view
-    NSArray *subviews = [view subviews];
-    
-    // Return if there are no subviews
-    if ([subviews count] == 0) {
-        
-        [self.viewArr addObject:view];
-        return;
-    }
-    
-    for (UIView *subview in subviews) {
-        
-        // List the subviews of subview
-        [self listSubviewsOfView:subview];
-    }
-}
+//- (void)showPopupMenu {
+//
+//    for (UIView *view in self.viewArr) {
+//
+//        if (view.isPopover == YES && view.isHidden == NO) {
+//            view.isPopover = NO;
+//            [DLYPopupMenu showRelyOnView:view titles:@[@"气泡"] icons:nil menuWidth:120 delegate:self];
+//            return;
+//        }
+//    }
+//
+//}
 
-- (void)ybPopupMenuDidDismiss {
-    [self showPopupMenu];
-}
+//- (void)listSubviewsOfView:(UIView *)view {
+//
+//    // Get the subviews of the view
+//    NSArray *subviews = [view subviews];
+//
+//    // Return if there are no subviews
+//    if ([subviews count] == 0) {
+//
+//        [self.viewArr addObject:view];
+//        return;
+//    }
+//
+//    for (UIView *subview in subviews) {
+//
+//        // List the subviews of subview
+//        [self listSubviewsOfView:subview];
+//    }
+//}
+
+//- (void)ybPopupMenuDidDismiss {
+//    [self showPopupMenu];
+//}
 
 - (void)viewControllerWillEnterForeground {
     
@@ -92,7 +92,7 @@
         [_motionManager startDeviceMotionUpdatesToQueue:[NSOperationQueue currentQueue]
                                             withHandler: ^(CMDeviceMotion *motion, NSError *error){
                                                 [self performSelectorOnMainThread:@selector(handleDeviceMotion:) withObject:motion waitUntilDone:YES];
-        }];
+                                            }];
     } else {
         DLYLog(@"No device motion on device.");
         [self setMotionManager:nil];
@@ -106,21 +106,21 @@
     {
         if (y >= 0){
             //倒立
-//            NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationPortraitUpsideDown];
-//            [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+            //            NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationPortraitUpsideDown];
+            //            [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
         }
         else{
             //直立
-//            NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationPortrait];
-//            [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+            //            NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationPortrait];
+            //            [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
         }
     }
     else
     {
         if (x >= 0.5){
             //home在左
-//            NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeRight];
-//            [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+            //            NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeRight];
+            //            [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
             
             self.newState = 2;
             if (self.newState != self.oldState) {
@@ -130,25 +130,25 @@
         }
         else if (x <= -0.5){
             //home在右
-//            NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
-//            [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+            //            NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
+            //            [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
             
             self.newState = 1;
             if (self.newState != self.oldState) {
                 [self deviceChangeAndHomeOnTheRight];
                 self.oldState = self.newState;
             }
-
+            
         }
     }
 }
 
 - (void)deviceChangeAndHomeOnTheLeft {
-
+    
 }
 
 - (void)deviceChangeAndHomeOnTheRight {
-
+    
 }
 
 - (void)stopMotionManager {

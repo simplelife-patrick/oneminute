@@ -21,9 +21,9 @@
 
 @implementation DLYIndicatorView
 
-- (instancetype)initWithFrame:(CGRect)frame {
+- (instancetype)init {
     
-    self = [super initWithFrame:frame];
+    self = [super init];
     if (self) {
         [self createIndicatorView];
     }
@@ -31,12 +31,14 @@
 }
 
 - (void)createIndicatorView {
-
+    
+    self.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     //背景图片
     self.mainView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 180, 180)];
     self.mainView.centerX = self.width / 2;
+    self.mainView.centerY = self.centerY;
     self.mainView.backgroundColor = RGB(0, 0, 0);
-    self.mainView.layer.cornerRadius = self.width / 2;
+    self.mainView.layer.cornerRadius = self.mainView.width / 2;
     self.mainView.clipsToBounds = YES;
     [self addSubview:self.mainView];
     
@@ -67,7 +69,7 @@
     [[NSRunLoop currentRunLoop] addTimer:self.flashTimer forMode:NSRunLoopCommonModes];
     [self.flashTimer setFireDate:[NSDate distantFuture]];
     self.num = 0;
-
+    
 }
 
 - (void)flashAnimation {

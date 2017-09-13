@@ -76,7 +76,7 @@
     
     //即将进入后台
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
-
+    
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(canPlayVideo:) name:@"CANPLAY" object:nil];
 }
 
@@ -177,7 +177,7 @@
     //创建播放器层
     self.view.backgroundColor = RGB(0, 0, 0);
     self.playerItem = [AVPlayerItem playerItemWithURL:self.playUrl];
-
+    
     if ((self.isSuccess && self.isAll) || (!self.isAll)) {
         [self addObserverToPlayItem:self.playerItem];
     }
@@ -185,7 +185,7 @@
     self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
     self.playerLayer.frame = self.view.frame;
     self.playerLayer.videoGravity = AVLayerVideoGravityResize;
-//    [self.view.layer insertSublayer:self.playerLayer atIndex:0];
+    //    [self.view.layer insertSublayer:self.playerLayer atIndex:0];
     [self.view.layer addSublayer:self.playerLayer];
     
     //返回
@@ -235,9 +235,7 @@
         [self.waitIndicator startAnimating];
     }
     if (self.isAll && self.isSuccess == NO) {
-        self.flashIndicator = [[DLYIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 180, 210)];
-        self.flashIndicator.centerY = self.view.centerY + 20;
-        self.flashIndicator.centerX = self.view.centerX;
+        self.flashIndicator = [[DLYIndicatorView alloc] init];
         [self.view addSubview:self.flashIndicator];
         [self.flashIndicator startFlashAnimating];
     }
@@ -286,7 +284,7 @@
     if (self.waitIndicator.isAnimating) {
         self.playButton.hidden = YES;
     }
-
+    
     //手势
     UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleControls:)];
     [self.view addGestureRecognizer:singleTap];
@@ -352,7 +350,7 @@
         
         if (status == AFNetworkReachabilityStatusReachableViaWWAN) {
             statusNum = AFNetworkReachabilityStatusReachableViaWWAN;
-//            NSLog(@"当前处于非WIFI状态");
+            //            NSLog(@"当前处于非WIFI状态");
             [weakSelf pause];
             [weakSelf hideControlsFast];
             weakSelf.alert = [[DLYAlertView alloc] initWithMessage:@"当前处于非WIFI状态\n是否继续观看?" andCancelButton:@"取消" andSureButton:@"确定"];
@@ -368,7 +366,7 @@
             
         }else if (status == AFNetworkReachabilityStatusUnknown || status == AFNetworkReachabilityStatusNotReachable){
             statusNum = -1;
-//            NSLog(@"当前无可用网络,请联网后播放");
+            //            NSLog(@"当前无可用网络,请联网后播放");
             weakSelf.alert = [[DLYAlertView alloc] initWithMessage:@"当前无可用网络,请联网后播放" withSureButton:@"确定"];
             weakSelf.alert.sureButtonAction = ^{
                 
@@ -498,7 +496,7 @@
 
 #pragma mark 转成时间字符串
 -(NSString *)formatTimeToString:(NSTimeInterval)time{
-//    NSInteger hours = time/3600;
+    //    NSInteger hours = time/3600;
     NSInteger minutes = (NSInteger)time%3600/60;
     NSInteger seconds = (NSInteger)time%60;
     return [NSString stringWithFormat:@"%02ld:%02ld", (long)minutes, (long)seconds];
@@ -557,7 +555,7 @@
             [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
         }];
     }
-
+    
 }
 - (void)deviceChangeAndHomeOnTheRight {
     NSArray *viewArr = self.navigationController.viewControllers;
@@ -588,7 +586,7 @@
         exportVC.beforeState = self.newState;
         exportVC.backImage = self.frameImage;
         [self.navigationController pushViewController:exportVC animated:YES];
-
+        
     }else {
         [self.navigationController popViewControllerAnimated:YES];
     }
@@ -613,7 +611,7 @@
         if (playerItem.status == AVPlayerItemStatusReadyToPlay) {
             //添加各种通知和观察者
             [self addNotification];
-//            [self addProgressObserver];
+            //            [self addProgressObserver];
             if (!self.flashIndicator.isHidden && self.flashIndicator) {
                 [self.flashIndicator stopFlashAnimating];
                 self.flashIndicator.hidden = YES;
@@ -658,12 +656,12 @@
             [self disablePlayerButtons];
         }
     } else if ([keyPath isEqualToString:@"loadedTimeRanges"]) {
-//        NSArray *array = playerItem.loadedTimeRanges;
-//        CMTimeRange timeRange = [array.firstObject CMTimeRangeValue];//本次缓存时间范围
-//        float startSeconds = CMTimeGetSeconds(timeRange.start);
-//        float durationSeconds = CMTimeGetSeconds(timeRange.duration);
-//        NSTimeInterval totalBuffer = startSeconds + durationSeconds;
-//        NSLog(@"共缓存: %.2f",totalBuffer);
+        //        NSArray *array = playerItem.loadedTimeRanges;
+        //        CMTimeRange timeRange = [array.firstObject CMTimeRangeValue];//本次缓存时间范围
+        //        float startSeconds = CMTimeGetSeconds(timeRange.start);
+        //        float durationSeconds = CMTimeGetSeconds(timeRange.duration);
+        //        NSTimeInterval totalBuffer = startSeconds + durationSeconds;
+        //        NSLog(@"共缓存: %.2f",totalBuffer);
     } else if ([keyPath isEqualToString:@"playbackBufferEmpty"]) {
         //        [self.loadingView startAnimating];
         // 当缓冲是空的时候
@@ -685,7 +683,7 @@
 
 - (void)canPlayVideo:(NSNotification *)notification {
     if (self.isAll) {
-
+        
         if (self.playUrl == nil || self.playUrl.path.length <= 0) {
             self.playUrl = notification.userInfo[@"playUrl"];
         }
@@ -746,7 +744,7 @@
     }
     
     NSString *lang = [[textField textInputMode] primaryLanguage]; // 获取当前键盘输入模式
-//    NSLog(@"%@",lang);
+    //    NSLog(@"%@",lang);
     if([lang isEqualToString:@"zh-Hans"]) { //简体中文输入,第三方输入法（搜狗）所有模式下都会显示“zh-Hans”
         UITextRange *selectedRange = [textField markedTextRange];
         //获取高亮部分
@@ -825,10 +823,10 @@
         self.nextButton.alpha = 0.0;
         self.nextButton.hidden = NO;
     }
-
+    
     self.backButton.alpha = 0.0;
     self.backButton.hidden = NO;
-
+    
     self.progressSlider.alpha = 0.0;
     self.progressSlider.hidden = NO;
     
