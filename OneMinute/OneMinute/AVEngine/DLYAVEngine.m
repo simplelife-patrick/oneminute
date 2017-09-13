@@ -689,6 +689,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             return;
         }else{
             
+            
             AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:videoPartUrl options:nil];
             // 视频混合
             AVMutableComposition* mixComposition = [AVMutableComposition composition];
@@ -1778,7 +1779,7 @@ BOOL isOnce = YES;
                     
                     if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
                         
-                        NSString *targetPath = [productPath stringByAppendingFormat:@"%@/%@.mp4",result.hex];
+                        NSString *targetPath = [productPath stringByAppendingFormat:@"/%@.mp4",result.hex];
                         isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
                         DLYLog(@"%@",isSuccess ? @"⛳️⛳️⛳️成功删除未配音的成片视频 !" : @"❌❌❌删除未配音视频失败 !");
                     }
