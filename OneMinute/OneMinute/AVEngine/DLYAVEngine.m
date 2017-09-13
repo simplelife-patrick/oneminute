@@ -46,6 +46,7 @@
     CMTime _timeOffset;//录制的偏移CMTime
     CMTime _lastVideo;//记录上一次视频数据文件的CMTime
     CMTime _lastAudio;//记录上一次音频数据文件的CMTime
+    CocoaSecurityResult *result;
 }
 
 @property (nonatomic, strong) AVCaptureAudioDataOutput          *audioDataOutput;
@@ -1080,10 +1081,21 @@ BOOL isOnce = YES;
         tmpDuration += CMTimeGetSeconds(videoAssetTrack.timeRange.duration);
     }
     
-    NSURL *outputUrl = [self.resource saveProductToSandbox];
+    NSURL *productOutputUrl = nil;
+    NSString *productPath = [dataPath stringByAppendingPathComponent:kProductFolder];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
+        
+        result = [CocoaSecurity md5:[[NSDate date] description]];
+        NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,result.hex];
+        if (outputPath) {
+            productOutputUrl = [NSURL fileURLWithPath:outputPath];
+        }else{
+            DLYLog(@"❌❌❌合并视频保存地址获取失败 !");
+        }
+    }
     
     AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
-    assetExportSession.outputURL = outputUrl;
+    assetExportSession.outputURL = productOutputUrl;
     assetExportSession.outputFileType = AVFileTypeMPEG4;
     assetExportSession.shouldOptimizeForNetworkUse = YES;
         
@@ -1094,7 +1106,7 @@ BOOL isOnce = YES;
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@".m4a"];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
         
-        [self addMusicToVideo:outputUrl audioUrl:BGMUrl videoTitle:videoTitle successBlock:successBlock failure:failureBlcok];
+        [self addMusicToVideo:productOutputUrl audioUrl:BGMUrl videoTitle:videoTitle successBlock:successBlock failure:failureBlcok];
     }];
 }
 
@@ -1757,8 +1769,20 @@ BOOL isOnce = YES;
                 }
                 ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
                 [assetLibrary saveVideo:outPutUrl toAlbum:@"一分" completionBlock:^(NSURL *assetURL, NSError *error) {
-                    
                     DLYLog(@"⛳️⛳️⛳️配音完成后保存在手机相册");
+                    BOOL isSuccess = NO;
+                    NSFileManager *fileManager = [NSFileManager defaultManager];
+                    
+                    NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
+                    NSString *productPath = [dataPath stringByAppendingPathComponent:kProductFolder];
+                    
+                    if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
+                        
+                        NSString *targetPath = [productPath stringByAppendingFormat:@"%@/%@.mp4",result.hex];
+                        isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
+                        DLYLog(@"%@",isSuccess ? @"⛳️⛳️⛳️成功删除未配音的成片视频 !" : @"❌❌❌删除未配音视频失败 !");
+                    }
+                    
                 } failureBlock:^(NSError *error) {
                     
                 }];
