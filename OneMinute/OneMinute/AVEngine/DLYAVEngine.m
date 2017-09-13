@@ -1073,15 +1073,19 @@ BOOL isOnce = YES;
         CMTimeRange video_timeRange = CMTimeRangeMake(kCMTimeZero,videoAssetTrack.timeRange.duration);
         
         NSError *errorVideo = nil;
-        [compositionVideoTrack insertTimeRange:video_timeRange ofTrack:videoAssetTrack atTime:CMTimeMakeWithSeconds(tmpDuration, 0) error:&errorVideo];
-        if (errorVideo) {
-            DLYLog(@"视频合成过程中视频轨道插入发生错误,错误信息 :%@",errorVideo);
+        if (videoAssetTrack) {
+            [compositionVideoTrack insertTimeRange:video_timeRange ofTrack:videoAssetTrack atTime:CMTimeMakeWithSeconds(tmpDuration, 0) error:&errorVideo];
+            if (errorVideo) {
+                DLYLog(@"视频合成过程中视频轨道插入发生错误,错误信息 :%@",errorVideo);
+            }
         }
         
         NSError *errorAudio = nil;
-        [compositionAudioTrack insertTimeRange:video_timeRange ofTrack:audioAssetTrack atTime:CMTimeMakeWithSeconds(tmpDuration, 0) error:&errorAudio];
-        if (errorAudio) {
-            DLYLog(@"视频合成过程音频轨道插入发生错误,错误信息 :%@",errorVideo);
+        if (audioAssetTrack) {
+            [compositionAudioTrack insertTimeRange:video_timeRange ofTrack:audioAssetTrack atTime:CMTimeMakeWithSeconds(tmpDuration, 0) error:&errorAudio];
+            if (errorAudio) {
+                DLYLog(@"视频合成过程音频轨道插入发生错误,错误信息 :%@",errorVideo);
+            }
         }
         
         tmpDuration += CMTimeGetSeconds(videoAssetTrack.timeRange.duration);
