@@ -678,7 +678,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 #pragma mark - 视频速度处理 -
 
 // 处理速度视频
-- (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl completed:(void(^)())completed {
+- (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl recordTypeOfPart:(DLYMiniVlogRecordType)recordType completed:(void(^)())completed {
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         
         NSLog(@"video set thread: %@", [NSThread currentThread]);
@@ -689,6 +689,15 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             return;
         }else{
             
+            // 适配视频速度比率
+            CGFloat scale = 0;
+            if(recordType == DLYMiniVlogRecordTypeTimelapse){
+                scale = 0.2f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(低帧率)
+            } else if (recordType == DLYMiniVlogRecordTypeSlomo) {
+                scale = 3.0f;  // 慢速 x3   播放时间拉长帧率平均(高帧率)
+            }else{
+                scale = 1.0f;
+            }
             
             AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:videoPartUrl options:nil];
             // 视频混合
@@ -696,27 +705,23 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             // 视频轨道
             AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
             // 音频轨道
-            AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
             
             
-            // 插入视频轨道
-            [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
-            // 插入音频轨道
-            [compositionAudioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeAudio] firstObject] atTime:kCMTimeZero error:nil];
-            
-            // 适配视频速度比率
-            CGFloat scale = 0;
-            if(_currentPart.recordType == DLYMiniVlogRecordTypeTimelapse){
-                scale = 0.2f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(低帧率)
-            } else if (_currentPart.recordType == DLYMiniVlogRecordTypeSlomo) {
-                scale = 3.0f;  // 慢速 x3   播放时间拉长帧率平均(高帧率)
-            }else{
-                scale = 1.0f;
+            if (recordType == DLYMiniVlogRecordTypeNormal) {
+                AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+                // 插入视频轨道
+                [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
+                // 插入音频轨道
+                [compositionAudioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeAudio] firstObject] atTime:kCMTimeZero error:nil];
+                
+            }else{//快慢镜头丢弃原始音频
+                
+                // 插入视频轨道
+                [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
+                
+                // 根据速度比率调节音频和视频
+                [compositionVideoTrack scaleTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) toDuration:CMTimeMake(videoAsset.duration.value * scale , videoAsset.duration.timescale)];
             }
-            
-            // 根据速度比率调节音频和视频
-            [compositionVideoTrack scaleTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) toDuration:CMTimeMake(videoAsset.duration.value * scale , videoAsset.duration.timescale)];
-            [compositionAudioTrack scaleTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) toDuration:CMTimeMake(videoAsset.duration.value * scale, videoAsset.duration.timescale)];
             
             // 配置导出
             AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1920x1080];
@@ -849,7 +854,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         [keyWindow addSubview:tipView];
         [tipView startFlashAnimating];
         typeof(self) weakSelf = self;
-        [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl completed:^{
+        [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl recordTypeOfPart:_currentPart.recordType completed:^{
             DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
             [self.resource removePartWithPartNumFormCache:self.currentPart.partNum];
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -1068,15 +1073,19 @@ BOOL isOnce = YES;
         CMTimeRange video_timeRange = CMTimeRangeMake(kCMTimeZero,videoAssetTrack.timeRange.duration);
         
         NSError *errorVideo = nil;
-        [compositionVideoTrack insertTimeRange:video_timeRange ofTrack:videoAssetTrack atTime:CMTimeMakeWithSeconds(tmpDuration, 0) error:&errorVideo];
-        if (errorVideo) {
-            DLYLog(@"视频合成过程中视频轨道插入发生错误,错误信息 :%@",errorVideo);
+        if (videoAssetTrack) {
+            [compositionVideoTrack insertTimeRange:video_timeRange ofTrack:videoAssetTrack atTime:CMTimeMakeWithSeconds(tmpDuration, 0) error:&errorVideo];
+            if (errorVideo) {
+                DLYLog(@"视频合成过程中视频轨道插入发生错误,错误信息 :%@",errorVideo);
+            }
         }
         
         NSError *errorAudio = nil;
-        [compositionAudioTrack insertTimeRange:video_timeRange ofTrack:audioAssetTrack atTime:CMTimeMakeWithSeconds(tmpDuration, 0) error:&errorAudio];
-        if (errorAudio) {
-            DLYLog(@"视频合成过程音频轨道插入发生错误,错误信息 :%@",errorVideo);
+        if (audioAssetTrack) {
+            [compositionAudioTrack insertTimeRange:video_timeRange ofTrack:audioAssetTrack atTime:CMTimeMakeWithSeconds(tmpDuration, 0) error:&errorAudio];
+            if (errorAudio) {
+                DLYLog(@"视频合成过程音频轨道插入发生错误,错误信息 :%@",errorVideo);
+            }
         }
         
         tmpDuration += CMTimeGetSeconds(videoAssetTrack.timeRange.duration);
