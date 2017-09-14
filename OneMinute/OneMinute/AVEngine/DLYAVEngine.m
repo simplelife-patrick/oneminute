@@ -22,7 +22,6 @@
 #import "ALAssetsLibrary+CustomPhotoAlbum.h"
 #import <math.h>
 #import "DLYMovieObject.h"
-#import "DLYIndicatorView.h"
 
 @interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate>
 {
@@ -846,20 +845,19 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     NSURL *exportUrl = [NSURL fileURLWithPath:exportPath];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        __block DLYIndicatorView *tipView = nil;
-        UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
-        tipView = [[DLYIndicatorView alloc] init];
-        tipView.titlelabel.text = @"片段处理中...";
-        tipView.center = keyWindow.center;
-        [keyWindow addSubview:tipView];
-        [tipView startFlashAnimating];
+//        __block DLYIndicatorView *tipView = nil;
+//        UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+//        tipView = [[DLYIndicatorView alloc] init];
+//        tipView.titlelabel.text = @"片段处理中...";
+//        tipView.center = keyWindow.center;
+//        [keyWindow addSubview:tipView];
+        [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"片段处理中..."];
         typeof(self) weakSelf = self;
         [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl recordTypeOfPart:_currentPart.recordType completed:^{
             DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
             [self.resource removePartWithPartNumFormCache:self.currentPart.partNum];
             dispatch_async(dispatch_get_main_queue(), ^{
-                [tipView stopFlashAnimating];
-                [tipView removeFromSuperview];
+                [[DLYIndicatorView sharedIndicatorView] stopFlashAnimating];
             });
         }];
     });

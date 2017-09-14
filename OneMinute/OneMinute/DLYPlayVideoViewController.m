@@ -14,11 +14,10 @@
 #import "DLYAVEngine.h"
 #import "DLYSession.h"
 #import <AssetsLibrary/AssetsLibrary.h>
-#import "DLYIndicatorView.h"
 
 #define kMaxLength 16
 
-@interface DLYPlayVideoViewController ()<UITextFieldDelegate,DLYCaptureManagerDelegate>
+@interface DLYPlayVideoViewController ()<UITextFieldDelegate,DLYCaptureManagerDelegate,YBPopupMenuDelegate>
 {
     float mRestoreAfterScrubbingRate;
     //1.流量 2.WiFi 3.不可用
@@ -37,7 +36,6 @@
 @property (nonatomic, strong) UILabel *durationLabel;
 //控件
 @property (nonatomic, strong) UIActivityIndicatorView *waitIndicator;
-@property (nonatomic, strong) DLYIndicatorView *flashIndicator;
 @property (nonatomic, strong) UIButton *nextButton;
 @property (nonatomic, strong) UIButton *backButton;
 //标题
@@ -54,6 +52,9 @@
 @property (nonatomic, strong) UIImage *frameImage;
 @property (nonatomic, assign) int index;
 @property (nonatomic, strong) NSArray                *moviePathArray;
+
+@property (nonatomic, strong) NSMutableArray *viewArr;      //视图数组
+@property (nonatomic, strong) NSMutableArray *bubbleTitleArr;//视图数组
 
 @end
 
@@ -78,6 +79,45 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(canPlayVideo:) name:@"CANPLAY" object:nil];
+}
+#pragma mark ---- 气泡
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    if (!self.isSuccess && self.isAll) {
+        [self showCueBubble];
+    }
+}
+
+- (void)showCueBubble {
+    
+    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"DLYPlayViewPopup"]){
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"DLYPlayViewPopup"];
+        NSArray *arr = @[self.titleField, self.skipButton, self.skipTestBtn];
+        self.viewArr = [NSMutableArray arrayWithArray:arr];
+        NSArray *titleArr = @[@"输入描述文字", @"去完成视频", @"跳过输入文字操作"];
+        self.bubbleTitleArr = [NSMutableArray arrayWithArray:titleArr];
+        [self showPopupMenu];
+    }
+}
+
+- (void)showPopupMenu {
+    
+    if (self.viewArr.count == 0) {
+        return;
+    }
+    UIView *view = self.viewArr[0];
+    NSString *title = self.bubbleTitleArr[0];
+    NSArray *titles = @[title];
+    DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:view titles:titles icons:nil menuWidth:120 delegate:self];
+    normalBubble.showMaskAlpha = 1;
+    [self.viewArr removeObjectAtIndex:0];
+    [self.bubbleTitleArr removeObjectAtIndex:0];
+}
+//气泡消失的代理方法
+- (void)ybPopupMenuDidDismiss {
+    [self showPopupMenu];
 }
 
 #pragma mark ==== 初始化相机
@@ -235,9 +275,7 @@
         [self.waitIndicator startAnimating];
     }
     if (self.isAll && self.isSuccess == NO) {
-        self.flashIndicator = [[DLYIndicatorView alloc] init];
-        [self.view addSubview:self.flashIndicator];
-        [self.flashIndicator startFlashAnimating];
+        [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"正在成片中..."];
     }
     //滑块
     self.progressSlider = [[UISlider alloc] initWithFrame:CGRectMake(85, SCREEN_HEIGHT - 45, SCREEN_WIDTH - 170, 20)];
@@ -274,7 +312,7 @@
     self.durationLabel.textAlignment = NSTextAlignmentLeft;
     self.durationLabel.text = @"00:00";
     
-    if (!self.flashIndicator.isHidden && self.flashIndicator) {
+    if ([DLYIndicatorView sharedIndicatorView].isFlashAnimating) {
         self.progressSlider.hidden = YES;
         self.currentLabel.hidden = YES;
         self.durationLabel.hidden = YES;
@@ -612,9 +650,8 @@
             //添加各种通知和观察者
             [self addNotification];
             //            [self addProgressObserver];
-            if (!self.flashIndicator.isHidden && self.flashIndicator) {
-                [self.flashIndicator stopFlashAnimating];
-                self.flashIndicator.hidden = YES;
+            if ([DLYIndicatorView sharedIndicatorView].isFlashAnimating) {
+                [[DLYIndicatorView sharedIndicatorView] stopFlashAnimating];
                 self.backButton.hidden = NO;
                 self.progressSlider.hidden = NO;
                 self.currentLabel.hidden = NO;
@@ -800,7 +837,7 @@
 
 - (void)toggleControls:(UITapGestureRecognizer *)recognizer {
     //转菊花判断
-    if (!self.flashIndicator.isHidden && self.flashIndicator) {
+    if ([DLYIndicatorView sharedIndicatorView].isFlashAnimating) {
         return;
     }else {
         if(self.progressSlider.isHidden){

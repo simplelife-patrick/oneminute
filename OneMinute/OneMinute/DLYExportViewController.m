@@ -12,8 +12,8 @@
 #import "DLYRecordViewController.h"
 #import "DLYResource.h"
 
-@interface DLYExportViewController (){
-    
+@interface DLYExportViewController ()<YBPopupMenuDelegate>
+{
     double _shootTime;
 }
 
@@ -132,6 +132,11 @@
     self.remindLabel.text = @"影片已合成\n保存在本地相册";
     self.completeButton.hidden = NO;
     
+    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showCompleteButtonPopup"]){
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showCompleteButtonPopup"];
+        DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.completeButton titles:@[@"完成制作视频的过程"] icons:nil menuWidth:120 delegate:self];
+        normalBubble.showMaskAlpha = 1;
+    }
 //    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
 //        
 //        NSArray *arr = self.navigationController.viewControllers;
