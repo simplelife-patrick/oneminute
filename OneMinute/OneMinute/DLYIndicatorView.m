@@ -14,6 +14,7 @@
 }
 
 @property (nonatomic, strong) UIView *mainView;
+@property (nonatomic, strong) UILabel *titlelabel;
 @property (nonatomic, strong) NSTimer *flashTimer;
 @property (nonatomic, assign) NSInteger num;
 
@@ -30,7 +31,21 @@
     return self;
 }
 
++ (instancetype)sharedIndicatorView{
+    
+    static DLYIndicatorView *indicatorView;
+    
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        indicatorView = [[DLYIndicatorView alloc] init];
+    });
+    return indicatorView;
+}
+
 - (void)createIndicatorView {
+    
+    UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+    [keyWindow addSubview:self];
     
     self.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     //背景图片
@@ -69,7 +84,8 @@
     [[NSRunLoop currentRunLoop] addTimer:self.flashTimer forMode:NSRunLoopCommonModes];
     [self.flashTimer setFireDate:[NSDate distantFuture]];
     self.num = 0;
-    
+    self.hidden = YES;
+    self.isFlashAnimating = NO;
 }
 
 - (void)flashAnimation {
@@ -83,14 +99,31 @@
     oldTag = 30000 + i;
 }
 
-- (void)startFlashAnimating {
+- (void)startFlashAnimatingWithTitle:(NSString *)title {
+    NSString *newStr = [title stringByReplacingOccurrencesOfString:@" " withString:@""];
+    if (newStr.length <= 0) {
+        self.titlelabel.text = @"正在成片中...";
+    }else{
+        self.titlelabel.text = title;
+    }
+    if (self.isHidden) {
+        self.hidden = NO;
+    }
+    self.isFlashAnimating = YES;
     [self.flashTimer setFireDate:[NSDate distantPast]];
 }
 
 - (void)stopFlashAnimating {
-    [self.flashTimer invalidate];
-    self.flashTimer = nil;
+    if (!self.isHidden) {
+        self.hidden = YES;
+    }
+    self.isFlashAnimating = NO;
+    self.num = 0;
+    [self.flashTimer setFireDate:[NSDate distantFuture]];
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(indicatorViewstopFlashAnimating)]) {
+        [self.delegate indicatorViewstopFlashAnimating];
+    }
 }
-
 
 @end

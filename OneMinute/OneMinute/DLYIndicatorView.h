@@ -8,12 +8,22 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol DLYIndicatorViewDelegate <NSObject>
+
+- (void)indicatorViewstopFlashAnimating;
+
+@end
+
 @interface DLYIndicatorView : UIView
 
-@property (nonatomic, strong) UILabel *titlelabel;
+@property (nonatomic, assign) BOOL isFlashAnimating;
 
-- (void)startFlashAnimating;
++ (instancetype)sharedIndicatorView;
+
+- (void)startFlashAnimatingWithTitle:(NSString *)title;
 
 - (void)stopFlashAnimating;
+
+@property (nonatomic, weak) id<DLYIndicatorViewDelegate> delegate;
 
 @end
