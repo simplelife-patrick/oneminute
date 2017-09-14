@@ -1,12 +1,12 @@
 {
-  "id": "Travele001.json",
+  "id": "Traveler001.json",
   "title":"旅行",
   "type": 0,
   "info": [
     {
       "partNum": 0,
       "startTime": "00:00:00",
-      "stopTime": "00:05:31",
+      "stopTime": "00:01:00",
       "dubStartTime": "00:00:00",
       "dubStopTime": "00:04:31",
       "recordType": 1,
@@ -15,8 +15,8 @@
     },
     {
       "partNum": 1,
-      "startTime": "00:05:31",
-      "stopTime": "00:11:31",
+      "startTime": "00:01:00",
+      "stopTime": "00:03:00",
       "dubStartTime": "00:04:31",
       "dubStopTime": "00:09:31",
       "recordType": 1,
@@ -25,8 +25,8 @@
     },
     {
       "partNum": 2,
-      "startTime": "00:11:31",
-      "stopTime": "00:18:38",
+      "startTime": "00:03:00",
+      "stopTime": "00:05:00",
       "dubStartTime": "00:09:31",
       "dubStopTime": "00:15:38",
       "recordType": 1,
@@ -35,8 +35,8 @@
     },
     {
       "partNum": 3,
-      "startTime": "00:18:38",
-      "stopTime": "00:41:35",
+      "startTime": "00:05:00",
+      "stopTime": "00:27:00",
       "dubStartTime": "00:15:38",
       "dubStopTime": "00:37:35",
       "recordType": 0,
@@ -45,8 +45,8 @@
     },
     {
       "partNum": 4,
-      "startTime": "00:41:35",
-      "stopTime": "00:48:28",
+      "startTime": "00:27:00",
+      "stopTime": "00:29:00",
       "dubStartTime": "00:37:35",
       "dubStopTime": "00:43:28",
       "recordType": 1,
@@ -55,8 +55,8 @@
     },
     {
       "partNum": 5,
-      "startTime": "00:48:28",
-      "stopTime": "00:53:44",
+      "startTime": "00:29:00",
+      "stopTime": "00:31:00",
       "dubStartTime": "00:43:28",
       "dubStopTime": "00:47:44",
       "recordType": 1,
@@ -65,8 +65,8 @@
     },
     {
       "partNum": 6,
-      "startTime": "00:53:44",
-      "stopTime": "01:07:00",
+      "startTime": "00:31:00",
+      "stopTime": "00:36:00",
       "dubStartTime": "00:47:44",
       "dubStopTime": "01:00:00",
       "recordType": 1,

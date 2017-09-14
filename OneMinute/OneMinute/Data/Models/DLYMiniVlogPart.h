@@ -38,7 +38,6 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
 
 @interface DLYMiniVlogPart : DLYModule
 
-
 /**
  片段地址
  */
