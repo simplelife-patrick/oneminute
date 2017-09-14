@@ -46,6 +46,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     BOOL isFront;
     BOOL isSlomoCamera;
     CGFloat _initialPinchZoom;
+    dispatch_source_t _timer;
 }
 @property (nonatomic,assign) CGFloat                            beginGestureScale;//记录开始的缩放比例
 @property (nonatomic,assign) CGFloat                            effectiveScale;//最后的缩放比例
@@ -1311,6 +1312,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.flashButton.hidden = YES;
         self.chooseSceneLabel.hidden = YES;
         self.backView.hidden = YES;
+        if (self.partBubble) {
+            [self.partBubble removeFromSuperview];
+            self.partBubble = nil;
+        }
         if (self.newState == 1) {
             self.scenceDisapper.frame = CGRectMake(20, 20, 14, 14);
             self.scenceDisapper.transform = CGAffineTransformMakeRotation(0);
@@ -1606,7 +1611,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSInteger partNum = selectPartTag - 10000 - 1;
     [self.resource removePartWithPartNumFormCache:partNum];
     
-    [_shootTimer invalidate];
+//    [_shootTimer invalidate];
+    dispatch_source_cancel(_timer);
+
     [UIView animateWithDuration:0.5f animations:^{
         self.progressView.hidden = YES;
         self.timeNumber.hidden = YES;
@@ -2582,9 +2589,20 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     [self.shootView addSubview:self.titleView];
     
-    
-    _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
-    [[NSRunLoop currentRunLoop] addTimer:_shootTimer forMode:NSRunLoopCommonModes];
+    /////////////////////////////////////////////
+//    _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
+//    [[NSRunLoop currentRunLoop] addTimer:_shootTimer forMode:NSRunLoopCommonModes];
+    /////////////////////////////////////////////
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+    dispatch_source_set_timer(_timer,dispatch_walltime(NULL, 0), 0.01 * NSEC_PER_SEC, 0); //每秒执行
+    dispatch_source_set_event_handler(_timer, ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self shootAction];
+        });
+    });
+    dispatch_resume(_timer);
+    /////////////////////////////////////////////
     if (self.newState == 1) {
         self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 40, 44, 44);
         self.cancelButton.centerX = _timeView.centerX;
@@ -2620,7 +2638,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         isNeededToSave = YES;
         [self.AVEngine stopRecording];
         self.cancelButton.hidden = YES;
-        [_shootTimer invalidate];
+//        [_shootTimer invalidate];
+        dispatch_source_cancel(_timer);
         
         for(int i = 0; i < partModelArray.count; i++)
         {
@@ -2899,7 +2918,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if(_sceneView == nil)
     {
         _sceneView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-        _sceneView.backgroundColor = RGBA(0, 0, 0, 0.4);
+        _sceneView.backgroundColor = RGBA(0, 0, 0, 1);
         _sceneView.alpha = 0;
         _sceneView.hidden = YES;
     }
