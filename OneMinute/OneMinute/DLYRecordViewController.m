@@ -2162,13 +2162,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             cursorTag = selectPartTag;
             self.playView.hidden = NO;
             self.recordBtn.hidden = YES;
+        } completion:^(BOOL finished) {
             if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showPlayButtonPopup"]){
                 [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showPlayButtonPopup"];
                 DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.playButton titles:@[@"预览视频片段"] icons:nil menuWidth:120 delegate:self];
                 normalBubble.showMaskAlpha = 1;
             }
-        } completion:^(BOOL finished) {
-            
         }];
     }else
     {
