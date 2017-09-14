@@ -17,7 +17,7 @@
 
 #define kMaxLength 16
 
-@interface DLYPlayVideoViewController ()<UITextFieldDelegate,DLYCaptureManagerDelegate>
+@interface DLYPlayVideoViewController ()<UITextFieldDelegate,DLYCaptureManagerDelegate,YBPopupMenuDelegate>
 {
     float mRestoreAfterScrubbingRate;
     //1.流量 2.WiFi 3.不可用
@@ -53,6 +53,9 @@
 @property (nonatomic, assign) int index;
 @property (nonatomic, strong) NSArray                *moviePathArray;
 
+@property (nonatomic, strong) NSMutableArray *viewArr;      //视图数组
+@property (nonatomic, strong) NSMutableArray *bubbleTitleArr;//视图数组
+
 @end
 
 @implementation DLYPlayVideoViewController
@@ -76,6 +79,45 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(canPlayVideo:) name:@"CANPLAY" object:nil];
+}
+#pragma mark ---- 气泡
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    if (!self.isSuccess && self.isAll) {
+        [self showCueBubble];
+    }
+}
+
+- (void)showCueBubble {
+    
+    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"DLYPlayViewPopup"]){
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"DLYPlayViewPopup"];
+        NSArray *arr = @[self.titleField, self.skipButton, self.skipTestBtn];
+        self.viewArr = [NSMutableArray arrayWithArray:arr];
+        NSArray *titleArr = @[@"输入描述文字", @"去完成视频", @"跳过输入文字操作"];
+        self.bubbleTitleArr = [NSMutableArray arrayWithArray:titleArr];
+        [self showPopupMenu];
+    }
+}
+
+- (void)showPopupMenu {
+    
+    if (self.viewArr.count == 0) {
+        return;
+    }
+    UIView *view = self.viewArr[0];
+    NSString *title = self.bubbleTitleArr[0];
+    NSArray *titles = @[title];
+    DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:view titles:titles icons:nil menuWidth:120 delegate:self];
+    normalBubble.showMaskAlpha = 1;
+    [self.viewArr removeObjectAtIndex:0];
+    [self.bubbleTitleArr removeObjectAtIndex:0];
+}
+//气泡消失的代理方法
+- (void)ybPopupMenuDidDismiss {
+    [self showPopupMenu];
 }
 
 #pragma mark ==== 初始化相机

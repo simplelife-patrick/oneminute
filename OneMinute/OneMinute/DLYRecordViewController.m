@@ -18,7 +18,6 @@
 #include <libavformat/avformat.h>
 #import "DLYMovieObject.h"
 #import "DLYTitleView.h"
-#import "DLYPopupMenu.h"
 
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
