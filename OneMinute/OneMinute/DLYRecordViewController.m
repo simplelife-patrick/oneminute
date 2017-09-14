@@ -23,7 +23,7 @@
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
 
-@interface DLYRecordViewController ()<DLYCaptureManagerDelegate,UIAlertViewDelegate,UIGestureRecognizerDelegate,YBPopupMenuDelegate>
+@interface DLYRecordViewController ()<DLYCaptureManagerDelegate,UIAlertViewDelegate,UIGestureRecognizerDelegate,YBPopupMenuDelegate,DLYIndicatorViewDelegate>
 {
     NSInteger cursorTag;
     //记录选中的样片类型
@@ -45,6 +45,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     BOOL isMicGranted;//麦克风权限是否被允许
     BOOL isFront;
     BOOL isSlomoCamera;
+    BOOL isCanPush;
     CGFloat _initialPinchZoom;
     dispatch_source_t _timer;
 }
@@ -192,7 +193,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.isAvalible = [self monitorPermission];
     
     av_register_all();
-    
+    [DLYIndicatorView sharedIndicatorView].delegate = self;
     self.isAppear = YES;
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
@@ -461,7 +462,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     cursorTag = 10001;
     self.isSuccess = NO;
     selectPartTag = 10001; //也不影响吧
-    
     selectType = 0; //暂时先这么写
     NSString *typeName = template.templateName;
     for (int i = 0; i < typeModelArray.count; i ++) {
@@ -1611,7 +1611,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSInteger partNum = selectPartTag - 10000 - 1;
     [self.resource removePartWithPartNumFormCache:partNum];
     
-//    [_shootTimer invalidate];
     dispatch_source_cancel(_timer);
 
     [UIView animateWithDuration:0.5f animations:^{
@@ -2588,11 +2587,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.titleView.transform = CGAffineTransformMakeRotation(M_PI);
     }
     [self.shootView addSubview:self.titleView];
-    
-    /////////////////////////////////////////////
-//    _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
-//    [[NSRunLoop currentRunLoop] addTimer:_shootTimer forMode:NSRunLoopCommonModes];
-    /////////////////////////////////////////////
+
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
     dispatch_source_set_timer(_timer,dispatch_walltime(NULL, 0), 0.01 * NSEC_PER_SEC, 0); //每秒执行
@@ -2602,7 +2597,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         });
     });
     dispatch_resume(_timer);
-    /////////////////////////////////////////////
     if (self.newState == 1) {
         self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 40, 44, 44);
         self.cancelButton.centerX = _timeView.centerX;
@@ -2638,7 +2632,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         isNeededToSave = YES;
         [self.AVEngine stopRecording];
         self.cancelButton.hidden = YES;
-//        [_shootTimer invalidate];
         dispatch_source_cancel(_timer);
         
         for(int i = 0; i < partModelArray.count; i++)
@@ -2719,40 +2712,50 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 
                 self.shootView.hidden = YES;
                 if(n == partModelArray.count) {//视频自动播放
-                    self.recordBtn.hidden = YES;
-                    
-                    __weak typeof(self) weakSelf = self;
-                    DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
-                    fvc.isAll = YES;
-                    fvc.isSuccess = NO;
-                    fvc.playUrl = self.AVEngine.currentProductUrl;
-                    fvc.beforeState = self.newState;
-                    self.isPlayer = YES;
-                    fvc.DismissBlock = ^{
-                        if (self.newState == 1) {
-                            self.nextButton.transform = CGAffineTransformMakeRotation(0);
-                        }else {
-                            self.nextButton.transform = CGAffineTransformMakeRotation(M_PI);
-                        }
-                        self.nextButton.hidden = NO;
-                        if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showNextButtonPopup"]){
-                            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showNextButtonPopup"];
-                            DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.nextButton titles:@[@"去合成视频"] icons:nil menuWidth:120 delegate:self];
-                            normalBubble.showMaskAlpha = 1;
-                        }
-                        if (self.newState == 1) {
-                            self.deleteButton.transform = CGAffineTransformMakeRotation(0);
-                        }else {
-                            self.deleteButton.transform = CGAffineTransformMakeRotation(M_PI);
-                        }
-                        self.deleteButton.hidden = NO;
-                        self.isSuccess = YES;
-                    };
-                    [weakSelf.navigationController pushViewController:fvc animated:YES];
+                    isCanPush = YES;
                 }
             } completion:^(BOOL finished) {
             }];
         });
+    }
+}
+
+- (void)indicatorViewstopFlashAnimating {
+    NSArray *viewArr = self.navigationController.viewControllers;
+    if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
+        if (isCanPush) {
+            isCanPush = NO;
+            self.recordBtn.hidden = YES;
+            __weak typeof(self) weakSelf = self;
+            DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
+            fvc.isAll = YES;
+            fvc.isSuccess = NO;
+            fvc.playUrl = self.AVEngine.currentProductUrl;
+            fvc.beforeState = self.newState;
+            self.isPlayer = YES;
+            fvc.DismissBlock = ^{
+                if (self.newState == 1) {
+                    self.nextButton.transform = CGAffineTransformMakeRotation(0);
+                }else {
+                    self.nextButton.transform = CGAffineTransformMakeRotation(M_PI);
+                }
+                self.nextButton.hidden = NO;
+                if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showNextButtonPopup"]){
+                    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showNextButtonPopup"];
+                    DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.nextButton titles:@[@"去合成视频"] icons:nil menuWidth:120 delegate:self];
+                    normalBubble.showMaskAlpha = 1;
+                }
+                if (self.newState == 1) {
+                    self.deleteButton.transform = CGAffineTransformMakeRotation(0);
+                }else {
+                    self.deleteButton.transform = CGAffineTransformMakeRotation(M_PI);
+                }
+                self.deleteButton.hidden = NO;
+                self.isSuccess = YES;
+            };
+            [weakSelf.navigationController pushViewController:fvc animated:YES];
+
+        }
     }
 }
 

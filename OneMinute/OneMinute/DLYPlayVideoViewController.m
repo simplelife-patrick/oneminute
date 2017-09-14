@@ -14,7 +14,6 @@
 #import "DLYAVEngine.h"
 #import "DLYSession.h"
 #import <AssetsLibrary/AssetsLibrary.h>
-#import "DLYIndicatorView.h"
 
 #define kMaxLength 16
 
@@ -37,7 +36,6 @@
 @property (nonatomic, strong) UILabel *durationLabel;
 //控件
 @property (nonatomic, strong) UIActivityIndicatorView *waitIndicator;
-@property (nonatomic, strong) DLYIndicatorView *flashIndicator;
 @property (nonatomic, strong) UIButton *nextButton;
 @property (nonatomic, strong) UIButton *backButton;
 //标题
@@ -235,9 +233,7 @@
         [self.waitIndicator startAnimating];
     }
     if (self.isAll && self.isSuccess == NO) {
-        self.flashIndicator = [[DLYIndicatorView alloc] init];
-        [self.view addSubview:self.flashIndicator];
-        [self.flashIndicator startFlashAnimating];
+        [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"正在成片中..."];
     }
     //滑块
     self.progressSlider = [[UISlider alloc] initWithFrame:CGRectMake(85, SCREEN_HEIGHT - 45, SCREEN_WIDTH - 170, 20)];
@@ -274,7 +270,7 @@
     self.durationLabel.textAlignment = NSTextAlignmentLeft;
     self.durationLabel.text = @"00:00";
     
-    if (!self.flashIndicator.isHidden && self.flashIndicator) {
+    if ([DLYIndicatorView sharedIndicatorView].isFlashAnimating) {
         self.progressSlider.hidden = YES;
         self.currentLabel.hidden = YES;
         self.durationLabel.hidden = YES;
@@ -612,9 +608,8 @@
             //添加各种通知和观察者
             [self addNotification];
             //            [self addProgressObserver];
-            if (!self.flashIndicator.isHidden && self.flashIndicator) {
-                [self.flashIndicator stopFlashAnimating];
-                self.flashIndicator.hidden = YES;
+            if ([DLYIndicatorView sharedIndicatorView].isFlashAnimating) {
+                [[DLYIndicatorView sharedIndicatorView] stopFlashAnimating];
                 self.backButton.hidden = NO;
                 self.progressSlider.hidden = NO;
                 self.currentLabel.hidden = NO;
@@ -800,7 +795,7 @@
 
 - (void)toggleControls:(UITapGestureRecognizer *)recognizer {
     //转菊花判断
-    if (!self.flashIndicator.isHidden && self.flashIndicator) {
+    if ([DLYIndicatorView sharedIndicatorView].isFlashAnimating) {
         return;
     }else {
         if(self.progressSlider.isHidden){
