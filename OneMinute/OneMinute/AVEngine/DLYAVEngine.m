@@ -735,7 +735,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 - (void)cameraBackgroundDidClickOpenSlow {
     
     [self.captureSession stopRunning];
-    CGFloat desiredFPS = 120.0;
+    CGFloat desiredFPS = 240.0;
     NSLog(@"当前设置的录制帧率是: %f",desiredFPS);
     AVCaptureDeviceFormat *selectedFormat = nil;
     int32_t maxWidth = 0;
@@ -840,12 +840,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     NSURL *exportUrl = [NSURL fileURLWithPath:exportPath];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-//        __block DLYIndicatorView *tipView = nil;
-//        UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
-//        tipView = [[DLYIndicatorView alloc] init];
-//        tipView.titlelabel.text = @"片段处理中...";
-//        tipView.center = keyWindow.center;
-//        [keyWindow addSubview:tipView];
         [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"片段处理中..."];
         typeof(self) weakSelf = self;
         [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl recordTypeOfPart:_currentPart.recordType completed:^{
