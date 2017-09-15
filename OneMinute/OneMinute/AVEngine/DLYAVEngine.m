@@ -1442,11 +1442,11 @@ BOOL isOnce = YES;
         NSUInteger trackIndex = i % 2;
         
         AVURLAsset *asset;
-        if (i == 0) {
-            asset = [AVURLAsset URLAssetWithURL:newUrl options:nil];
-        }else {
+//        if (i == 0) {
+//            asset = [AVURLAsset URLAssetWithURL:newUrl options:nil];
+//        }else {
             asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
-        }
+//        }
         
         AVAssetTrack *assetVideoTrack = nil;
         AVAssetTrack *assetAudioTrack = nil;
