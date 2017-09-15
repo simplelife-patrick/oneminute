@@ -351,11 +351,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         
         [self createTimer];
         
-        //创建存储moviePaths的plist文件
-        NSString *plistPath = [kPathDocument stringByAppendingPathComponent:@"moviePaths.plist"];
-        
-        _plistPath = plistPath;
-        
         self.effectiveScale = 1.0;
         
         if (previewView) {
@@ -412,7 +407,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         NSLog(@"✅✅✅当前预览方向为 :%lu",self.videoConnection.videoPreviewLayer.orientation);
     }else {
         
-        self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
+        self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         [self.captureSession beginConfiguration];
         [self.captureSession removeInput:self.frontCameraInput];
         if ([self.captureSession canAddInput:self.backCameraInput]) {
@@ -689,7 +684,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }else{
             
             // 适配视频速度比率
-            CGFloat scale = 0;
+            long long scale = 0;
             if(recordType == DLYMiniVlogRecordTypeTimelapse){
                 scale = 0.2f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(低帧率)
             } else if (recordType == DLYMiniVlogRecordTypeSlomo) {
@@ -723,7 +718,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             }
             
             // 配置导出
-            AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1920x1080];
+            AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
             
             _assetExport.outputFileType = AVFileTypeMPEG4;
             _assetExport.outputURL = outputUrl;
@@ -740,7 +735,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 - (void)cameraBackgroundDidClickOpenSlow {
     
     [self.captureSession stopRunning];
-    CGFloat desiredFPS = 240.0;
+    CGFloat desiredFPS = 120.0;
     NSLog(@"当前设置的录制帧率是: %f",desiredFPS);
     AVCaptureDeviceFormat *selectedFormat = nil;
     int32_t maxWidth = 0;
