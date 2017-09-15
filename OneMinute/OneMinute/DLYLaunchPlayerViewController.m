@@ -170,7 +170,7 @@
     
     [self.player pause];
 }
-//即将进入前台
+////即将进入前台
 //- (void)viewWillEnterForeground {
 //    DLYLog(@"app enter foreground");
 //    if (!self.player) {
@@ -179,6 +179,9 @@
 //    //播放视频
 //    [self.player play];
 //}
+
+- (void)viewEnterForeground {
+}
 
 //不允许旋转
 - (BOOL)shouldAutorotate {
