@@ -63,7 +63,6 @@
     //即将进入后台
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
     //进入前台
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewWillEnterForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
     //视频播放结束
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlaybackEnd) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
     //播放开始
