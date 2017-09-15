@@ -2707,7 +2707,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.backView.transform = CGAffineTransformMakeTranslation(0, 0);
                 self.shootView.alpha = 0;
                 self.shootView.hidden = YES;
-                
             } completion:^(BOOL finished) {
             }];
         });
