@@ -1,0 +1,67 @@
+{
+  "id": "Gourmandism001.json",
+  "title":"美食",
+  "type": 0,
+  "info": [
+    {
+      "partNum": 0,
+      "startTime": "00:00:00",
+      "stopTime": "00:02:00",
+      "dubStartTime": "00:00:00",
+      "dubStopTime": "00:02:00",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 0
+    },
+    {
+      "partNum": 1,
+      "startTime": "00:02:00",
+      "stopTime": "00:03:00",
+      "dubStartTime": "00:02:00",
+      "dubStopTime": "00:05:00",
+      "recordType": 1,
+      "soundType": 0,
+      "transitionType": 0
+    },
+    {
+      "partNum": 2,
+      "startTime": "00:03:00",
+      "stopTime": "00:04:20",
+      "dubStartTime": "00:05:00",
+      "dubStopTime": "00:09:00",
+      "recordType": 1,
+      "soundType": 1,
+      "transitionType": 0
+    },
+    {
+      "partNum": 3,
+      "startTime": "00:04:20",
+      "stopTime": "00:14:20",
+      "dubStartTime": "00:09:00",
+      "dubStopTime": "00:19:00",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 0
+    },
+    {
+      "partNum": 4,
+      "startTime": "00:14:20",
+      "stopTime": "00:55:00",
+      "dubStartTime": "00:19:00",
+      "dubStopTime": "01:00:00",
+      "recordType": 0,
+      "soundType": 1,
+      "transitionType": 0
+    }
+  ],
+  "subTitle1": {
+    "startTime": "00:05:00",
+    "stopTime": "00:08:00"
+  },
+  "BGM": "GourmandismTemplateBGM",
+  "header": "header001",
+  "tailer": "tail001",
+  "templateDescription": "我是美食模板,啦啦啦",
+  "sampleVideoName": "GourmandismTemplateSample.mp4"
+}
+

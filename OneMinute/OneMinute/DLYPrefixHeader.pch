@@ -1,0 +1,16 @@
+//
+//  DLY-PrefixHeader.pch
+//  OneMinute
+//
+//  Created by chenzonghai on 09/07/2017.
+//  Copyright © 2017 动旅游. All rights reserved.
+//
+
+#ifndef DLY_PrefixHeader_pch
+#define DLY_PrefixHeader_pch
+
+#import <UIKit/UIKit.h>
+
+#import "DLYCommon.h"
+
+#endif /* DLY_PrefixHeader_pch */
