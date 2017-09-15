@@ -179,10 +179,6 @@
 //    //播放视频
 //    [self.player play];
 //}
-
-- (void)viewEnterForeground {
-}
-
 //不允许旋转
 - (BOOL)shouldAutorotate {
     return NO;
