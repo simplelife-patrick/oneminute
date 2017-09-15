@@ -44,7 +44,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     BOOL isMicGranted;//麦克风权限是否被允许
     BOOL isFront;
     BOOL isSlomoCamera;
-    BOOL isCanPush;
     CGFloat _initialPinchZoom;
     dispatch_source_t _timer;
 }
@@ -1611,7 +1610,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.resource removePartWithPartNumFormCache:partNum];
     
     dispatch_source_cancel(_timer);
-
+    
     [UIView animateWithDuration:0.5f animations:^{
         self.progressView.hidden = YES;
         self.timeNumber.hidden = YES;
@@ -2585,7 +2584,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.titleView.transform = CGAffineTransformMakeRotation(M_PI);
     }
     [self.shootView addSubview:self.titleView];
-
+    
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
     dispatch_source_set_timer(_timer,dispatch_walltime(NULL, 0), 0.01 * NSEC_PER_SEC, 0); //每秒执行
@@ -2707,11 +2706,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.backView.hidden = NO;
                 self.backView.transform = CGAffineTransformMakeTranslation(0, 0);
                 self.shootView.alpha = 0;
-                
                 self.shootView.hidden = YES;
-                if(n == partModelArray.count) {//视频自动播放
-                    isCanPush = YES;
-                }
             } completion:^(BOOL finished) {
             }];
         });
@@ -2721,39 +2716,44 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)indicatorViewstopFlashAnimating {
     NSArray *viewArr = self.navigationController.viewControllers;
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
-        if (isCanPush) {
-            isCanPush = NO;
-            self.recordBtn.hidden = YES;
-            __weak typeof(self) weakSelf = self;
-            DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
-            fvc.isAll = YES;
-            fvc.isSuccess = NO;
-            fvc.playUrl = self.AVEngine.currentProductUrl;
-            fvc.beforeState = self.newState;
-            self.isPlayer = YES;
-            fvc.DismissBlock = ^{
-                if (self.newState == 1) {
-                    self.nextButton.transform = CGAffineTransformMakeRotation(0);
-                }else {
-                    self.nextButton.transform = CGAffineTransformMakeRotation(M_PI);
-                }
-                self.nextButton.hidden = NO;
-                if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showNextButtonPopup"]){
-                    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showNextButtonPopup"];
-                    DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.nextButton titles:@[@"去合成视频"] icons:nil menuWidth:120 delegate:self];
-                    normalBubble.showMaskAlpha = 1;
-                }
-                if (self.newState == 1) {
-                    self.deleteButton.transform = CGAffineTransformMakeRotation(0);
-                }else {
-                    self.deleteButton.transform = CGAffineTransformMakeRotation(M_PI);
-                }
-                self.deleteButton.hidden = NO;
-                self.isSuccess = YES;
-            };
-            [weakSelf.navigationController pushViewController:fvc animated:YES];
-
+        
+        for(int i = 0; i < partModelArray.count; i++)
+        {
+            DLYMiniVlogPart *part = partModelArray[i];
+            if ([part.recordStatus isEqualToString:@"0"]) {
+                return;
+            }
         }
+        DDLogInfo(@"完成后跳转");
+        self.recordBtn.hidden = YES;
+        __weak typeof(self) weakSelf = self;
+        DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
+        fvc.isAll = YES;
+        fvc.isSuccess = NO;
+        fvc.playUrl = self.AVEngine.currentProductUrl;
+        fvc.beforeState = self.newState;
+        self.isPlayer = YES;
+        fvc.DismissBlock = ^{
+            if (self.newState == 1) {
+                self.nextButton.transform = CGAffineTransformMakeRotation(0);
+            }else {
+                self.nextButton.transform = CGAffineTransformMakeRotation(M_PI);
+            }
+            self.nextButton.hidden = NO;
+            if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showNextButtonPopup"]){
+                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showNextButtonPopup"];
+                DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.nextButton titles:@[@"去合成视频"] icons:nil menuWidth:120 delegate:self];
+                normalBubble.showMaskAlpha = 1;
+            }
+            if (self.newState == 1) {
+                self.deleteButton.transform = CGAffineTransformMakeRotation(0);
+            }else {
+                self.deleteButton.transform = CGAffineTransformMakeRotation(M_PI);
+            }
+            self.deleteButton.hidden = NO;
+            self.isSuccess = YES;
+        };
+        [weakSelf.navigationController pushViewController:fvc animated:YES];
     }
 }
 
