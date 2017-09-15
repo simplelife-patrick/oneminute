@@ -684,7 +684,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }else{
             
             // 适配视频速度比率
-            long long scale = 0;
+            CGFloat scale = 0;
             if(recordType == DLYMiniVlogRecordTypeTimelapse){
                 scale = 0.2f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(低帧率)
             } else if (recordType == DLYMiniVlogRecordTypeSlomo) {
@@ -735,7 +735,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 - (void)cameraBackgroundDidClickOpenSlow {
     
     [self.captureSession stopRunning];
-    CGFloat desiredFPS = 240.0;
+    CGFloat desiredFPS = 120.0;
     NSLog(@"当前设置的录制帧率是: %f",desiredFPS);
     AVCaptureDeviceFormat *selectedFormat = nil;
     int32_t maxWidth = 0;
