@@ -1039,11 +1039,10 @@ BOOL isOnce = YES;
     AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
     AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     
-    //可以改变视频方向,待测试使用
+    //插入通道的时候可以改变视频方向,待测试使用
     //    compositionVideoTrack.preferredTransform = CGAffineTransformRotate(CGAffineTransformIdentity, M_PI_2);
     
     Float64 tmpDuration =0.0f;
-    
     for (int i=0; i < videoArray.count; i++)
     {
         AVURLAsset *videoAsset = [[AVURLAsset alloc]initWithURL:videoArray[i] options:nil];
@@ -1414,38 +1413,43 @@ BOOL isOnce = YES;
     CMTime transitionDuration = CMTimeMake(1, 1);
     CMTime audioCursorTime = kCMTimeZero;
     
-    NSArray *videoPathArray = [self.resource loadDraftPartsFromDocument];
+    NSMutableArray *videoArray = [NSMutableArray array];
     
-    for (NSUInteger i = 0; i < videoPathArray.count; i++) {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:dataPath]) {
+        
+        NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
+            
+            NSArray *draftArray = [fileManager contentsOfDirectoryAtPath:draftPath error:nil];
+            
+            for (NSInteger i = 0; i < [draftArray count]; i++) {
+                NSString *path = draftArray[i];
+                DLYLog(@"🔄🔄🔄合并第 %lu 个片段",i);
+                if ([path hasSuffix:@"mp4"]) {
+                    NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
+                    NSURL *url= [NSURL fileURLWithPath:allPath];
+                    [videoArray addObject:url];
+                }
+            }
+        }
+    }
+    DLYLog(@"待合成的视频片段: %@",videoArray);
+    
+    for (NSUInteger i = 0; i < videoArray.count; i++) {
         
         NSUInteger trackIndex = i % 2;
         
         AVURLAsset *asset;
         if (i == 0) {
             asset = [AVURLAsset URLAssetWithURL:newUrl options:nil];
-            NSLog(@"self.videoPathArray[%lu]: %@",(unsigned long)i,videoPathArray[i]);
-            //获取时长
-            Duration duration =(UInt32)asset.duration.value / asset.duration.timescale;
-            NSLog(@"AVFoundation获取时长 :%d",duration);
-            
-            DLYMovieObject *movieObj = [[DLYMovieObject alloc] initWithVideo:newUrl.absoluteString];
-            NSLog(@"ffmpeg获取的时长: %f",movieObj.duration);
         }else {
-            asset = [AVURLAsset URLAssetWithURL:videoPathArray[i] options:nil];
-            NSLog(@"self.videoPathArray[%lu]: %@",(unsigned long)i,videoPathArray[i]);
-            //获取时长
-            Duration duration =(UInt32)asset.duration.value / asset.duration.timescale;
-            NSLog(@"AVFoundation获取时长 :%d",duration);
-            
-            NSURL *videoUrl = videoPathArray[i];
-            DLYMovieObject *movieObj = [[DLYMovieObject alloc] initWithVideo:videoUrl.absoluteString];
-            NSLog(@"ffmpeg获取的时长: %f",movieObj.duration);
+            asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
         }
-        
         
         AVAssetTrack *assetVideoTrack = nil;
         AVAssetTrack *assetAudioTrack = nil;
-        
         if ([asset tracksWithMediaType:AVMediaTypeVideo].count != 0) {
             assetVideoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
         }
@@ -1459,15 +1463,21 @@ BOOL isOnce = YES;
         BOOL isInsertVideoSuccess = [currentTrack insertTimeRange:timeRange
                                                           ofTrack:assetVideoTrack
                                                            atTime:videoCursorTime error:nil];
+        if (isInsertVideoSuccess == NO) {
+            DLYLog(@"合并时插入图像轨失败");
+        }
         BOOL isInsertAudioSuccess = [compositionTrackAudio insertTimeRange:timeRange
                                                                    ofTrack:assetAudioTrack
                                                                     atTime:audioCursorTime error:nil];
+        if (isInsertAudioSuccess == NO) {
+            DLYLog(@"合并时插入音轨失败");
+        }
         
         videoCursorTime = CMTimeAdd(videoCursorTime, timeRange.duration);
         videoCursorTime = CMTimeSubtract(videoCursorTime, transitionDuration);
         audioCursorTime = CMTimeAdd(audioCursorTime, timeRange.duration);
         
-        if (i + 1 < videoPathArray.count) {
+        if (i + 1 < videoArray.count) {
             timeRange = CMTimeRangeMake(videoCursorTime, transitionDuration);
             NSValue *timeRangeValue = [NSValue valueWithCMTimeRange:timeRange];
             [self.transitionTimeRanges addObject:timeRangeValue];
@@ -1476,20 +1486,33 @@ BOOL isOnce = YES;
     
     AVVideoComposition *videoComposition = [self buildVideoComposition];
     
-    NSURL *outputUrl = [self.resource saveProductToSandbox];
-    self.currentProductUrl = outputUrl;
-    
-    AVAssetExportSession *exporter = [self makeExportableWithAsset:self.composition outputUrl:outputUrl videoComposition:videoComposition andAudioMax:nil];
-    
-    [exporter exportAsynchronouslyWithCompletionHandler:^{
+    NSURL *productOutputUrl = nil;
+    NSString *productPath = [dataPath stringByAppendingPathComponent:kProductFolder];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
         
-        DLYLog(@"合并及转场操作成功");
+        result = [CocoaSecurity md5:[[NSDate date] description]];
+        NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,result.hex];
+        if (outputPath) {
+            productOutputUrl = [NSURL fileURLWithPath:outputPath];
+        }else{
+            DLYLog(@"❌❌❌合并视频保存地址获取失败 !");
+        }
+    }
+    
+    AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:self.composition presetName:AVAssetExportPresetHighestQuality];
+    assetExportSession.videoComposition = videoComposition;
+    assetExportSession.outputURL = productOutputUrl;
+    assetExportSession.outputFileType = AVFileTypeMPEG4;
+    assetExportSession.shouldOptimizeForNetworkUse = YES;
+    
+    [assetExportSession exportAsynchronouslyWithCompletionHandler:^{
+        DLYLog(@"⛳️⛳️⛳️全部片段merge成功");
         DLYMiniVlogTemplate *template = self.session.currentTemplate;
         
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@".m4a"];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
         
-        [self addMusicToVideo:outputUrl audioUrl:BGMUrl videoTitle:videoTitle successBlock:successBlock failure:failureBlcok];
+        [self addMusicToVideo:productOutputUrl audioUrl:BGMUrl videoTitle:videoTitle successBlock:successBlock failure:failureBlcok];
     }];
 }
 - (AVVideoComposition *)buildVideoComposition {

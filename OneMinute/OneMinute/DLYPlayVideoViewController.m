@@ -205,7 +205,13 @@
     self.AVEngine.startOperation = [self.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
     
     typeof(self) weakSelf = self;
-    [weakSelf.AVEngine mergeVideoWithVideoTitle:weakSelf.titleField.text SuccessBlock:^{
+//    [weakSelf.AVEngine mergeVideoWithVideoTitle:weakSelf.titleField.text SuccessBlock:^{
+//        weakSelf.AVEngine.finishOperation = [weakSelf.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
+//        NSLog(@"🥇🥇🥇成片耗时: %lld s ⚡️⚡️⚡️",(weakSelf.AVEngine.finishOperation - weakSelf.AVEngine.startOperation)/1000);
+//    } failure:^(NSError *error) {
+//        
+//    }];
+    [self.AVEngine addTransitionEffectWithTitle:self.titleField.text andURL:nil SuccessBlock:^{
         weakSelf.AVEngine.finishOperation = [weakSelf.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
         NSLog(@"🥇🥇🥇成片耗时: %lld s ⚡️⚡️⚡️",(weakSelf.AVEngine.finishOperation - weakSelf.AVEngine.startOperation)/1000);
     } failure:^(NSError *error) {
@@ -239,6 +245,7 @@
     self.backButton.imageEdgeInsets = UIEdgeInsetsMake(15, 15, 15, 15);
     [self.backButton addTarget:self action:@selector(onClickBack:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.backButton];
+    
     //播放
     self.playButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 60, 60)];
     self.playButton.layer.cornerRadius = 30;
@@ -249,6 +256,7 @@
     [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66a" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
     self.playButton.center = self.view.center;
     [self.view addSubview:self.playButton];
+    
     //下一步
     if (self.isAll) {
         self.nextButton = [[UIButton alloc]initWithFrame:CGRectMake(SCREEN_WIDTH - 82, 0, 60, 60)];
