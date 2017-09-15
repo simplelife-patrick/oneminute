@@ -2724,7 +2724,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 return;
             }
         }
-        
+        DDLogInfo(@"完成后跳转");
         self.recordBtn.hidden = YES;
         __weak typeof(self) weakSelf = self;
         DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
