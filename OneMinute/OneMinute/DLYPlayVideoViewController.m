@@ -528,7 +528,7 @@
         
         [_progressSlider setValue:(maxValue - minValue) * time / duration + minValue animated:YES];
         self.currentLabel.text = [self formatTimeToString:time];
-        self.durationLabel.text = [self formatTimeToString:duration];
+        self.durationLabel.text = [self formatTimeToString:duration + 1.0];
     }
 }
 
