@@ -400,7 +400,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.frontCameraInput];//切换成了前置
-            //            self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
             
         }
         NSLog(@"✅✅✅当前视频连接的视频方向为 :%lu",self.videoConnection.videoOrientation);
@@ -412,9 +411,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         [self.captureSession removeInput:self.frontCameraInput];
         if ([self.captureSession canAddInput:self.backCameraInput]) {
             [self changeCameraAnimation];
-            [self.captureSession addInput:self.backCameraInput];//切换成了后置
-            //            self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
-            
+            [self.captureSession addInput:self.backCameraInput];//切换成了后置            
         }
     }
     [self.captureSession commitConfiguration];
@@ -423,7 +420,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 
 //返回前置摄像头
 - (AVCaptureDevice *)frontCamera {
-    self.captureSession.sessionPreset = AVCaptureSessionPresetiFrame1280x720;
     return [self cameraWithPosition:AVCaptureDevicePositionFront];
 }
 
@@ -767,7 +763,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 - (void)cameraBackgroundDidClickCloseSlow {
     
     [self.captureSession stopRunning];
-    CGFloat desiredFPS = 40.0f;
+    CGFloat desiredFPS = 60.0f;
     NSLog(@"当前设置的录制帧率是: %f",desiredFPS);
     AVCaptureDeviceFormat *selectedFormat = nil;
     int32_t maxWidth = 0;
@@ -787,14 +783,14 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     if (selectedFormat) {
         if ([_captureDeviceInput.device lockForConfiguration:nil]) {
             
-            //            _captureDeviceInput.device.activeFormat = _defaultFormat;
-            //            _captureDeviceInput.device.activeVideoMinFrameDuration = _defaultMinFrameDuration;
-            //            _captureDeviceInput.device.activeVideoMaxFrameDuration = _defaultMaxFrameDuration;
-            //            [_captureDeviceInput.device unlockForConfiguration];
-            _captureDeviceInput.device.activeFormat = selectedFormat;
-            _captureDeviceInput.device.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
-            _captureDeviceInput.device.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+            _captureDeviceInput.device.activeFormat = _defaultFormat;
+            _captureDeviceInput.device.activeVideoMinFrameDuration = _defaultMinFrameDuration;
+            _captureDeviceInput.device.activeVideoMaxFrameDuration = _defaultMaxFrameDuration;
             [_captureDeviceInput.device unlockForConfiguration];
+//            _captureDeviceInput.device.activeFormat = selectedFormat;
+//            _captureDeviceInput.device.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+//            _captureDeviceInput.device.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+//            [_captureDeviceInput.device unlockForConfiguration];
         }
     }
     [self.captureSession startRunning];
@@ -1407,6 +1403,8 @@ BOOL isOnce = YES;
     AVMutableCompositionTrack *compositionTrackB = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
     AVMutableCompositionTrack *compositionTrackAudio = [self.composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:trackID];
     
+    //    compositionVideoTrack.preferredTransform = CGAffineTransformRotate(CGAffineTransformIdentity, M_PI_2);
+
     NSArray *videoTracks = @[compositionTrackA, compositionTrackB];
     
     CMTime videoCursorTime = kCMTimeZero;
@@ -1426,7 +1424,7 @@ BOOL isOnce = YES;
             
             for (NSInteger i = 0; i < [draftArray count]; i++) {
                 NSString *path = draftArray[i];
-                DLYLog(@"🔄🔄🔄合并第 %lu 个片段",i);
+                DLYLog(@"🔄🔄🔄合并-->加载--> 第 %lu 个片段",i);
                 if ([path hasSuffix:@"mp4"]) {
                     NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
                     NSURL *url= [NSURL fileURLWithPath:allPath];
@@ -1708,8 +1706,9 @@ BOOL isOnce = YES;
         parentLayer.frame = CGRectMake(0, 0, mutableVideoComposition.renderSize.width, mutableVideoComposition.renderSize.height);
         videoLayer.frame = CGRectMake(0, 0, mutableVideoComposition.renderSize.width, mutableVideoComposition.renderSize.height);
         [parentLayer addSublayer:videoLayer];
-        watermarkLayer.position = CGPointMake(mutableVideoComposition.renderSize.width/2, mutableVideoComposition.renderSize.height/2);
+        watermarkLayer.position = CGPointMake(mutableVideoComposition.renderSize.width / 2, mutableVideoComposition.renderSize.height / 2);
         [parentLayer addSublayer:watermarkLayer];
+        
         mutableVideoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
     }
     
@@ -1800,7 +1799,7 @@ BOOL isOnce = YES;
                         
                         NSString *targetPath = [productPath stringByAppendingFormat:@"/%@.mp4",result.hex];
                         isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
-                        DLYLog(@"%@",isSuccess ? @"⛳️⛳️⛳️成功删除未配音的成片视频 !" : @"❌❌❌删除未配音视频失败 !");
+                        DLYLog(@"%@",isSuccess ? @"⛳️⛳️⛳️成功删除未配音的成片视频 !" : @"❌❌❌删除未配音视频失败");
                     }
                     
                 } failureBlock:^(NSError *error) {
@@ -1817,13 +1816,13 @@ BOOL isOnce = YES;
     
     CALayer *overlayLayer = [CALayer layer];
     CATextLayer *titleLayer = [CATextLayer layer];
-    UIFont *font = [UIFont systemFontOfSize:80.0];
+    UIFont *font = [UIFont systemFontOfSize:68.0];
     
-    [titleLayer setFontSize:80.f];
+    [titleLayer setFontSize:68.f];
     [titleLayer setFont:@"ArialRoundedMTBold"];
     [titleLayer setString:titleText];
     [titleLayer setAlignmentMode:kCAAlignmentCenter];
-    [titleLayer setForegroundColor:[[UIColor yellowColor] CGColor]];
+    [titleLayer setForegroundColor:[[UIColor colorWithHexString:@"#82F7CE" withAlpha:0] CGColor]];
     titleLayer.contentsCenter = overlayLayer.contentsCenter;
     CGSize textSize = [titleText sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
     titleLayer.bounds = CGRectMake(0, 0, textSize.width + 50, textSize.height + 25);
