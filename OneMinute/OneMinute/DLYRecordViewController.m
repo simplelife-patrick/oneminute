@@ -1291,6 +1291,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         isFront = YES;
     }else{
         [self.AVEngine changeCameraInputDeviceisFront:NO];
+        if (self.newState == 1) {
+            self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
+            self.flashButton.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.flashButton.frame = CGRectMake(11, 61, 40, 40);
+            self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+        }
         self.flashButton.hidden = NO;
         isFront = NO;
     }
@@ -1860,6 +1867,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     if (self.toggleCameraBtn.selected) {
                         [self.AVEngine changeCameraInputDeviceisFront:NO];
                         self.toggleCameraBtn.selected = NO;
+                        isFront = NO;
+                        if (self.newState == 1) {
+                            self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
+                            self.flashButton.transform = CGAffineTransformMakeRotation(0);
+                        }else {
+                            self.flashButton.frame = CGRectMake(11, 61, 40, 40);
+                            self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+                        }
+                        self.flashButton.hidden = NO;
                     }
                     [self.toggleCameraBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateNormal];
                     isSlomoCamera = YES;
@@ -1990,7 +2006,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 icon.image = [UIImage imageWithIcon:@"\U0000e66f" inFont:ICONFONT size:19 color:[UIColor whiteColor]];
                 [itemView addSubview:icon];
             }
-            
         }else
         {
             button.backgroundColor = RGBA_HEX(0xc9c9c9, 0.1);
@@ -2047,6 +2062,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     if (self.toggleCameraBtn.selected) {
                         [self.AVEngine changeCameraInputDeviceisFront:NO];
                         self.toggleCameraBtn.selected = NO;
+                        isFront = NO;
+                        if (self.newState == 1) {
+                            self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
+                            self.flashButton.transform = CGAffineTransformMakeRotation(0);
+                        }else {
+                            self.flashButton.frame = CGRectMake(11, 61, 40, 40);
+                            self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+                        }
+                        self.flashButton.hidden = NO;
                     }
                     [self.toggleCameraBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateNormal];
                     isSlomoCamera = YES;
