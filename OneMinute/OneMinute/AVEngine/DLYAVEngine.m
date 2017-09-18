@@ -714,7 +714,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             }
             
             // 配置导出
-            AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
+            AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1280x720];
             
             _assetExport.outputFileType = AVFileTypeMPEG4;
             _assetExport.outputURL = outputUrl;
@@ -1086,7 +1086,7 @@ BOOL isOnce = YES;
         }
     }
     
-    AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPresetHighestQuality];
+    AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1280x720];
     assetExportSession.outputURL = productOutputUrl;
     assetExportSession.outputFileType = AVFileTypeMPEG4;
     assetExportSession.shouldOptimizeForNetworkUse = YES;
@@ -1497,7 +1497,7 @@ BOOL isOnce = YES;
         }
     }
     
-    AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:self.composition presetName:AVAssetExportPresetHighestQuality];
+    AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:self.composition presetName:AVAssetExportPreset1280x720];
     assetExportSession.videoComposition = videoComposition;
     assetExportSession.outputURL = productOutputUrl;
     assetExportSession.outputFileType = AVFileTypeMPEG4;
@@ -1774,7 +1774,12 @@ BOOL isOnce = YES;
         [[NSFileManager defaultManager] removeItemAtPath:self.currentProductUrl.absoluteString error:nil];
     }
     
-    AVAssetExportSession *assetExportSession = [self makeExportableWithAsset:mixComposition outputUrl:outPutUrl videoComposition:mutableVideoComposition andAudioMax:audioMix];
+    AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1280x720];
+    assetExportSession.outputURL = outPutUrl;
+    assetExportSession.audioMix = audioMix;
+    assetExportSession.videoComposition = mutableVideoComposition;
+    assetExportSession.outputFileType = AVFileTypeMPEG4;
+    assetExportSession.shouldOptimizeForNetworkUse = YES;
     
     [assetExportSession exportAsynchronouslyWithCompletionHandler:^{
         switch ([assetExportSession status]) {
