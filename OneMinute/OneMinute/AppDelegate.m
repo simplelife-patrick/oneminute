@@ -84,6 +84,15 @@
     DLYAnimationViewController *vc = [[DLYAnimationViewController alloc] init];
     self.window.rootViewController = vc;
     [self.window makeKeyAndVisible];
+    ///申请拍照权限
+    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+    }];
+    ///申请麦克风权限
+    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
+    }];
+    ///申请相册权限
+    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+    }];
     //常亮
     [UIApplication sharedApplication].idleTimerDisabled = YES;
     return YES;

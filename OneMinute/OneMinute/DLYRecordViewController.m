@@ -2795,23 +2795,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             break;
         case PHAuthorizationStatusNotDetermined:
         {
-            [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-                if (status == PHAuthorizationStatusAuthorized) {
-                    isAvalible = YES;
-                    BOOL isCamera = [self checkVideoCameraAuthorization];
-                    BOOL isMicrophone = [self checkVideoMicrophoneAudioAuthorization];
-                    if (isCamera && isMicrophone) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self showCueBubble];
-                        });
-                    }
-                }else{
-                    isAvalible = NO;  //回到主线程
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self showAlertPermissionwithMessage:@"相册"];
-                    });
-                }
-            }];
+            [self showAlertPermissionwithMessage:@"相册"];
+            isAvalible = NO;
         }
             break;
         case PHAuthorizationStatusRestricted:
@@ -2820,7 +2805,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         default:
             break;
     }
-    
     return isAvalible;
 }
 //相机
@@ -2839,15 +2823,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             break;
         case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动默认弹框
         {
-            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
-                isAvalible = granted;
-                if(!granted)  //如果不允许
-                {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self showAlertPermissionwithMessage:@"相机"];
-                    });
-                }
-            }];
+            [self showAlertPermissionwithMessage:@"相机"];
+            isAvalible = NO;
         }
             break;
         case AVAuthorizationStatusRestricted:  //受限制，家长控制器
@@ -2872,15 +2849,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             break;
         case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动
         {
-            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
-                isAvalible = granted;
-                if(!granted)  //如果不允许
-                {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self showAlertPermissionwithMessage:@"麦克风"];
-                    });
-                }
-            }];
+            [self showAlertPermissionwithMessage:@"麦克风"];
+            isAvalible = NO;
         }
             break;
         case AVAuthorizationStatusRestricted:  //受限制，家长控制器

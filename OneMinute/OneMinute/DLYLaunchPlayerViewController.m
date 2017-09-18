@@ -63,6 +63,7 @@
     //即将进入后台
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
     //进入前台
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewWillEnterForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
     //视频播放结束
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlaybackEnd) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
     //播放开始
@@ -170,15 +171,15 @@
     
     [self.player pause];
 }
-////即将进入前台
-//- (void)viewWillEnterForeground {
-//    DLYLog(@"app enter foreground");
-//    if (!self.player) {
-//        [self prepareMovie];
-//    }
-//    //播放视频
-//    [self.player play];
-//}
+//即将进入前台
+- (void)viewWillEnterForeground {
+    DLYLog(@"app enter foreground");
+    if (!self.player) {
+        [self prepareMovie];
+    }
+    //播放视频
+    [self.player play];
+}
 //不允许旋转
 - (BOOL)shouldAutorotate {
     return NO;
