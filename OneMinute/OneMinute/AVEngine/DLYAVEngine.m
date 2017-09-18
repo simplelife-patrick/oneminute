@@ -1816,13 +1816,13 @@ BOOL isOnce = YES;
     
     CALayer *overlayLayer = [CALayer layer];
     CATextLayer *titleLayer = [CATextLayer layer];
-    UIFont *font = [UIFont systemFontOfSize:60.0];
+    UIFont *font = [UIFont systemFontOfSize:68.0];
     
-    [titleLayer setFontSize:60.f];
+    [titleLayer setFontSize:68.f];
     [titleLayer setFont:@"ArialRoundedMTBold"];
     [titleLayer setString:titleText];
     [titleLayer setAlignmentMode:kCAAlignmentCenter];
-    [titleLayer setForegroundColor:[[UIColor colorWithHexString:@"#82F7CE" withAlpha:1] CGColor]];
+    [titleLayer setForegroundColor:[[UIColor colorWithHexString:@"#82F7CE" withAlpha:0] CGColor]];
     titleLayer.contentsCenter = overlayLayer.contentsCenter;
     CGSize textSize = [titleText sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
     titleLayer.bounds = CGRectMake(0, 0, textSize.width + 50, textSize.height + 25);
