@@ -1291,6 +1291,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         isFront = YES;
     }else{
         [self.AVEngine changeCameraInputDeviceisFront:NO];
+        if (self.newState == 1) {
+            self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
+            self.flashButton.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.flashButton.frame = CGRectMake(11, 61, 40, 40);
+            self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+        }
         self.flashButton.hidden = NO;
         isFront = NO;
     }
@@ -1415,6 +1422,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     fvc.isSuccess = NO;
     fvc.beforeState = self.newState;
     self.isPlayer = YES;
+    [self hideBubbleWhenPush];
     [self.navigationController pushViewController:fvc animated:YES];
 }
 //删除全部视频
@@ -1470,6 +1478,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     playVC.isAll = NO;
     playVC.beforeState = self.newState;
     self.isPlayer = YES;
+    [self hideBubbleWhenPush];
     [self.navigationController pushViewController:playVC animated:YES];
     
 }
@@ -1502,6 +1511,19 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     sender.selected = !sender.selected;
 }
+
+- (void)hideBubbleWhenPush {
+
+    if (self.partBubble) {
+        [self.partBubble removeFromSuperview];
+        self.partBubble = nil;
+    }
+    if (self.allBubble) {
+        [self.allBubble removeFromSuperview];
+        self.allBubble = nil;
+    }
+}
+
 //取消选择场景
 - (void)onClickCancelSelect:(UIButton *)sender {
     [MobClick event:@"CancelSelect"];
@@ -1599,6 +1621,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     playVC.isAll = NO;
     playVC.beforeState = self.newState;
     self.isPlayer = YES;
+    [self hideBubbleWhenPush];
     [self.navigationController pushViewController:playVC animated:YES];
 }
 //取消拍摄按键
@@ -1860,6 +1883,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     if (self.toggleCameraBtn.selected) {
                         [self.AVEngine changeCameraInputDeviceisFront:NO];
                         self.toggleCameraBtn.selected = NO;
+                        isFront = NO;
+                        if (self.newState == 1) {
+                            self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
+                            self.flashButton.transform = CGAffineTransformMakeRotation(0);
+                        }else {
+                            self.flashButton.frame = CGRectMake(11, 61, 40, 40);
+                            self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+                        }
+                        self.flashButton.hidden = NO;
                     }
                     [self.toggleCameraBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateNormal];
                     isSlomoCamera = YES;
@@ -1990,7 +2022,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 icon.image = [UIImage imageWithIcon:@"\U0000e66f" inFont:ICONFONT size:19 color:[UIColor whiteColor]];
                 [itemView addSubview:icon];
             }
-            
         }else
         {
             button.backgroundColor = RGBA_HEX(0xc9c9c9, 0.1);
@@ -2047,6 +2078,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     if (self.toggleCameraBtn.selected) {
                         [self.AVEngine changeCameraInputDeviceisFront:NO];
                         self.toggleCameraBtn.selected = NO;
+                        isFront = NO;
+                        if (self.newState == 1) {
+                            self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
+                            self.flashButton.transform = CGAffineTransformMakeRotation(0);
+                        }else {
+                            self.flashButton.frame = CGRectMake(11, 61, 40, 40);
+                            self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+                        }
+                        self.flashButton.hidden = NO;
                     }
                     [self.toggleCameraBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateNormal];
                     isSlomoCamera = YES;
@@ -2753,6 +2793,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.deleteButton.hidden = NO;
             self.isSuccess = YES;
         };
+        [self hideBubbleWhenPush];
         [weakSelf.navigationController pushViewController:fvc animated:YES];
     }
 }
