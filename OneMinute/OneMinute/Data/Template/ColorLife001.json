@@ -11,7 +11,7 @@
       "dubStopTime": "00:08:00",
       "recordType": 1,
       "soundType": 0,
-      "transitionType": 0
+      "transitionType": 1
     },
     {
       "partNum": 1,
@@ -21,7 +21,7 @@
       "dubStopTime": "00:16:00",
       "recordType": 1,
       "soundType": 0,
-      "transitionType": 0
+      "transitionType": 1
     },
     {
       "partNum": 2,
@@ -31,7 +31,7 @@
       "dubStopTime": "00:19:00",
       "recordType": 0,
       "soundType": 1,
-      "transitionType": 0
+      "transitionType": 1
     },
     {
       "partNum": 3,
@@ -41,7 +41,7 @@
       "dubStopTime": "00:25:00",
       "recordType": 1,
       "soundType": 0,
-      "transitionType": 0
+      "transitionType": 1
     },
     {
       "partNum": 4,
@@ -51,7 +51,7 @@
       "dubStopTime": "00:33:00",
       "recordType": 0,
       "soundType": 1,
-      "transitionType": 0
+      "transitionType": 1
     },
     {
       "partNum": 5,
@@ -61,7 +61,7 @@
       "dubStopTime": "00:44:00",
       "recordType": 0,
       "soundType": 1,
-      "transitionType": 0
+      "transitionType": 1
     },
     {
       "partNum": 6,
