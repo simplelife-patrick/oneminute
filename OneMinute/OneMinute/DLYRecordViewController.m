@@ -1422,6 +1422,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     fvc.isSuccess = NO;
     fvc.beforeState = self.newState;
     self.isPlayer = YES;
+    [self hideBubbleWhenPush];
     [self.navigationController pushViewController:fvc animated:YES];
 }
 //删除全部视频
@@ -1477,6 +1478,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     playVC.isAll = NO;
     playVC.beforeState = self.newState;
     self.isPlayer = YES;
+    [self hideBubbleWhenPush];
     [self.navigationController pushViewController:playVC animated:YES];
     
 }
@@ -1509,6 +1511,19 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     sender.selected = !sender.selected;
 }
+
+- (void)hideBubbleWhenPush {
+
+    if (self.partBubble) {
+        [self.partBubble removeFromSuperview];
+        self.partBubble = nil;
+    }
+    if (self.allBubble) {
+        [self.allBubble removeFromSuperview];
+        self.allBubble = nil;
+    }
+}
+
 //取消选择场景
 - (void)onClickCancelSelect:(UIButton *)sender {
     [MobClick event:@"CancelSelect"];
@@ -1606,6 +1621,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     playVC.isAll = NO;
     playVC.beforeState = self.newState;
     self.isPlayer = YES;
+    [self hideBubbleWhenPush];
     [self.navigationController pushViewController:playVC animated:YES];
 }
 //取消拍摄按键
@@ -2777,6 +2793,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.deleteButton.hidden = NO;
             self.isSuccess = YES;
         };
+        [self hideBubbleWhenPush];
         [weakSelf.navigationController pushViewController:fvc animated:YES];
     }
 }
