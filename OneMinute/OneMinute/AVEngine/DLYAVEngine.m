@@ -420,7 +420,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 
 //返回前置摄像头
 - (AVCaptureDevice *)frontCamera {
-    self.captureSession.sessionPreset = AVCaptureSessionPresetiFrame1280x720;
     return [self cameraWithPosition:AVCaptureDevicePositionFront];
 }
 
@@ -764,7 +763,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 - (void)cameraBackgroundDidClickCloseSlow {
     
     [self.captureSession stopRunning];
-    CGFloat desiredFPS = 40.0f;
+    CGFloat desiredFPS = 60.0f;
     NSLog(@"当前设置的录制帧率是: %f",desiredFPS);
     AVCaptureDeviceFormat *selectedFormat = nil;
     int32_t maxWidth = 0;
@@ -784,14 +783,14 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     if (selectedFormat) {
         if ([_captureDeviceInput.device lockForConfiguration:nil]) {
             
-            //            _captureDeviceInput.device.activeFormat = _defaultFormat;
-            //            _captureDeviceInput.device.activeVideoMinFrameDuration = _defaultMinFrameDuration;
-            //            _captureDeviceInput.device.activeVideoMaxFrameDuration = _defaultMaxFrameDuration;
-            //            [_captureDeviceInput.device unlockForConfiguration];
-            _captureDeviceInput.device.activeFormat = selectedFormat;
-            _captureDeviceInput.device.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
-            _captureDeviceInput.device.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+            _captureDeviceInput.device.activeFormat = _defaultFormat;
+            _captureDeviceInput.device.activeVideoMinFrameDuration = _defaultMinFrameDuration;
+            _captureDeviceInput.device.activeVideoMaxFrameDuration = _defaultMaxFrameDuration;
             [_captureDeviceInput.device unlockForConfiguration];
+//            _captureDeviceInput.device.activeFormat = selectedFormat;
+//            _captureDeviceInput.device.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+//            _captureDeviceInput.device.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+//            [_captureDeviceInput.device unlockForConfiguration];
         }
     }
     [self.captureSession startRunning];
@@ -1707,7 +1706,7 @@ BOOL isOnce = YES;
         parentLayer.frame = CGRectMake(0, 0, mutableVideoComposition.renderSize.width, mutableVideoComposition.renderSize.height);
         videoLayer.frame = CGRectMake(0, 0, mutableVideoComposition.renderSize.width, mutableVideoComposition.renderSize.height);
         [parentLayer addSublayer:videoLayer];
-        watermarkLayer.position = CGPointMake(mutableVideoComposition.renderSize.width - watermarkLayer.bounds.size.width, mutableVideoComposition.renderSize.height - watermarkLayer.bounds.size.height);
+        watermarkLayer.position = CGPointMake(mutableVideoComposition.renderSize.width / 2, mutableVideoComposition.renderSize.height / 2);
         [parentLayer addSublayer:watermarkLayer];
         
         mutableVideoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
@@ -1817,13 +1816,13 @@ BOOL isOnce = YES;
     
     CALayer *overlayLayer = [CALayer layer];
     CATextLayer *titleLayer = [CATextLayer layer];
-    UIFont *font = [UIFont systemFontOfSize:80.0];
+    UIFont *font = [UIFont systemFontOfSize:60.0];
     
-    [titleLayer setFontSize:80.f];
+    [titleLayer setFontSize:60.f];
     [titleLayer setFont:@"ArialRoundedMTBold"];
     [titleLayer setString:titleText];
     [titleLayer setAlignmentMode:kCAAlignmentCenter];
-    [titleLayer setForegroundColor:[[UIColor redColor] CGColor]];
+    [titleLayer setForegroundColor:[[UIColor colorWithHexString:@"#82F7CE" withAlpha:1] CGColor]];
     titleLayer.contentsCenter = overlayLayer.contentsCenter;
     CGSize textSize = [titleText sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
     titleLayer.bounds = CGRectMake(0, 0, textSize.width + 50, textSize.height + 25);
