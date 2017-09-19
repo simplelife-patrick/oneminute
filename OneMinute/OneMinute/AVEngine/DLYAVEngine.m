@@ -1468,14 +1468,14 @@ BOOL isOnce = YES;
         }
         BOOL isInsertAudioSuccess = [compositionTrackAudio insertTimeRange:timeRange
                                                                    ofTrack:assetAudioTrack
-                                                                    atTime:audioCursorTime error:nil];
+                                                                    atTime:videoCursorTime error:nil];
         if (isInsertAudioSuccess == NO) {
             DLYLog(@"合并时插入音轨失败");
         }
         
         videoCursorTime = CMTimeAdd(videoCursorTime, timeRange.duration);
         videoCursorTime = CMTimeSubtract(videoCursorTime, transitionDuration);
-        audioCursorTime = CMTimeAdd(audioCursorTime, timeRange.duration);
+//        audioCursorTime = CMTimeAdd(audioCursorTime, timeRange.duration);
         
         if (i + 1 < videoArray.count) {
             timeRange = CMTimeRangeMake(videoCursorTime, transitionDuration);
