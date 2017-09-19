@@ -40,6 +40,8 @@ static const int ddLogLevel = DDLogLevelError;
 
 @interface DLYCommon : NSObject
 
+
+#define APPTEST [[NSBundle mainBundle].infoDictionary[@"APPTEST"] boolValue];
 //全局尺寸定义
 #define SCREEN_RECT     [[UIScreen mainScreen] bounds]
 #define SCREEN_WIDTH    [UIScreen mainScreen].bounds.size.width
