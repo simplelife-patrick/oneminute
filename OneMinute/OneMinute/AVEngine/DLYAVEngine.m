@@ -815,13 +815,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error{
     DLYLog(@"结束录制,写入完成!!!");
     
-    NSMutableDictionary *addData = [NSMutableDictionary dictionary];
-    [addData setObject:_currentPart.partUrl forKey:[NSString stringWithFormat:@"part%luPath",_currentPart.partNum]];
-    [addData setObject:@(_currentPart.recordType) forKey:@"recordType"];
-    [addData setObject:@(_currentPart.partNum) forKey:@"partNum"];
-    
-    [addData writeToFile:_plistPath atomically:YES];
-    
     // 导出视频的临时保存路径
     NSString *exportPath;
     
