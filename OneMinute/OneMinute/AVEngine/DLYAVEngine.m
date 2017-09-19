@@ -32,10 +32,10 @@
     CMTime _startTime;
     CMTime _stopTime;
     CMTime _prePoint;
-    CGSize videoSize;
-    NSURL *fileUrl;
-    CGRect faceRegion;
-    CGRect lastFaceRegion;
+    CGSize _videoSize;
+    NSURL *_fileUrl;
+    CGRect _faceRegion;
+    CGRect _lastFaceRegion;
     BOOL isDetectedMetadataObjectTarget;
     BOOL isMicGranted;//麦克风权限是否被允许
     
@@ -45,7 +45,8 @@
     CMTime _timeOffset;//录制的偏移CMTime
     CMTime _lastVideo;//记录上一次视频数据文件的CMTime
     CMTime _lastAudio;//记录上一次音频数据文件的CMTime
-    CocoaSecurityResult *result;
+    CocoaSecurityResult *_result;
+    BOOL _isRecordingCancel;
 }
 
 @property (nonatomic, strong) AVCaptureAudioDataOutput          *audioDataOutput;
@@ -349,6 +350,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 - (instancetype)initWithPreviewView:(UIView *)previewView{
     if (self = [super init]) {
         
+        _isRecordingCancel = NO;
+        
         [self createTimer];
         
         self.effectiveScale = 1.0;
@@ -651,6 +654,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
 #pragma mark - 取消录制 -
 - (void)cancelRecording{
+    _isRecordingCancel = YES;
     [self.captureMovieFileOutput stopRecording];
     
     if (self.isCapturing) {
@@ -815,37 +819,35 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error{
     DLYLog(@"结束录制,写入完成!!!");
     
-    NSMutableDictionary *addData = [NSMutableDictionary dictionary];
-    [addData setObject:_currentPart.partUrl forKey:[NSString stringWithFormat:@"part%luPath",_currentPart.partNum]];
-    [addData setObject:@(_currentPart.recordType) forKey:@"recordType"];
-    [addData setObject:@(_currentPart.partNum) forKey:@"partNum"];
-    
-    [addData writeToFile:_plistPath atomically:YES];
-    
-    // 导出视频的临时保存路径
-    NSString *exportPath;
-    
-    NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
-    
-    if ([[NSFileManager defaultManager] fileExistsAtPath:dataPath]) {
-        NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
-            exportPath = [NSString stringWithFormat:@"%@/part%lu.mp4",draftPath,_currentPart.partNum];
+    if (_isRecordingCancel) {
+        _isRecordingCancel = NO;
+        DLYLog(@"取消录制");
+    }else{
+        // 导出视频的临时保存路径
+        NSString *exportPath;
+        
+        NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath:dataPath]) {
+            NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
+                exportPath = [NSString stringWithFormat:@"%@/part%lu.mp4",draftPath,_currentPart.partNum];
+            }
         }
+        NSURL *exportUrl = [NSURL fileURLWithPath:exportPath];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"片段处理中..."];
+            typeof(self) weakSelf = self;
+            [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl recordTypeOfPart:_currentPart.recordType completed:^{
+                DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
+                [self.resource removePartWithPartNumFormCache:self.currentPart.partNum];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[DLYIndicatorView sharedIndicatorView] stopFlashAnimating];
+                });
+            }];
+        });
     }
-    NSURL *exportUrl = [NSURL fileURLWithPath:exportPath];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"片段处理中..."];
-        typeof(self) weakSelf = self;
-        [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl recordTypeOfPart:_currentPart.recordType completed:^{
-            DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
-            [self.resource removePartWithPartNumFormCache:self.currentPart.partNum];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[DLYIndicatorView sharedIndicatorView] stopFlashAnimating];
-            });
-        }];
-    });
 }
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
@@ -879,7 +881,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         //        DLYLog(@"检测到 %lu 个人脸",metadataObjects.count);
         //取到识别到的人脸区域
         AVMetadataObject *transformedMetadataObject = [self.captureVideoPreviewLayer transformedMetadataObjectForMetadataObject:metadataObject];
-        faceRegion = transformedMetadataObject.bounds;
+        _faceRegion = transformedMetadataObject.bounds;
         
         //检测到人脸
         if (metadataObject.type == AVMetadataObjectTypeFace) {
@@ -887,11 +889,11 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             CGRect referenceRect = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
             //            DLYLog(@"%d, facePathRect: %@, faceRegion: %@",CGRectContainsRect(referenceRect, faceRegion) ? @"包含人脸":@"不包含人脸",NSStringFromCGRect(referenceRect),NSStringFromCGRect(faceRegion));
         }else{
-            faceRegion = CGRectZero;
+            _faceRegion = CGRectZero;
         }
     }else{
         isDetectedMetadataObjectTarget = NO;
-        faceRegion = CGRectZero;
+        _faceRegion = CGRectZero;
     }
 }
 NSInteger timeCount = 0;
@@ -912,8 +914,8 @@ BOOL isOnce = YES;
     //设置回调
     dispatch_source_set_event_handler(enliveTime, ^{
         
-        CGFloat distance = distanceBetweenPoints(faceRegion.origin, lastFaceRegion.origin);
-        lastFaceRegion = faceRegion;
+        CGFloat distance = distanceBetweenPoints(_faceRegion.origin, _lastFaceRegion.origin);
+        _lastFaceRegion = _faceRegion;
         if (distance < 20) {
             if (isOnce) {
                 isOnce = NO;
@@ -927,7 +929,7 @@ BOOL isOnce = YES;
         timeCount++;
         if (timeCount - startCount >= 3) {
             if (maskCount == 3) {
-                faceRegion = CGRectZero;
+                _faceRegion = CGRectZero;
             }
             isOnce = YES;
             startCount = MAXFLOAT;
@@ -935,7 +937,7 @@ BOOL isOnce = YES;
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             if (self.delegate && [self.delegate respondsToSelector:@selector(displayRefrenceRect:)]) {
-                [self.delegate displayRefrenceRect:faceRegion];
+                [self.delegate displayRefrenceRect:_faceRegion];
             }
         });
         if(timeCount > MAXFLOAT){
@@ -1077,8 +1079,8 @@ BOOL isOnce = YES;
     NSString *productPath = [dataPath stringByAppendingPathComponent:kProductFolder];
     if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
         
-        result = [CocoaSecurity md5:[[NSDate date] description]];
-        NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,result.hex];
+        _result = [CocoaSecurity md5:[[NSDate date] description]];
+        NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,_result.hex];
         if (outputPath) {
             productOutputUrl = [NSURL fileURLWithPath:outputPath];
         }else{
@@ -1488,8 +1490,8 @@ BOOL isOnce = YES;
     NSString *productPath = [dataPath stringByAppendingPathComponent:kProductFolder];
     if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
         
-        result = [CocoaSecurity md5:[[NSDate date] description]];
-        NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,result.hex];
+        _result = [CocoaSecurity md5:[[NSDate date] description]];
+        NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,_result.hex];
         if (outputPath) {
             productOutputUrl = [NSURL fileURLWithPath:outputPath];
         }else{
@@ -1802,7 +1804,7 @@ BOOL isOnce = YES;
                     
                     if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
                         
-                        NSString *targetPath = [productPath stringByAppendingFormat:@"/%@.mp4",result.hex];
+                        NSString *targetPath = [productPath stringByAppendingFormat:@"/%@.mp4",_result.hex];
                         isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
                         DLYLog(@"%@",isSuccess ? @"⛳️⛳️⛳️成功删除未配音的成片视频 !" : @"❌❌❌删除未配音视频失败");
                     }
@@ -1874,7 +1876,7 @@ BOOL isOnce = YES;
     
     AVURLAsset *bodyAsset = [AVURLAsset URLAssetWithURL:bodyUrl options:nil];
     AVAssetTrack *videoTrack = [[bodyAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-    videoSize = videoTrack.naturalSize;
+    _videoSize = videoTrack.naturalSize;
     
     self.bodyMovie = [[GPUImageMovie alloc]initWithURL:bodyUrl];
     self.alphaMovie = [[GPUImageMovie alloc]initWithURL:alphaUrl];
@@ -1885,7 +1887,7 @@ BOOL isOnce = YES;
     [self.bodyMovie addTarget:self.filter];
     
     NSURL *outputUrl = [self.resource saveToSandboxFolderType:NSDocumentDirectory subfolderName:@"HeaderVideos" suffixType:@".mp4"];
-    self.movieWriter =  [[GPUImageMovieWriter alloc] initWithMovieURL:outputUrl size:videoSize];
+    self.movieWriter =  [[GPUImageMovieWriter alloc] initWithMovieURL:outputUrl size:_videoSize];
     
     [self.filter addTarget:self.movieWriter];
     

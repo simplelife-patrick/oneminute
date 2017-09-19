@@ -24,11 +24,6 @@
 		6F752C861F4D15C800A820D6 /* UniversalTemplateBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 6F752C851F4D15C800A820D6 /* UniversalTemplateBGM.m4a */; };
 		6F89259C1F1B12A100256093 /* DLYExportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F89259B1F1B12A100256093 /* DLYExportViewController.m */; };
 		6F8925AF1F1B135100256093 /* DLYPlayVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925AE1F1B135100256093 /* DLYPlayVideoViewController.m */; };
-		6F8925BE1F1B139500256093 /* NSObject+JSONCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925B51F1B139500256093 /* NSObject+JSONCategories.m */; };
-		6F8925BF1F1B139500256093 /* UIImage+iconfont.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925B71F1B139500256093 /* UIImage+iconfont.m */; };
-		6F8925C01F1B139500256093 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925B91F1B139500256093 /* UIView+Extension.m */; };
-		6F8925C11F1B139500256093 /* UIView+Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925BB1F1B139500256093 /* UIView+Utility.m */; };
-		6F8925C21F1B139500256093 /* UIButton+LargerHitArea.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925BD1F1B139500256093 /* UIButton+LargerHitArea.m */; };
 		6F8925C61F1B13B400256093 /* DLYLaunchPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925C51F1B13B400256093 /* DLYLaunchPlayerViewController.m */; };
 		6F8925CC1F1B13CA00256093 /* DLYBaseNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925C91F1B13CA00256093 /* DLYBaseNavigationController.m */; };
 		6F8925CD1F1B13CA00256093 /* DLYBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925CB1F1B13CA00256093 /* DLYBaseViewController.m */; };
@@ -55,6 +50,11 @@
 		AD5B80AF1F34133B0094922B /* header001.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80AA1F34133B0094922B /* header001.mp4 */; };
 		AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5B80B11F3443080094922B /* UIColor+Hex.m */; };
 		AD5B80B61F344C750094922B /* advertisementVideo(10s).mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */; };
+		AD7608F31F70C07F00556E20 /* NSObject+JSONCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608EA1F70C07F00556E20 /* NSObject+JSONCategories.m */; };
+		AD7608F41F70C07F00556E20 /* UIButton+LargerHitArea.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608EC1F70C07F00556E20 /* UIButton+LargerHitArea.m */; };
+		AD7608F51F70C07F00556E20 /* UIImage+iconfont.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608EE1F70C07F00556E20 /* UIImage+iconfont.m */; };
+		AD7608F61F70C08000556E20 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608F01F70C07F00556E20 /* UIView+Extension.m */; };
+		AD7608F71F70C08000556E20 /* UIView+Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608F21F70C07F00556E20 /* UIView+Utility.m */; };
 		ADA3709C1F2D11780082AEC6 /* DLYResource.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA3709B1F2D11780082AEC6 /* DLYResource.m */; };
 		ADD0E7D41F2D9F3500996BD6 /* UIImage+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD0E7D31F2D9F3500996BD6 /* UIImage+Extension.m */; };
 		ADFD08BF1F4D5DEB00DAB6A6 /* DLYMovieObject.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFD08BE1F4D5DEB00DAB6A6 /* DLYMovieObject.m */; };
@@ -124,16 +124,6 @@
 		6F89259B1F1B12A100256093 /* DLYExportViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYExportViewController.m; sourceTree = "<group>"; };
 		6F8925AD1F1B135100256093 /* DLYPlayVideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYPlayVideoViewController.h; sourceTree = "<group>"; };
 		6F8925AE1F1B135100256093 /* DLYPlayVideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYPlayVideoViewController.m; sourceTree = "<group>"; };
-		6F8925B41F1B139500256093 /* NSObject+JSONCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+JSONCategories.h"; sourceTree = "<group>"; };
-		6F8925B51F1B139500256093 /* NSObject+JSONCategories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+JSONCategories.m"; sourceTree = "<group>"; };
-		6F8925B61F1B139500256093 /* UIImage+iconfont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+iconfont.h"; sourceTree = "<group>"; };
-		6F8925B71F1B139500256093 /* UIImage+iconfont.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+iconfont.m"; sourceTree = "<group>"; };
-		6F8925B81F1B139500256093 /* UIView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extension.h"; sourceTree = "<group>"; };
-		6F8925B91F1B139500256093 /* UIView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extension.m"; sourceTree = "<group>"; };
-		6F8925BA1F1B139500256093 /* UIView+Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Utility.h"; sourceTree = "<group>"; };
-		6F8925BB1F1B139500256093 /* UIView+Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Utility.m"; sourceTree = "<group>"; };
-		6F8925BC1F1B139500256093 /* UIButton+LargerHitArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+LargerHitArea.h"; sourceTree = "<group>"; };
-		6F8925BD1F1B139500256093 /* UIButton+LargerHitArea.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+LargerHitArea.m"; sourceTree = "<group>"; };
 		6F8925C41F1B13B400256093 /* DLYLaunchPlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYLaunchPlayerViewController.h; sourceTree = "<group>"; };
 		6F8925C51F1B13B400256093 /* DLYLaunchPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYLaunchPlayerViewController.m; sourceTree = "<group>"; };
 		6F8925C81F1B13CA00256093 /* DLYBaseNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYBaseNavigationController.h; sourceTree = "<group>"; };
@@ -174,6 +164,16 @@
 		AD5B80B01F3443080094922B /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		AD5B80B11F3443080094922B /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "advertisementVideo(10s).mp4"; sourceTree = "<group>"; };
+		AD7608E91F70C07F00556E20 /* NSObject+JSONCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+JSONCategories.h"; sourceTree = "<group>"; };
+		AD7608EA1F70C07F00556E20 /* NSObject+JSONCategories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+JSONCategories.m"; sourceTree = "<group>"; };
+		AD7608EB1F70C07F00556E20 /* UIButton+LargerHitArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+LargerHitArea.h"; sourceTree = "<group>"; };
+		AD7608EC1F70C07F00556E20 /* UIButton+LargerHitArea.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+LargerHitArea.m"; sourceTree = "<group>"; };
+		AD7608ED1F70C07F00556E20 /* UIImage+iconfont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+iconfont.h"; sourceTree = "<group>"; };
+		AD7608EE1F70C07F00556E20 /* UIImage+iconfont.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+iconfont.m"; sourceTree = "<group>"; };
+		AD7608EF1F70C07F00556E20 /* UIView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extension.h"; sourceTree = "<group>"; };
+		AD7608F01F70C07F00556E20 /* UIView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extension.m"; sourceTree = "<group>"; };
+		AD7608F11F70C07F00556E20 /* UIView+Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Utility.h"; sourceTree = "<group>"; };
+		AD7608F21F70C07F00556E20 /* UIView+Utility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Utility.m"; sourceTree = "<group>"; };
 		ADA370971F2D11500082AEC6 /* DLYRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRecordViewController.h; sourceTree = "<group>"; };
 		ADA3709A1F2D11780082AEC6 /* DLYResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYResource.h; sourceTree = "<group>"; };
 		ADA3709B1F2D11780082AEC6 /* DLYResource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYResource.m; sourceTree = "<group>"; };
@@ -333,16 +333,6 @@
 		1C7E61B51EE7E47C0088F33F /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				6F8925B41F1B139500256093 /* NSObject+JSONCategories.h */,
-				6F8925B51F1B139500256093 /* NSObject+JSONCategories.m */,
-				6F8925B61F1B139500256093 /* UIImage+iconfont.h */,
-				6F8925B71F1B139500256093 /* UIImage+iconfont.m */,
-				6F8925B81F1B139500256093 /* UIView+Extension.h */,
-				6F8925B91F1B139500256093 /* UIView+Extension.m */,
-				6F8925BA1F1B139500256093 /* UIView+Utility.h */,
-				6F8925BB1F1B139500256093 /* UIView+Utility.m */,
-				6F8925BC1F1B139500256093 /* UIButton+LargerHitArea.h */,
-				6F8925BD1F1B139500256093 /* UIButton+LargerHitArea.m */,
 				ADFFF1A21F18A33C00FB5BF7 /* DLYCommon.h */,
 				ADFFF1A31F18A33C00FB5BF7 /* DLYCommon.m */,
 				1C7E61B61EE7E4AC0088F33F /* DLYAsyncQueue.h */,
@@ -510,6 +500,16 @@
 		ADD0E7CE1F2D9EBA00996BD6 /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				AD7608E91F70C07F00556E20 /* NSObject+JSONCategories.h */,
+				AD7608EA1F70C07F00556E20 /* NSObject+JSONCategories.m */,
+				AD7608EB1F70C07F00556E20 /* UIButton+LargerHitArea.h */,
+				AD7608EC1F70C07F00556E20 /* UIButton+LargerHitArea.m */,
+				AD7608ED1F70C07F00556E20 /* UIImage+iconfont.h */,
+				AD7608EE1F70C07F00556E20 /* UIImage+iconfont.m */,
+				AD7608EF1F70C07F00556E20 /* UIView+Extension.h */,
+				AD7608F01F70C07F00556E20 /* UIView+Extension.m */,
+				AD7608F11F70C07F00556E20 /* UIView+Utility.h */,
+				AD7608F21F70C07F00556E20 /* UIView+Utility.m */,
 				ADD0E7D21F2D9F3500996BD6 /* UIImage+Extension.h */,
 				ADD0E7D31F2D9F3500996BD6 /* UIImage+Extension.m */,
 				AD5B80B01F3443080094922B /* UIColor+Hex.h */,
@@ -833,34 +833,34 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADFFF1A41F18A33C00FB5BF7 /* DLYCommon.m in Sources */,
+				AD7608F31F70C07F00556E20 /* NSObject+JSONCategories.m in Sources */,
+				AD7608F61F70C08000556E20 /* UIView+Extension.m in Sources */,
 				AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */,
+				AD7608F51F70C07F00556E20 /* UIImage+iconfont.m in Sources */,
 				6FD13AC41F60EC02000B72FC /* DLYIndicatorView.m in Sources */,
 				1C7E618A1EE7DF4F0088F33F /* ViewController.m in Sources */,
 				1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */,
 				ADFFF1AB1F18C00200FB5BF7 /* DLYTransitionInstructions.m in Sources */,
-				6F8925BE1F1B139500256093 /* NSObject+JSONCategories.m in Sources */,
 				1C7E61871EE7DF4F0088F33F /* AppDelegate.m in Sources */,
 				6F8925E01F1B142300256093 /* DLYPopupMenuPath.m in Sources */,
 				1C7E61BE1EE7E4AC0088F33F /* DLYModule.m in Sources */,
 				6F8925C61F1B13B400256093 /* DLYLaunchPlayerViewController.m in Sources */,
 				1C7E61BD1EE7E4AC0088F33F /* DLYAsyncQueue.m in Sources */,
 				AD26F1A81F53E6DE00565E27 /* DLYAVEngine.m in Sources */,
+				AD7608F41F70C07F00556E20 /* UIButton+LargerHitArea.m in Sources */,
 				6F12AE6D1F3DB78300CE8CB6 /* DLYDownloadManager.m in Sources */,
 				ADFD08BF1F4D5DEB00DAB6A6 /* DLYMovieObject.m in Sources */,
 				ADFFF19E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m in Sources */,
 				ADD0E7D41F2D9F3500996BD6 /* UIImage+Extension.m in Sources */,
 				ADFFF19A1F18A33000FB5BF7 /* DLYVolumeAutomation.m in Sources */,
-				6F8925BF1F1B139500256093 /* UIImage+iconfont.m in Sources */,
 				ADA3709C1F2D11780082AEC6 /* DLYResource.m in Sources */,
+				AD7608F71F70C08000556E20 /* UIView+Utility.m in Sources */,
 				1C7E61841EE7DF4F0088F33F /* main.m in Sources */,
 				ADFFF1AE1F18C04400FB5BF7 /* DLYVideoTransition.m in Sources */,
 				ADFFF1A11F18A33000FB5BF7 /* DLYSession.m in Sources */,
 				6F8925CC1F1B13CA00256093 /* DLYBaseNavigationController.m in Sources */,
 				ADFFF19D1F18A33000FB5BF7 /* DLYMiniVlogProduct.m in Sources */,
-				6F8925C01F1B139500256093 /* UIView+Extension.m in Sources */,
 				6F8925CD1F1B13CA00256093 /* DLYBaseViewController.m in Sources */,
-				6F8925C11F1B139500256093 /* UIView+Utility.m in Sources */,
-				6F8925C21F1B139500256093 /* UIButton+LargerHitArea.m in Sources */,
 				ADFFF1A81F18BFAC00FB5BF7 /* DLYTransitionComposition.m in Sources */,
 				6F8925AF1F1B135100256093 /* DLYPlayVideoViewController.m in Sources */,
 				6F89259C1F1B12A100256093 /* DLYExportViewController.m in Sources */,
