@@ -986,7 +986,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //        [self.AVEngine changeCameraRotateClockwiseAnimation];
         self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
 
-//        self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
+        self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         
         [self.AVEngine.captureSession commitConfiguration];
         
