@@ -37,6 +37,7 @@
 		6FD13ABE1F5FDAF4000B72FC /* DLYAnimationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FD13ABD1F5FDAF4000B72FC /* DLYAnimationViewController.m */; };
 		6FD13AC41F60EC02000B72FC /* DLYIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FD13AC31F60EC02000B72FC /* DLYIndicatorView.m */; };
 		822650B2C2F69335E52B0573 /* libPods-OneMinute.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D600523FDE25F6D3C6635F4 /* libPods-OneMinute.a */; };
+		AD038C9A1F7293F10002C092 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD038C9C1F7293F10002C092 /* InfoPlist.strings */; };
 		AD0E2BC21F4196E600A95DAF /* Universal001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD0E2BC11F4196E600A95DAF /* Universal001.json */; };
 		AD13AC381F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = AD13AC371F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m */; };
 		AD26F1A81F53E6DE00565E27 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */; };
@@ -148,6 +149,10 @@
 		6FD13AC21F60EC02000B72FC /* DLYIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYIndicatorView.h; sourceTree = "<group>"; };
 		6FD13AC31F60EC02000B72FC /* DLYIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYIndicatorView.m; sourceTree = "<group>"; };
 		7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneMinute.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute.debug.xcconfig"; sourceTree = "<group>"; };
+		AD038C961F7293C50002C092 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
+		AD038C971F7293C50002C092 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		AD038C9B1F7293F10002C092 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		AD038C9D1F7293F30002C092 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD0E2BC11F4196E600A95DAF /* Universal001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Universal001.json; sourceTree = "<group>"; };
 		AD13AC361F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALAssetsLibrary+CustomPhotoAlbum.h"; sourceTree = "<group>"; };
 		AD13AC371F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ALAssetsLibrary+CustomPhotoAlbum.m"; sourceTree = "<group>"; };
@@ -296,6 +301,7 @@
 				1C7E618B1EE7DF4F0088F33F /* Main.storyboard */,
 				1C7E618E1EE7DF4F0088F33F /* Assets.xcassets */,
 				1C7E61901EE7DF4F0088F33F /* LaunchScreen.storyboard */,
+				AD038C9C1F7293F10002C092 /* InfoPlist.strings */,
 				1C7E61931EE7DF4F0088F33F /* Info.plist */,
 				1C7E61821EE7DF4F0088F33F /* Supporting Files */,
 			);
@@ -712,6 +718,7 @@
 				AD0E2BC21F4196E600A95DAF /* Universal001.json in Resources */,
 				AD5B80AC1F34133B0094922B /* GourmandismTemplateBGM.m4a in Resources */,
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
+				AD038C9A1F7293F10002C092 /* InfoPlist.strings in Resources */,
 				AD5B80AF1F34133B0094922B /* header001.mp4 in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				AD449CEF1F6F6FC6004DBD72 /* Gourmandism001.json in Resources */,
@@ -918,6 +925,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				1C7E618C1EE7DF4F0088F33F /* Base */,
+				AD038C961F7293C50002C092 /* zh-Hans */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -926,8 +934,18 @@
 			isa = PBXVariantGroup;
 			children = (
 				1C7E61911EE7DF4F0088F33F /* Base */,
+				AD038C971F7293C50002C092 /* zh-Hans */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		AD038C9C1F7293F10002C092 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AD038C9B1F7293F10002C092 /* zh-Hans */,
+				AD038C9D1F7293F30002C092 /* en */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -937,6 +955,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -985,6 +1004,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";

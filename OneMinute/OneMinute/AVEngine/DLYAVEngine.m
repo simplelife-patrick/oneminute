@@ -1877,8 +1877,8 @@ BOOL isOnce = YES;
     NSString *subTitleStart = [subTitleDic objectForKey:@"startTime"];
     NSString *subTitleStop = [subTitleDic objectForKey:@"stopTime"];
     
-    float _subTitleStart = [self switchTimeWithTemplateString:subTitleStart]/1000;
-    float _subTitleStop = [self switchTimeWithTemplateString:subTitleStop]/1000;
+    float _subTitleStart = [self switchTimeWithTemplateString:subTitleStart] / 1000;
+    float _subTitleStop = [self switchTimeWithTemplateString:subTitleStop] / 1000;
     float duration = _subTitleStop - _subTitleStart;
     
     CABasicAnimation *animation1 = [CABasicAnimation animationWithKeyPath:@"opacity"];
@@ -1886,7 +1886,7 @@ BOOL isOnce = YES;
     animation1.toValue = [NSNumber numberWithFloat:0.0f];
     animation1.repeatCount = 0;
     animation1.duration = duration;
-    [animation1 setRemovedOnCompletion:NO];
+    [animation1 setRemovedOnCompletion:YES];
     [animation1 setFillMode:kCAFillModeForwards];
     animation1.beginTime = _subTitleStart;
     [titleLayer addAnimation:animation1 forKey:@"opacityAniamtion1"];
