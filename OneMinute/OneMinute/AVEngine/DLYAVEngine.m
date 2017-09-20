@@ -1881,11 +1881,15 @@ BOOL isOnce = YES;
     float _subTitleStop = [self switchTimeWithTemplateString:subTitleStop]/1000;
     float duration = _subTitleStop - _subTitleStart;
     
-    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    animation.fromValue = [NSNumber numberWithFloat:1.0f];
-    [animation setFillMode:kCAFillModeForwards];
-    animation.beginTime = _subTitleStart;
-    [titleLayer addAnimation:animation forKey:@"opacityAniamtion1"];
+    CABasicAnimation *animation1 = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    animation1.fromValue = [NSNumber numberWithFloat:1.0f];
+    animation1.toValue = [NSNumber numberWithFloat:0.0f];
+    animation1.repeatCount = 0;
+    animation1.duration = duration;
+    [animation1 setRemovedOnCompletion:NO];
+    [animation1 setFillMode:kCAFillModeForwards];
+    animation1.beginTime = _subTitleStart;
+    [titleLayer addAnimation:animation1 forKey:@"opacityAniamtion1"];
     
     [overlayLayer addSublayer:titleLayer];
     
