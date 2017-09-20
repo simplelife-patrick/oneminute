@@ -1,45 +1,16 @@
+
 //
-//  DLYCommon.h
+//  DLYPublicMacros.h
 //  OneMinute
 //
-//  Created by chenzonghai on 08/07/2017.
+//  Created by chenzonghai on 20/09/2017.
 //  Copyright © 2017 动旅游. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <AVFoundation/AVFoundation.h>
-#import "DLYLogModule.h"
-#import <CocoaSecurity.h>
-#import <CoreGraphics/CoreGraphics.h>
+#ifndef DLYPublicMacros_h
+#define DLYPublicMacros_h
 
-#import "DLYAlertView.h"
-#import "UIView+Extension.h"
-#import "UIView+Utility.h"
-#import<CocoaLumberjack/CocoaLumberjack.h>
-#import "NSObject+JSONCategories.h"
-#import "UIImage+iconfont.h"
-#import "UIButton+LargerHitArea.h"
-#import <UMengAnalytics/UMMobClick/MobClick.h>
-#import <Photos/Photos.h>
-#import "UIColor+Hex.h"
-#import <Fabric/Fabric.h>
-#import <Crashlytics/Crashlytics.h>
-#import <AFNetworking/AFNetworking.h>
-#import "DLYIndicatorView.h"
-#import "DLYPopupMenu.h"
-
-
-#ifdef DEBUG
-//#import "FLEXManager.h"
-static const int ddLogLevel = DDLogLevelVerbose;
-
-#else
-static const int ddLogLevel = DDLogLevelError;
-//#define DLog(...);
-#endif
-
-@interface DLYCommon : NSObject
-
+#define APPTEST [[NSBundle mainBundle].infoDictionary[@"APPTEST"] boolValue]
 //全局尺寸定义
 #define SCREEN_RECT     [[UIScreen mainScreen] bounds]
 #define SCREEN_WIDTH    [UIScreen mainScreen].bounds.size.width
@@ -98,4 +69,5 @@ static const int ddLogLevel = DDLogLevelError;
 // GCD
 #define GCD_GLOBAL(block)           dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), block)
 #define GCD_MAIN(block)             dispatch_async(dispatch_get_main_queue(), block)
-@end
+
+#endif /* DLYPublicMacros_h */
