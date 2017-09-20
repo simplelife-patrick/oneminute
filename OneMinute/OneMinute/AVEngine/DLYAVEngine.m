@@ -1701,7 +1701,7 @@ BOOL isOnce = YES;
         mutableVideoComposition.instructions = @[passThroughInstruction];
         
         CGSize renderSize = mutableVideoComposition.renderSize;
-        CALayer *watermarkLayer = [self addTitleForVideoWith:videoTitle size:renderSize];
+        CALayer *videoLayer = [self addTitleForVideoWith:videoTitle size:renderSize];
         
         CALayer *parentLayer = [CALayer layer];
         CALayer *videoLayer = [CALayer layer];
@@ -1817,6 +1817,30 @@ BOOL isOnce = YES;
                 break;
         }
     }];
+}
+- (CALayer *) addTestWatermarkWithSize:(CGSize)renderSiz
+{
+    if (APPTEST) {
+        CALayer *overlayLayer = [CALayer layer];
+        CATextLayer *watermarkLayer = [CATextLayer layer];
+        UIFont *font = [UIFont systemFontOfSize:30.0];
+        
+        NSString *waterMessage = @"(0.7.0)20170920 12:00";
+
+        [watermarkLayer setFontSize:30.f];
+        [watermarkLayer setFont:@"ArialRoundedMTBold"];
+        [watermarkLayer setString:waterMessage];
+        [watermarkLayer setAlignmentMode:kCAAlignmentCenter];
+        [watermarkLayer setForegroundColor:[[UIColor colorWithHexString:@"#00CED1" withAlpha:1] CGColor]];
+        watermarkLayer.contentsCenter = overlayLayer.contentsCenter;
+        CGSize textSize = [waterMessage sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
+        watermarkLayer.bounds = CGRectMake(0, 0, textSize.width + 50, textSize.height + 25);
+        
+        [overlayLayer addSublayer:watermarkLayer];
+        
+        return overlayLayer;
+    }
+    return nil;
 }
 #pragma mark - 水印标题设置 -
 - (CALayer *) addTitleForVideoWith:(NSString *)titleText size:(CGSize)renderSize{
