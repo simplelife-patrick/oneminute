@@ -1701,15 +1701,23 @@ BOOL isOnce = YES;
         mutableVideoComposition.instructions = @[passThroughInstruction];
         
         CGSize renderSize = mutableVideoComposition.renderSize;
-        CALayer *videoLayer = [self addTitleForVideoWith:videoTitle size:renderSize];
+        CALayer *videoTitleLayer = [self addTitleForVideoWith:videoTitle size:renderSize];
         
         CALayer *parentLayer = [CALayer layer];
         CALayer *videoLayer = [CALayer layer];
         parentLayer.frame = CGRectMake(0, 0, mutableVideoComposition.renderSize.width, mutableVideoComposition.renderSize.height);
         videoLayer.frame = CGRectMake(0, 0, mutableVideoComposition.renderSize.width, mutableVideoComposition.renderSize.height);
         [parentLayer addSublayer:videoLayer];
-        watermarkLayer.position = CGPointMake(mutableVideoComposition.renderSize.width / 2, mutableVideoComposition.renderSize.height / 2);
-        [parentLayer addSublayer:watermarkLayer];
+        
+        videoTitleLayer.position = CGPointMake(mutableVideoComposition.renderSize.width / 2, mutableVideoComposition.renderSize.height / 2);
+        [parentLayer addSublayer:videoTitleLayer];
+        
+        if (APPTEST) {
+            CALayer *watermarkLayer = [CALayer layer];
+            watermarkLayer = [self addWatermarkWithSize:renderSize];
+            watermarkLayer.position = CGPointMake(mutableVideoComposition.renderSize.width - 180, 8);
+            [parentLayer addSublayer:watermarkLayer];
+        }
         
         mutableVideoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
     }
@@ -1818,31 +1826,36 @@ BOOL isOnce = YES;
         }
     }];
 }
-- (CALayer *) addTestWatermarkWithSize:(CGSize)renderSiz
+#pragma mark - 添加测试水印 -
+- (CALayer *) addWatermarkWithSize:(CGSize)renderSize
 {
-    if (APPTEST) {
-        CALayer *overlayLayer = [CALayer layer];
-        CATextLayer *watermarkLayer = [CATextLayer layer];
-        UIFont *font = [UIFont systemFontOfSize:30.0];
-        
-        NSString *waterMessage = @"(0.7.0)20170920 12:00";
-
-        [watermarkLayer setFontSize:30.f];
-        [watermarkLayer setFont:@"ArialRoundedMTBold"];
-        [watermarkLayer setString:waterMessage];
-        [watermarkLayer setAlignmentMode:kCAAlignmentCenter];
-        [watermarkLayer setForegroundColor:[[UIColor colorWithHexString:@"#00CED1" withAlpha:1] CGColor]];
-        watermarkLayer.contentsCenter = overlayLayer.contentsCenter;
-        CGSize textSize = [waterMessage sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
-        watermarkLayer.bounds = CGRectMake(0, 0, textSize.width + 50, textSize.height + 25);
-        
-        [overlayLayer addSublayer:watermarkLayer];
-        
-        return overlayLayer;
-    }
-    return nil;
+    CALayer *overlayLayer = [CALayer layer];
+    CATextLayer *watermarkLayer = [CATextLayer layer];
+    UIFont *font = [UIFont systemFontOfSize:24.0];
+    
+    //获取当前时间
+    NSString *currentTime  = [self getCurrentTime];
+    //获取当前版本号
+    NSDictionary*infoDic = [[NSBundle mainBundle] infoDictionary];
+    NSString *localVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];
+    //获取当前build号
+    NSString *buildVersion = [infoDic objectForKey:@"CFBundleVersion"];
+    
+    NSString *watermarkMessage = [localVersion stringByAppendingFormat:@" (%@) %@",buildVersion,currentTime];
+    
+    [watermarkLayer setFontSize:24.f];
+    [watermarkLayer setFont:@"ArialRoundedMTBold"];
+    [watermarkLayer setString:watermarkMessage];
+    [watermarkLayer setAlignmentMode:kCAAlignmentCenter];
+    [watermarkLayer setForegroundColor:[[UIColor colorWithHexString:@"#00CED1" withAlpha:0.8] CGColor]];
+    watermarkLayer.contentsCenter = overlayLayer.contentsCenter;
+    CGSize textSize = [watermarkMessage sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
+    watermarkLayer.bounds = CGRectMake(0, 0, textSize.width + 50, textSize.height + 25);
+    
+    [overlayLayer addSublayer:watermarkLayer];
+    return overlayLayer;
 }
-#pragma mark - 水印标题设置 -
+#pragma mark - 视频标题设置 -
 - (CALayer *) addTitleForVideoWith:(NSString *)titleText size:(CGSize)renderSize{
     
     CALayer *overlayLayer = [CALayer layer];
@@ -1854,27 +1867,10 @@ BOOL isOnce = YES;
     [titleLayer setFont:@"ArialRoundedMTBold"];
     [titleLayer setString:titleText];
     [titleLayer setAlignmentMode:kCAAlignmentCenter];
-    [titleLayer setForegroundColor:[[UIColor colorWithHexString:@"#00CED1" withAlpha:1] CGColor]];
+    [titleLayer setForegroundColor:[[UIColor colorWithHexString:@"#00CED1" withAlpha:0.8] CGColor]];
     titleLayer.contentsCenter = overlayLayer.contentsCenter;
     CGSize textSize = [titleText sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
     titleLayer.bounds = CGRectMake(0, 0, textSize.width + 50, textSize.height + 25);
-    
-    
-    CATextLayer *waterLayer = [CATextLayer layer];
-    UIFont *waterfont = [UIFont systemFontOfSize:38.0];
-    
-    if (APPTEST) {
-        //添加测试水印标签
-        [waterLayer setFontSize:38.f];
-        [waterLayer setFont:@"ArialRoundedMTBold"];
-        [waterLayer setString:titleText];
-        [waterLayer setAlignmentMode:kCAAlignmentCenter];
-        [waterLayer setForegroundColor:[[UIColor colorWithHexString:@"#48D1CC" withAlpha:1] CGColor]];
-        waterLayer.contentsCenter = overlayLayer.contentsCenter;
-        CGSize waterTextSize = [titleText sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:waterfont,NSFontAttributeName, nil]];
-        waterLayer.bounds = CGRectMake(0, 0, waterTextSize.width + 50, waterTextSize.height + 25);
-        [overlayLayer addSublayer:waterLayer];
-    }
     
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     NSDictionary *subTitleDic = template.subTitle1;
@@ -1885,11 +1881,15 @@ BOOL isOnce = YES;
     float _subTitleStop = [self switchTimeWithTemplateString:subTitleStop]/1000;
     float duration = _subTitleStop - _subTitleStart;
     
-    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    animation.fromValue = [NSNumber numberWithFloat:1.0f];
-    [animation setFillMode:kCAFillModeForwards];
-    animation.beginTime = _subTitleStart;
-    [titleLayer addAnimation:animation forKey:@"opacityAniamtion1"];
+    CABasicAnimation *animation1 = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    animation1.fromValue = [NSNumber numberWithFloat:1.0f];
+    animation1.toValue = [NSNumber numberWithFloat:0.0f];
+    animation1.repeatCount = 0;
+    animation1.duration = duration;
+    [animation1 setRemovedOnCompletion:NO];
+    [animation1 setFillMode:kCAFillModeForwards];
+    animation1.beginTime = _subTitleStart;
+    [titleLayer addAnimation:animation1 forKey:@"opacityAniamtion1"];
     
     [overlayLayer addSublayer:titleLayer];
     
@@ -2017,7 +2017,7 @@ BOOL isOnce = YES;
 //获取当地时间
 - (NSString *)getCurrentTime {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"yyyy-MM-dd-HH-MM-ss"];
+    [formatter setDateFormat:@"yyyy.MM.dd  HH:mm:ss"];
     NSString *dateTime = [formatter stringFromDate:[NSDate date]];
     return dateTime;
 }
