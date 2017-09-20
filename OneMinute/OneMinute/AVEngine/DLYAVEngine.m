@@ -1468,14 +1468,14 @@ BOOL isOnce = YES;
         }
         BOOL isInsertAudioSuccess = [compositionTrackAudio insertTimeRange:timeRange
                                                                    ofTrack:assetAudioTrack
-                                                                    atTime:audioCursorTime error:nil];
+                                                                    atTime:videoCursorTime error:nil];
         if (isInsertAudioSuccess == NO) {
             DLYLog(@"合并时插入音轨失败");
         }
         
         videoCursorTime = CMTimeAdd(videoCursorTime, timeRange.duration);
         videoCursorTime = CMTimeSubtract(videoCursorTime, transitionDuration);
-        audioCursorTime = CMTimeAdd(audioCursorTime, timeRange.duration);
+//        audioCursorTime = CMTimeAdd(audioCursorTime, timeRange.duration);
         
         if (i + 1 < videoArray.count) {
             timeRange = CMTimeRangeMake(videoCursorTime, transitionDuration);
@@ -1701,7 +1701,7 @@ BOOL isOnce = YES;
         mutableVideoComposition.instructions = @[passThroughInstruction];
         
         CGSize renderSize = mutableVideoComposition.renderSize;
-        CALayer *watermarkLayer = [self addTitleForVideoWith:videoTitle size:renderSize];
+        CALayer *videoLayer = [self addTitleForVideoWith:videoTitle size:renderSize];
         
         CALayer *parentLayer = [CALayer layer];
         CALayer *videoLayer = [CALayer layer];
@@ -1818,6 +1818,30 @@ BOOL isOnce = YES;
         }
     }];
 }
+- (CALayer *) addTestWatermarkWithSize:(CGSize)renderSiz
+{
+    if (APPTEST) {
+        CALayer *overlayLayer = [CALayer layer];
+        CATextLayer *watermarkLayer = [CATextLayer layer];
+        UIFont *font = [UIFont systemFontOfSize:30.0];
+        
+        NSString *waterMessage = @"(0.7.0)20170920 12:00";
+
+        [watermarkLayer setFontSize:30.f];
+        [watermarkLayer setFont:@"ArialRoundedMTBold"];
+        [watermarkLayer setString:waterMessage];
+        [watermarkLayer setAlignmentMode:kCAAlignmentCenter];
+        [watermarkLayer setForegroundColor:[[UIColor colorWithHexString:@"#00CED1" withAlpha:1] CGColor]];
+        watermarkLayer.contentsCenter = overlayLayer.contentsCenter;
+        CGSize textSize = [waterMessage sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
+        watermarkLayer.bounds = CGRectMake(0, 0, textSize.width + 50, textSize.height + 25);
+        
+        [overlayLayer addSublayer:watermarkLayer];
+        
+        return overlayLayer;
+    }
+    return nil;
+}
 #pragma mark - 水印标题设置 -
 - (CALayer *) addTitleForVideoWith:(NSString *)titleText size:(CGSize)renderSize{
     
@@ -1825,14 +1849,32 @@ BOOL isOnce = YES;
     CATextLayer *titleLayer = [CATextLayer layer];
     UIFont *font = [UIFont systemFontOfSize:68.0];
     
+    //视频标题
     [titleLayer setFontSize:68.f];
     [titleLayer setFont:@"ArialRoundedMTBold"];
     [titleLayer setString:titleText];
     [titleLayer setAlignmentMode:kCAAlignmentCenter];
-    [titleLayer setForegroundColor:[[UIColor colorWithHexString:@"#82F7CE" withAlpha:0] CGColor]];
+    [titleLayer setForegroundColor:[[UIColor colorWithHexString:@"#00CED1" withAlpha:1] CGColor]];
     titleLayer.contentsCenter = overlayLayer.contentsCenter;
     CGSize textSize = [titleText sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
     titleLayer.bounds = CGRectMake(0, 0, textSize.width + 50, textSize.height + 25);
+    
+    
+    CATextLayer *waterLayer = [CATextLayer layer];
+    UIFont *waterfont = [UIFont systemFontOfSize:38.0];
+    
+    if (APPTEST) {
+        //添加测试水印标签
+        [waterLayer setFontSize:38.f];
+        [waterLayer setFont:@"ArialRoundedMTBold"];
+        [waterLayer setString:titleText];
+        [waterLayer setAlignmentMode:kCAAlignmentCenter];
+        [waterLayer setForegroundColor:[[UIColor colorWithHexString:@"#48D1CC" withAlpha:1] CGColor]];
+        waterLayer.contentsCenter = overlayLayer.contentsCenter;
+        CGSize waterTextSize = [titleText sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:waterfont,NSFontAttributeName, nil]];
+        waterLayer.bounds = CGRectMake(0, 0, waterTextSize.width + 50, waterTextSize.height + 25);
+        [overlayLayer addSublayer:waterLayer];
+    }
     
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     NSDictionary *subTitleDic = template.subTitle1;
@@ -1844,24 +1886,10 @@ BOOL isOnce = YES;
     float duration = _subTitleStop - _subTitleStart;
     
     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    animation.fromValue = [NSNumber numberWithFloat:0.0f];
-    animation.toValue = [NSNumber numberWithFloat:0.0f];
-    animation.repeatCount = 0;
-    animation.duration = _subTitleStart;
-    [animation setRemovedOnCompletion:NO];
+    animation.fromValue = [NSNumber numberWithFloat:1.0f];
     [animation setFillMode:kCAFillModeForwards];
-    animation.beginTime = AVCoreAnimationBeginTimeAtZero;
-    [titleLayer addAnimation:animation forKey:@"opacityAniamtion"];
-    
-    CABasicAnimation *animation1 = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    animation1.fromValue = [NSNumber numberWithFloat:1.0f];
-    animation1.toValue = [NSNumber numberWithFloat:0.0f];
-    animation1.repeatCount = 0;
-    animation1.duration = duration;
-    [animation1 setRemovedOnCompletion:NO];
-    [animation1 setFillMode:kCAFillModeForwards];
-    animation1.beginTime = _subTitleStart;
-    [titleLayer addAnimation:animation1 forKey:@"opacityAniamtion1"];
+    animation.beginTime = _subTitleStart;
+    [titleLayer addAnimation:animation forKey:@"opacityAniamtion1"];
     
     [overlayLayer addSublayer:titleLayer];
     
@@ -1985,5 +2013,12 @@ BOOL isOnce = YES;
         }
     }
     return timePoint;
+}
+//获取当地时间
+- (NSString *)getCurrentTime {
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd-HH-MM-ss"];
+    NSString *dateTime = [formatter stringFromDate:[NSDate date]];
+    return dateTime;
 }
 @end
