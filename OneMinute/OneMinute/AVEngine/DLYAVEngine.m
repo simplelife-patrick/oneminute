@@ -25,9 +25,9 @@
 
 @interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate>
 {
-    AVCaptureVideoOrientation videoOrientation;
-    dispatch_queue_t movieWritingQueue;
-    CMBufferQueueRef previewBufferQueue;
+    AVCaptureVideoOrientation _videoOrientation;
+    dispatch_queue_t _movieWritingQueue;
+    CMBufferQueueRef _previewBufferQueue;
     
     CMTime _startTime;
     CMTime _stopTime;
@@ -104,11 +104,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 + (instancetype) sharedDLYAVEngine{
     
     static DLYAVEngine *AVEngine;
-    
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         AVEngine = [[DLYAVEngine alloc] init];
-        
     });
     return AVEngine;
 }
@@ -199,7 +197,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     return _captureSession;
 }
-
+#pragma mark - 视频录制相关访问权限检测 -
 - (BOOL)checkCameraAuthorization {
     __block BOOL isAvalible = NO;
     AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
@@ -377,10 +375,10 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             [self.videoConnection setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
         }
         //视频录制队列
-        movieWritingQueue = dispatch_queue_create("moviewriting", DISPATCH_QUEUE_SERIAL);
+        _movieWritingQueue = dispatch_queue_create("moviewriting", DISPATCH_QUEUE_SERIAL);
         
         // BufferQueue
-        OSStatus err = CMBufferQueueCreate(kCFAllocatorDefault, 1, CMBufferQueueGetCallbacksForUnsortedSampleBuffers(), &previewBufferQueue);
+        OSStatus err = CMBufferQueueCreate(kCFAllocatorDefault, 1, CMBufferQueueGetCallbacksForUnsortedSampleBuffers(), &_previewBufferQueue);
         DLYLog(@"CMBufferQueueCreate error:%d", (int)err);
         
         self.metadataOutput.rectOfInterest = [self.captureVideoPreviewLayer metadataOutputRectOfInterestForRect:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
@@ -393,7 +391,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 #pragma mark - 切换摄像头 -
 - (void)changeCameraInputDeviceisFront:(BOOL)isFront {
     
-    NSLog(@"切换摄像头 <<<前>>> 的录制方向 :%ld",(long)self.videoConnection.videoOrientation);
     if (isFront) {
         
         self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
@@ -403,10 +400,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.frontCameraInput];//切换成了前置
-            
         }
-        NSLog(@"✅✅✅当前视频连接的视频方向为 :%lu",self.videoConnection.videoOrientation);
-        NSLog(@"✅✅✅当前预览方向为 :%lu",self.videoConnection.videoPreviewLayer.orientation);
     }else {
         
         self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
@@ -418,7 +412,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         }
     }
     [self.captureSession commitConfiguration];
-    NSLog(@"切换摄像头 <<<后>>> 的录制方向 :%ld",(long)self.videoConnection.videoOrientation);
 }
 
 //返回前置摄像头
@@ -673,63 +666,72 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
 // 处理速度视频
 - (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl recordTypeOfPart:(DLYMiniVlogRecordType)recordType completed:(void(^)())completed {
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+    
+    NSLog(@"video set thread: %@", [NSThread currentThread]);
+    NSLog(@"处理视频速度🚀🚀🚀🚀🚀🚀🚀🚀🚀");
+    // 获取视频
+    if (!videoPartUrl) {
+        DLYLog(@"待调速的视频片段不存在!");
+        return;
+    }else{
         
-        NSLog(@"video set thread: %@", [NSThread currentThread]);
-        NSLog(@"处理视频速度🚀🚀🚀🚀🚀🚀🚀🚀🚀");
-        // 获取视频
-        if (!videoPartUrl) {
-            DLYLog(@"待调速的视频片段地址为空");
-            return;
+        // 适配视频速度比率
+        CGFloat scale = 0;
+        if(recordType == DLYMiniVlogRecordTypeTimelapse){
+            scale = 0.2f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(低帧率)
+        } else if (recordType == DLYMiniVlogRecordTypeSlomo) {
+            scale = 3.0f;  // 慢速 x3   播放时间拉长帧率平均(高帧率)
         }else{
-            
-            // 适配视频速度比率
-            CGFloat scale = 0;
-            if(recordType == DLYMiniVlogRecordTypeTimelapse){
-                scale = 0.2f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(低帧率)
-            } else if (recordType == DLYMiniVlogRecordTypeSlomo) {
-                scale = 3.0f;  // 慢速 x3   播放时间拉长帧率平均(高帧率)
-            }else{
-                scale = 1.0f;
-            }
-            
-            AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:videoPartUrl options:nil];
-            // 视频混合
-            AVMutableComposition* mixComposition = [AVMutableComposition composition];
-            // 视频轨道
-            AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-            // 音频轨道
-            
-            
-            if (recordType == DLYMiniVlogRecordTypeNormal) {
-                AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-                // 插入视频轨道
-                [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
-                // 插入音频轨道
-                [compositionAudioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeAudio] firstObject] atTime:kCMTimeZero error:nil];
-                
-            }else{//快慢镜头丢弃原始音频
-                
-                // 插入视频轨道
-                [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
-                
-                // 根据速度比率调节音频和视频
-                [compositionVideoTrack scaleTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) toDuration:CMTimeMake(videoAsset.duration.value * scale , videoAsset.duration.timescale)];
-            }
-            
-            // 配置导出
-            AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1280x720];
-            
-            _assetExport.outputFileType = AVFileTypeMPEG4;
-            _assetExport.outputURL = outputUrl;
-            _assetExport.shouldOptimizeForNetworkUse = YES;
-            
-            // 导出视频
-            [_assetExport exportAsynchronouslyWithCompletionHandler:^{
-                completed();
-            }];
+            scale = 1.0f;
         }
-    });
+        
+        AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:videoPartUrl options:nil];
+        
+        AVAssetTrack *videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+        CGAffineTransform videoTransform = videoAssetTrack.preferredTransform;
+        
+        NSLog(@"preferredTransform a = %.0f     b = %.0f       c = %.0f     d = %.0f,       tx = %.0f       ty = %.0f",videoTransform.a,videoTransform.b,videoTransform.c,videoTransform.d,videoTransform.tx,videoTransform.ty);
+        // 视频混合
+        AVMutableComposition* mixComposition = [AVMutableComposition composition];
+        // 视频轨道
+        AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+        
+        if (videoTransform.a == -1 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == -1) {
+            DLYLog(@"需要调整方向");
+            compositionVideoTrack.preferredTransform = CGAffineTransformMakeRotation(M_PI);
+        }else if (videoTransform.a == 0 && videoTransform.b == 1 && videoTransform.c == -1 && videoTransform.d == 0){
+            compositionVideoTrack.preferredTransform = CGAffineTransformMakeRotation(M_PI);
+        }
+        if (recordType == DLYMiniVlogRecordTypeNormal) {
+            // 音频轨道
+            AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+            
+            // 插入视频轨道
+            [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
+            // 插入音频轨道
+            [compositionAudioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeAudio] firstObject] atTime:kCMTimeZero error:nil];
+            
+        }else{//快慢镜头丢弃原始音频
+            
+            // 插入视频轨道
+            [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
+            
+            // 根据速度比率调节音频和视频
+            [compositionVideoTrack scaleTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) toDuration:CMTimeMake(videoAsset.duration.value * scale , videoAsset.duration.timescale)];
+        }
+        
+        // 配置导出
+        AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1280x720];
+        
+        _assetExport.outputFileType = AVFileTypeMPEG4;
+        _assetExport.outputURL = outputUrl;
+        _assetExport.shouldOptimizeForNetworkUse = YES;
+        
+        // 导出视频
+        [_assetExport exportAsynchronouslyWithCompletionHandler:^{
+            completed();
+        }];
+    }
 }
 #pragma mark - 打开慢动作录制 -
 - (void)cameraBackgroundDidClickOpenSlow {
@@ -873,21 +875,15 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
 -(void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection{
     
-    //检测到目标元数据
     if (metadataObjects.count) {
         isDetectedMetadataObjectTarget = YES;
         AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects.firstObject;
         
-        //        DLYLog(@"检测到 %lu 个人脸",metadataObjects.count);
-        //取到识别到的人脸区域
         AVMetadataObject *transformedMetadataObject = [self.captureVideoPreviewLayer transformedMetadataObjectForMetadataObject:metadataObject];
         _faceRegion = transformedMetadataObject.bounds;
         
-        //检测到人脸
         if (metadataObject.type == AVMetadataObjectTypeFace) {
-            //检测区域
-            CGRect referenceRect = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-            //            DLYLog(@"%d, facePathRect: %@, faceRegion: %@",CGRectContainsRect(referenceRect, faceRegion) ? @"包含人脸":@"不包含人脸",NSStringFromCGRect(referenceRect),NSStringFromCGRect(faceRegion));
+//            CGRect referenceRect = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         }else{
             _faceRegion = CGRectZero;
         }
@@ -1410,7 +1406,7 @@ BOOL isOnce = YES;
     NSArray *videoTracks = @[compositionTrackA, compositionTrackB];
     
     CMTime videoCursorTime = kCMTimeZero;
-    CMTime transitionDuration = CMTimeMake(1, 1);
+    CMTime transitionDuration = CMTimeMake(0.5, 1);
     CMTime audioCursorTime = kCMTimeZero;
     
     NSMutableArray *videoArray = [NSMutableArray array];
@@ -1847,7 +1843,8 @@ BOOL isOnce = YES;
     [watermarkLayer setFont:@"ArialRoundedMTBold"];
     [watermarkLayer setString:watermarkMessage];
     [watermarkLayer setAlignmentMode:kCAAlignmentCenter];
-    [watermarkLayer setForegroundColor:[[UIColor colorWithHexString:@"#00CED1" withAlpha:0.8] CGColor]];
+    [watermarkLayer setForegroundColor:[[UIColor colorWithHexString:@"FFFFFF" withAlpha:1] CGColor]];
+    [watermarkLayer setBackgroundColor:[[UIColor colorWithHexString:@"#000000" withAlpha:1] CGColor]];
     watermarkLayer.contentsCenter = overlayLayer.contentsCenter;
     CGSize textSize = [watermarkMessage sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
     watermarkLayer.bounds = CGRectMake(0, 0, textSize.width + 50, textSize.height + 25);
@@ -1860,14 +1857,13 @@ BOOL isOnce = YES;
     
     CALayer *overlayLayer = [CALayer layer];
     CATextLayer *titleLayer = [CATextLayer layer];
-    UIFont *font = [UIFont systemFontOfSize:68.0];
+    UIFont *font = [UIFont systemFontOfSize:80.0];
     
-    //视频标题
-    [titleLayer setFontSize:68.f];
+    [titleLayer setFontSize:80.f];
     [titleLayer setFont:@"ArialRoundedMTBold"];
     [titleLayer setString:titleText];
     [titleLayer setAlignmentMode:kCAAlignmentCenter];
-    [titleLayer setForegroundColor:[[UIColor colorWithHexString:@"#00CED1" withAlpha:0.8] CGColor]];
+    [titleLayer setForegroundColor:[[UIColor colorWithHexString:@"#FFD700" withAlpha:0.8] CGColor]];
     titleLayer.contentsCenter = overlayLayer.contentsCenter;
     CGSize textSize = [titleText sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
     titleLayer.bounds = CGRectMake(0, 0, textSize.width + 50, textSize.height + 25);
@@ -1881,12 +1877,22 @@ BOOL isOnce = YES;
     float _subTitleStop = [self switchTimeWithTemplateString:subTitleStop] / 1000;
     float duration = _subTitleStop - _subTitleStart;
     
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    animation.fromValue = [NSNumber numberWithFloat:0.0f];
+    animation.toValue = [NSNumber numberWithFloat:0.0f];
+    animation.repeatCount = 0;
+    animation.duration = _subTitleStart;
+    [animation setRemovedOnCompletion:NO];
+    [animation setFillMode:kCAFillModeForwards];
+    animation.beginTime = AVCoreAnimationBeginTimeAtZero;
+    [titleLayer addAnimation:animation forKey:@"opacityAniamtion"];
+    
     CABasicAnimation *animation1 = [CABasicAnimation animationWithKeyPath:@"opacity"];
     animation1.fromValue = [NSNumber numberWithFloat:1.0f];
     animation1.toValue = [NSNumber numberWithFloat:0.0f];
     animation1.repeatCount = 0;
     animation1.duration = duration;
-    [animation1 setRemovedOnCompletion:YES];
+    [animation1 setRemovedOnCompletion:NO];
     [animation1 setFillMode:kCAFillModeForwards];
     animation1.beginTime = _subTitleStart;
     [titleLayer addAnimation:animation1 forKey:@"opacityAniamtion1"];
