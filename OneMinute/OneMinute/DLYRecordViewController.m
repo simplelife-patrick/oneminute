@@ -421,7 +421,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         part.recordStatus = @"0";
         part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
-        
+        part.partTime = [self getDurationwithStartTime:part.dubStartTime andStopTime:part.dubStopTime];
+
     }
     /////////////////////////////////
     if (isExitDraft) {
@@ -492,7 +493,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         part.recordStatus = @"0";
         part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
-        
+        part.partTime = [self getDurationwithStartTime:part.dubStartTime andStopTime:part.dubStopTime];
     }
     //contentSize更新
     float episodeHeight = (self.vedioEpisode.height - (partModelArray.count - 1) * 2) / partModelArray.count;
@@ -1391,7 +1392,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     if (part.recordType == DLYMiniVlogRecordTypeSlomo) {
                         self.shootGuide.text = @"慢动作拍摄不能录制现场声音";
                     }else {
-                        self.shootGuide.text = @"延时拍摄不能录制现场声音";
+                        self.shootGuide.text = @"快镜头拍摄不能录制现场声音";
                     }
                 }else
                 {
@@ -1775,7 +1776,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 UILabel * timeLabel = [[UILabel alloc] init];
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-                NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                NSArray *timeArr = [part.partTime componentsSeparatedByString:@"."];
                 timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                 [timeLabel sizeToFit];
                 timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
@@ -1792,7 +1793,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 timeLabel.textAlignment = NSTextAlignmentRight;
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-                NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                NSArray *timeArr = [part.partTime componentsSeparatedByString:@"."];
                 timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                 [itemView addSubview:timeLabel];
                 
@@ -1815,14 +1816,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 timeLabel.textAlignment = NSTextAlignmentRight;
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-                NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                NSArray *timeArr = [part.partTime componentsSeparatedByString:@"."];
                 timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                 [itemView addSubview:timeLabel];
                 
                 UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
                 speedLabel.textColor = [UIColor whiteColor];
                 speedLabel.font = FONT_SYSTEM(11);
-                speedLabel.text = @"延时";
+                speedLabel.text = @"快镜";
                 [itemView addSubview:speedLabel];
                 
                 UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
@@ -1854,7 +1855,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     UILabel * timeLabel = [[UILabel alloc] init];
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-                    NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                    NSArray *timeArr = [part.partTime componentsSeparatedByString:@"."];
                     timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                     [timeLabel sizeToFit];
                     timeLabel.frame = CGRectMake(itemView.width - timeLabel.width, (itemView.height - timeLabel.height) / 2, timeLabel.width, timeLabel.height);
@@ -1866,7 +1867,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-                    NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                    NSArray *timeArr = [part.partTime componentsSeparatedByString:@"."];
                     timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                     [itemView addSubview:timeLabel];
                     
@@ -1902,14 +1903,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-                    NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                    NSArray *timeArr = [part.partTime componentsSeparatedByString:@"."];
                     timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                     [itemView addSubview:timeLabel];
                     
                     UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
                     speedLabel.textColor = [UIColor whiteColor];
                     speedLabel.font = FONT_SYSTEM(11);
-                    speedLabel.text = @"延时";
+                    speedLabel.text = @"快镜";
                     [itemView addSubview:speedLabel];
                     
                     UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
@@ -1964,7 +1965,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 UILabel * timeLabel = [[UILabel alloc] init];
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-                NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                NSArray *timeArr = [part.partTime componentsSeparatedByString:@"."];
                 timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                 [timeLabel sizeToFit];
                 timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
@@ -1984,7 +1985,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 timeLabel.textAlignment = NSTextAlignmentRight;
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-                NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                NSArray *timeArr = [part.partTime componentsSeparatedByString:@"."];
                 timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                 [itemView addSubview:timeLabel];
                 
@@ -2009,14 +2010,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 timeLabel.textAlignment = NSTextAlignmentRight;
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
-                NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                NSArray *timeArr = [part.partTime componentsSeparatedByString:@"."];
                 timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                 [itemView addSubview:timeLabel];
                 
                 UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
                 speedLabel.textColor = [UIColor whiteColor];
                 speedLabel.font = FONT_SYSTEM(11);
-                speedLabel.text = @"延时";
+                speedLabel.text = @"快镜";
                 [itemView addSubview:speedLabel];
                 
                 UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
@@ -2049,7 +2050,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     UILabel * timeLabel = [[UILabel alloc] init];
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-                    NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                    NSArray *timeArr = [part.partTime componentsSeparatedByString:@"."];
                     timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                     [timeLabel sizeToFit];
                     timeLabel.frame = CGRectMake(4, (itemView.height - timeLabel.height) / 2, timeLabel.width, timeLabel.height);
@@ -2061,7 +2062,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-                    NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                    NSArray *timeArr = [part.partTime componentsSeparatedByString:@"."];
                     timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                     [itemView addSubview:timeLabel];
                     
@@ -2097,14 +2098,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     timeLabel.textAlignment = NSTextAlignmentRight;
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
-                    NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
+                    NSArray *timeArr = [part.partTime componentsSeparatedByString:@"."];
                     timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                     [itemView addSubview:timeLabel];
                     
                     UILabel * speedLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 14, 24, 12)];
                     speedLabel.textColor = [UIColor whiteColor];
                     speedLabel.font = FONT_SYSTEM(11);
-                    speedLabel.text = @"延时";
+                    speedLabel.text = @"快镜";
                     [itemView addSubview:speedLabel];
                     
                     UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
@@ -2614,7 +2615,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }else if (part.recordType == DLYMiniVlogRecordTypeSlomo) {
         typeTitle = @"慢镜头";
     }else {
-        typeTitle = @"延时";
+        typeTitle = @"快镜头";
     }
     self.titleView = [[DLYTitleView alloc] initWithPartTitle:partTitle timeTitle:timeTitle typeTitle:typeTitle];
     if (self.newState == 1) {
@@ -2704,59 +2705,64 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         self.completeButton.hidden = NO;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            
-            [self createPartViewLayout];
-            
-            [UIView animateWithDuration:0.5f animations:^{
-                self.completeButton.hidden = YES;
-                if (self.newState == 1) {
-                    self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
-                    self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(0);
-                }else {
-                    self.toggleCameraBtn.frame = CGRectMake(11, 11, 40, 40);
-                    self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(M_PI);
-                }
-                self.toggleCameraBtn.hidden = NO;
-                if (!isFront) {
-                    if (self.newState == 1) {
-                        self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
-                        self.flashButton.transform = CGAffineTransformMakeRotation(0);
-                    }else {
-                        self.flashButton.frame = CGRectMake(11, 61, 40, 40);
-                        self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
-                    }
-                    self.flashButton.hidden = NO;
-                }
-                
-                if (self.newState == 1) {
-                    self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
-                    self.chooseScene.transform = CGAffineTransformMakeRotation(0);
-                }else {
-                    self.chooseScene.frame = CGRectMake(11, SCREEN_HEIGHT - 56, 40, 40);
-                    self.chooseScene.transform = CGAffineTransformMakeRotation(M_PI);
-                }
-                self.chooseScene.hidden = NO;
-                if (self.newState == 1) {
-                    self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.bottom + 2, 40, 13);
-                    self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
-                }else {
-                    self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.top - 15, 40, 13);
-                    self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(M_PI);
-                }
-                self.chooseSceneLabel.hidden = NO;
-                self.backView.hidden = NO;
-                self.backView.transform = CGAffineTransformMakeTranslation(0, 0);
-                self.shootView.alpha = 0;
-                self.shootView.hidden = YES;
-            } completion:^(BOOL finished) {
-            }];
+            self.completeButton.hidden = YES;
         });
     }
+}
+
+- (void)showControlView {
+    
+    [self createPartViewLayout];
+    
+    [UIView animateWithDuration:0.5f animations:^{
+        if (self.newState == 1) {
+            self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
+            self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.toggleCameraBtn.frame = CGRectMake(11, 11, 40, 40);
+            self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+        self.toggleCameraBtn.hidden = NO;
+        if (!isFront) {
+            if (self.newState == 1) {
+                self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
+                self.flashButton.transform = CGAffineTransformMakeRotation(0);
+            }else {
+                self.flashButton.frame = CGRectMake(11, 61, 40, 40);
+                self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+            }
+            self.flashButton.hidden = NO;
+        }
+        
+        if (self.newState == 1) {
+            self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
+            self.chooseScene.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.chooseScene.frame = CGRectMake(11, SCREEN_HEIGHT - 56, 40, 40);
+            self.chooseScene.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+        self.chooseScene.hidden = NO;
+        if (self.newState == 1) {
+            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.bottom + 2, 40, 13);
+            self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.top - 15, 40, 13);
+            self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+        self.chooseSceneLabel.hidden = NO;
+        self.backView.hidden = NO;
+        self.backView.transform = CGAffineTransformMakeTranslation(0, 0);
+        self.shootView.alpha = 0;
+        self.shootView.hidden = YES;
+    } completion:^(BOOL finished) {
+    }];
 }
 
 - (void)indicatorViewstopFlashAnimating {
     NSArray *viewArr = self.navigationController.viewControllers;
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
+        
+        [self showControlView];
         
         for(int i = 0; i < partModelArray.count; i++)
         {
