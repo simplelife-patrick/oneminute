@@ -274,8 +274,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 #pragma mark - GestureRecognizer Delegate -
 
-- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
-{
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     if ( [gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]] ) {
         self.beginGestureScale = self.effectiveScale;
     }
@@ -349,8 +348,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
     }
 }
-- (void)pinchDetected:(UIPinchGestureRecognizer*)recogniser
-{
+- (void)pinchDetected:(UIPinchGestureRecognizer*)recogniser {
     // 1
     //    if (!self.AVEngine.videoDevice)
     //        return;
@@ -2843,8 +2841,23 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             break;
         case PHAuthorizationStatusNotDetermined:
         {
-            [self showAlertPermissionwithMessage:@"相册"];
-            isAvalible = NO;
+            [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+                if (status == PHAuthorizationStatusAuthorized) {
+                    isAvalible = YES;
+                    BOOL isCamera = [self checkVideoCameraAuthorization];
+                    BOOL isMicrophone = [self checkVideoMicrophoneAudioAuthorization];
+                    if (isCamera && isMicrophone) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self showCueBubble];
+                        });
+                    }
+                }else{
+                    isAvalible = NO;  //回到主线程
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self showAlertPermissionwithMessage:@"相册"];
+                    });
+                }
+            }];
         }
             break;
         case PHAuthorizationStatusRestricted:
@@ -2853,6 +2866,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         default:
             break;
     }
+    
     return isAvalible;
 }
 //相机
@@ -2871,8 +2885,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             break;
         case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动默认弹框
         {
-            [self showAlertPermissionwithMessage:@"相机"];
-            isAvalible = NO;
+            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+                isAvalible = granted;
+                if(!granted)  //如果不允许
+                {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self showAlertPermissionwithMessage:@"相机"];
+                    });
+                }
+            }];
         }
             break;
         case AVAuthorizationStatusRestricted:  //受限制，家长控制器
@@ -2897,8 +2918,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             break;
         case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动
         {
-            [self showAlertPermissionwithMessage:@"麦克风"];
-            isAvalible = NO;
+            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
+                isAvalible = granted;
+                if(!granted)  //如果不允许
+                {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self showAlertPermissionwithMessage:@"麦克风"];
+                    });
+                }
+            }];
         }
             break;
         case AVAuthorizationStatusRestricted:  //受限制，家长控制器
