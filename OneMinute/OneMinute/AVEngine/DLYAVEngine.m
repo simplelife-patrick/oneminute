@@ -666,72 +666,72 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
 // 处理速度视频
 - (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl recordTypeOfPart:(DLYMiniVlogRecordType)recordType completed:(void(^)())completed {
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+    
+    NSLog(@"video set thread: %@", [NSThread currentThread]);
+    NSLog(@"处理视频速度🚀🚀🚀🚀🚀🚀🚀🚀🚀");
+    // 获取视频
+    if (!videoPartUrl) {
+        DLYLog(@"待调速的视频片段不存在!");
+        return;
+    }else{
         
-//        NSLog(@"video set thread: %@", [NSThread currentThread]);
-        NSLog(@"处理视频速度🚀🚀🚀🚀🚀🚀🚀🚀🚀");
-        // 获取视频
-        if (!videoPartUrl) {
-            DLYLog(@"待调速的视频片段不存在!");
-            return;
+        // 适配视频速度比率
+        CGFloat scale = 0;
+        if(recordType == DLYMiniVlogRecordTypeTimelapse){
+            scale = 0.2f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(低帧率)
+        } else if (recordType == DLYMiniVlogRecordTypeSlomo) {
+            scale = 3.0f;  // 慢速 x3   播放时间拉长帧率平均(高帧率)
         }else{
-            
-            // 适配视频速度比率
-            CGFloat scale = 0;
-            if(recordType == DLYMiniVlogRecordTypeTimelapse){
-                scale = 0.2f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(低帧率)
-            } else if (recordType == DLYMiniVlogRecordTypeSlomo) {
-                scale = 3.0f;  // 慢速 x3   播放时间拉长帧率平均(高帧率)
-            }else{
-                scale = 1.0f;
-            }
-            
-            AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:videoPartUrl options:nil];
-            
-            AVAssetTrack *videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-            CGAffineTransform videoTransform = videoAssetTrack.preferredTransform;
-            
-            NSLog(@"preferredTransform a = %.0f,b = %.0f,C = %.0f,d = %.0f,tx = %.0f,ty = %.0f",videoTransform.a,videoTransform.b,videoTransform.c,videoTransform.d,videoTransform.tx,videoTransform.ty);
-            // 视频混合
-            AVMutableComposition* mixComposition = [AVMutableComposition composition];
-            // 视频轨道
-            AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-            
-            if (videoTransform.a == -1 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == -1) {
-                DLYLog(@"需要调整方向");
-                compositionVideoTrack.preferredTransform = CGAffineTransformMakeRotation(M_PI);
-            }
-            if (recordType == DLYMiniVlogRecordTypeNormal) {
-                // 音频轨道
-                AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-                
-                // 插入视频轨道
-                [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
-                // 插入音频轨道
-                [compositionAudioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeAudio] firstObject] atTime:kCMTimeZero error:nil];
-                
-            }else{//快慢镜头丢弃原始音频
-                
-                // 插入视频轨道
-                [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
-                
-                // 根据速度比率调节音频和视频
-                [compositionVideoTrack scaleTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) toDuration:CMTimeMake(videoAsset.duration.value * scale , videoAsset.duration.timescale)];
-            }
-            
-            // 配置导出
-            AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1280x720];
-            
-            _assetExport.outputFileType = AVFileTypeMPEG4;
-            _assetExport.outputURL = outputUrl;
-            _assetExport.shouldOptimizeForNetworkUse = YES;
-            
-            // 导出视频
-            [_assetExport exportAsynchronouslyWithCompletionHandler:^{
-                completed();
-            }];
+            scale = 1.0f;
         }
-    });
+        
+        AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:videoPartUrl options:nil];
+        
+        AVAssetTrack *videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+        CGAffineTransform videoTransform = videoAssetTrack.preferredTransform;
+        
+        NSLog(@"preferredTransform a = %.0f     b = %.0f       c = %.0f     d = %.0f,       tx = %.0f       ty = %.0f",videoTransform.a,videoTransform.b,videoTransform.c,videoTransform.d,videoTransform.tx,videoTransform.ty);
+        // 视频混合
+        AVMutableComposition* mixComposition = [AVMutableComposition composition];
+        // 视频轨道
+        AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+        
+        if (videoTransform.a == -1 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == -1) {
+            DLYLog(@"需要调整方向");
+            compositionVideoTrack.preferredTransform = CGAffineTransformMakeRotation(M_PI);
+        }else if (videoTransform.a == 0 && videoTransform.b == 1 && videoTransform.c == -1 && videoTransform.d == 0){
+            compositionVideoTrack.preferredTransform = CGAffineTransformMakeRotation(M_PI);
+        }
+        if (recordType == DLYMiniVlogRecordTypeNormal) {
+            // 音频轨道
+            AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+            
+            // 插入视频轨道
+            [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
+            // 插入音频轨道
+            [compositionAudioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeAudio] firstObject] atTime:kCMTimeZero error:nil];
+            
+        }else{//快慢镜头丢弃原始音频
+            
+            // 插入视频轨道
+            [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
+            
+            // 根据速度比率调节音频和视频
+            [compositionVideoTrack scaleTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) toDuration:CMTimeMake(videoAsset.duration.value * scale , videoAsset.duration.timescale)];
+        }
+        
+        // 配置导出
+        AVAssetExportSession* _assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1280x720];
+        
+        _assetExport.outputFileType = AVFileTypeMPEG4;
+        _assetExport.outputURL = outputUrl;
+        _assetExport.shouldOptimizeForNetworkUse = YES;
+        
+        // 导出视频
+        [_assetExport exportAsynchronouslyWithCompletionHandler:^{
+            completed();
+        }];
+    }
 }
 #pragma mark - 打开慢动作录制 -
 - (void)cameraBackgroundDidClickOpenSlow {
