@@ -15,9 +15,6 @@ typedef NS_ENUM(NSUInteger, DLYCameraType) {
     DLYCameraTypeFront,
 };
 
-typedef void (^TimeLapseSamplebufferBlock)(CMSampleBufferRef sampleBuffer);
-typedef void (^OnBufferBlock)(CMSampleBufferRef sampleBuffer);
-
 typedef void (^SuccessBlock)(void);
 typedef void (^FailureBlock)(NSError *error);
 typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个block返回
@@ -48,15 +45,13 @@ typedef void(^setVideoSpeedBlock)();
 
 @property (nonatomic, assign) id                                                      delegate;
 @property (nonatomic, readonly) BOOL                                                  isRecording;
-@property (nonatomic, copy) OnBufferBlock                                             onBuffer;
-@property (nonatomic, copy) TimeLapseSamplebufferBlock                                timeLapseSamplebufferBlock;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer                              *captureVideoPreviewLayer;
 @property (nonatomic, strong) AVCaptureConnection                                     *videoConnection;
 @property (nonatomic, strong) AVCaptureSession                                        *captureSession;
 @property (nonatomic, strong) NSURL                                                   *currentProductUrl;
 @property (nonatomic, assign) BOOL                                                    isTime;
 @property (nonatomic, strong) NSMutableArray                                          *imageArray;
-@property (nonatomic, strong) DLYMiniVlogPart                  *currentPart;
+@property (nonatomic, strong) DLYMiniVlogPart                                         *currentPart;
 
 - (void) restartRecording;
 - (void) stopRecording;
@@ -151,8 +146,8 @@ typedef void(^setVideoSpeedBlock)();
 
 - (void) focusOnceWithPoint:(CGPoint)point;
 -(void)focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point;
-- (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl completed:(void(^)())completed;
 
 //新方法合成视频
 -(long long)getDateTimeTOMilliSeconds:(NSDate *)datetime;
+
 @end
