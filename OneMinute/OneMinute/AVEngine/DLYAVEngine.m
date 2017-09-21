@@ -837,6 +837,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         NSURL *exportUrl = [NSURL fileURLWithPath:exportPath];
         
         dispatch_async(dispatch_get_main_queue(), ^{
+//            long long _start
             [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"片段处理中..."];
             typeof(self) weakSelf = self;
             [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl recordTypeOfPart:_currentPart.recordType completed:^{
@@ -1410,7 +1411,7 @@ BOOL isOnce = YES;
     NSArray *videoTracks = @[compositionTrackA, compositionTrackB];
     
     CMTime videoCursorTime = kCMTimeZero;
-    CMTime transitionDuration = CMTimeMake(1, 1);
+    CMTime transitionDuration = CMTimeMake(0.5, 1);
     CMTime audioCursorTime = kCMTimeZero;
     
     NSMutableArray *videoArray = [NSMutableArray array];
@@ -1860,10 +1861,9 @@ BOOL isOnce = YES;
     
     CALayer *overlayLayer = [CALayer layer];
     CATextLayer *titleLayer = [CATextLayer layer];
-    UIFont *font = [UIFont systemFontOfSize:68.0];
+    UIFont *font = [UIFont systemFontOfSize:80.0];
     
-    //视频标题
-    [titleLayer setFontSize:68.f];
+    [titleLayer setFontSize:80.f];
     [titleLayer setFont:@"ArialRoundedMTBold"];
     [titleLayer setString:titleText];
     [titleLayer setAlignmentMode:kCAAlignmentCenter];
@@ -1881,12 +1881,22 @@ BOOL isOnce = YES;
     float _subTitleStop = [self switchTimeWithTemplateString:subTitleStop] / 1000;
     float duration = _subTitleStop - _subTitleStart;
     
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    animation.fromValue = [NSNumber numberWithFloat:0.0f];
+    animation.toValue = [NSNumber numberWithFloat:0.0f];
+    animation.repeatCount = 0;
+    animation.duration = _subTitleStart;
+    [animation setRemovedOnCompletion:NO];
+    [animation setFillMode:kCAFillModeForwards];
+    animation.beginTime = AVCoreAnimationBeginTimeAtZero;
+    [titleLayer addAnimation:animation forKey:@"opacityAniamtion"];
+    
     CABasicAnimation *animation1 = [CABasicAnimation animationWithKeyPath:@"opacity"];
     animation1.fromValue = [NSNumber numberWithFloat:1.0f];
     animation1.toValue = [NSNumber numberWithFloat:0.0f];
     animation1.repeatCount = 0;
     animation1.duration = duration;
-    [animation1 setRemovedOnCompletion:YES];
+    [animation1 setRemovedOnCompletion:NO];
     [animation1 setFillMode:kCAFillModeForwards];
     animation1.beginTime = _subTitleStart;
     [titleLayer addAnimation:animation1 forKey:@"opacityAniamtion1"];
