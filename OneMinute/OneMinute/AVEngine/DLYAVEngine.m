@@ -25,9 +25,9 @@
 
 @interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate>
 {
-    AVCaptureVideoOrientation videoOrientation;
-    dispatch_queue_t movieWritingQueue;
-    CMBufferQueueRef previewBufferQueue;
+    AVCaptureVideoOrientation _videoOrientation;
+    dispatch_queue_t _movieWritingQueue;
+    CMBufferQueueRef _previewBufferQueue;
     
     CMTime _startTime;
     CMTime _stopTime;
@@ -104,11 +104,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 + (instancetype) sharedDLYAVEngine{
     
     static DLYAVEngine *AVEngine;
-    
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         AVEngine = [[DLYAVEngine alloc] init];
-        
     });
     return AVEngine;
 }
@@ -199,7 +197,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     return _captureSession;
 }
-
+#pragma mark - 视频录制相关访问权限检测 -
 - (BOOL)checkCameraAuthorization {
     __block BOOL isAvalible = NO;
     AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
@@ -377,10 +375,10 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             [self.videoConnection setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
         }
         //视频录制队列
-        movieWritingQueue = dispatch_queue_create("moviewriting", DISPATCH_QUEUE_SERIAL);
+        _movieWritingQueue = dispatch_queue_create("moviewriting", DISPATCH_QUEUE_SERIAL);
         
         // BufferQueue
-        OSStatus err = CMBufferQueueCreate(kCFAllocatorDefault, 1, CMBufferQueueGetCallbacksForUnsortedSampleBuffers(), &previewBufferQueue);
+        OSStatus err = CMBufferQueueCreate(kCFAllocatorDefault, 1, CMBufferQueueGetCallbacksForUnsortedSampleBuffers(), &_previewBufferQueue);
         DLYLog(@"CMBufferQueueCreate error:%d", (int)err);
         
         self.metadataOutput.rectOfInterest = [self.captureVideoPreviewLayer metadataOutputRectOfInterestForRect:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
@@ -837,7 +835,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         NSURL *exportUrl = [NSURL fileURLWithPath:exportPath];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-//            long long _start
             [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"片段处理中..."];
             typeof(self) weakSelf = self;
             [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl recordTypeOfPart:_currentPart.recordType completed:^{
@@ -874,21 +871,15 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
 -(void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection{
     
-    //检测到目标元数据
     if (metadataObjects.count) {
         isDetectedMetadataObjectTarget = YES;
         AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects.firstObject;
         
-        //        DLYLog(@"检测到 %lu 个人脸",metadataObjects.count);
-        //取到识别到的人脸区域
         AVMetadataObject *transformedMetadataObject = [self.captureVideoPreviewLayer transformedMetadataObjectForMetadataObject:metadataObject];
         _faceRegion = transformedMetadataObject.bounds;
         
-        //检测到人脸
         if (metadataObject.type == AVMetadataObjectTypeFace) {
-            //检测区域
-            CGRect referenceRect = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-            //            DLYLog(@"%d, facePathRect: %@, faceRegion: %@",CGRectContainsRect(referenceRect, faceRegion) ? @"包含人脸":@"不包含人脸",NSStringFromCGRect(referenceRect),NSStringFromCGRect(faceRegion));
+//            CGRect referenceRect = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         }else{
             _faceRegion = CGRectZero;
         }
