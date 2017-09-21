@@ -11,6 +11,7 @@
 @interface DLYIndicatorView (){
     //上一个
     NSInteger oldTag;
+    BOOL isStop;
 }
 
 @property (nonatomic, strong) UIView *mainView;
@@ -80,7 +81,7 @@
         [self.mainView addSubview:view];
     }
     
-    self.flashTimer = [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(flashAnimation) userInfo:nil repeats:YES];
+    self.flashTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(flashAnimation) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.flashTimer forMode:NSRunLoopCommonModes];
     [self.flashTimer setFireDate:[NSDate distantFuture]];
     self.num = 0;
@@ -91,6 +92,11 @@
 - (void)flashAnimation {
     self.num ++;
     int i = self.num % 6;
+    
+    if (self.num >= 6 && isStop) {
+        [self stopFlashAnimating];
+        return;
+    }
     
     UIView *view = (UIView *)[self viewWithTag:30000 + i];
     view.alpha = 1;
@@ -114,6 +120,14 @@
 }
 
 - (void)stopFlashAnimating {
+    NSLog(@"我走了1");
+    if (self.num < 6) {
+        isStop = YES;
+        NSLog(@"我走了2");
+        return;
+    }
+    NSLog(@"我走了3");
+    isStop = NO;
     if (!self.isHidden) {
         self.hidden = YES;
     }

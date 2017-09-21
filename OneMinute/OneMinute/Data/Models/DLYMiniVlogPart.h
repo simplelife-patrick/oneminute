@@ -49,6 +49,11 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
 @property (nonatomic, copy)   NSString                      *duration;
 
 /**
+ 片段显示时长
+ */
+@property (nonatomic, copy)   NSString                      *partTime;
+
+/**
  拍摄状态
  */
 @property (nonatomic, copy)   NSString                      *recordStatus;
