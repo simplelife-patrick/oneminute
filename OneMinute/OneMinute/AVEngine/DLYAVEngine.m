@@ -391,7 +391,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 #pragma mark - 切换摄像头 -
 - (void)changeCameraInputDeviceisFront:(BOOL)isFront {
     
-    NSLog(@"切换摄像头 <<<前>>> 的录制方向 :%ld",(long)self.videoConnection.videoOrientation);
     if (isFront) {
         
         self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
@@ -401,10 +400,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.frontCameraInput];//切换成了前置
-            
         }
-        NSLog(@"✅✅✅当前视频连接的视频方向为 :%lu",self.videoConnection.videoOrientation);
-        NSLog(@"✅✅✅当前预览方向为 :%lu",self.videoConnection.videoPreviewLayer.orientation);
     }else {
         
         self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
@@ -416,7 +412,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         }
     }
     [self.captureSession commitConfiguration];
-    NSLog(@"切换摄像头 <<<后>>> 的录制方向 :%ld",(long)self.videoConnection.videoOrientation);
 }
 
 //返回前置摄像头
@@ -673,11 +668,11 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 - (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl recordTypeOfPart:(DLYMiniVlogRecordType)recordType completed:(void(^)())completed {
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         
-        NSLog(@"video set thread: %@", [NSThread currentThread]);
+//        NSLog(@"video set thread: %@", [NSThread currentThread]);
         NSLog(@"处理视频速度🚀🚀🚀🚀🚀🚀🚀🚀🚀");
         // 获取视频
         if (!videoPartUrl) {
-            DLYLog(@"待调速的视频片段地址为空");
+            DLYLog(@"待调速的视频片段不存在!");
             return;
         }else{
             
@@ -692,15 +687,24 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             }
             
             AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:videoPartUrl options:nil];
+            
+            AVAssetTrack *videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+            CGAffineTransform videoTransform = videoAssetTrack.preferredTransform;
+            
+            NSLog(@"preferredTransform a = %.0f,b = %.0f,C = %.0f,d = %.0f,tx = %.0f,ty = %.0f",videoTransform.a,videoTransform.b,videoTransform.c,videoTransform.d,videoTransform.tx,videoTransform.ty);
             // 视频混合
             AVMutableComposition* mixComposition = [AVMutableComposition composition];
             // 视频轨道
             AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-            // 音频轨道
             
-            
+            if (videoTransform.a == -1 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == -1) {
+                DLYLog(@"需要调整方向");
+                compositionVideoTrack.preferredTransform = CGAffineTransformMakeRotation(M_PI);
+            }
             if (recordType == DLYMiniVlogRecordTypeNormal) {
+                // 音频轨道
                 AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+                
                 // 插入视频轨道
                 [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
                 // 插入音频轨道
