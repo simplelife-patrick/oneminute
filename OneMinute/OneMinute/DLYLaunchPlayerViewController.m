@@ -143,6 +143,7 @@
     [self.player play];
     if (_enterMainButton.isHidden) {
         _enterMainButton.hidden = NO;
+        [self.view bringSubviewToFront:_enterMainButton];
     }
 }
 
