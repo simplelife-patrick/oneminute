@@ -120,13 +120,10 @@
 }
 
 - (void)stopFlashAnimating {
-    NSLog(@"我走了1");
     if (self.num < 6) {
         isStop = YES;
-        NSLog(@"我走了2");
         return;
     }
-    NSLog(@"我走了3");
     isStop = NO;
     if (!self.isHidden) {
         self.hidden = YES;
