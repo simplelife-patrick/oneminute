@@ -22,6 +22,7 @@
 #import "ALAssetsLibrary+CustomPhotoAlbum.h"
 #import <math.h>
 #import "DLYMovieObject.h"
+#import <CoreMotion/CoreMotion.h>
 
 @interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate>
 {
@@ -85,7 +86,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 @property (nonatomic) CMTime                                   defaultMinFrameDuration;
 @property (nonatomic) CMTime                                   defaultMaxFrameDuration;
 @property (nonatomic, strong) NSString                         *plistPath;
-@property (nonatomic, assign) DLYPhoneDeviceType               currentPhoneModel;
+@property (nonatomic, strong) NSString                         *currentDeviceType;
+
 
 @end
 
@@ -153,7 +155,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     return _session;
 }
-
 #pragma mark - 创建Recorder录制会话 -
 -(AVCaptureSession *)captureSession{
     if (_captureSession == nil) {
@@ -227,8 +228,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 - (AVCaptureDeviceInput *)backCameraInput {
     if (_backCameraInput == nil) {
         NSError *error;
-        
-        _backCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self backCamera] error:&error];
+        AVCaptureDevice *backCamera = [self cameraWithPosition:AVCaptureDevicePositionBack];
+        _backCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:backCamera error:&error];
         
         AVCaptureDevice *device = _backCameraInput.device;
         if (device.isSmoothAutoFocusSupported) {
@@ -246,11 +247,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             
             DLYMobileDevice *mobileDevice = [DLYMobileDevice sharedDevice];
             DLYPhoneDeviceType phoneType = [mobileDevice iPhoneType];
-            _currentPhoneModel = phoneType;
-            
-            NSString *phoneModel = [mobileDevice iPhoneModel];
-            
-            DLYLog(@"Current Phone Type: %@\n",phoneModel);
             
             if (phoneType == PhoneDeviceTypeIphone_7 || phoneType == PhoneDeviceTypeIphone_7_Plus || phoneType == PhoneDeviceTypeIphone_6s || phoneType == PhoneDeviceTypeIphone_6s_Plus || phoneType == PhoneDeviceTypeIphone_SE) {
                 self.captureSession.sessionPreset = AVCaptureSessionPreset3840x2160;
@@ -266,7 +262,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     if (_frontCameraInput == nil) {
         NSError *error;
         
-        _frontCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self frontCamera] error:&error];
+        AVCaptureDevice *frontCamera = [self cameraWithPosition:AVCaptureDevicePositionFront];
+        _frontCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:frontCamera error:&error];
         AVCaptureDevice *device = _frontCameraInput.device;
         
         if (device.isSmoothAutoFocusSupported) {
@@ -372,7 +369,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         //设置视频录制的方向
         if ([self.videoConnection isVideoOrientationSupported]) {
             
-            [self.videoConnection setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
+            [self.videoConnection setVideoOrientation:AVCaptureVideoOrientationLandscapeLeft];
         }
         //视频录制队列
         _movieWritingQueue = dispatch_queue_create("moviewriting", DISPATCH_QUEUE_SERIAL);
@@ -392,8 +389,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 - (void)changeCameraInputDeviceisFront:(BOOL)isFront {
     
     if (isFront) {
-        
-        self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
+        self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+        self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
         [self.captureSession beginConfiguration];
         [self.captureSession removeInput:self.backCameraInput];
         
@@ -402,7 +399,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             [self.captureSession addInput:self.frontCameraInput];//切换成了前置
         }
     }else {
-        
+        self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
         self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         [self.captureSession beginConfiguration];
         [self.captureSession removeInput:self.frontCameraInput];
@@ -414,15 +411,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     [self.captureSession commitConfiguration];
 }
 
-//返回前置摄像头
-- (AVCaptureDevice *)frontCamera {
-    return [self cameraWithPosition:AVCaptureDevicePositionFront];
-}
-
-//返回后置摄像头
-- (AVCaptureDevice *)backCamera {
-    return [self cameraWithPosition:AVCaptureDevicePositionBack];
-}
 //用来返回是前置摄像头还是后置摄像头
 - (AVCaptureDevice *)cameraWithPosition:(AVCaptureDevicePosition) position {
     
@@ -604,6 +592,34 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
 #pragma mark - 开始录制 -
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
+    
+    CMMotionManager *motuonManager = [[CMMotionManager alloc] init];
+    
+    CMDeviceMotion *deveiceMotion = motuonManager.deviceMotion;
+    NSLog(@"deveiceMotion.rotationRate :%@,deveiceMotion.gravity :%@",deveiceMotion.rotationRate,deveiceMotion.gravity);
+    
+    if ([motuonManager isDeviceMotionAvailable]) {
+        motuonManager.deviceMotionUpdateInterval = 1;
+        [motuonManager startDeviceMotionUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMDeviceMotion * _Nullable motion,
+                                                              NSError * _Nullable error) {
+            // Gravity 获取手机的重力值在各个方向上的分量，根据这个就可以获得手机的空间位置，倾斜角度等
+            double gravityX = motion.gravity.x;
+            double gravityY = motion.gravity.y;
+            double gravityZ = motion.gravity.z;
+            
+            // 获取手机的倾斜角度(zTheta是手机与水平面的夹角， xyTheta是手机绕自身旋转的角度)：
+            double zTheta = atan2(gravityZ,sqrtf(gravityX * gravityX + gravityY * gravityY)) / M_PI * 180.0;
+            double xyTheta = atan2(gravityX, gravityY) / M_PI * 180.0;
+            
+            NSLog(@"手机与水平面的夹角 --- %.4f, 手机绕自身旋转的角度为 --- %.4f", zTheta, xyTheta);
+        }];
+    }
+    
+    AVCaptureVideoOrientation *videoOrientation = self.videoConnection.videoOrientation;
+    NSLog(@"当前录制方向为 :%lu",videoOrientation);
+    
+    UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
+    NSLog(@"当前设备方向为 :%lu",deviceOrientation);
     _currentPart = part;
     if (!self.isCapturing) {
         self.isPaused = NO;
@@ -684,10 +700,14 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }else{
             scale = 1.0f;
         }
-        
-        AVURLAsset* videoAsset = [[AVURLAsset alloc]initWithURL:videoPartUrl options:nil];
-        
-        AVAssetTrack *videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+        AVURLAsset *videoAsset = nil;
+        if(videoPartUrl) {
+            videoAsset = [[AVURLAsset alloc]initWithURL:videoPartUrl options:nil];
+        }
+        AVAssetTrack *videoAssetTrack = nil;
+        if([videoAsset tracksWithMediaType:AVMediaTypeVideo]){
+            videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+        }
         CGAffineTransform videoTransform = videoAssetTrack.preferredTransform;
         
         NSLog(@"preferredTransform a = %.0f     b = %.0f       c = %.0f     d = %.0f,       tx = %.0f       ty = %.0f",videoTransform.a,videoTransform.b,videoTransform.c,videoTransform.d,videoTransform.tx,videoTransform.ty);
@@ -696,12 +716,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         // 视频轨道
         AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
         
-        if (videoTransform.a == -1 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == -1) {
-            DLYLog(@"需要调整方向");
-            compositionVideoTrack.preferredTransform = CGAffineTransformMakeRotation(M_PI);
-        }else if (videoTransform.a == 0 && videoTransform.b == 1 && videoTransform.c == -1 && videoTransform.d == 0){
+        if (videoTransform.a == 0 && videoTransform.b == 1 && videoTransform.c == -1 && videoTransform.d == 0) {
             compositionVideoTrack.preferredTransform = CGAffineTransformMakeRotation(M_PI);
         }
+
         if (recordType == DLYMiniVlogRecordTypeNormal) {
             // 音频轨道
             AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
@@ -1100,11 +1118,6 @@ BOOL isOnce = YES;
     }];
 }
 
--(long long)getDateTimeTOMilliSeconds:(NSDate *)datetime {
-    NSTimeInterval interval = [datetime timeIntervalSince1970];
-    long long totalMilliseconds = interval * 1000;
-    return totalMilliseconds;
-}
 #pragma mark - 片头 -
 - (void) addVideoHeadertWithTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
     
@@ -1647,7 +1660,6 @@ BOOL isOnce = YES;
 #pragma mark - 配音 -
 - (void) addMusicToVideo:(NSURL *)videoUrl audioUrl:(NSURL *)audioUrl videoTitle:(NSString *)videoTitle successBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
     
-    //加载素材
     AVURLAsset *videoAsset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
     AVURLAsset *audioAsset = [AVURLAsset URLAssetWithURL:audioUrl options:nil];
     
@@ -1660,10 +1672,8 @@ BOOL isOnce = YES;
     if ([[audioAsset tracksWithMediaType:AVMediaTypeAudio] count] != 0) {
         audioAssetTrack = [[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
     }
-    //创建视频编辑工程
     AVMutableComposition* mixComposition = [AVMutableComposition composition];
     
-    //将视音频素材加入编辑工程
     CMPersistentTrackID trackID = kCMPersistentTrackID_Invalid;
     AVMutableCompositionTrack *videoCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
     AVMutableCompositionTrack *audioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:trackID];
@@ -1676,7 +1686,6 @@ BOOL isOnce = YES;
         [audioCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, audioAssetTrack.timeRange.duration) ofTrack:audioAssetTrack atTime:kCMTimeZero error:&error];
     }
     
-    //调整视频方向
     [videoCompositionTrack setPreferredTransform:videoAssetTrack.preferredTransform];
     
     //添加标题
@@ -1711,7 +1720,7 @@ BOOL isOnce = YES;
         if (APPTEST) {
             CALayer *watermarkLayer = [CALayer layer];
             watermarkLayer = [self addWatermarkWithSize:renderSize];
-            watermarkLayer.position = CGPointMake(mutableVideoComposition.renderSize.width - 180, 8);
+            watermarkLayer.position = CGPointMake(mutableVideoComposition.renderSize.width - 300, 8);
             [parentLayer addSublayer:watermarkLayer];
         }
         
@@ -1749,7 +1758,7 @@ BOOL isOnce = YES;
         float stopTime = [stopTimeStr floatValue];
         _stopTime = CMTimeMake(stopTime, 1);
         
-        //时长小于1s的片段音轨平滑特殊处理
+        //时长小于1s的片段音轨切换平滑特殊处理
         float rampOffsetValue = 1;
         
         _prePoint = CMTimeMake(stopTime - rampOffsetValue, 1);
@@ -1836,8 +1845,13 @@ BOOL isOnce = YES;
     NSString *localVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];
     //获取当前build号
     NSString *buildVersion = [infoDic objectForKey:@"CFBundleVersion"];
+    //获取系统版本
+    NSString *currentSystemVersion = [[UIDevice currentDevice] systemVersion];
+    //获取机型
+    DLYMobileDevice *mobileDevice = [DLYMobileDevice sharedDevice];
+    _currentDeviceType = [mobileDevice iPhoneModel];
     
-    NSString *watermarkMessage = [localVersion stringByAppendingFormat:@" (%@) %@",buildVersion,currentTime];
+    NSString *watermarkMessage = [_currentDeviceType stringByAppendingFormat:@"  %@  %@(%@)   %@",currentSystemVersion,localVersion,buildVersion,currentTime];
     
     [watermarkLayer setFontSize:24.f];
     [watermarkLayer setFont:@"ArialRoundedMTBold"];
@@ -1877,25 +1891,25 @@ BOOL isOnce = YES;
     float _subTitleStop = [self switchTimeWithTemplateString:subTitleStop] / 1000;
     float duration = _subTitleStop - _subTitleStart;
     
-    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    animation.fromValue = [NSNumber numberWithFloat:0.0f];
-    animation.toValue = [NSNumber numberWithFloat:0.0f];
-    animation.repeatCount = 0;
-    animation.duration = _subTitleStart;
-    [animation setRemovedOnCompletion:NO];
-    [animation setFillMode:kCAFillModeForwards];
-    animation.beginTime = AVCoreAnimationBeginTimeAtZero;
-    [titleLayer addAnimation:animation forKey:@"opacityAniamtion"];
-    
     CABasicAnimation *animation1 = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    animation1.fromValue = [NSNumber numberWithFloat:1.0f];
+    animation1.fromValue = [NSNumber numberWithFloat:0.0f];
     animation1.toValue = [NSNumber numberWithFloat:0.0f];
     animation1.repeatCount = 0;
-    animation1.duration = duration;
+    animation1.duration = _subTitleStart;
     [animation1 setRemovedOnCompletion:NO];
     [animation1 setFillMode:kCAFillModeForwards];
-    animation1.beginTime = _subTitleStart;
-    [titleLayer addAnimation:animation1 forKey:@"opacityAniamtion1"];
+    animation1.beginTime = AVCoreAnimationBeginTimeAtZero;
+    [titleLayer addAnimation:animation1 forKey:@"opacityAniamtion"];
+    
+    CABasicAnimation *animation2 = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    animation2.fromValue = [NSNumber numberWithFloat:1.0f];
+    animation2.toValue = [NSNumber numberWithFloat:0.0f];
+    animation2.repeatCount = 0;
+    animation2.duration = duration;
+    [animation2 setRemovedOnCompletion:NO];
+    [animation2 setFillMode:kCAFillModeForwards];
+    animation2.beginTime = _subTitleStart;
+    [titleLayer addAnimation:animation2 forKey:@"opacityAniamtion1"];
     
     [overlayLayer addSublayer:titleLayer];
     
@@ -1970,18 +1984,15 @@ BOOL isOnce = YES;
     AVMutableVideoCompositionLayerInstruction *videoCompositionLayerIns = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoAssertTrack];
     [videoCompositionLayerIns setTransform:videoAssertTrack.preferredTransform atTime:kCMTimeZero];
     
-    //得到视频素材
     AVMutableVideoCompositionInstruction *videoCompositionIns = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
     [videoCompositionIns setTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssertTrack.timeRange.duration)];
-    //得到视频轨道
+
     AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
     videoComposition.instructions = @[videoCompositionIns];
     videoComposition.renderSize = CGSizeMake(videoAssertTrack.naturalSize.height,videoAssertTrack.naturalSize.width);
-    //裁剪出对应的大小
-    //value视频的总帧数，timescale是指每秒视频播放的帧数，视频播放速率，（value / timescale）才是视频实际的秒数时长
+
     videoComposition.frameDuration = CMTimeMake(1, 60);
     
-    //调整视频方向
     AVMutableVideoCompositionLayerInstruction *layerInst;
     layerInst = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoAssertTrack];
     [layerInst setTransform:videoAssertTrack.preferredTransform atTime:kCMTimeZero];
@@ -1990,18 +2001,7 @@ BOOL isOnce = YES;
     inst.layerInstructions = [NSArray arrayWithObject:layerInst];
     videoComposition.instructions = [NSArray arrayWithObject:inst];
 }
-#pragma mark - 导出工具 -
-- (AVAssetExportSession *)makeExportableWithAsset:(AVMutableComposition *)composition outputUrl:(NSURL *)outputUrl videoComposition:(AVVideoComposition *)videoComposition andAudioMax:(AVAudioMix *)audioMax{
-    
-    AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:composition presetName:AVAssetExportPresetHighestQuality];
-    assetExportSession.outputURL = outputUrl;
-    assetExportSession.audioMix = audioMax;
-    assetExportSession.videoComposition = videoComposition;
-    assetExportSession.outputFileType = AVFileTypeMPEG4;
-    assetExportSession.shouldOptimizeForNetworkUse = YES;
-    
-    return assetExportSession;
-}
+#pragma mark - 时间处理 -
 - (float) switchTimeWithTemplateString:(NSString *)timeSting{
     
     float timePoint = 0;
@@ -2019,6 +2019,12 @@ BOOL isOnce = YES;
         }
     }
     return timePoint;
+}
+
+-(long long)getDateTimeTOMilliSeconds:(NSDate *)datetime {
+    NSTimeInterval interval = [datetime timeIntervalSince1970];
+    long long totalMilliseconds = interval * 1000;
+    return totalMilliseconds;
 }
 //获取当地时间
 - (NSString *)getCurrentTime {
