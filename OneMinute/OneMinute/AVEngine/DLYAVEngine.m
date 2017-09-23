@@ -1720,7 +1720,7 @@ BOOL isOnce = YES;
         if (APPTEST) {
             CALayer *watermarkLayer = [CALayer layer];
             watermarkLayer = [self addWatermarkWithSize:renderSize];
-            watermarkLayer.position = CGPointMake(mutableVideoComposition.renderSize.width - 300, 8);
+            watermarkLayer.position = CGPointMake(mutableVideoComposition.renderSize.width - 291, 8);
             [parentLayer addSublayer:watermarkLayer];
         }
         
@@ -1858,7 +1858,7 @@ BOOL isOnce = YES;
     [watermarkLayer setString:watermarkMessage];
     [watermarkLayer setAlignmentMode:kCAAlignmentCenter];
     [watermarkLayer setForegroundColor:[[UIColor colorWithHexString:@"FFFFFF" withAlpha:1] CGColor]];
-    [watermarkLayer setBackgroundColor:[[UIColor colorWithHexString:@"#000000" withAlpha:1] CGColor]];
+    [watermarkLayer setBackgroundColor:[[UIColor colorWithHexString:@"#000000" withAlpha:0.8] CGColor]];
     watermarkLayer.contentsCenter = overlayLayer.contentsCenter;
     CGSize textSize = [watermarkMessage sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
     watermarkLayer.bounds = CGRectMake(0, 0, textSize.width + 50, textSize.height + 25);
