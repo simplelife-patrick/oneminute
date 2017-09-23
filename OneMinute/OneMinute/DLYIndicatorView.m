@@ -53,7 +53,7 @@
     self.mainView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 180, 180)];
     self.mainView.centerX = self.width / 2;
     self.mainView.centerY = self.centerY;
-    self.mainView.backgroundColor = RGB(0, 0, 0);
+    self.mainView.backgroundColor = [UIColor colorWithHexString:@"#000000" withAlpha:0.8];
     self.mainView.layer.cornerRadius = self.mainView.width / 2;
     self.mainView.clipsToBounds = YES;
     [self addSubview:self.mainView];

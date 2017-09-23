@@ -110,9 +110,14 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
   删除Document中全部草稿片段
  */
 - (void) removeCurrentAllPartFromDocument;
+
+/**
+ 删除Document中成片视频
+ */
+- (void) removeProductFromDocument;
+
 /**
  获取单个片段的播放地址
-
  @param partNum 片段序号
  */
 - (NSURL *) getPartUrlWithPartNum:(NSInteger)partNum;

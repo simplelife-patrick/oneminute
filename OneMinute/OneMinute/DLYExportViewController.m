@@ -107,11 +107,11 @@
     DLYResource *resource = [[DLYResource alloc] init];
     [resource removeCurrentAllPartFromCache];
     [resource removeCurrentAllPartFromDocument];
+    [resource removeProductFromDocument];
     NSArray *arr = self.navigationController.viewControllers;
     DLYRecordViewController *recoedVC = arr[0];
     recoedVC.isExport = YES;
     [self.navigationController popToViewController:recoedVC animated:YES];
-    
 }
 
 - (void)exportAction {
@@ -185,11 +185,6 @@
 //            NSLog(@"导出页面右转");
         }];
     }
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end
