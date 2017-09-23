@@ -1,0 +1,97 @@
+{
+  "id": "Traveler003.json",
+  "title":"旅行03",
+  "type": 0,
+  "info": [
+    {
+      "partNum": 0,
+      "startTime": "00:00:00",
+      "stopTime": "00:06:55",
+      "dubStartTime": "00:00:00",
+      "dubStopTime": "00:06:55",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 1
+    },
+    {
+      "partNum": 1,
+      "startTime": "00:06:55",
+      "stopTime": "00:14:00",
+      "dubStartTime": "00:06:55",
+      "dubStopTime": "00:14:00",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 1
+    },
+    {
+      "partNum": 2,
+      "startTime": "00:14:00",
+      "stopTime": "00:20:58",
+      "dubStartTime": "00:14:00",
+      "dubStopTime": "00:20:58",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 1
+    },
+    {
+      "partNum": 3,
+      "startTime": "00:20:58",
+      "stopTime": "00:27:26",
+      "dubStartTime": "00:20:58",
+      "dubStopTime": "00:27:26",
+      "recordType": 0,
+      "soundType": 1,
+      "transitionType": 1
+    },
+    {
+      "partNum": 4,
+      "startTime": "00:27:26",
+      "stopTime": "00:34:53",
+      "dubStartTime": "00:27:26",
+      "dubStopTime": "00:34:53",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 1
+    },
+    {
+      "partNum": 5,
+      "startTime": "00:34:53",
+      "stopTime": "00:41:50",
+      "dubStartTime": "00:34:53",
+      "dubStopTime": "00:41:50",
+      "recordType": 0,
+      "soundType": 1,
+      "transitionType": 1
+    },
+    {
+      "partNum": 6,
+      "startTime": "00:41:50",
+      "stopTime": "00:48:48",
+      "dubStartTime": "00:41:50",
+      "dubStopTime": "00:48:48",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 1
+    },
+    {
+      "partNum": 7,
+      "startTime": "00:48:48",
+      "stopTime": "01:00:00",
+      "dubStartTime": "00:48:48",
+      "dubStopTime": "01:00:00",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 0
+    }
+  ],
+  "subTitle1": {
+    "startTime": "00:02:39",
+    "stopTime": "00:04:31"
+  },
+  "BGM": "TravelerTemplateBGM003",
+  "header": "header001",
+  "tailer": "tail001",
+  "templateDescription": "我是旅行模板,拉啦啦",
+  "sampleVideoName": "TravelerTemplateSample003.mp4"
+}
+

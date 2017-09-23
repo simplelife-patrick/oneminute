@@ -1,6 +1,6 @@
 {
   "id": "Universal001.json",
-  "title":"通用",
+  "title":"通用01",
   "type": 0,
   "info": [
     {
@@ -68,7 +68,7 @@
     "startTime": "00:08:16",
     "stopTime": "00:16:19"
   },
-  "BGM": "UniversalTemplateBGM",
+  "BGM": "UniversalTemplateBGM001",
   "header": "header001",
   "tailer": "tail001",
   "templateDescription": "我是通用模板,拉啦啦",

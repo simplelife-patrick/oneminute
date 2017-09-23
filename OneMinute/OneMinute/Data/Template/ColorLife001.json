@@ -1,6 +1,6 @@
 {
   "id": "ColorLife001.json",
-  "title":"生活",
+  "title":"生活01",
   "type": 0,
   "info": [
     {
@@ -78,10 +78,10 @@
     "startTime": "00:20:14",
     "stopTime": "00:30:59"
   },
-  "BGM": "ColorLifeTemplateBGM",
+  "BGM": "ColorLifeTemplateBGM001",
   "header": "header001",
   "tailer": "tail001",
   "templateDescription": "我是生活模板,拉啦啦",
-  "sampleVideoName": "ColorLifeTemplateSample.mp4"
+  "sampleVideoName": "ColorLifeTemplateSample001.mp4"
 }
 

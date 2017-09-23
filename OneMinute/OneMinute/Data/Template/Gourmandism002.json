@@ -1,0 +1,87 @@
+{
+  "id": "Gourmandism002.json",
+  "title":"美食02",
+  "type": 0,
+  "info": [
+    {
+      "partNum": 0,
+      "startTime": "00:00:00",
+      "stopTime": "00:11:34",
+      "dubStartTime": "00:00:00",
+      "dubStopTime": "00:11:34",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 1
+    },
+    {
+      "partNum": 1,
+      "startTime": "00:11:34",
+      "stopTime": "00:15:22",
+      "dubStartTime": "00:11:34",
+      "dubStopTime": "00:15:22",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 1
+    },
+    {
+      "partNum": 2,
+      "startTime": "00:15:22",
+      "stopTime": "00:33:50",
+      "dubStartTime": "00:15:22",
+      "dubStopTime": "00:33:50",
+      "recordType": 0,
+      "soundType": 1,
+      "transitionType": 1
+    },
+    {
+      "partNum": 3,
+      "startTime": "00:33:50",
+      "stopTime": "00:37:31",
+      "dubStartTime": "00:33:50",
+      "dubStopTime": "00:37:31",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 1
+    },
+    {
+      "partNum": 4,
+      "startTime": "00:37:31",
+      "stopTime": "00:41:12",
+      "dubStartTime": "00:37:31",
+      "dubStopTime": "00:41:12",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 1
+    },
+    {
+      "partNum": 5,
+      "startTime": "00:41:12",
+      "stopTime": "00:50:27",
+      "dubStartTime": "00:41:12",
+      "dubStopTime": "00:50:27",
+      "recordType": 0,
+      "soundType": 1,
+      "transitionType": 1
+    },
+    {
+      "partNum": 5,
+      "startTime": "00:50:27",
+      "stopTime": "01:00:00",
+      "dubStartTime": "00:50:27",
+      "dubStopTime": "01:00:00",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 0
+    }
+  ],
+  "subTitle1": {
+    "startTime": "00:05:00",
+    "stopTime": "00:08:00"
+  },
+  "BGM": "GourmandismTemplateBGM002",
+  "header": "header001",
+  "tailer": "tail001",
+  "templateDescription": "我是美食模板,啦啦啦",
+  "sampleVideoName": "GourmandismTemplateSample002.mp4"
+}
+

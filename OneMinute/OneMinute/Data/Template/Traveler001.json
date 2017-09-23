@@ -1,6 +1,6 @@
 {
   "id": "Traveler001.json",
-  "title":"旅行",
+  "title":"旅行01",
   "type": 0,
   "info": [
     {
@@ -78,10 +78,10 @@
     "startTime": "00:02:39",
     "stopTime": "00:04:31"
   },
-  "BGM": "TravelerTemplateBGM",
+  "BGM": "TravelerTemplateBGM001",
   "header": "header001",
   "tailer": "tail001",
   "templateDescription": "我是旅行模板,拉啦啦",
-  "sampleVideoName": "TravelerTemplateSample.mp4"
+  "sampleVideoName": "TravelerTemplateSample001.mp4"
 }
 
