@@ -44,28 +44,14 @@
             
             [fileManager createDirectoryAtPath:dataPath withIntermediateDirectories:YES attributes:nil error:nil];
             
-            NSString *templatePath = [dataPath stringByAppendingPathComponent:kTemplateFolder];
-            
-            if (![fileManager fileExistsAtPath:templatePath]) {
-                [fileManager createDirectoryAtPath:templatePath withIntermediateDirectories:YES attributes:nil error:nil];
-            }
-            
             NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
-            
             if (![fileManager fileExistsAtPath:draftPath]) {
                 [fileManager createDirectoryAtPath:draftPath withIntermediateDirectories:YES attributes:nil error:nil];
             }
             
             NSString *productsPath = [dataPath stringByAppendingPathComponent:kProductFolder];
-            
             if (![fileManager fileExistsAtPath:productsPath]) {
                 [fileManager createDirectoryAtPath:productsPath withIntermediateDirectories:YES attributes:nil error:nil];
-            }
-            
-            NSString *resourcePath = [dataPath stringByAppendingPathComponent:kResourceFolder];
-            
-            if (![fileManager fileExistsAtPath:resourcePath]) {
-                [fileManager createDirectoryAtPath:resourcePath withIntermediateDirectories:YES attributes:nil error:nil];
             }
         }
         NSArray *dataFolderArray = [fileManager contentsOfDirectoryAtPath:dataPath error:nil];
