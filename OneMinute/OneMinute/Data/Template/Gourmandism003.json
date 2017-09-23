@@ -1,6 +1,6 @@
 {
-  "id": "Gourmandism001.json",
-  "title":"美食01",
+  "id": "Gourmandism003.json",
+  "title":"美食03",
   "type": 0,
   "info": [
     {
@@ -8,8 +8,8 @@
       "startTime": "00:00:00",
       "stopTime": "00:02:00",
       "dubStartTime": "00:00:00",
-      "dubStopTime": "00:02:00",
-      "recordType": 0,
+      "dubStopTime": "00:03:53",
+      "recordType": 1,
       "soundType": 0,
       "transitionType": 1
     },
@@ -17,8 +17,8 @@
       "partNum": 1,
       "startTime": "00:02:00",
       "stopTime": "00:03:00",
-      "dubStartTime": "00:02:00",
-      "dubStopTime": "00:05:00",
+      "dubStartTime": "00:03:53",
+      "dubStopTime": "00:11:41",
       "recordType": 1,
       "soundType": 0,
       "transitionType": 1
@@ -27,30 +27,50 @@
       "partNum": 2,
       "startTime": "00:03:00",
       "stopTime": "00:04:20",
-      "dubStartTime": "00:05:00",
-      "dubStopTime": "00:09:00",
+      "dubStartTime": "00:11:41",
+      "dubStopTime": "00:16:48",
       "recordType": 1,
-      "soundType": 1,
+      "soundType": 0,
       "transitionType": 1
     },
     {
       "partNum": 3,
       "startTime": "00:04:20",
       "stopTime": "00:14:20",
-      "dubStartTime": "00:09:00",
-      "dubStopTime": "00:19:00",
+      "dubStartTime": "00:16:48",
+      "dubStopTime": "00:30:58",
       "recordType": 0,
-      "soundType": 0,
+      "soundType": 1,
       "transitionType": 1
     },
     {
       "partNum": 4,
       "startTime": "00:14:20",
       "stopTime": "00:55:00",
-      "dubStartTime": "00:19:00",
-      "dubStopTime": "01:00:00",
+      "dubStartTime": "00:30:58",
+      "dubStopTime": "00:38:46",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 1
+    },
+    {
+      "partNum": 5,
+      "startTime": "00:14:20",
+      "stopTime": "00:55:00",
+      "dubStartTime": "00:38:46",
+      "dubStopTime": "00:49:55",
       "recordType": 0,
       "soundType": 1,
+      "transitionType": 1
+    },
+    {
+      "partNum": 6,
+      "startTime": "00:14:20",
+      "stopTime": "00:55:00",
+      "dubStartTime": "00:49:55",
+      "dubStopTime": "01:00:00",
+      "recordType": 0,
+      "soundType": 0,
       "transitionType": 0
     }
   ],
@@ -58,10 +78,10 @@
     "startTime": "00:05:00",
     "stopTime": "00:08:00"
   },
-  "BGM": "GourmandismTemplateBGM001",
+  "BGM": "GourmandismTemplateBGM003",
   "header": "header001",
   "tailer": "tail001",
   "templateDescription": "我是美食模板,啦啦啦",
-  "sampleVideoName": "GourmandismTemplateSample001.mp4"
+  "sampleVideoName": "GourmandismTemplateSample003.mp4"
 }
 

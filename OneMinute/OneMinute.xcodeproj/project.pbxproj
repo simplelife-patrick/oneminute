@@ -21,7 +21,6 @@
 		1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61C21EE7E6730088F33F /* DLYLogModule.m */; };
 		6F12AE6C1F3DB78300CE8CB6 /* DLYDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F12AE691F3DB78300CE8CB6 /* DLYDownloader.m */; };
 		6F12AE6D1F3DB78300CE8CB6 /* DLYDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F12AE6B1F3DB78300CE8CB6 /* DLYDownloadManager.m */; };
-		6F752C861F4D15C800A820D6 /* UniversalTemplateBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 6F752C851F4D15C800A820D6 /* UniversalTemplateBGM.m4a */; };
 		6F89259C1F1B12A100256093 /* DLYExportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F89259B1F1B12A100256093 /* DLYExportViewController.m */; };
 		6F8925AF1F1B135100256093 /* DLYPlayVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925AE1F1B135100256093 /* DLYPlayVideoViewController.m */; };
 		6F8925C61F1B13B400256093 /* DLYLaunchPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925C51F1B13B400256093 /* DLYLaunchPlayerViewController.m */; };
@@ -45,9 +44,6 @@
 		AD449CEF1F6F6FC6004DBD72 /* Gourmandism001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD449CEE1F6F6FC6004DBD72 /* Gourmandism001.json */; };
 		AD5A06A31F33058A00F26693 /* ColorLife001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A01F33058A00F26693 /* ColorLife001.json */; };
 		AD5A06A41F33058A00F26693 /* Traveler001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A11F33058A00F26693 /* Traveler001.json */; };
-		AD5B80AB1F34133B0094922B /* ColorLifeTemplateBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80A51F34133B0094922B /* ColorLifeTemplateBGM.m4a */; };
-		AD5B80AC1F34133B0094922B /* GourmandismTemplateBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80A61F34133B0094922B /* GourmandismTemplateBGM.m4a */; };
-		AD5B80AD1F34133B0094922B /* TravelerTemplateBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80A71F34133B0094922B /* TravelerTemplateBGM.m4a */; };
 		AD5B80AF1F34133B0094922B /* header001.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80AA1F34133B0094922B /* header001.mp4 */; };
 		AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5B80B11F3443080094922B /* UIColor+Hex.m */; };
 		AD5B80B61F344C750094922B /* advertisementVideo(10s).mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */; };
@@ -57,6 +53,26 @@
 		AD7608F61F70C08000556E20 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608F01F70C07F00556E20 /* UIView+Extension.m */; };
 		AD7608F71F70C08000556E20 /* UIView+Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608F21F70C07F00556E20 /* UIView+Utility.m */; };
 		AD849F441F72019900B1E08F /* DLYConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = AD849F431F72019900B1E08F /* DLYConstants.m */; };
+		AD887A561F7646FF00A85881 /* ColorLife002.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A4E1F7646FE00A85881 /* ColorLife002.json */; };
+		AD887A571F7646FF00A85881 /* Traveler002.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A4F1F7646FF00A85881 /* Traveler002.json */; };
+		AD887A581F7646FF00A85881 /* Gourmandism002.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A501F7646FF00A85881 /* Gourmandism002.json */; };
+		AD887A591F7646FF00A85881 /* Universal003.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A511F7646FF00A85881 /* Universal003.json */; };
+		AD887A5A1F7646FF00A85881 /* Traveler003.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A521F7646FF00A85881 /* Traveler003.json */; };
+		AD887A5B1F7646FF00A85881 /* ColorLife003.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A531F7646FF00A85881 /* ColorLife003.json */; };
+		AD887A5C1F7646FF00A85881 /* Gourmandism003.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A541F7646FF00A85881 /* Gourmandism003.json */; };
+		AD887A5D1F7646FF00A85881 /* Universal002.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A551F7646FF00A85881 /* Universal002.json */; };
+		AD887A731F7661FC00A85881 /* ColorLifeTemplateBGM001.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A671F7661FB00A85881 /* ColorLifeTemplateBGM001.m4a */; };
+		AD887A741F7661FC00A85881 /* ColorLifeTemplateBGM002.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A681F7661FB00A85881 /* ColorLifeTemplateBGM002.m4a */; };
+		AD887A751F7661FC00A85881 /* ColorLifeTemplateBGM003.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A691F7661FB00A85881 /* ColorLifeTemplateBGM003.m4a */; };
+		AD887A761F7661FC00A85881 /* GourmandismTemplateBGM001.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A6A1F7661FB00A85881 /* GourmandismTemplateBGM001.m4a */; };
+		AD887A771F7661FC00A85881 /* GourmandismTemplateBGM002.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A6B1F7661FB00A85881 /* GourmandismTemplateBGM002.m4a */; };
+		AD887A781F7661FC00A85881 /* GourmandismTemplateBGM003.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A6C1F7661FB00A85881 /* GourmandismTemplateBGM003.m4a */; };
+		AD887A791F7661FC00A85881 /* TravelerTemplateBGM001.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A6D1F7661FB00A85881 /* TravelerTemplateBGM001.m4a */; };
+		AD887A7A1F7661FC00A85881 /* TravelerTemplateBGM002.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A6E1F7661FB00A85881 /* TravelerTemplateBGM002.m4a */; };
+		AD887A7B1F7661FC00A85881 /* TravelerTemplateBGM003.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A6F1F7661FB00A85881 /* TravelerTemplateBGM003.m4a */; };
+		AD887A7C1F7661FC00A85881 /* UniversalTemplateBGM001.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A701F7661FB00A85881 /* UniversalTemplateBGM001.m4a */; };
+		AD887A7D1F7661FC00A85881 /* UniversalTemplateBGM002.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A711F7661FB00A85881 /* UniversalTemplateBGM002.m4a */; };
+		AD887A7E1F7661FC00A85881 /* UniversalTemplateBGM003.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A721F7661FB00A85881 /* UniversalTemplateBGM003.m4a */; };
 		ADA3709C1F2D11780082AEC6 /* DLYResource.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA3709B1F2D11780082AEC6 /* DLYResource.m */; };
 		ADD0E7D41F2D9F3500996BD6 /* UIImage+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD0E7D31F2D9F3500996BD6 /* UIImage+Extension.m */; };
 		ADFD08BF1F4D5DEB00DAB6A6 /* DLYMovieObject.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFD08BE1F4D5DEB00DAB6A6 /* DLYMovieObject.m */; };
@@ -120,7 +136,6 @@
 		6F12AE691F3DB78300CE8CB6 /* DLYDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYDownloader.m; sourceTree = "<group>"; };
 		6F12AE6A1F3DB78300CE8CB6 /* DLYDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYDownloadManager.h; sourceTree = "<group>"; };
 		6F12AE6B1F3DB78300CE8CB6 /* DLYDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYDownloadManager.m; sourceTree = "<group>"; };
-		6F752C851F4D15C800A820D6 /* UniversalTemplateBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = UniversalTemplateBGM.m4a; sourceTree = "<group>"; };
 		6F89259A1F1B12A100256093 /* DLYExportViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYExportViewController.h; sourceTree = "<group>"; };
 		6F89259B1F1B12A100256093 /* DLYExportViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYExportViewController.m; sourceTree = "<group>"; };
 		6F8925AD1F1B135100256093 /* DLYPlayVideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYPlayVideoViewController.h; sourceTree = "<group>"; };
@@ -162,9 +177,6 @@
 		AD449CEE1F6F6FC6004DBD72 /* Gourmandism001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Gourmandism001.json; sourceTree = "<group>"; };
 		AD5A06A01F33058A00F26693 /* ColorLife001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ColorLife001.json; sourceTree = "<group>"; };
 		AD5A06A11F33058A00F26693 /* Traveler001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Traveler001.json; sourceTree = "<group>"; };
-		AD5B80A51F34133B0094922B /* ColorLifeTemplateBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorLifeTemplateBGM.m4a; sourceTree = "<group>"; };
-		AD5B80A61F34133B0094922B /* GourmandismTemplateBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = GourmandismTemplateBGM.m4a; sourceTree = "<group>"; };
-		AD5B80A71F34133B0094922B /* TravelerTemplateBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = TravelerTemplateBGM.m4a; sourceTree = "<group>"; };
 		AD5B80AA1F34133B0094922B /* header001.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = header001.mp4; sourceTree = "<group>"; };
 		AD5B80B01F3443080094922B /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		AD5B80B11F3443080094922B /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
@@ -182,6 +194,26 @@
 		AD849F421F72019900B1E08F /* DLYConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYConstants.h; sourceTree = "<group>"; };
 		AD849F431F72019900B1E08F /* DLYConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYConstants.m; sourceTree = "<group>"; };
 		AD849F451F72021200B1E08F /* DLYPublicMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYPublicMacros.h; sourceTree = "<group>"; };
+		AD887A4E1F7646FE00A85881 /* ColorLife002.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ColorLife002.json; sourceTree = "<group>"; };
+		AD887A4F1F7646FF00A85881 /* Traveler002.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Traveler002.json; sourceTree = "<group>"; };
+		AD887A501F7646FF00A85881 /* Gourmandism002.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Gourmandism002.json; sourceTree = "<group>"; };
+		AD887A511F7646FF00A85881 /* Universal003.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Universal003.json; sourceTree = "<group>"; };
+		AD887A521F7646FF00A85881 /* Traveler003.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Traveler003.json; sourceTree = "<group>"; };
+		AD887A531F7646FF00A85881 /* ColorLife003.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ColorLife003.json; sourceTree = "<group>"; };
+		AD887A541F7646FF00A85881 /* Gourmandism003.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Gourmandism003.json; sourceTree = "<group>"; };
+		AD887A551F7646FF00A85881 /* Universal002.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Universal002.json; sourceTree = "<group>"; };
+		AD887A671F7661FB00A85881 /* ColorLifeTemplateBGM001.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorLifeTemplateBGM001.m4a; sourceTree = "<group>"; };
+		AD887A681F7661FB00A85881 /* ColorLifeTemplateBGM002.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorLifeTemplateBGM002.m4a; sourceTree = "<group>"; };
+		AD887A691F7661FB00A85881 /* ColorLifeTemplateBGM003.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorLifeTemplateBGM003.m4a; sourceTree = "<group>"; };
+		AD887A6A1F7661FB00A85881 /* GourmandismTemplateBGM001.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = GourmandismTemplateBGM001.m4a; sourceTree = "<group>"; };
+		AD887A6B1F7661FB00A85881 /* GourmandismTemplateBGM002.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = GourmandismTemplateBGM002.m4a; sourceTree = "<group>"; };
+		AD887A6C1F7661FB00A85881 /* GourmandismTemplateBGM003.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = GourmandismTemplateBGM003.m4a; sourceTree = "<group>"; };
+		AD887A6D1F7661FB00A85881 /* TravelerTemplateBGM001.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = TravelerTemplateBGM001.m4a; sourceTree = "<group>"; };
+		AD887A6E1F7661FB00A85881 /* TravelerTemplateBGM002.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = TravelerTemplateBGM002.m4a; sourceTree = "<group>"; };
+		AD887A6F1F7661FB00A85881 /* TravelerTemplateBGM003.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = TravelerTemplateBGM003.m4a; sourceTree = "<group>"; };
+		AD887A701F7661FB00A85881 /* UniversalTemplateBGM001.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = UniversalTemplateBGM001.m4a; sourceTree = "<group>"; };
+		AD887A711F7661FB00A85881 /* UniversalTemplateBGM002.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = UniversalTemplateBGM002.m4a; sourceTree = "<group>"; };
+		AD887A721F7661FB00A85881 /* UniversalTemplateBGM003.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = UniversalTemplateBGM003.m4a; sourceTree = "<group>"; };
 		ADA370971F2D11500082AEC6 /* DLYRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRecordViewController.h; sourceTree = "<group>"; };
 		ADA3709A1F2D11780082AEC6 /* DLYResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYResource.h; sourceTree = "<group>"; };
 		ADA3709B1F2D11780082AEC6 /* DLYResource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYResource.m; sourceTree = "<group>"; };
@@ -477,17 +509,6 @@
 			name = PopupMenu;
 			sourceTree = "<group>";
 		};
-		AD5B80A41F34133B0094922B /* BGM */ = {
-			isa = PBXGroup;
-			children = (
-				AD5B80A51F34133B0094922B /* ColorLifeTemplateBGM.m4a */,
-				AD5B80A61F34133B0094922B /* GourmandismTemplateBGM.m4a */,
-				AD5B80A71F34133B0094922B /* TravelerTemplateBGM.m4a */,
-				6F752C851F4D15C800A820D6 /* UniversalTemplateBGM.m4a */,
-			);
-			path = BGM;
-			sourceTree = "<group>";
-		};
 		AD5B80A91F34133B0094922B /* Header */ = {
 			isa = PBXGroup;
 			children = (
@@ -496,10 +517,29 @@
 			path = Header;
 			sourceTree = "<group>";
 		};
+		AD887A661F7661FB00A85881 /* BGM */ = {
+			isa = PBXGroup;
+			children = (
+				AD887A671F7661FB00A85881 /* ColorLifeTemplateBGM001.m4a */,
+				AD887A681F7661FB00A85881 /* ColorLifeTemplateBGM002.m4a */,
+				AD887A691F7661FB00A85881 /* ColorLifeTemplateBGM003.m4a */,
+				AD887A6A1F7661FB00A85881 /* GourmandismTemplateBGM001.m4a */,
+				AD887A6B1F7661FB00A85881 /* GourmandismTemplateBGM002.m4a */,
+				AD887A6C1F7661FB00A85881 /* GourmandismTemplateBGM003.m4a */,
+				AD887A6D1F7661FB00A85881 /* TravelerTemplateBGM001.m4a */,
+				AD887A6E1F7661FB00A85881 /* TravelerTemplateBGM002.m4a */,
+				AD887A6F1F7661FB00A85881 /* TravelerTemplateBGM003.m4a */,
+				AD887A701F7661FB00A85881 /* UniversalTemplateBGM001.m4a */,
+				AD887A711F7661FB00A85881 /* UniversalTemplateBGM002.m4a */,
+				AD887A721F7661FB00A85881 /* UniversalTemplateBGM003.m4a */,
+			);
+			path = BGM;
+			sourceTree = "<group>";
+		};
 		ADA7C2881F2203500002A4E5 /* resources */ = {
 			isa = PBXGroup;
 			children = (
-				AD5B80A41F34133B0094922B /* BGM */,
+				AD887A661F7661FB00A85881 /* BGM */,
 				AD5B80A91F34133B0094922B /* Header */,
 			);
 			path = resources;
@@ -577,9 +617,17 @@
 			isa = PBXGroup;
 			children = (
 				AD0E2BC11F4196E600A95DAF /* Universal001.json */,
+				AD887A551F7646FF00A85881 /* Universal002.json */,
+				AD887A511F7646FF00A85881 /* Universal003.json */,
 				AD449CEE1F6F6FC6004DBD72 /* Gourmandism001.json */,
-				AD5A06A01F33058A00F26693 /* ColorLife001.json */,
+				AD887A501F7646FF00A85881 /* Gourmandism002.json */,
+				AD887A541F7646FF00A85881 /* Gourmandism003.json */,
 				AD5A06A11F33058A00F26693 /* Traveler001.json */,
+				AD887A4F1F7646FF00A85881 /* Traveler002.json */,
+				AD887A521F7646FF00A85881 /* Traveler003.json */,
+				AD5A06A01F33058A00F26693 /* ColorLife001.json */,
+				AD887A4E1F7646FE00A85881 /* ColorLife002.json */,
+				AD887A531F7646FF00A85881 /* ColorLife003.json */,
 			);
 			path = Template;
 			sourceTree = "<group>";
@@ -714,21 +762,37 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6F752C861F4D15C800A820D6 /* UniversalTemplateBGM.m4a in Resources */,
+				AD887A7B1F7661FC00A85881 /* TravelerTemplateBGM003.m4a in Resources */,
 				AD0E2BC21F4196E600A95DAF /* Universal001.json in Resources */,
-				AD5B80AC1F34133B0094922B /* GourmandismTemplateBGM.m4a in Resources */,
+				AD887A581F7646FF00A85881 /* Gourmandism002.json in Resources */,
+				AD887A5C1F7646FF00A85881 /* Gourmandism003.json in Resources */,
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
 				AD038C9A1F7293F10002C092 /* InfoPlist.strings in Resources */,
+				AD887A7A1F7661FC00A85881 /* TravelerTemplateBGM002.m4a in Resources */,
+				AD887A751F7661FC00A85881 /* ColorLifeTemplateBGM003.m4a in Resources */,
+				AD887A7D1F7661FC00A85881 /* UniversalTemplateBGM002.m4a in Resources */,
+				AD887A5D1F7646FF00A85881 /* Universal002.json in Resources */,
+				AD887A7E1F7661FC00A85881 /* UniversalTemplateBGM003.m4a in Resources */,
 				AD5B80AF1F34133B0094922B /* header001.mp4 in Resources */,
+				AD887A781F7661FC00A85881 /* GourmandismTemplateBGM003.m4a in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
+				AD887A5A1F7646FF00A85881 /* Traveler003.json in Resources */,
 				AD449CEF1F6F6FC6004DBD72 /* Gourmandism001.json in Resources */,
+				AD887A7C1F7661FC00A85881 /* UniversalTemplateBGM001.m4a in Resources */,
 				AD5B80B61F344C750094922B /* advertisementVideo(10s).mp4 in Resources */,
 				6FA74E8B1F5EC0F100114C93 /* iconfont.ttf in Resources */,
-				AD5B80AB1F34133B0094922B /* ColorLifeTemplateBGM.m4a in Resources */,
+				AD887A561F7646FF00A85881 /* ColorLife002.json in Resources */,
+				AD887A731F7661FC00A85881 /* ColorLifeTemplateBGM001.m4a in Resources */,
+				AD887A591F7646FF00A85881 /* Universal003.json in Resources */,
 				AD5A06A41F33058A00F26693 /* Traveler001.json in Resources */,
+				AD887A571F7646FF00A85881 /* Traveler002.json in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
+				AD887A791F7661FC00A85881 /* TravelerTemplateBGM001.m4a in Resources */,
+				AD887A741F7661FC00A85881 /* ColorLifeTemplateBGM002.m4a in Resources */,
 				AD5A06A31F33058A00F26693 /* ColorLife001.json in Resources */,
-				AD5B80AD1F34133B0094922B /* TravelerTemplateBGM.m4a in Resources */,
+				AD887A761F7661FC00A85881 /* GourmandismTemplateBGM001.m4a in Resources */,
+				AD887A5B1F7646FF00A85881 /* ColorLife003.json in Resources */,
+				AD887A771F7661FC00A85881 /* GourmandismTemplateBGM002.m4a in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

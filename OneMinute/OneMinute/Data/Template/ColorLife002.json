@@ -1,6 +1,6 @@
 {
-  "id": "ColorLife001.json",
-  "title":"生活01",
+  "id": "ColorLife002.json",
+  "title":"生活02",
   "type": 0,
   "info": [
     {
@@ -8,8 +8,8 @@
       "startTime": "00:00:00",
       "stopTime": "00:03:00",
       "dubStartTime": "00:00:00",
-      "dubStopTime": "00:08:00",
-      "recordType": 1,
+      "dubStopTime": "00:04:10",
+      "recordType": 0,
       "soundType": 0,
       "transitionType": 1
     },
@@ -17,9 +17,9 @@
       "partNum": 1,
       "startTime": "00:03:00",
       "stopTime": "00:06:00",
-      "dubStartTime": "00:08:00",
-      "dubStopTime": "00:16:00",
-      "recordType": 1,
+      "dubStartTime": "00:04:10",
+      "dubStopTime": "00:08:17",
+      "recordType": 0,
       "soundType": 0,
       "transitionType": 1
     },
@@ -27,38 +27,38 @@
       "partNum": 2,
       "startTime": "00:06:00",
       "stopTime": "00:09:00",
-      "dubStartTime": "00:16:00",
-      "dubStopTime": "00:19:00",
+      "dubStartTime": "00:08:17",
+      "dubStopTime": "00:12:22",
       "recordType": 0,
-      "soundType": 1,
+      "soundType": 0,
       "transitionType": 1
     },
     {
       "partNum": 3,
       "startTime": "00:09:00",
       "stopTime": "00:11:00",
-      "dubStartTime": "00:19:00",
-      "dubStopTime": "00:25:00",
-      "recordType": 1,
-      "soundType": 0,
+      "dubStartTime": "00:12:22",
+      "dubStopTime": "00:28:43",
+      "recordType": 0,
+      "soundType": 1,
       "transitionType": 1
     },
     {
       "partNum": 4,
       "startTime": "00:11:00",
       "stopTime": "00:19:00",
-      "dubStartTime": "00:25:00",
-      "dubStopTime": "00:33:00",
+      "dubStartTime": "00:28:43",
+      "dubStopTime": "00:36:53",
       "recordType": 0,
-      "soundType": 1,
+      "soundType": 0,
       "transitionType": 1
     },
     {
       "partNum": 5,
       "startTime": "00:19:00",
       "stopTime": "00:30:00",
-      "dubStartTime": "00:33:00",
-      "dubStopTime": "00:44:00",
+      "dubStartTime": "00:36:53",
+      "dubStopTime": "00:53:24",
       "recordType": 0,
       "soundType": 1,
       "transitionType": 1
@@ -67,9 +67,9 @@
       "partNum": 6,
       "startTime": "00:30:00",
       "stopTime": "00:36:00",
-      "dubStartTime": "00:44:00",
+      "dubStartTime": "00:53:24",
       "dubStopTime": "01:00:00",
-      "recordType": 1,
+      "recordType": 0,
       "soundType": 0,
       "transitionType": 0
     }
@@ -78,10 +78,10 @@
     "startTime": "00:20:14",
     "stopTime": "00:30:59"
   },
-  "BGM": "ColorLifeTemplateBGM001",
+  "BGM": "ColorLifeTemplateBGM002",
   "header": "header001",
   "tailer": "tail001",
   "templateDescription": "我是生活模板,拉啦啦",
-  "sampleVideoName": "ColorLifeTemplateSample001.mp4"
+  "sampleVideoName": "ColorLifeTemplateSample002.mp4"
 }
 

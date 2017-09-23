@@ -1,6 +1,6 @@
 {
-  "id": "Traveler001.json",
-  "title":"旅行01",
+  "id": "Traveler003.json",
+  "title":"旅行03",
   "type": 0,
   "info": [
     {
@@ -8,8 +8,8 @@
       "startTime": "00:00:00",
       "stopTime": "00:01:00",
       "dubStartTime": "00:00:00",
-      "dubStopTime": "00:04:31",
-      "recordType": 1,
+      "dubStopTime": "00:06:55",
+      "recordType": 0,
       "soundType": 0,
       "transitionType": 1
     },
@@ -17,9 +17,9 @@
       "partNum": 1,
       "startTime": "00:01:00",
       "stopTime": "00:03:00",
-      "dubStartTime": "00:04:31",
-      "dubStopTime": "00:09:31",
-      "recordType": 1,
+      "dubStartTime": "00:06:55",
+      "dubStopTime": "00:14:00",
+      "recordType": 0,
       "soundType": 0,
       "transitionType": 1
     },
@@ -27,9 +27,9 @@
       "partNum": 2,
       "startTime": "00:03:00",
       "stopTime": "00:05:00",
-      "dubStartTime": "00:09:31",
-      "dubStopTime": "00:15:38",
-      "recordType": 1,
+      "dubStartTime": "00:14:00",
+      "dubStopTime": "00:20:58",
+      "recordType": 0,
       "soundType": 0,
       "transitionType": 1
     },
@@ -37,8 +37,8 @@
       "partNum": 3,
       "startTime": "00:05:00",
       "stopTime": "00:27:00",
-      "dubStartTime": "00:15:38",
-      "dubStopTime": "00:37:35",
+      "dubStartTime": "00:20:58",
+      "dubStopTime": "00:27:26",
       "recordType": 0,
       "soundType": 1,
       "transitionType": 1
@@ -47,9 +47,9 @@
       "partNum": 4,
       "startTime": "00:27:00",
       "stopTime": "00:29:00",
-      "dubStartTime": "00:37:35",
-      "dubStopTime": "00:43:28",
-      "recordType": 1,
+      "dubStartTime": "00:27:26",
+      "dubStopTime": "00:34:53",
+      "recordType": 0,
       "soundType": 0,
       "transitionType": 1
     },
@@ -57,19 +57,29 @@
       "partNum": 5,
       "startTime": "00:29:00",
       "stopTime": "00:31:00",
-      "dubStartTime": "00:43:28",
-      "dubStopTime": "00:47:44",
-      "recordType": 1,
-      "soundType": 0,
+      "dubStartTime": "00:34:53",
+      "dubStopTime": "00:41:50",
+      "recordType": 0,
+      "soundType": 1,
       "transitionType": 1
     },
     {
       "partNum": 6,
       "startTime": "00:31:00",
       "stopTime": "00:36:00",
-      "dubStartTime": "00:47:44",
+      "dubStartTime": "00:41:50",
+      "dubStopTime": "00:48:48",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 1
+    },
+    {
+      "partNum": 7,
+      "startTime": "00:31:00",
+      "stopTime": "00:36:00",
+      "dubStartTime": "00:48:48",
       "dubStopTime": "01:00:00",
-      "recordType": 1,
+      "recordType": 0,
       "soundType": 0,
       "transitionType": 0
     }
@@ -78,10 +88,10 @@
     "startTime": "00:02:39",
     "stopTime": "00:04:31"
   },
-  "BGM": "TravelerTemplateBGM001",
+  "BGM": "TravelerTemplateBGM003",
   "header": "header001",
   "tailer": "tail001",
   "templateDescription": "我是旅行模板,拉啦啦",
-  "sampleVideoName": "TravelerTemplateSample001.mp4"
+  "sampleVideoName": "TravelerTemplateSample003.mp4"
 }
 
