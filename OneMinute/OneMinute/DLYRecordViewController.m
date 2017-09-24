@@ -390,7 +390,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark ==== 初始化数据
 - (NSInteger)initDataReadDraft {
     
-    self.btnImg = @[@"\U0000e665", @"\U0000e780", @"\U0000e6f1", @"\U0000e671", @"\U0000e7b0"];
+    self.btnImg = @[@"\U0000e665", @"\U0000e780", @"\U0000e6f1", @"\U0000e671",
+                    @"\U0000e665", @"\U0000e780", @"\U0000e6f1", @"\U0000e671",
+                    @"\U0000e665", @"\U0000e780", @"\U0000e6f1", @"\U0000e671"];
     
     BOOL isExitDraft = [self.session isExistDraftAtFile];
     NSMutableArray *draftArr = [NSMutableArray array];
@@ -448,7 +450,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     /////////////////////////////////
     typeModelArray = [[NSMutableArray alloc]init];
     //通用,美食,旅行,生活
-    NSArray *typeNameArray = @[@"Universal001.json",@"Gourmandism001.json",@"Traveler001.json",@"ColorLife001.json"];
+    NSArray *typeNameArray = @[@"Universal001.json",@"Gourmandism001.json",@"Traveler001.json",@"ColorLife001.json",
+          @"Universal002.json",@"Gourmandism002.json",@"Traveler002.json",@"ColorLife002.json",
+          @"Universal003.json",@"Gourmandism003.json",@"Traveler003.json",@"ColorLife003.json"];
     for(int i = 0; i < typeNameArray.count; i ++)
     {
         DLYMiniVlogTemplate *template = [self.session loadTemplateWithTemplateName:typeNameArray[i]];
@@ -476,7 +480,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 - (void)initData {
     
-    self.btnImg = @[@"\U0000e665", @"\U0000e780", @"\U0000e6f1", @"\U0000e671", @"\U0000e7b0"];
+    self.btnImg = @[@"\U0000e665", @"\U0000e780", @"\U0000e6f1", @"\U0000e671",
+                    @"\U0000e665", @"\U0000e780", @"\U0000e6f1", @"\U0000e671",
+                    @"\U0000e665", @"\U0000e780", @"\U0000e6f1", @"\U0000e671"];
     
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     [self.session saveCurrentTemplateWithName:template.templateName];
@@ -499,7 +505,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     //模板数据
     typeModelArray = [[NSMutableArray alloc]init];
-    NSArray *typeNameArray = @[@"Universal001.json",@"Gourmandism001.json",@"Traveler001.json",@"ColorLife001.json"];
+    NSArray *typeNameArray = @[@"Universal001.json",@"Gourmandism001.json",@"Traveler001.json",@"ColorLife001.json",
+          @"Universal002.json",@"Gourmandism002.json",@"Traveler002.json",@"ColorLife002.json",
+          @"Universal003.json",@"Gourmandism003.json",@"Traveler003.json",@"ColorLife003.json"];
     for(int i = 0; i < typeNameArray.count; i ++)
     {
         DLYMiniVlogTemplate *template = [self.session loadTemplateWithTemplateName:typeNameArray[i]];
@@ -590,7 +598,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.chooseSceneLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:self.chooseSceneLabel];
     
-    NSArray *typeNameArray = @[@"Universal001.json",@"Gourmandism001.json",@"Traveler001.json",@"ColorLife001.json"];
+    NSArray *typeNameArray = @[@"Universal001.json",@"Gourmandism001.json",@"Traveler001.json",@"ColorLife001.json",
+          @"Universal002.json",@"Gourmandism002.json",@"Traveler002.json",@"ColorLife002.json",
+          @"Universal003.json",@"Gourmandism003.json",@"Traveler003.json",@"ColorLife003.json"];
     for (int i = 0; i < typeNameArray.count; i ++) {
         if ([template.templateName isEqualToString:typeNameArray[i]]) {
             [self.chooseScene setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
@@ -1582,7 +1592,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSArray *urlArr = @[@"http://dly.oss-cn-shanghai.aliyuncs.com/UniversalTemplateSample.mp4",
                         @"http://dly.oss-cn-shanghai.aliyuncs.com/GourmandismTemplateSample.mp4",
                         @"http://dly.oss-cn-shanghai.aliyuncs.com/TravelerTemplateSample.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/ColorLifeTemplateSample.mp4"];
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/ColorLifeTemplateSample.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/UniversalTemplateSample002.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/GourmandismTemplateSample002.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/TravelerTemplateSample002.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/ColorLifeTemplateSample002.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/UniversalTemplateSample003.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/GourmandismTemplateSample003.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/TravelerTemplateSample003.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/ColorLifeTemplateSample003.mp4"];
     NSString *videoUrl = urlArr[num];
     //路径
     NSString *finishPath = [kPathDocument stringByAppendingFormat:@"/FinishVideo/%@.mp4", videoName];
@@ -2262,7 +2280,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.seeRush addTarget:self action:@selector(changeTypeToPlay) forControlEvents:UIControlEventTouchUpInside];
     [self.sceneView addSubview:self.seeRush];
     
-    self.typeView = [[UIView alloc]initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH - 80, 162 * SCALE_HEIGHT)];
+    self.typeView = [[UIView alloc]initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH - 80, 190)];
     self.typeView.centerY = self.sceneView.centerY;
     [self.sceneView addSubview:self.typeView];
     UIScrollView * typeScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.typeView.width, self.typeView.height)];
@@ -2271,12 +2289,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     typeScrollView.bounces = NO;
     [self.typeView addSubview:typeScrollView];
     
-    float width = (self.typeView.width - 40)/5;
-    typeScrollView.contentSize = CGSizeMake(width * typeModelArray.count + 10 * (typeModelArray.count - 1), typeScrollView.height);
+    float width = (self.typeView.width - 50)/6;
+    typeScrollView.contentSize = CGSizeMake(width * 6 + 10 * 5, typeScrollView.height);
     for(int i = 0; i < typeModelArray.count; i ++)
     {
+        int wNum = i % 6;
+        int hNum = i / 6;
         DLYMiniVlogTemplate *templateModel = typeModelArray[i];
-        UIView *view = [[UIView alloc]initWithFrame:CGRectMake((width + 10) * i, 0, width, self.typeView.height)];
+        UIView *view = [[UIView alloc]initWithFrame:CGRectMake((width + 10) * wNum, 100 * hNum, width, 90)];
         view.tag = 101 + i;
         [typeScrollView addSubview:view];
         
@@ -2291,7 +2311,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         btn.layer.borderColor = RGB(255, 255, 255).CGColor;
         [view addSubview:btn];
         
-        UILabel *typeName = [[UILabel alloc]initWithFrame:CGRectMake(0, btn.bottom + 7, 40, 22)];
+        UILabel *typeName = [[UILabel alloc]initWithFrame:CGRectMake(0, btn.bottom + 7, 55, 22)];
         typeName.tag = 2002 + i;
         typeName.centerX = view.width / 2;
         typeName.text = templateModel.templateTitle;
