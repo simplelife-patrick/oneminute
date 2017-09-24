@@ -2296,7 +2296,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         int wNum = i % 6;
         int hNum = i / 6;
         DLYMiniVlogTemplate *templateModel = typeModelArray[i];
-        UIView *view = [[UIView alloc]initWithFrame:CGRectMake((width + 10) * wNum, 100 * hNum, width, self.typeView.height)];
+        UIView *view = [[UIView alloc]initWithFrame:CGRectMake((width + 10) * wNum, 100 * hNum, width, 90)];
         view.tag = 101 + i;
         [typeScrollView addSubview:view];
         
