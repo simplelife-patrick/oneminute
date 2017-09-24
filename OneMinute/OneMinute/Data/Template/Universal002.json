@@ -1,0 +1,76 @@
+{
+  "id": "Universal002.json",
+  "title":"通用02",
+  "type": 0,
+  "info": [
+    {
+      "partNum": 0,
+      "startTime": "00:00:00",
+      "stopTime": "00:07:19",
+      "dubStartTime": "00:00:00",
+      "dubStopTime": "00:07:19",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 1
+    },
+    {
+      "partNum": 1,
+      "startTime": "00:07:19",
+      "stopTime": "00:14:34",
+      "dubStartTime": "00:07:19",
+      "dubStopTime": "00:14:34",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 1
+    },
+    {
+      "partNum": 2,
+      "startTime": "00:14:34",
+      "stopTime": "00:30:53",
+      "dubStartTime": "00:14:34",
+      "dubStopTime": "00:30:53",
+      "recordType": 0,
+      "soundType": 1,
+      "transitionType": 1
+    },
+    {
+      "partNum": 3,
+      "startTime": "00:30:53",
+      "stopTime": "00:34:58",
+      "dubStartTime": "00:30:53",
+      "dubStopTime": "00:34:58",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 1
+    },
+    {
+      "partNum": 4,
+      "startTime": "00:34:58",
+      "stopTime": "00:48:38",
+      "dubStartTime": "00:34:58",
+      "dubStopTime": "00:48:38",
+      "recordType": 0,
+      "soundType": 1,
+      "transitionType": 1
+    },
+    {
+      "partNum": 5,
+      "startTime": "00:48:38",
+      "stopTime": "01:00:00",
+      "dubStartTime": "00:48:38",
+      "dubStopTime": "01:00:00",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType":0
+    }
+  ],
+  "subTitle1": {
+    "startTime": "00:08:16",
+    "stopTime": "00:16:19"
+  },
+  "BGM": "UniversalTemplateBGM002",
+  "header": "header001",
+  "tailer": "tail001",
+  "templateDescription": "我是通用模板,拉啦啦",
+  "sampleVideoName": "UniversalTemplateSample002.mp4"
+}

@@ -1,0 +1,86 @@
+{
+  "id": "Universal003.json",
+  "title":"通用03",
+  "type": 0,
+  "info": [
+    {
+      "partNum": 0,
+      "startTime": "00:00:00",
+      "stopTime": "00:01:32",
+      "dubStartTime": "00:00:00",
+      "dubStopTime": "00:04:58",
+      "recordType": 2,
+      "soundType": 0,
+      "transitionType": 1
+    },
+    {
+      "partNum": 1,
+      "startTime": "00:01:32",
+      "stopTime": "00:03:15",
+      "dubStartTime": "00:04:58",
+      "dubStopTime": "00:10:38",
+      "recordType": 2,
+      "soundType": 0,
+      "transitionType": 1
+    },
+    {
+      "partNum": 2,
+      "startTime": "00:03:15",
+      "stopTime": "00:12:35",
+      "dubStartTime": "00:10:38",
+      "dubStopTime": "00:19:58",
+      "recordType": 0,
+      "soundType": 1,
+      "transitionType": 1
+    },
+    {
+      "partNum": 3,
+      "startTime": "00:12:35",
+      "stopTime": "00:22:37",
+      "dubStartTime": "00:19:58",
+      "dubStopTime": "00:30:00",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 1
+    },
+    {
+      "partNum": 4,
+      "startTime": "00:22:37",
+      "stopTime": "00:40:06",
+      "dubStartTime": "00:30:00",
+      "dubStopTime": "00:47:29",
+      "recordType": 0,
+      "soundType": 1,
+      "transitionType": 1
+    },
+    {
+      "partNum": 5,
+      "startTime": "00:40:06",
+      "stopTime": "00:47:37",
+      "dubStartTime": "00:47:29",
+      "dubStopTime": "00:55:00",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType":1
+    },
+    {
+      "partNum": 6,
+      "startTime": "00:47:37",
+      "stopTime": "00:52:37",
+      "dubStartTime": "00:55:00",
+      "dubStopTime": "01:00:00",
+      "recordType": 0,
+      "soundType": 0,
+      "transitionType": 0
+    }
+  ],
+  "subTitle1": {
+    "startTime": "00:08:16",
+    "stopTime": "00:16:19"
+  },
+  "BGM": "UniversalTemplateBGM003",
+  "header": "header001",
+  "tailer": "tail001",
+  "templateDescription": "我是通用模板,拉啦啦",
+  "sampleVideoName": "UniversalTemplateSample003.mp4"
+}

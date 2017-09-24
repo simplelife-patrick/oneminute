@@ -1,6 +1,6 @@
 {
   "id": "Gourmandism001.json",
-  "title":"美食",
+  "title":"美食01",
   "type": 0,
   "info": [
     {
@@ -58,10 +58,10 @@
     "startTime": "00:05:00",
     "stopTime": "00:08:00"
   },
-  "BGM": "GourmandismTemplateBGM",
+  "BGM": "GourmandismTemplateBGM001",
   "header": "header001",
   "tailer": "tail001",
   "templateDescription": "我是美食模板,啦啦啦",
-  "sampleVideoName": "GourmandismTemplateSample.mp4"
+  "sampleVideoName": "GourmandismTemplateSample001.mp4"
 }
 
