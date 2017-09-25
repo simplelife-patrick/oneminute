@@ -52,14 +52,6 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
  @return 返回全部草稿片段
  */
 - (NSArray *) loadDraftPartsFromDocument;
-/**
- 保存草稿片段到沙盒中
-
- @param partNum 片段序号
- @return 返回片段保存地址
- */
-
-- (NSURL *) saveDraftPartWithPartNum:(NSInteger)partNum;
 
 /**
  保存成片视频到沙盒中

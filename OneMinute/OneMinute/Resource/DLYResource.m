@@ -177,22 +177,12 @@
     NSString *draftPath = [kCachePath stringByAppendingPathComponent:kDraftFolder];
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
         
-        NSString *outputPath = [NSString stringWithFormat:@"%@/part%lu%@",draftPath,partNum,@".mov"];
+        NSString *outputPath = [NSString stringWithFormat:@"%@/part%lu%@",draftPath,(long)partNum,@".mov"];
         return outputPath;
     }
     return nil;
 }
-- (NSURL *) saveDraftPartWithPartNum:(NSInteger)partNum{
-    
-    NSURL *outPutUrl = nil;
-    NSString *draftPath = [kCachePath stringByAppendingPathComponent:kDraftFolder];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
-            
-        NSString *outputPath = [NSString stringWithFormat:@"%@/part%lu%@",draftPath,partNum,@".mov"];
-        outPutUrl = [NSURL fileURLWithPath:outputPath];
-    }
-    return outPutUrl;
-}
+
 - (NSURL *) saveProductToSandbox{
     
     NSURL *outPutUrl = nil;
