@@ -2686,6 +2686,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [_progressView drawProgress:_shootTime / partDuration];
     if(_shootTime > partDuration)
     {
+        if (self.cancelButton.isHidden) {
+            return;
+        }
         isNeededToSave = YES;
         [self.AVEngine stopRecording];
         self.cancelButton.hidden = YES;
