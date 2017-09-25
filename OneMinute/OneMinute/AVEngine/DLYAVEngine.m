@@ -1871,10 +1871,10 @@ BOOL isOnce = YES;
     
     CALayer *overlayLayer = [CALayer layer];
     CATextLayer *titleLayer = [CATextLayer layer];
-    UIFont *font = [UIFont systemFontOfSize:80.0];
+    UIFont *font = [UIFont systemFontOfSize:68.0];
     
-    [titleLayer setFontSize:80.f];
-    [titleLayer setFont:@"ArialRoundedMTBold"];
+    [titleLayer setFontSize:68.f];
+    [titleLayer setFont:@"LingWaiSCMedium"];//HanziPenTCRegular/LingWaiSC
     [titleLayer setString:titleText];
     [titleLayer setAlignmentMode:kCAAlignmentCenter];
     [titleLayer setForegroundColor:[[UIColor colorWithHexString:@"#FFD700" withAlpha:0.8] CGColor]];
