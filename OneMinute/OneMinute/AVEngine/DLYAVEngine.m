@@ -733,9 +733,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         // 视频轨道
         AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
         
-//        if (videoTransform.a == 0 && videoTransform.b == 1 && videoTransform.c == -1 && videoTransform.d == 0) {
-//            compositionVideoTrack.preferredTransform = CGAffineTransformMakeRotation(M_PI);
-//        }
+        if (videoTransform.a == 0 && videoTransform.b == 1 && videoTransform.c == -1 && videoTransform.d == 0) {
+            compositionVideoTrack.preferredTransform = CGAffineTransformMakeRotation(M_PI);
+        }
 
 //        if (recordType == DLYMiniVlogRecordTypeNormal) {
 //            NSError *error = nil;
