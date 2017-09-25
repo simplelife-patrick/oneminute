@@ -298,7 +298,7 @@
         
         if ([draftArray count] != 0) {
             for (NSString *path in draftArray) {
-                if ([path hasSuffix:@"mov"]) {
+                if ([path hasSuffix:@"mp4"]) {
                     NSString *targetPath = [productPath stringByAppendingFormat:@"/%@",path];
                     isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
                 }
