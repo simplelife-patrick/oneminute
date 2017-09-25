@@ -20,17 +20,17 @@
     if ([[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY]) {
         
         NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY];
-        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:savedCurrentTemplateName];
+        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
         
     }else{
-        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:kDEFAULTTEMPLATENAME];
+        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:kDEFAULTTEMPLATENAME];
     }
     return _currentTemplate;
 }
-- (void)saveCurrentTemplateWithName:(NSString *)currentTemplateName{
+- (void)saveCurrentTemplateWithId:(NSString *)currentTemplateId{
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:currentTemplateName forKey:kCURRENTTEMPLATEKEY];
+    [defaults setObject:currentTemplateId forKey:kCURRENTTEMPLATEKEY];
     
     if ([defaults synchronize]) {
 
@@ -41,7 +41,7 @@
 
 - (DLYMiniVlogTemplate *)getCurrentTemplate{
     NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY];
-    DLYMiniVlogTemplate *currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:savedCurrentTemplateName];
+    DLYMiniVlogTemplate *currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
     return currentTemplate;
 
 }
@@ -69,7 +69,7 @@
 
 - (DLYMiniVlogTemplate *)loadTemplateWithTemplateName:(NSString *)templateName{
     
-    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateName:templateName];
+    DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:templateName];
     
     return template;
 }
@@ -80,9 +80,9 @@
         
         DLYMiniVlogTemplate *currentTemplate = [self currentTemplate];
         
-        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:currentTemplate.templateName];
+        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:currentTemplate.templateId];
     }else{
-        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateName:@"Universal001.json"];
+        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:@"Universal001.json"];
     }
 }
 

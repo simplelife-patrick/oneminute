@@ -1720,7 +1720,7 @@ BOOL isOnce = YES;
         if (APPTEST) {
             CALayer *watermarkLayer = [CALayer layer];
             watermarkLayer = [self addWatermarkWithSize:renderSize];
-            watermarkLayer.position = CGPointMake(mutableVideoComposition.renderSize.width - 291, 8);
+            watermarkLayer.position = CGPointMake(mutableVideoComposition.renderSize.width - 358, 8);
             [parentLayer addSublayer:watermarkLayer];
         }
         
@@ -1851,7 +1851,7 @@ BOOL isOnce = YES;
     DLYMobileDevice *mobileDevice = [DLYMobileDevice sharedDevice];
     _currentDeviceType = [mobileDevice iPhoneModel];
     
-    NSString *watermarkMessage = [_currentDeviceType stringByAppendingFormat:@"  %@  %@(%@)   %@",currentSystemVersion,localVersion,buildVersion,currentTime];
+    NSString *watermarkMessage = [self.session.currentTemplate.templateTitle stringByAppendingFormat:@"   %@  %@  %@(%@)   %@",_currentDeviceType,currentSystemVersion,localVersion,buildVersion,currentTime];
     
     [watermarkLayer setFontSize:24.f];
     [watermarkLayer setFont:@"ArialRoundedMTBold"];

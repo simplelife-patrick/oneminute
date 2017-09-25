@@ -24,7 +24,7 @@
 /**
  模板
  */
-@property (nonatomic, strong) DLYMiniVlogTemplate    *templateName;
+@property (nonatomic, strong) DLYMiniVlogTemplate    *templateId;
 
 
 @end
