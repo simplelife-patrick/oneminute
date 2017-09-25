@@ -1445,7 +1445,7 @@ BOOL isOnce = YES;
     NSArray *videoTracks = @[compositionTrackA, compositionTrackB];
     
     CMTime videoCursorTime = kCMTimeZero;
-    CMTime transitionDuration = CMTimeMake(0.5, 1);
+    CMTime transitionDuration = CMTimeMake(1, 1);
     CMTime audioCursorTime = kCMTimeZero;
     
     NSMutableArray *videoArray = [NSMutableArray array];
