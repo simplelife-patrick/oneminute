@@ -116,6 +116,7 @@
     
     if ([platform isEqualToString:@"iPhone9,2"]) return @"iPhone_7Plus";
     
+    if ([platform isEqualToString:@"iPhone9,3"]) return @"iPhone_7";
     return platform;
 }
 @end

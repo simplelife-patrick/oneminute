@@ -410,7 +410,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     ////////////////////////////////////////////////////////////
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
-    [self.session saveCurrentTemplateWithName:template.templateName];
+    [self.session saveCurrentTemplateWithId:template.templateId];
     partModelArray = [NSMutableArray arrayWithArray:template.parts];
     for (int i = 0; i < partModelArray.count; i++) {
         DLYMiniVlogPart *part = partModelArray[i];
@@ -464,10 +464,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.isSuccess = NO;
     selectPartTag = 10001; //也不影响吧
     selectType = 0; //暂时先这么写
-    NSString *typeName = template.templateName;
+    NSString *typeName = template.templateId;
     for (int i = 0; i < typeModelArray.count; i ++) {
         DLYMiniVlogTemplate *templateModel = typeModelArray[i];
-        if ([templateModel.templateName isEqualToString:typeName]) {
+        if ([templateModel.templateId isEqualToString:typeName]) {
             selectType = i;
         }
     }
@@ -485,7 +485,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     @"\U0000e665", @"\U0000e780", @"\U0000e6f1", @"\U0000e671"];
     
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
-    [self.session saveCurrentTemplateWithName:template.templateName];
+    [self.session saveCurrentTemplateWithId:template.templateId];
     partModelArray = [NSMutableArray arrayWithArray:template.parts];
     
     for (int i = 0; i < partModelArray.count; i++) {
@@ -520,10 +520,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.isSuccess = NO;
     
     selectType = 0; //暂时先这么写
-    NSString *typeName = template.templateName;
+    NSString *typeName = template.templateId;
     for (int i = 0; i < typeModelArray.count; i ++) {
         DLYMiniVlogTemplate *templateModel = typeModelArray[i];
-        if ([templateModel.templateName isEqualToString:typeName]) {
+        if ([templateModel.templateId isEqualToString:typeName]) {
             selectType = i;
         }
     }
@@ -602,7 +602,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
           @"Universal002.json",@"Gourmandism002.json",@"Traveler002.json",@"ColorLife002.json",
           @"Universal003.json",@"Gourmandism003.json",@"Traveler003.json",@"ColorLife003.json"];
     for (int i = 0; i < typeNameArray.count; i ++) {
-        if ([template.templateName isEqualToString:typeNameArray[i]]) {
+        if ([template.templateId isEqualToString:typeNameArray[i]]) {
             [self.chooseScene setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
         }
     }
@@ -785,7 +785,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 -(void)displayRefrenceRect:(CGRect)faceRegion{
     
-    CGPoint origin = faceRegion.origin;
+//    CGPoint origin = faceRegion.origin;
     CGSize size = faceRegion.size;
     
     if (size.width != 0 && size.height != 0) {
@@ -2471,7 +2471,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     selectType = num;
     DLYMiniVlogTemplate *template = typeModelArray[num];
     self.chooseSceneLabel.text = template.templateTitle;
-    [self.session saveCurrentTemplateWithName:template.templateName];
+    [self.session saveCurrentTemplateWithId:template.templateId];
     
     for(int i = 0; i < typeModelArray.count; i++) {
         UIButton *btn = (UIButton *)[self.view viewWithTag:1002 + i];

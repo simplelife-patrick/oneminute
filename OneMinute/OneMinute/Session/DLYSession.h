@@ -20,9 +20,9 @@
 /**
  保存当前拍摄模板
 
- @param currentTemplateName 当前模板名称
+ @param currentTemplateId 当前模板名称
  */
-- (void) saveCurrentTemplateWithName:(NSString *)currentTemplateName;
+- (void) saveCurrentTemplateWithId:(NSString *)currentTemplateId;
 
 /**
  获取当前模板
