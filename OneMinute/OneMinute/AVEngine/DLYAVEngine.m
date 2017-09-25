@@ -733,9 +733,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         // 视频轨道
         AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
         
-//        if (videoTransform.a == 0 && videoTransform.b == 1 && videoTransform.c == -1 && videoTransform.d == 0) {
-//            compositionVideoTrack.preferredTransform = CGAffineTransformMakeRotation(M_PI);
-//        }
+        if (videoTransform.a == 0 && videoTransform.b == 1 && videoTransform.c == -1 && videoTransform.d == 0) {
+            compositionVideoTrack.preferredTransform = CGAffineTransformMakeRotation(M_PI);
+        }
 
 //        if (recordType == DLYMiniVlogRecordTypeNormal) {
 //            NSError *error = nil;
@@ -1063,7 +1063,7 @@ BOOL isOnce = YES;
             for (NSInteger i = 0; i < [draftArray count]; i++) {
                 NSString *path = draftArray[i];
                 DLYLog(@"🔄🔄🔄合并第 %lu 个片段",i);
-                if ([path hasSuffix:@"mp4"]) {
+                if ([path hasSuffix:@"mov"]) {
                     NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
                     NSURL *url= [NSURL fileURLWithPath:allPath];
                     [videoArray addObject:url];
@@ -1445,7 +1445,7 @@ BOOL isOnce = YES;
     NSArray *videoTracks = @[compositionTrackA, compositionTrackB];
     
     CMTime videoCursorTime = kCMTimeZero;
-    CMTime transitionDuration = CMTimeMake(0.5, 1);
+    CMTime transitionDuration = CMTimeMake(1, 2);
     CMTime audioCursorTime = kCMTimeZero;
     
     NSMutableArray *videoArray = [NSMutableArray array];
@@ -1462,7 +1462,7 @@ BOOL isOnce = YES;
             for (NSInteger i = 0; i < [draftArray count]; i++) {
                 NSString *path = draftArray[i];
                 DLYLog(@"🔄🔄🔄合并-->加载--> 第 %lu 个片段",i);
-                if ([path hasSuffix:@"mp4"]) {
+                if ([path hasSuffix:@"mov"]) {
                     NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
                     NSURL *url= [NSURL fileURLWithPath:allPath];
                     [videoArray addObject:url];

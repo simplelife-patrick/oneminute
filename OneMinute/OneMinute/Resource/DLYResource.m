@@ -257,7 +257,7 @@
     NSString *draftPath = [self getDraftFolderDocument];
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
         
-        NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mp4",partNum];
+        NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mov",partNum];
         
         [fileManager removeItemAtPath:targetPath error:nil];
     }
@@ -322,7 +322,7 @@
         
         if ([draftArray count] != 0) {
             for (NSString *path in draftArray) {
-                if ([path hasSuffix:@"mp4"]) {
+                if ([path hasSuffix:@"mov"]) {
                     NSString *targetPath = [draftPath stringByAppendingFormat:@"/%@",path];
                     isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
                 }
