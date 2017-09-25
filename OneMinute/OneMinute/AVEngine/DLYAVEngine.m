@@ -640,6 +640,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     
     if (_currentPart.recordType == DLYMiniVlogRecordTypeNormal) {//正常录制的视频,直接存储到Document
         
+        //正常片段需要获取保存在Document中的地址
         NSString *outputPath;
         NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
         
@@ -652,6 +653,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         _currentPart.partUrl = [NSURL fileURLWithPath:outputPath];
     }else{
         
+        //快慢镜头需要获取保存在Cache中的地址
         NSString *outputPath = [self.resource getSaveDraftPartWithPartNum:_currentPart.partNum];
         if (outputPath) {
             NSURL *outputUrl = [NSURL fileURLWithPath:outputPath];
@@ -770,7 +772,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
                 completed();
             }];
 //        }
-        
     }
 }
 #pragma mark - 打开慢动作录制 -
@@ -866,7 +867,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         DLYLog(@"取消录制");
     }else{
         
-        if (_currentPart.recordType != DLYMiniVlogRecordTypeNormal) {
+        if (_currentPart.recordType != DLYMiniVlogRecordTypeNormal) {//快慢镜头才进行调速
+            
+            //快慢镜头调速之后获取保存在Document中地址
             NSString *exportPath;
             NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
             

@@ -161,7 +161,7 @@
             
             for (NSInteger i = 0; i < [draftArray count]; i++) {
                 NSString *path = draftArray[i];
-                if ([path hasSuffix:@"mp4"]) {
+                if ([path hasSuffix:@"mov"]) {
                     NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
                     NSURL *url= [NSURL fileURLWithPath:allPath];
                     [videoArray addObject:url];
@@ -339,7 +339,7 @@
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
         
-        NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mp4",partNum];
+        NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mov",partNum];
         NSURL *targetUrl = [NSURL fileURLWithPath:targetPath];
         return targetUrl;
     }
