@@ -32,7 +32,7 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTemplateType)
 /**
  模板名称
  */
-@property (nonatomic, strong) NSString                        *templateName;
+@property (nonatomic, strong) NSString                        *templateId;
 
 /**
  模板标题
@@ -80,9 +80,9 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTemplateType)
 /**
  初始化模板
 
- @param templateName 模板名称
+ @param templateId 模板名称
  @return 返回模板对象
  */
--(instancetype)initWithTemplateName:(NSString *)templateName;
+-(instancetype)initWithTemplateId:(NSString *)templateId;
 
 @end
