@@ -2618,7 +2618,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.timeNumber.clipsToBounds = YES;
     [_timeView addSubview:self.timeNumber];
     ////
-    NSString *partTitle = [NSString stringWithFormat:@"第%ld段",part.partNum + 1];
+    NSString *partTitle = [NSString stringWithFormat:@"第%ld段",(long)part.partNum + 1];
     NSString *timeTitle = [NSString stringWithFormat:@"%@秒",timeArr[0]];
     NSString *typeTitle;
     if (part.recordType == DLYMiniVlogRecordTypeNormal) {
@@ -2679,9 +2679,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [_progressView drawProgress:_shootTime / partDuration];
     if(_shootTime > partDuration)
     {
+        DDLogInfo(@"录制完毕");
         if (self.cancelButton.isHidden) {
             return;
         }
+        DDLogInfo(@"观察走了几次");
         isNeededToSave = YES;
         [self.AVEngine stopRecording];
         self.cancelButton.hidden = YES;
