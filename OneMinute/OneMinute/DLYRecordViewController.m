@@ -2686,9 +2686,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [_progressView drawProgress:_shootTime / partDuration];
     if(_shootTime > partDuration)
     {
+        DDLogInfo(@"录制完毕");
         if (self.cancelButton.isHidden) {
             return;
         }
+        DDLogInfo(@"观察走了几次");
         isNeededToSave = YES;
         [self.AVEngine stopRecording];
         self.cancelButton.hidden = YES;
