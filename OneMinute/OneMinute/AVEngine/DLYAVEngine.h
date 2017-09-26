@@ -118,14 +118,6 @@ typedef void(^setVideoSpeedBlock)();
  */
 - (void) addTransitionEffectWithTitle:(NSString *)videoTitle andURL:(NSURL*)newUrl SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
 /**
- 添加片头
- 
- @param videoTitle 视频标题
- @param successBlock 成功回调
- @param failureBlcok 失败回调
- */
-- (void) addVideoHeadertWithTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
-/**
  配音
 
  @param videoUrl 视频文件Url
