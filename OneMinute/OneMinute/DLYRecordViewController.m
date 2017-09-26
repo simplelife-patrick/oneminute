@@ -18,6 +18,7 @@
 #include <libavformat/avformat.h>
 #import "DLYMovieObject.h"
 #import "DLYTitleView.h"
+#import "DLYThemesData.h"
 
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
@@ -189,6 +190,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [super viewDidLoad];
     
     self.isAvalible = [self monitorPermission];
+    
+    [DLYThemesData sharedInstance];
     
     av_register_all();
     [DLYIndicatorView sharedIndicatorView].delegate = self;
@@ -2686,11 +2689,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [_progressView drawProgress:_shootTime / partDuration];
     if(_shootTime > partDuration)
     {
-        DDLogInfo(@"录制完毕");
+        NSLog(@"录制完毕");
         if (self.cancelButton.isHidden) {
             return;
         }
-        DDLogInfo(@"观察走了几次");
+        NSLog(@"观察走了几次");
         isNeededToSave = YES;
         [self.AVEngine stopRecording];
         self.cancelButton.hidden = YES;
