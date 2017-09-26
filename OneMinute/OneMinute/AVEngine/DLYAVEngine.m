@@ -353,7 +353,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         
         if (previewView) {
             self.captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.captureSession];
-            self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+            self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft; //home button on right
             self.captureVideoPreviewLayer.frame = previewView.bounds;
             self.captureVideoPreviewLayer.contentsGravity = kCAGravityTopLeft;
             self.captureVideoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
@@ -369,7 +369,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         //设置视频录制的方向
         if ([self.videoConnection isVideoOrientationSupported]) {
             
-            [self.videoConnection setVideoOrientation:AVCaptureVideoOrientationLandscapeLeft];
+            [self.videoConnection setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
         }
         //视频录制队列
         _movieWritingQueue = dispatch_queue_create("moviewriting", DISPATCH_QUEUE_SERIAL);
@@ -389,8 +389,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 - (void)changeCameraInputDeviceisFront:(BOOL)isFront {
     
     if (isFront) {
-        self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
-        self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
         [self.captureSession beginConfiguration];
         [self.captureSession removeInput:self.backCameraInput];
         
@@ -398,15 +396,24 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             [self changeCameraAnimation];
             [self.captureSession addInput:self.frontCameraInput];//切换成了前置
         }
+//        self.captureVideoPreviewLayer.contentsGravity = kCAGravityTopLeft;
+//        self.captureVideoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+//        self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+//        if ([self.videoConnection isVideoOrientationSupported]) {
+//            [self.videoConnection setVideoOrientation:AVCaptureVideoOrientationLandscapeLeft];
+//        }
     }else {
-        self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
-        self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         [self.captureSession beginConfiguration];
         [self.captureSession removeInput:self.frontCameraInput];
         if ([self.captureSession canAddInput:self.backCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.backCameraInput];//切换成了后置            
         }
+        
+//        self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+//        if ([self.videoConnection isVideoOrientationSupported]) {
+//            self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
+//        }
     }
     [self.captureSession commitConfiguration];
 }
@@ -593,76 +600,49 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 #pragma mark - 开始录制 -
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
     _currentPart = part;
-    CMMotionManager *motuonManager = [[CMMotionManager alloc] init];
     
-    CMDeviceMotion *deveiceMotion = motuonManager.deviceMotion;
-    NSLog(@"deveiceMotion.rotationRate :%@,deveiceMotion.gravity :%@",deveiceMotion.rotationRate,deveiceMotion.gravity);
+    UIDeviceOrientation deviceOriention = [[UIDevice currentDevice] orientation];
     
-    if ([motuonManager isDeviceMotionAvailable]) {
-        motuonManager.deviceMotionUpdateInterval = 1;
-        [motuonManager startDeviceMotionUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMDeviceMotion * _Nullable motion,
-                                                              NSError * _Nullable error) {
-            // Gravity 获取手机的重力值在各个方向上的分量，根据这个就可以获得手机的空间位置，倾斜角度等
-            double gravityX = motion.gravity.x;
-            double gravityY = motion.gravity.y;
-            double gravityZ = motion.gravity.z;
-            
-            // 获取手机的倾斜角度(zTheta是手机与水平面的夹角， xyTheta是手机绕自身旋转的角度)：
-            double zTheta = atan2(gravityZ,sqrtf(gravityX * gravityX + gravityY * gravityY)) / M_PI * 180.0;
-            double xyTheta = atan2(gravityX, gravityY) / M_PI * 180.0;
-            
-            NSLog(@"手机与水平面的夹角 --- %.4f, 手机绕自身旋转的角度为 --- %.4f", zTheta, xyTheta);
-        }];
-    }
-    
-    AVCaptureVideoOrientation *videoOrientation = self.videoConnection.videoOrientation;
-    NSLog(@"当前录制方向为 :%lu",videoOrientation);
-    
-    UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
-    NSLog(@"当前设备方向为 :%lu",deviceOrientation);
+    NSLog(@"deviceOriention :%lu",deviceOriention);
     
     if (!self.isCapturing) {
         self.isPaused = NO;
         self.isCapturing = YES;
     }
-    
-    if (part.recordType == DLYMiniVlogRecordTypeSlomo) {
+    NSString *_outputPath;
+
+    if (_currentPart.recordType == DLYMiniVlogRecordTypeSlomo) {
         DLYLog(@"🎬🎬🎬Record Type Is Slomo");
         [self cameraBackgroundDidClickOpenSlow];
         
-    }else if (part.recordType == DLYMiniVlogRecordTypeTimelapse){
+        //快慢镜头需要获取保存在Cache中的地址
+        _outputPath = [self.resource getSaveDraftPartWithPartNum:_currentPart.partNum];
+    }else if (_currentPart.recordType == DLYMiniVlogRecordTypeTimelapse){
         DLYLog(@"🎬🎬🎬Record Type Is Timelapse");
         [self cameraBackgroundDidClickCloseSlow];
+        
+        //快慢镜头需要获取保存在Cache中的地址
+        _outputPath = [self.resource getSaveDraftPartWithPartNum:_currentPart.partNum];
     }else{
         DLYLog(@"🎬🎬🎬Record Type Is Normal");
         [self cameraBackgroundDidClickCloseSlow];
-    }
-    
-    if (_currentPart.recordType == DLYMiniVlogRecordTypeNormal) {//正常录制的视频,直接存储到Document
         
         //正常片段需要获取保存在Document中的地址
-        NSString *outputPath;
         NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
-        
         if ([[NSFileManager defaultManager] fileExistsAtPath:dataPath]) {
             NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
             if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
-                outputPath = [NSString stringWithFormat:@"%@/part%lu.mov",draftPath,(long)_currentPart.partNum];
+                _outputPath = [NSString stringWithFormat:@"%@/part%lu.mov",draftPath,(long)_currentPart.partNum];
             }
         }
-        _currentPart.partUrl = [NSURL fileURLWithPath:outputPath];
-    }else{
-        
-        //快慢镜头需要获取保存在Cache中的地址
-        NSString *outputPath = [self.resource getSaveDraftPartWithPartNum:_currentPart.partNum];
-        if (outputPath) {
-            NSURL *outputUrl = [NSURL fileURLWithPath:outputPath];
-            _currentPart.partUrl = outputUrl;
-            DLYLog(@"第 %lu 个片段的地址 :%@",_currentPart.partNum + 1,_currentPart.partUrl);
-        }else{
-            DLYLog(@"片段地址获取为空");
-        }
     }
+    if (_outputPath) {
+        _currentPart.partUrl = [NSURL fileURLWithPath:_outputPath];
+        DLYLog(@"第 %lu 个片段的地址 :%@",_currentPart.partNum + 1,_currentPart.partUrl);
+    }else{
+        DLYLog(@"片段地址获取为空");
+    }
+
     [self.captureMovieFileOutput startRecordingToOutputFileURL:_currentPart.partUrl recordingDelegate:self];
 }
 
@@ -721,22 +701,23 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         if(videoPartUrl) {
             videoAsset = [[AVURLAsset alloc]initWithURL:videoPartUrl options:nil];
         }
-        AVAssetTrack *videoAssetTrack = nil;
-        if([videoAsset tracksWithMediaType:AVMediaTypeVideo]){
-            videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-        }
-        CGAffineTransform videoTransform = videoAssetTrack.preferredTransform;
-        
-        NSLog(@"preferredTransform a = %.0f     b = %.0f       c = %.0f     d = %.0f,       tx = %.0f       ty = %.0f",videoTransform.a,videoTransform.b,videoTransform.c,videoTransform.d,videoTransform.tx,videoTransform.ty);
+//        AVAssetTrack *videoAssetTrack = nil;
+//        if([videoAsset tracksWithMediaType:AVMediaTypeVideo]){
+//            videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+//        }
+//        CGAffineTransform videoTransform = videoAssetTrack.preferredTransform;
+//
+//        NSLog(@"preferredTransform a = %.0f     b = %.0f       c = %.0f     d = %.0f,       tx = %.0f       ty = %.0f",videoTransform.a,videoTransform.b,videoTransform.c,videoTransform.d,videoTransform.tx,videoTransform.ty);
+        //        if (videoTransform.a == 0 && videoTransform.b == 1 && videoTransform.c == -1 && videoTransform.d == 0) {
+        //            compositionVideoTrack.preferredTransform = CGAffineTransformMakeRotation(M_PI);
+        //        }
         // 视频混合
         AVMutableComposition* mixComposition = [AVMutableComposition composition];
         // 视频轨道
         AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
         
-        if (videoTransform.a == 0 && videoTransform.b == 1 && videoTransform.c == -1 && videoTransform.d == 0) {
-            compositionVideoTrack.preferredTransform = CGAffineTransformMakeRotation(M_PI);
-        }
 
+        //勿删:后续版本可能要用
 //        if (recordType == DLYMiniVlogRecordTypeNormal) {
 //            NSError *error = nil;
 //            NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -811,10 +792,12 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     
     [self.captureSession stopRunning];
     CGFloat desiredFPS = 60.0f;
+    
     NSLog(@"当前设置的录制帧率是: %f",desiredFPS);
     AVCaptureDeviceFormat *selectedFormat = nil;
     int32_t maxWidth = 0;
     AVFrameRateRange *frameRateRange = nil;
+    
     for (AVCaptureDeviceFormat *format in [_captureDeviceInput.device formats]) {
         for (AVFrameRateRange *range in format.videoSupportedFrameRateRanges) {
             CMFormatDescriptionRef desc = format.formatDescription;
@@ -830,14 +813,14 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     if (selectedFormat) {
         if ([_captureDeviceInput.device lockForConfiguration:nil]) {
             
-            _captureDeviceInput.device.activeFormat = _defaultFormat;
-            _captureDeviceInput.device.activeVideoMinFrameDuration = _defaultMinFrameDuration;
-            _captureDeviceInput.device.activeVideoMaxFrameDuration = _defaultMaxFrameDuration;
-            [_captureDeviceInput.device unlockForConfiguration];
-//            _captureDeviceInput.device.activeFormat = selectedFormat;
-//            _captureDeviceInput.device.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
-//            _captureDeviceInput.device.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+//            _captureDeviceInput.device.activeFormat = _defaultFormat;
+//            _captureDeviceInput.device.activeVideoMinFrameDuration = _defaultMinFrameDuration;
+//            _captureDeviceInput.device.activeVideoMaxFrameDuration = _defaultMaxFrameDuration;
 //            [_captureDeviceInput.device unlockForConfiguration];
+            _captureDeviceInput.device.activeFormat = selectedFormat;
+            _captureDeviceInput.device.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+            _captureDeviceInput.device.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+            [_captureDeviceInput.device unlockForConfiguration];
         }
     }
     [self.captureSession startRunning];
