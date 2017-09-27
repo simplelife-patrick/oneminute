@@ -581,7 +581,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     pinchGestureRecognizer.delegate = self;
     [self.previewView addGestureRecognizer:pinchGestureRecognizer];
     
-    
     //通用button 选择场景button
     self.chooseScene = [[UIButton alloc]initWithFrame:CGRectMake(11, 16, 40, 40)];
     self.chooseScene.backgroundColor = RGBA(0, 0, 0, 0.4);
@@ -974,30 +973,19 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     DLYLog(@"Saving...");
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
-        
-        
-        AVAsset  *asset = [AVAsset assetWithURL:recordedFileUrl];
-        Duration duration =(UInt32)asset.duration.value / asset.duration.timescale;
-        NSLog(@"AVFoundation获取时长 :%d",duration);
-        
-        DLYMovieObject *movieObj = [[DLYMovieObject alloc] initWithVideo:recordedFileUrl.absoluteString];
-        NSLog(@"ffmpeg获取的时长: %f",movieObj.duration);
-        
         DLYLog(@"Saved!");
     });
 }
 #pragma mark ==== 左手模式重新布局
 //设备方向改变后调用的方法
 //后面改变的状态
-- (void)deviceChangeAndHomeOnTheLeft {
+- (void)deviceChangeAndHomeOnTheLeft {//左手模式
     
     if (![self.AVEngine isRecording]) {
         
         [self.AVEngine.captureSession beginConfiguration];
         
-//        [self.AVEngine changeCameraRotateClockwiseAnimation];
-//        self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
-
+        self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
         self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
         
         [self.AVEngine.captureSession commitConfiguration];
@@ -1009,6 +997,27 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
         [self deviceChangeAndHomeOnTheLeftNewLayout];
         DLYLog(@"首页左转");
+    }
+}
+//home在右 初始状态
+- (void)deviceChangeAndHomeOnTheRight {//右手模式
+    
+    if (![self.AVEngine isRecording]) {
+        
+        [self.AVEngine.captureSession beginConfiguration];
+        
+        self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+        self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
+        
+        [self.AVEngine.captureSession commitConfiguration];
+        
+    }else{
+        DLYLog(@"⚠️⚠️⚠️录制过程中不再重设录制正方向");
+    }
+    NSArray *viewArr = self.navigationController.viewControllers;
+    if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
+        [self deviceChangeAndHomeOnTheRightNewLayout];
+        DLYLog(@"首页右转");
     }
 }
 
@@ -1032,7 +1041,25 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     [self changeDirectionOfView:M_PI];
 }
-
+- (void)deviceChangeAndHomeOnTheRightNewLayout{
+    [self createPartView];
+    
+    if (!self.playView.isHidden) {
+        UIButton *button = (UIButton *)[self.view viewWithTag:cursorTag];
+        selectPartTag = cursorTag;
+        //点击哪个item，光标移动到当前item
+        prepareTag = button.tag;
+        
+        for (DLYMiniVlogPart *part in partModelArray) {
+            if ([part.prepareRecord isEqualToString:@"1"]) {
+                NSInteger i = [partModelArray indexOfObject:part];
+                UIView *view = (UIView *)[self.view viewWithTag:30001 + i];
+                [view removeFromSuperview];
+            }
+        }
+    }
+    [self changeDirectionOfView:0];
+}
 - (void)changeDirectionOfView:(CGFloat)num {
     
     if (!self.warningIcon.isHidden && self.warningIcon) {
@@ -1214,49 +1241,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.alert.transform = CGAffineTransformMakeRotation(num);
         }];
     }
-}
-
-//home在右 初始状态
-- (void)deviceChangeAndHomeOnTheRight {
-    
-    if (![self.AVEngine isRecording]) {
-        
-        [self.AVEngine.captureSession beginConfiguration];
-        
-//        [self.AVEngine changeCameraRotateAnticlockwiseAnimation];
-        self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
-        self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
-        
-        [self.AVEngine.captureSession commitConfiguration];
-        
-    }else{
-        DLYLog(@"⚠️⚠️⚠️录制过程中不再重设录制正方向");
-    }
-    NSArray *viewArr = self.navigationController.viewControllers;
-    if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
-        [self deviceChangeAndHomeOnTheRightNewLayout];
-        DLYLog(@"首页右转");
-    }
-}
-
-- (void)deviceChangeAndHomeOnTheRightNewLayout{
-    [self createPartView];
-    
-    if (!self.playView.isHidden) {
-        UIButton *button = (UIButton *)[self.view viewWithTag:cursorTag];
-        selectPartTag = cursorTag;
-        //点击哪个item，光标移动到当前item
-        prepareTag = button.tag;
-        
-        for (DLYMiniVlogPart *part in partModelArray) {
-            if ([part.prepareRecord isEqualToString:@"1"]) {
-                NSInteger i = [partModelArray indexOfObject:part];
-                UIView *view = (UIView *)[self.view viewWithTag:30001 + i];
-                [view removeFromSuperview];
-            }
-        }
-    }
-    [self changeDirectionOfView:0];
 }
 
 #pragma mark ==== button点击事件
