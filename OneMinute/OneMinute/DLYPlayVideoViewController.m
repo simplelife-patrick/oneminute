@@ -160,6 +160,7 @@
     self.titleField.tintColor = RGBA(255, 255, 255, 0.7);
     self.titleField.font = FONT_SYSTEM(40);
     self.titleField.textColor = RGBA(255, 255, 255, 0.7);
+    self.titleField.returnKeyType = UIReturnKeyDone;
     [self.view addSubview:self.titleField];
     [self.titleField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     
@@ -189,6 +190,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hidechangeContentViewPosition:) name:UIKeyboardWillHideNotification object:nil];
 }
 - (void)onClickSkip {
+    [self makeVideo];
+}
+
+- (void)makeVideo {
     
     [MobClick event:@"Skip"];
     //隐藏所有控件
@@ -198,9 +203,6 @@
     self.skipTestBtn.hidden = YES;
     //创建view
     [self setupUI];
-    
-    //跳过的时候，调用合成接口
-    
     //获取开始时刻统计合成耗时
     self.AVEngine.startOperation = [self.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
     
@@ -774,6 +776,7 @@
 //按下Return时调用
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [self.view  endEditing:YES];
+    [self makeVideo];
     return YES;
 }
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
