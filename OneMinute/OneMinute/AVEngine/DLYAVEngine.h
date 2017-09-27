@@ -41,7 +41,6 @@ typedef void(^setVideoSpeedBlock)();
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *backCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *captureDeviceInput;
 @property (nonatomic, strong) AVCaptureDevice                                         *videoDevice;
-@property (nonatomic, strong) AVCaptureMovieFileOutput                                *captureMovieFileOutput;
 
 @property (nonatomic, assign) id                                                      delegate;
 @property (nonatomic, readonly) BOOL                                                  isRecording;

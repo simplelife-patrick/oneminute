@@ -970,15 +970,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     DLYLog(@"Saving...");
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
-        
-        
-        AVAsset  *asset = [AVAsset assetWithURL:recordedFileUrl];
-        Duration duration =(UInt32)asset.duration.value / asset.duration.timescale;
-        NSLog(@"AVFoundation获取时长 :%d",duration);
-        
-        DLYMovieObject *movieObj = [[DLYMovieObject alloc] initWithVideo:recordedFileUrl.absoluteString];
-        NSLog(@"ffmpeg获取的时长: %f",movieObj.duration);
-        
         DLYLog(@"Saved!");
     });
 }
