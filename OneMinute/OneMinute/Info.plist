@@ -21,7 +21,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>0.8.0</string>
 	<key>CFBundleVersion</key>
-	<string>8</string>
+	<string>9</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -53,9 +53,9 @@
 	<string>在使用期间获取位置信息</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>是否允许“一分”使用您的麦克风?</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>是否允许“一分”使用您的相册?</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>是否允许“一分”使用您的相册?</string>
+	<key>NSPhotoLibraryUsageDescription</key>
 	<string>是否允许“一分”使用您的相册?</string>
 	<key>UIAppFonts</key>
 	<array>
