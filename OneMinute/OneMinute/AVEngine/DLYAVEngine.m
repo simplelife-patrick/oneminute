@@ -101,6 +101,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 
 @property (nonatomic, copy) OnBufferBlock                      onBuffer;
 
+@property (retain, nonatomic) GPUImageMovie *movieFile;
+@property (retain, nonatomic) GPUImageOutput<GPUImageInput> *outputFilter;
+@property (retain, nonatomic) GPUImageMovieWriter *inputMovieWriter;
 
 @end
 
