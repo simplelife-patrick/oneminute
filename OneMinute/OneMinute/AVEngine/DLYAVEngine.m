@@ -24,6 +24,7 @@
 #import "DLYMovieObject.h"
 #import <CoreMotion/CoreMotion.h>
 #import "DLYThemesData.h"
+#import "DLYVideoFilter.h"
 
 typedef void (^OnBufferBlock)(CMSampleBufferRef sampleBuffer);
 
@@ -2036,12 +2037,15 @@ BOOL isOnce = YES;
 }
 - (GPUImageOutput<GPUImageInput> *)addVideoFilter:(GPUImageMovie *)movieFile {
     GPUImageOutput<GPUImageInput> *filterCurrent;
-    //    GPUImageMissEtikateFilter *filt = [[GPUImageMissEtikateFilter alloc] init];
-    //    [movieFile addTarget:filt];
-    //    filterCurrent = filt;
-    GPUImageFilter *filt = [[GPUImageFilter alloc]init];
+    
+//    GPUImageFilter *filt = [[GPUImageFilter alloc]init];
+//    filterCurrent = filt;
+//    [movieFile addTarget:filterCurrent];
+
+    DLYVideoFilter *filt = [[DLYVideoFilter alloc]init];
     filterCurrent = filt;
-    [movieFile addTarget:filterCurrent];
+    [movieFile addTarget:filt];
+
     return filterCurrent;
 }
 #pragma mark - 动态水印
