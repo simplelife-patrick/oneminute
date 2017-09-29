@@ -190,6 +190,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hidechangeContentViewPosition:) name:UIKeyboardWillHideNotification object:nil];
 }
 - (void)onClickSkip {
+    [self.view  endEditing:YES];
     [self makeVideo];
 }
 
@@ -545,7 +546,6 @@
     NSInteger seconds = (NSInteger)time%60;
     return [NSString stringWithFormat:@"%02ld:%02ld", (long)minutes, (long)seconds];
 }
-
 
 - (void)enableScrubber {
     _progressSlider.enabled = YES;
