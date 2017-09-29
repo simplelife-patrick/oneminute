@@ -136,7 +136,7 @@
         NSArray *draftArray = [self.fileManager contentsOfDirectoryAtPath:draftPath error:nil];
         NSMutableArray *mArray = [NSMutableArray array];
         for (NSString *path in draftArray) {
-            if ([path hasSuffix:@"mov"]) {
+            if ([path hasSuffix:@"mp4"]) {
                 NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
                 NSURL *url= [NSURL fileURLWithPath:allPath];
                 [mArray addObject:url];
@@ -161,7 +161,7 @@
             
             for (NSInteger i = 0; i < [draftArray count]; i++) {
                 NSString *path = draftArray[i];
-                if ([path hasSuffix:@"mov"]) {
+                if ([path hasSuffix:@"mp4"]) {
                     NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
                     NSURL *url= [NSURL fileURLWithPath:allPath];
                     [videoArray addObject:url];
@@ -177,7 +177,7 @@
     NSString *draftPath = [kCachePath stringByAppendingPathComponent:kDraftFolder];
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
         
-        NSString *outputPath = [NSString stringWithFormat:@"%@/part%lu%@",draftPath,(long)partNum,@".mov"];
+        NSString *outputPath = [NSString stringWithFormat:@"%@/part%lu%@",draftPath,(long)partNum,@".mp4"];
         return outputPath;
     }
     return nil;
@@ -245,7 +245,7 @@
     NSString *draftPath = [self getDraftFolderCache];
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
         
-        NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mov",partNum];
+        NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mp4",partNum];
         
         [fileManager removeItemAtPath:targetPath error:nil];
     }
@@ -257,7 +257,7 @@
     NSString *draftPath = [self getDraftFolderDocument];
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
         
-        NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mov",partNum];
+        NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mp4",partNum];
         
         [fileManager removeItemAtPath:targetPath error:nil];
     }
@@ -273,7 +273,7 @@
         BOOL isSuccess = NO;
         if ([draftArray count] != 0) {
             for (NSString *path in draftArray) {
-                if ([path hasSuffix:@"mov"]) {
+                if ([path hasSuffix:@"mp4"]) {
                     NSString *targetPath = [draftPath stringByAppendingFormat:@"/%@",path];
                     isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
                 }
@@ -322,7 +322,7 @@
         
         if ([draftArray count] != 0) {
             for (NSString *path in draftArray) {
-                if ([path hasSuffix:@"mov"]) {
+                if ([path hasSuffix:@"mp4"]) {
                     NSString *targetPath = [draftPath stringByAppendingFormat:@"/%@",path];
                     isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
                 }
@@ -339,7 +339,7 @@
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
         
-        NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mov",partNum];
+        NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mp4",partNum];
         NSURL *targetUrl = [NSURL fileURLWithPath:targetPath];
         return targetUrl;
     }
