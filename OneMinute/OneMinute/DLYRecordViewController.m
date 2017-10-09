@@ -1269,35 +1269,35 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark ==== 切换摄像头
 - (void)toggleCameraAction {
     
-//    [MobClick event:@"toggleCamera"];
-//    if (isSlomoCamera) {
-//        if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showSlomoCameraPopup"]){
-//            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showSlomoCameraPopup"];
-//            DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.toggleCameraBtn titles:@[@"慢镜头不能摄像头"] icons:nil menuWidth:120 delegate:self];
-//            normalBubble.showMaskAlpha = 1;
-//        }
-//        return;
-//    }
-//    self.toggleCameraBtn.selected = !self.toggleCameraBtn.selected;
-//    if (self.toggleCameraBtn.selected) {
-//        [self.AVEngine changeCameraInputDeviceisFront:YES];
-//        self.flashButton.hidden = YES;
-//        if (self.flashButton.selected) {
-//            self.flashButton.selected = NO;
-//        }
-//        isFront = YES;
-//    }else{
-//        [self.AVEngine changeCameraInputDeviceisFront:NO];
-//        if (self.newState == 1) {
-//            self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
-//            self.flashButton.transform = CGAffineTransformMakeRotation(0);
-//        }else {
-//            self.flashButton.frame = CGRectMake(11, 61, 40, 40);
-//            self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
-//        }
-//        self.flashButton.hidden = NO;
-//        isFront = NO;
-//    }
+    [MobClick event:@"toggleCamera"];
+    if (isSlomoCamera) {
+        if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showSlomoCameraPopup"]){
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showSlomoCameraPopup"];
+            DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.toggleCameraBtn titles:@[@"慢镜头不能摄像头"] icons:nil menuWidth:120 delegate:self];
+            normalBubble.showMaskAlpha = 1;
+        }
+        return;
+    }
+    self.toggleCameraBtn.selected = !self.toggleCameraBtn.selected;
+    if (self.toggleCameraBtn.selected) {
+        [self.AVEngine changeCameraInputDeviceisFront:YES];
+        self.flashButton.hidden = YES;
+        if (self.flashButton.selected) {
+            self.flashButton.selected = NO;
+        }
+        isFront = YES;
+    }else{
+        [self.AVEngine changeCameraInputDeviceisFront:NO];
+        if (self.newState == 1) {
+            self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
+            self.flashButton.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.flashButton.frame = CGRectMake(11, 61, 40, 40);
+            self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+        self.flashButton.hidden = NO;
+        isFront = NO;
+    }
 }
 //选择场景
 - (void)onClickChooseScene:(UIButton *)sender {
