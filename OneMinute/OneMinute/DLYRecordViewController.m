@@ -1248,7 +1248,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)onClickFlashAction {
     
     self.flashButton.selected = !self.flashButton.selected;
-    AVCaptureDevice *device = self.AVEngine.backCameraInput.device;
+    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     NSError *error = nil;
     if (self.flashButton.selected == YES) { //打开闪光灯
         [self.flashButton setImage:[UIImage imageWithIcon:@"\U0000e601" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
