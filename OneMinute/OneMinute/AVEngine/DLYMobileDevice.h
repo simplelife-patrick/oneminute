@@ -30,8 +30,6 @@ typedef NS_ENUM(NSInteger , DLYPhoneDeviceType) {
     PhoneDeviceTypeIPad_4,
     PhoneDeviceTypeIPad_Air,
     PhoneDeviceTypeIPadMini_2G,
-    PhoneDeviceTypeIpone_Simulator_i386,
-    PhoneDeviceTypeIpone_Simulator_x86_64,
 };
 //创建单例
 + (DLYMobileDevice *) sharedDevice;
