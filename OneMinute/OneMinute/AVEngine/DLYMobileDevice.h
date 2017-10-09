@@ -23,6 +23,13 @@ typedef NS_ENUM(NSInteger , DLYPhoneDeviceType) {
     PhoneDeviceTypeIphone_SE,
     PhoneDeviceTypeIphone_7,
     PhoneDeviceTypeIphone_7_Plus,
+    PhoneDeviceTypeIPad_1G,
+    PhoneDeviceTypeIPad_2,
+    PhoneDeviceTypeIPadMini_1G,
+    PhoneDeviceTypeIPad_3,
+    PhoneDeviceTypeIPad_4,
+    PhoneDeviceTypeIPad_Air,
+    PhoneDeviceTypeIPadMini_2G,
     PhoneDeviceTypeIpone_Simulator_i386,
     PhoneDeviceTypeIpone_Simulator_x86_64,
 };
