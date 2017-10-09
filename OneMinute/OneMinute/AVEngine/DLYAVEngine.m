@@ -2039,13 +2039,13 @@ BOOL isOnce = YES;
 - (GPUImageOutput<GPUImageInput> *)addVideoFilter:(GPUImageMovie *)movieFile {
     GPUImageOutput<GPUImageInput> *filterCurrent;
     
-//    GPUImageFilter *filt = [[GPUImageFilter alloc]init];
-//    filterCurrent = filt;
-//    [movieFile addTarget:filterCurrent];
-
-    DLYVideoFilter *filt = [[DLYVideoFilter alloc]init];
+    GPUImageFilter *filt = [[GPUImageFilter alloc]init];
     filterCurrent = filt;
-    [movieFile addTarget:filt];
+    [movieFile addTarget:filterCurrent];
+
+//    DLYVideoFilter *filt = [[DLYVideoFilter alloc]init];
+//    filterCurrent = filt;
+//    [movieFile addTarget:filt];
 
     return filterCurrent;
 }

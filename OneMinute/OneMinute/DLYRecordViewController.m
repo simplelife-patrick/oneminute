@@ -1638,6 +1638,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.resource removePartWithPartNumFormCache:partNum];
     
     dispatch_source_cancel(_timer);
+    _timer = nil;
     
     [UIView animateWithDuration:0.5f animations:^{
         self.progressView.hidden = YES;
@@ -2673,15 +2674,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [_progressView drawProgress:_shootTime / partDuration];
     if(_shootTime > partDuration)
     {
-        NSLog(@"录制完毕");
         if (self.cancelButton.isHidden) {
             return;
         }
-        NSLog(@"观察走了几次");
         isNeededToSave = YES;
         [self.AVEngine stopRecording];
         self.cancelButton.hidden = YES;
         dispatch_source_cancel(_timer);
+        _timer = nil;
         
         for(int i = 0; i < partModelArray.count; i++)
         {
