@@ -1638,6 +1638,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.resource removePartWithPartNumFormCache:partNum];
     
     dispatch_source_cancel(_timer);
+    _timer = nil;
     
     [UIView animateWithDuration:0.5f animations:^{
         self.progressView.hidden = YES;
@@ -2673,15 +2674,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [_progressView drawProgress:_shootTime / partDuration];
     if(_shootTime > partDuration)
     {
-        NSLog(@"录制完毕");
         if (self.cancelButton.isHidden) {
             return;
         }
-        NSLog(@"观察走了几次");
         isNeededToSave = YES;
         [self.AVEngine stopRecording];
         self.cancelButton.hidden = YES;
         dispatch_source_cancel(_timer);
+        _timer = nil;
         
         for(int i = 0; i < partModelArray.count; i++)
         {
@@ -2716,36 +2716,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.completeButton.hidden = NO;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
             self.completeButton.hidden = YES;
-            
-            if(part.recordType == DLYMiniVlogRecordTypeNormal) {
-                [self showControlView];
-                if(n == partModelArray.count) {//视频自动播放
-                    self.recordBtn.hidden = YES;
-                    __weak typeof(self) weakSelf = self;
-                    DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
-                    fvc.isAll = YES;
-                    fvc.isSuccess = NO;
-                    fvc.playUrl = self.AVEngine.currentProductUrl;
-                    fvc.beforeState = self.newState;
-                    self.isPlayer = YES;
-                    fvc.DismissBlock = ^{
-                        if (self.newState == 1) {
-                            self.nextButton.transform = CGAffineTransformMakeRotation(0);
-                        }else {
-                            self.nextButton.transform = CGAffineTransformMakeRotation(M_PI);
-                        }
-                        self.nextButton.hidden = NO;
-                        if (self.newState == 1) {
-                            self.deleteButton.transform = CGAffineTransformMakeRotation(0);
-                        }else {
-                            self.deleteButton.transform = CGAffineTransformMakeRotation(M_PI);
-                        }
-                        self.deleteButton.hidden = NO;
-                        self.isSuccess = YES;
-                    };
-                    [weakSelf.navigationController pushViewController:fvc animated:YES];
-                }
-            }
         });
     }
 }
