@@ -2716,36 +2716,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.completeButton.hidden = NO;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
             self.completeButton.hidden = YES;
-            
-            if(part.recordType == DLYMiniVlogRecordTypeNormal) {
-                [self showControlView];
-                if(n == partModelArray.count) {//视频自动播放
-                    self.recordBtn.hidden = YES;
-                    __weak typeof(self) weakSelf = self;
-                    DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
-                    fvc.isAll = YES;
-                    fvc.isSuccess = NO;
-                    fvc.playUrl = self.AVEngine.currentProductUrl;
-                    fvc.beforeState = self.newState;
-                    self.isPlayer = YES;
-                    fvc.DismissBlock = ^{
-                        if (self.newState == 1) {
-                            self.nextButton.transform = CGAffineTransformMakeRotation(0);
-                        }else {
-                            self.nextButton.transform = CGAffineTransformMakeRotation(M_PI);
-                        }
-                        self.nextButton.hidden = NO;
-                        if (self.newState == 1) {
-                            self.deleteButton.transform = CGAffineTransformMakeRotation(0);
-                        }else {
-                            self.deleteButton.transform = CGAffineTransformMakeRotation(M_PI);
-                        }
-                        self.deleteButton.hidden = NO;
-                        self.isSuccess = YES;
-                    };
-                    [weakSelf.navigationController pushViewController:fvc animated:YES];
-                }
-            }
         });
     }
 }
