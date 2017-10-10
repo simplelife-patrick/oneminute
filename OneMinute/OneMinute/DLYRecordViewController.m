@@ -453,9 +453,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     /////////////////////////////////
     typeModelArray = [[NSMutableArray alloc]init];
     //通用,美食,旅行,生活
-    NSArray *typeNameArray = @[@"Universal001.json",@"Gourmandism001.json",@"Traveler001.json",@"ColorLife001.json",
-          @"Universal002.json",@"Gourmandism002.json",@"Traveler002.json",@"ColorLife002.json",
-          @"Universal003.json",@"Gourmandism003.json",@"Traveler003.json",@"ColorLife003.json"];
+    NSArray *typeNameArray = @[@"Primary.json",@"Secondary.json",@"Advanced.json",@"Gourmandism001.json",@"Traveler001.json",@"ColorLife001.json",@"Gourmandism002.json",@"Traveler002.json",@"ColorLife002.json",@"Gourmandism003.json",@"Traveler003.json",@"ColorLife003.json"];
     for(int i = 0; i < typeNameArray.count; i ++)
     {
         DLYMiniVlogTemplate *template = [self.session loadTemplateWithTemplateName:typeNameArray[i]];
@@ -508,9 +506,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     //模板数据
     typeModelArray = [[NSMutableArray alloc]init];
-    NSArray *typeNameArray = @[@"Universal001.json",@"Gourmandism001.json",@"Traveler001.json",@"ColorLife001.json",
-          @"Universal002.json",@"Gourmandism002.json",@"Traveler002.json",@"ColorLife002.json",
-          @"Universal003.json",@"Gourmandism003.json",@"Traveler003.json",@"ColorLife003.json"];
+    NSArray *typeNameArray = @[@"Primary.json",@"Secondary.json",@"Advanced.json",@"Gourmandism001.json",@"Traveler001.json",@"ColorLife001.json",@"Gourmandism002.json",@"Traveler002.json",@"ColorLife002.json",@"Gourmandism003.json",@"Traveler003.json",@"ColorLife003.json"];
     for(int i = 0; i < typeNameArray.count; i ++)
     {
         DLYMiniVlogTemplate *template = [self.session loadTemplateWithTemplateName:typeNameArray[i]];
@@ -600,9 +596,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.chooseSceneLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:self.chooseSceneLabel];
     
-    NSArray *typeNameArray = @[@"Universal001.json",@"Gourmandism001.json",@"Traveler001.json",@"ColorLife001.json",
-          @"Universal002.json",@"Gourmandism002.json",@"Traveler002.json",@"ColorLife002.json",
-          @"Universal003.json",@"Gourmandism003.json",@"Traveler003.json",@"ColorLife003.json"];
+    NSArray *typeNameArray = @[@"Primary.json",@"Secondary.json",@"Advanced.json",@"Gourmandism001.json",@"Traveler001.json",@"ColorLife001.json",@"Gourmandism002.json",@"Traveler002.json",@"ColorLife002.json",@"Gourmandism003.json",@"Traveler003.json",@"ColorLife003.json"];
     for (int i = 0; i < typeNameArray.count; i ++) {
         if ([template.templateId isEqualToString:typeNameArray[i]]) {
             [self.chooseScene setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
