@@ -9,23 +9,6 @@
 #import "DLYModule.h"
 #import "DLYMiniVlogPart.h"
 
-/**
- 模板类型
-
- - DLYMiniVlogTemplateTypeUniversal: 通用
- - DLYMiniVlogTemplateTypeGourmandism: 美食主义
- - DLYMiniVlogTemplateTypeTraveler: 旅行家
- - DLYMiniVlogTemplateTypeScenery: 美景
- - DLYMiniVlogTemplateTypeHumanity: 人文
- */
-typedef NS_ENUM(NSInteger,DLYMiniVlogTemplateType)
-{
-    DLYMiniVlogTemplateTypeUniversal = 0,
-    DLYMiniVlogTemplateTypeGourmandism,
-    DLYMiniVlogTemplateTypeTraveler,
-    DLYMiniVlogTemplateTypeScenery,
-    DLYMiniVlogTemplateTypeHumanity
-};
 
 @interface DLYMiniVlogTemplate : DLYModule
 
@@ -38,10 +21,6 @@ typedef NS_ENUM(NSInteger,DLYMiniVlogTemplateType)
  模板标题
  */
 @property (nonatomic, strong) NSString                        *templateTitle;
-/**
- 模板类型
- */
-@property (nonatomic, assign) DLYMiniVlogTemplateType         templateType;
 
 /**
  模板描述

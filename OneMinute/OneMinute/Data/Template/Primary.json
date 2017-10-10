@@ -1,0 +1,39 @@
+{
+  "id": "Primary.json",
+  "title":"入门操作",
+  "info": [
+    {
+      "partNum": 0,
+      "startTime": "00:00:00",
+      "stopTime": "00:05:00",
+      "dubStartTime": "00:00:00",
+      "dubStopTime": "00:05:00",
+      "recordType": 1,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "只录画面，不录声音哦，快去拍下美好的风景吧"
+    },
+    {
+      "partNum": 1,
+      "startTime": "00:05:00",
+      "stopTime": "00:10:00",
+      "dubStartTime": "00:05:00",
+      "dubStopTime": "00:10:00",
+      "recordType": 0,
+      "soundType": 0,
+      "BGMVolume": 20,
+      "transitionType": 1,
+      "shootGuide": "话筒开启，可以录音，说出你的想法吧"
+    }
+  ],
+  "subTitle1": {
+    "startTime": "00:02:00",
+    "stopTime": "00:05:00"
+  },
+  "BGM": "PrimaryTemplateBGM",
+  "header": "header001",
+  "tailer": "tail001",
+  "templateDescription": "这个模板成片长度为10s，你可以学会怎么用一分拍风景，以及拍自己说话",
+  "sampleVideoName": "PrimaryTemplateSample.mp4"
+}

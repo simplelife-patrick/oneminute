@@ -849,7 +849,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 - (void)cameraBackgroundDidClickCloseSlow {
     
     [self.captureSession stopRunning];
-    CGFloat desiredFPS = 30.0f;
+    CGFloat desiredFPS = 60.0f;
     
     NSLog(@"当前设置的录制帧率是: %f",desiredFPS);
     AVCaptureDeviceFormat *selectedFormat = nil;
@@ -870,7 +870,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
     if (selectedFormat) {
         if ([_currentVideoDeviceInput.device lockForConfiguration:nil]) {
-            
+            NSLog(@"selected format: %@", selectedFormat);
 //            _captureDeviceInput.device.activeFormat = _defaultFormat;
 //            _captureDeviceInput.device.activeVideoMinFrameDuration = _defaultMinFrameDuration;
 //            _captureDeviceInput.device.activeVideoMaxFrameDuration = _defaultMaxFrameDuration;
@@ -1691,18 +1691,17 @@ BOOL isOnce = YES;
         CMTimeRange preTimeRange = CMTimeRangeMake(_prePoint, CMTimeMake(2, 1));
         
         if (part.soundType == DLYMiniVlogAudioTypeMusic) {//空镜
-            [BGMParameters setVolumeRampFromStartVolume:1.0 toEndVolume:1.0 timeRange:timeRange];
+            [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
             //            [BGMParameters setVolumeRampFromStartVolume:5.0 toEndVolume:0.4 timeRange:preTimeRange];
             
             [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:timeRange];
         }else if(part.soundType == DLYMiniVlogAudioTypeNarrate){//人声
             [videoParameters setVolumeRampFromStartVolume:2.0 toEndVolume:2.0 timeRange:timeRange];
-            [BGMParameters setVolumeRampFromStartVolume:0.1 toEndVolume:0.1 timeRange:timeRange];
+            [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
             //            [BGMParameters setVolumeRampFromStartVolume:0.4 toEndVolume:5.0 timeRange:preTimeRange];
         }
     }
     audioMix.inputParameters = @[videoParameters,BGMParameters];
-    
     
     NSURL *outPutUrl = [self.resource saveProductToSandbox];
     self.currentProductUrl = outPutUrl;

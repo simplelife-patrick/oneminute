@@ -22,7 +22,6 @@
         
         self.templateId = [dic objectForKey:@"id"];
         self.templateTitle = [dic objectForKey:@"title"];
-        self.templateType = [[dic objectForKey:@"type"] integerValue];
         self.parts = [dic objectForKey:@"info"];
         self.BGM = [dic objectForKey:@"BGM"];
         self.subTitle1 = [dic objectForKey:@"subTitle1"];
@@ -49,7 +48,9 @@
         part.dubStopTime = [dic objectForKey:@"dubStopTime"];
         part.recordType = [[dic objectForKey:@"recordType"] integerValue];
         part.soundType = [[dic objectForKey:@"soundType"] integerValue];
+        part.BGMVolume = [[dic objectForKey:@"BGMVolume"] floatValue];
         part.transitionType = [[dic objectForKey:@"transitionType"] integerValue];
+        part.shootGuide = [dic objectForKey:@"shootGuide"];
         [mArray addObject:part];
     }
     return [mArray copy];

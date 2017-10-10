@@ -12,11 +12,6 @@
 @interface DLYMiniVlogDraft : DLYModule
 
 /**
- 草稿的模板类型
- */
-@property (nonatomic, assign) DLYMiniVlogTemplateType                templateType;
-
-/**
  草稿片段
  */
 @property (nonatomic, copy) NSArray                                  *parts;
