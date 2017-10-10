@@ -1570,15 +1570,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //数据 url也放在这里
     DLYMiniVlogTemplate *template = typeModelArray[num];
     NSString *videoName = [template.sampleVideoName stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
-    NSArray *urlArr = @[@"http://dly.oss-cn-shanghai.aliyuncs.com/UniversalTemplateSample.mp4",
+    NSArray *urlArr = @[@"http://dly.oss-cn-shanghai.aliyuncs.com/PrimaryTemplateSample.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/SecondaryTemplateSample.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/AdvancedTemplateSample.mp4",
                         @"http://dly.oss-cn-shanghai.aliyuncs.com/GourmandismTemplateSample.mp4",
                         @"http://dly.oss-cn-shanghai.aliyuncs.com/TravelerTemplateSample.mp4",
                         @"http://dly.oss-cn-shanghai.aliyuncs.com/ColorLifeTemplateSample.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/UniversalTemplateSample002.mp4",
                         @"http://dly.oss-cn-shanghai.aliyuncs.com/GourmandismTemplateSample002.mp4",
                         @"http://dly.oss-cn-shanghai.aliyuncs.com/TravelerTemplateSample002.mp4",
                         @"http://dly.oss-cn-shanghai.aliyuncs.com/ColorLifeTemplateSample002.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/UniversalTemplateSample003.mp4",
                         @"http://dly.oss-cn-shanghai.aliyuncs.com/GourmandismTemplateSample003.mp4",
                         @"http://dly.oss-cn-shanghai.aliyuncs.com/TravelerTemplateSample003.mp4",
                         @"http://dly.oss-cn-shanghai.aliyuncs.com/ColorLifeTemplateSample003.mp4"];
