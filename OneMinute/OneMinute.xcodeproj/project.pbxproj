@@ -51,6 +51,9 @@
 		AD5B80AF1F34133B0094922B /* header001.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80AA1F34133B0094922B /* header001.mp4 */; };
 		AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5B80B11F3443080094922B /* UIColor+Hex.m */; };
 		AD5B80B61F344C750094922B /* advertisementVideo(10s).mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */; };
+		AD7290291F8CBC7C00BDD506 /* SecondaryTemplateBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD7290261F8CBC7B00BDD506 /* SecondaryTemplateBGM.m4a */; };
+		AD72902A1F8CBC7C00BDD506 /* AdvancedTemplateBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD7290271F8CBC7B00BDD506 /* AdvancedTemplateBGM.m4a */; };
+		AD72902B1F8CBC7C00BDD506 /* PrimaryTemplateBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD7290281F8CBC7B00BDD506 /* PrimaryTemplateBGM.m4a */; };
 		AD7608F31F70C07F00556E20 /* NSObject+JSONCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608EA1F70C07F00556E20 /* NSObject+JSONCategories.m */; };
 		AD7608F41F70C07F00556E20 /* UIButton+LargerHitArea.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608EC1F70C07F00556E20 /* UIButton+LargerHitArea.m */; };
 		AD7608F51F70C07F00556E20 /* UIImage+iconfont.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608EE1F70C07F00556E20 /* UIImage+iconfont.m */; };
@@ -186,9 +189,9 @@
 		AD5B80B01F3443080094922B /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		AD5B80B11F3443080094922B /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "advertisementVideo(10s).mp4"; sourceTree = "<group>"; };
-		AD7290231F8CBA9F00BDD506 /* PrimaryTemplateBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = PrimaryTemplateBGM.m4a; sourceTree = "<group>"; };
-		AD7290241F8CBAA900BDD506 /* SecondaryTemplateBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SecondaryTemplateBGM.m4a; sourceTree = "<group>"; };
-		AD7290251F8CBAB400BDD506 /* AdvancedTemplateBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = AdvancedTemplateBGM.m4a; sourceTree = "<group>"; };
+		AD7290261F8CBC7B00BDD506 /* SecondaryTemplateBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SecondaryTemplateBGM.m4a; sourceTree = "<group>"; };
+		AD7290271F8CBC7B00BDD506 /* AdvancedTemplateBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = AdvancedTemplateBGM.m4a; sourceTree = "<group>"; };
+		AD7290281F8CBC7B00BDD506 /* PrimaryTemplateBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = PrimaryTemplateBGM.m4a; sourceTree = "<group>"; };
 		AD7608E91F70C07F00556E20 /* NSObject+JSONCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+JSONCategories.h"; sourceTree = "<group>"; };
 		AD7608EA1F70C07F00556E20 /* NSObject+JSONCategories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+JSONCategories.m"; sourceTree = "<group>"; };
 		AD7608EB1F70C07F00556E20 /* UIButton+LargerHitArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+LargerHitArea.h"; sourceTree = "<group>"; };
@@ -533,9 +536,9 @@
 		AD887A661F7661FB00A85881 /* BGM */ = {
 			isa = PBXGroup;
 			children = (
-				AD7290231F8CBA9F00BDD506 /* PrimaryTemplateBGM.m4a */,
-				AD7290241F8CBAA900BDD506 /* SecondaryTemplateBGM.m4a */,
-				AD7290251F8CBAB400BDD506 /* AdvancedTemplateBGM.m4a */,
+				AD7290281F8CBC7B00BDD506 /* PrimaryTemplateBGM.m4a */,
+				AD7290261F8CBC7B00BDD506 /* SecondaryTemplateBGM.m4a */,
+				AD7290271F8CBC7B00BDD506 /* AdvancedTemplateBGM.m4a */,
 				AD887A671F7661FB00A85881 /* ColorLifeTemplateBGM001.m4a */,
 				AD887A681F7661FB00A85881 /* ColorLifeTemplateBGM002.m4a */,
 				AD887A691F7661FB00A85881 /* ColorLifeTemplateBGM003.m4a */,
@@ -778,7 +781,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				AD887A7B1F7661FC00A85881 /* TravelerTemplateBGM003.m4a in Resources */,
+				AD7290291F8CBC7C00BDD506 /* SecondaryTemplateBGM.m4a in Resources */,
 				AD887A581F7646FF00A85881 /* Gourmandism002.json in Resources */,
+				AD72902A1F8CBC7C00BDD506 /* AdvancedTemplateBGM.m4a in Resources */,
 				AD887A5C1F7646FF00A85881 /* Gourmandism003.json in Resources */,
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
 				AD038C9A1F7293F10002C092 /* InfoPlist.strings in Resources */,
@@ -786,6 +791,7 @@
 				AD887A751F7661FC00A85881 /* ColorLifeTemplateBGM003.m4a in Resources */,
 				AD1F7BE31F8C60BA00654499 /* Secondary.json in Resources */,
 				AD5B80AF1F34133B0094922B /* header001.mp4 in Resources */,
+				AD72902B1F8CBC7C00BDD506 /* PrimaryTemplateBGM.m4a in Resources */,
 				AD887A781F7661FC00A85881 /* GourmandismTemplateBGM003.m4a in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				AD887A5A1F7646FF00A85881 /* Traveler003.json in Resources */,

@@ -47,7 +47,7 @@
       "recordType": 2,
       "soundType": 0,
       "BGMVolume": 100,
-      "transitionType": 1,
+      "transitionType": 0,
       "shootGuide": "这一段将自动生成快镜头画面，不录音哦"
     }
   ],

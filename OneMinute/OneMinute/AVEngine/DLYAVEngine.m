@@ -761,7 +761,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             videoAsset = [[AVURLAsset alloc]initWithURL:videoPartUrl options:nil];
         }
         AVAssetTrack *videoAssetTrack = nil;
-        if([videoAsset tracksWithMediaType:AVMediaTypeVideo]){
+        if([videoAsset tracksWithMediaType:AVMediaTypeVideo].count){
             videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
         }
         CGAffineTransform videoTransform = videoAssetTrack.preferredTransform;
@@ -1321,7 +1321,7 @@ BOOL isOnce = YES;
         DLYLog(@"⛳️⛳️⛳️全部片段merge成功");
         DLYMiniVlogTemplate *template = self.session.currentTemplate;
         
-        NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@".m4a"];
+        NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@"m4a"];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
         
         [self addMusicToVideo:productOutputUrl audioUrl:BGMUrl videoTitle:videoTitle successBlock:successBlock failure:failureBlcok];
@@ -1441,7 +1441,7 @@ BOOL isOnce = YES;
         DLYLog(@"⛳️⛳️⛳️全部片段merge成功");
         DLYMiniVlogTemplate *template = self.session.currentTemplate;
         
-        NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@".m4a"];
+        NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@"m4a"];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
         
         [self addVideoFilter:productOutputUrl audioUrl:BGMUrl videoTitle:videoTitle];
@@ -1794,7 +1794,7 @@ BOOL isOnce = YES;
     [watermarkLayer setBackgroundColor:[[UIColor colorWithHexString:@"#000000" withAlpha:0.8] CGColor]];
     watermarkLayer.contentsCenter = overlayLayer.contentsCenter;
     CGSize textSize = [watermarkMessage sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
-    watermarkLayer.bounds = CGRectMake(0, 0, textSize.width + 50, textSize.height + 25);
+    watermarkLayer.bounds = CGRectMake(0, 0, textSize.width + 55, textSize.height + 25);
     
     [overlayLayer addSublayer:watermarkLayer];
     return overlayLayer;
