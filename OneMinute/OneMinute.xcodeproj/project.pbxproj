@@ -740,6 +740,7 @@
 				TargetAttributes = {
 					1C7E617E1EE7DF4F0088F33F = {
 						CreatedOnToolsVersion = 8.3.2;
+						DevelopmentTeam = 3QC6PDN9W4;
 						ProvisioningStyle = Automatic;
 					};
 					1C7E61971EE7DF4F0088F33F = {
@@ -1136,7 +1137,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 3QC6PDN9W4;
 				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/OneMinute/DLYPrefixHeader.pch";
 				INFOPLIST_FILE = OneMinute/Info.plist;
@@ -1158,7 +1159,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 3QC6PDN9W4;
 				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/OneMinute/DLYPrefixHeader.pch";
 				INFOPLIST_FILE = OneMinute/Info.plist;

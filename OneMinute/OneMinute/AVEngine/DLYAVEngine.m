@@ -904,7 +904,8 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     DLYLog(@"结束录制,写入完成!!!");
 }
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
-- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
+{
     if (self.onBuffer) {
         self.onBuffer(sampleBuffer);
     }
