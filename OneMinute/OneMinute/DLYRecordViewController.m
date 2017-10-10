@@ -1579,7 +1579,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 - (void)changeTypeToPlay {
     NSInteger num = selectType;
-    //数据 url也放在这里
+    //url放在这里
     DLYMiniVlogTemplate *template = typeModelArray[num];
     NSString *videoName = [template.sampleVideoName stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
     NSArray *urlArr = @[@"http://dly.oss-cn-shanghai.aliyuncs.com/PrimaryTemplateSample.mp4",
