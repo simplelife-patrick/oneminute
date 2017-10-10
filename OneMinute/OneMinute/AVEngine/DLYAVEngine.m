@@ -849,7 +849,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 - (void)cameraBackgroundDidClickCloseSlow {
     
     [self.captureSession stopRunning];
-    CGFloat desiredFPS = 60.0f;
+    CGFloat desiredFPS = 50.0f;
     
     NSLog(@"当前设置的录制帧率是: %f",desiredFPS);
     AVCaptureDeviceFormat *selectedFormat = nil;
