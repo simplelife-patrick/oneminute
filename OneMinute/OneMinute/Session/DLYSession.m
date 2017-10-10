@@ -10,9 +10,6 @@
 #import "DLYMiniVlogTemplate.h"
 #import "DLYResource.h"
 
-#define kDEFAULTTEMPLATENAME  @"Universal001.json"
-#define kCURRENTTEMPLATEKEY  @"CURRENTTEMPLATEKEY"
-
 @implementation DLYSession
 
 -(DLYMiniVlogTemplate *)currentTemplate{

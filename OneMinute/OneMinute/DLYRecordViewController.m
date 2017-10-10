@@ -1361,6 +1361,18 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         NSInteger i = selectPartTag - 10000;
         DLYMiniVlogPart *part = partModelArray[i-1];
         [self.AVEngine startRecordingWithPart:part];
+        
+        //拍摄计时器
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+        dispatch_source_set_timer(_timer,dispatch_walltime(NULL, 0), 0.01 * NSEC_PER_SEC, 0); //每秒执行
+        dispatch_source_set_event_handler(_timer, ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self shootAction];
+            });
+        });
+        dispatch_resume(_timer);
+        
         // change UI
         [self.shootView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         _shootTime = 0;
@@ -2627,15 +2639,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     [self.shootView addSubview:self.titleView];
     
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
-    dispatch_source_set_timer(_timer,dispatch_walltime(NULL, 0), 0.01 * NSEC_PER_SEC, 0); //每秒执行
-    dispatch_source_set_event_handler(_timer, ^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self shootAction];
-        });
-    });
-    dispatch_resume(_timer);
     if (self.newState == 1) {
         self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 40, 44, 44);
         self.cancelButton.centerX = _timeView.centerX;
