@@ -1,7 +1,6 @@
 {
   "id": "Gourmandism002.json",
   "title":"美食02",
-  "type": 0,
   "info": [
     {
       "partNum": 0,
@@ -11,7 +10,9 @@
       "dubStopTime": "00:11:34",
       "recordType": 0,
       "soundType": 0,
-      "transitionType": 1
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "常速，录音"
     },
     {
       "partNum": 1,
@@ -21,7 +22,9 @@
       "dubStopTime": "00:15:22",
       "recordType": 0,
       "soundType": 0,
-      "transitionType": 1
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "常速，录音"
     },
     {
       "partNum": 2,
@@ -31,7 +34,9 @@
       "dubStopTime": "00:33:50",
       "recordType": 0,
       "soundType": 1,
-      "transitionType": 1
+      "BGMVolume": 20,
+      "transitionType": 1,
+      "shootGuide": "常速，录音"
     },
     {
       "partNum": 3,
@@ -41,7 +46,9 @@
       "dubStopTime": "00:37:31",
       "recordType": 0,
       "soundType": 0,
-      "transitionType": 1
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "常速，录音"
     },
     {
       "partNum": 4,
@@ -51,7 +58,9 @@
       "dubStopTime": "00:41:12",
       "recordType": 0,
       "soundType": 0,
-      "transitionType": 1
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "常速，录音"
     },
     {
       "partNum": 5,
@@ -61,7 +70,9 @@
       "dubStopTime": "00:50:27",
       "recordType": 0,
       "soundType": 1,
-      "transitionType": 1
+      "BGMVolume": 20,
+      "transitionType": 1,
+      "shootGuide": "常速，录音"
     },
     {
       "partNum": 5,
@@ -71,7 +82,9 @@
       "dubStopTime": "01:00:00",
       "recordType": 0,
       "soundType": 0,
-      "transitionType": 0
+      "BGMVolume": 100,
+      "transitionType": 0,
+      "shootGuide": "常速，录音"
     }
   ],
   "subTitle1": {

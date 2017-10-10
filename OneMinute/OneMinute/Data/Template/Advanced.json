@@ -1,0 +1,87 @@
+{
+  "id": "Advanced.json",
+  "title":"熟练操作",
+  "info": [
+    {
+      "partNum": 0,
+      "startTime": "00:00:00",
+      "stopTime": "00:03:00",
+      "dubStartTime": "00:00:00",
+      "dubStopTime": "00:10:00",
+      "recordType": 1,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "慢镜头，不录音"
+    },
+    {
+      "partNum": 1,
+      "startTime": "00:03:00",
+      "stopTime": "00:11:00",
+      "dubStartTime": "00:10:00",
+      "dubStopTime": "00:18:00",
+      "recordType": 0,
+      "soundType": 1,
+      "BGMVolume": 20,
+      "transitionType": 1,
+      "shootGuide": "常速，录音"
+    },
+    {
+      "partNum": 2,
+      "startTime": "00:11:00",
+      "stopTime": "00:15:00",
+      "dubStartTime": "00:18:00",
+      "dubStopTime": "00:31:00",
+      "recordType": 1,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "慢镜头，不录音"
+    },
+    {
+      "partNum": 3,
+      "startTime": "00:15:00",
+      "stopTime": "00:40:00",
+      "dubStartTime": "00:31:00",
+      "dubStopTime": "00:36:00",
+      "recordType": 2,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "快镜头，不录音"
+    },
+    {
+      "partNum": 4,
+      "startTime": "00:40:00",
+      "stopTime": "00:54:00",
+      "dubStartTime": "00:36:00",
+      "dubStopTime": "00:50:00",
+      "recordType": 0,
+      "soundType": 1,
+      "BGMVolume": 20,
+      "transitionType": 1,
+      "shootGuide": "常速，录音"
+    },
+    {
+      "partNum": 5,
+      "startTime": "00:54:00",
+      "stopTime": "01:04:00",
+      "dubStartTime": "00:50:00",
+      "dubStopTime": "01:00:00",
+      "recordType": 0,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType":0,
+      "shootGuide": "常速，不录音"
+    }
+  ],
+  "subTitle1": {
+    "startTime": "00:02:00",
+    "stopTime": "00:05:00"
+  },
+  "BGM": "AdvancedTemplateBGM001",
+  "header": "header001",
+  "tailer": "tail001",
+  "templateDescription": "这个模板成片长度为60s，你可以熟练掌握一分的基本成片套路啦，恭喜你熟练掌握了一分的套路，接下来就开启你的神奇之旅呗",
+  "sampleVideoName": "AdvancedTemplateSample.mp4"
+}

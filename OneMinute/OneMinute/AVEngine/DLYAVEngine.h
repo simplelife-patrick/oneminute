@@ -39,7 +39,6 @@ typedef void(^setVideoSpeedBlock)();
 
 @property (nonatomic, assign) CGFloat                                                 effectiveScale;
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *backCameraInput;
-@property (nonatomic, strong) AVCaptureDeviceInput                                    *captureDeviceInput;
 @property (nonatomic, strong) AVCaptureDevice                                         *videoDevice;
 
 @property (nonatomic, assign) id                                                      delegate;
