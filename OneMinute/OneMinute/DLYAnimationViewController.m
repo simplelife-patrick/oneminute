@@ -48,10 +48,6 @@
             view.backgroundColor = RGB(255, 255, 255);
             view.alpha = 0;
         }
-        //        if (i == 0) {
-        //            view.alpha = 1;
-        //            oldTag = 10000;
-        //        }
         [self.view addSubview:view];
     }
     
@@ -67,8 +63,6 @@
 - (void)flashAnimation {
     self.num ++;
     if (self.num >= 18) {
-        //        UIView *oldView = (UIView *)[self.view viewWithTag:oldTag];
-        //        oldView.alpha = 0;
         self.flashView.alpha = 0;
         [self.flashTimer invalidate];
         self.flashTimer = nil;
@@ -78,8 +72,6 @@
     }else {
         int i = self.num % 6;
         
-        //        UIView *view = (UIView *)[self.view viewWithTag:10000 + i];
-        //        view.alpha = 1;
         if (self.num == 3) {
             UIView *view = (UIView *)[self.view viewWithTag:10002];
             view.alpha = 0.7;
