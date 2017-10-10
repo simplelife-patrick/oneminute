@@ -1,7 +1,6 @@
 {
   "id": "ColorLife003.json",
   "title":"生活03",
-  "type": 0,
   "info": [
     {
       "partNum": 0,
@@ -11,7 +10,9 @@
       "dubStopTime": "00:05:14",
       "recordType": 0,
       "soundType": 0,
-      "transitionType": 1
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "常速，录音"
     },
     {
       "partNum": 1,
@@ -21,7 +22,9 @@
       "dubStopTime": "00:10:50",
       "recordType": 0,
       "soundType": 0,
-      "transitionType": 1
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "常速，录音"
     },
     {
       "partNum": 2,
@@ -31,7 +34,9 @@
       "dubStopTime": "00:21:38",
       "recordType": 0,
       "soundType": 1,
-      "transitionType": 1
+      "BGMVolume": 20,
+      "transitionType": 1,
+      "shootGuide": "常速，录音"
     },
     {
       "partNum": 3,
@@ -41,7 +46,9 @@
       "dubStopTime": "00:32:41",
       "recordType": 0,
       "soundType": 0,
-      "transitionType": 1
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "常速，录音"
     },
     {
       "partNum": 4,
@@ -51,7 +58,9 @@
       "dubStopTime": "00:43:41",
       "recordType": 0,
       "soundType": 1,
-      "transitionType": 1
+      "BGMVolume": 20,
+      "transitionType": 1,
+      "shootGuide": "常速，录音"
     },
     {
       "partNum": 5,
@@ -61,7 +70,9 @@
       "dubStopTime": "00:54:12",
       "recordType": 0,
       "soundType": 0,
-      "transitionType": 1
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "常速，录音"
     },
     {
       "partNum": 6,
@@ -71,7 +82,9 @@
       "dubStopTime": "01:00:00",
       "recordType": 0,
       "soundType": 0,
-      "transitionType": 0
+      "BGMVolume": 100,
+      "transitionType": 0,
+      "shootGuide": "常速，录音"
     }
   ],
   "subTitle1": {

@@ -64,6 +64,17 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
 @property (nonatomic, copy)   NSString                      *prepareRecord;
 
 /**
+ 滤镜类型名称
+ */
+@property (nonatomic, strong) NSString                      *filter;
+
+/**
+ 是否完成拍摄
+ */
+@property (nonatomic, assign) BOOL                          *isRecordFinished;
+
+#pragma mark - 需要在模板脚本中读取的属性 -
+/**
  片段序号
  */
 @property (nonatomic, assign) NSInteger                     partNum;
@@ -77,17 +88,17 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
  终止时间
  */
 @property (nonatomic, strong) NSString                      *stopTime;
-    
+
 /**
  配音开始时间
  */
 @property (nonatomic, strong) NSString                      *dubStartTime;
-    
+
 /**
  配音结束时间
  */
 @property (nonatomic, strong) NSString                      *dubStopTime;
-    
+
 /**
  拍摄类型
  */
@@ -99,24 +110,23 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
 @property (nonatomic, assign) DLYMiniVlogAudioType          soundType;
 
 /**
+ BGM音量
+ */
+@property (nonatomic, assign) float                         BGMVolume;
+/**
  转场效果类型
  */
-@property (nonatomic, assign) DLYVideoTransitionType     transitionType;
+@property (nonatomic, assign) DLYVideoTransitionType        transitionType;
 
+/**
+ 拍摄指导
+ */
+@property (nonatomic, strong) NSString                      *shootGuide;
+
+#pragma mark - 暂时保留的属性 -
 /**
  字幕
  */
-@property (nonatomic, strong) NSString                  *subtitle;
-
-/**
- 滤镜类型名称
- */
-@property (nonatomic, strong) NSString                  *filter;
-
-/**
- 是否完成拍摄
- */
-@property (nonatomic, assign) BOOL                      *isRecordFinished;
-
+@property (nonatomic, strong) NSString                      *subtitle;
 
 @end
