@@ -2525,7 +2525,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
     } completion:^(BOOL finished) {
         self.sceneView.hidden = YES;
-        
     }];
 }
 
