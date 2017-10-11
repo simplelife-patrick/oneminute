@@ -1,13 +1,13 @@
 {
-  "id": "Traveler001.json",
-  "title":"旅行01",
+  "id": "YoungOuting.json",
+  "title":"青春壮游",
   "info": [
     {
       "partNum": 0,
       "startTime": "00:00:00",
       "stopTime": "00:01:00",
       "dubStartTime": "00:00:00",
-      "dubStopTime": "00:04:31",
+      "dubStopTime": "00:03:106",
       "recordType": 1,
       "soundType": 0,
       "BGMVolume": 100,
@@ -18,8 +18,8 @@
       "partNum": 1,
       "startTime": "00:01:00",
       "stopTime": "00:03:00",
-      "dubStartTime": "00:04:31",
-      "dubStopTime": "00:09:31",
+      "dubStartTime": "00:03:16",
+      "dubStopTime": "00:10:24",
       "recordType": 1,
       "soundType": 0,
       "BGMVolume": 100,
@@ -30,8 +30,8 @@
       "partNum": 2,
       "startTime": "00:03:00",
       "stopTime": "00:05:00",
-      "dubStartTime": "00:09:31",
-      "dubStopTime": "00:15:38",
+      "dubStartTime": "00:10:24",
+      "dubStopTime": "00:16:52",
       "recordType": 1,
       "soundType": 0,
       "BGMVolume": 100,
@@ -41,21 +41,21 @@
     {
       "partNum": 3,
       "startTime": "00:05:00",
-      "stopTime": "00:27:00",
-      "dubStartTime": "00:15:38",
-      "dubStopTime": "00:37:35",
+      "stopTime": "00:26:00",
+      "dubStartTime": "00:16:52",
+      "dubStopTime": "00:38:40",
       "recordType": 0,
       "soundType": 1,
       "BGMVolume": 20,
       "transitionType": 1,
-      "shootGuide": "常速，录音"
+      "shootGuide": "常速镜头，录音哦"
     },
     {
       "partNum": 4,
-      "startTime": "00:27:00",
-      "stopTime": "00:29:00",
-      "dubStartTime": "00:37:35",
-      "dubStopTime": "00:43:28",
+      "startTime": "00:26:00",
+      "stopTime": "00:28:00",
+      "dubStartTime": "00:38:40",
+      "dubStopTime": "00:44:12",
       "recordType": 1,
       "soundType": 0,
       "BGMVolume": 100,
@@ -64,10 +64,10 @@
     },
     {
       "partNum": 5,
-      "startTime": "00:29:00",
-      "stopTime": "00:31:00",
-      "dubStartTime": "00:43:28",
-      "dubStopTime": "00:47:44",
+      "startTime": "00:28:00",
+      "stopTime": "00:30:00",
+      "dubStartTime": "00:44:12",
+      "dubStopTime": "00:48:76",
       "recordType": 1,
       "soundType": 0,
       "BGMVolume": 100,
@@ -76,9 +76,9 @@
     },
     {
       "partNum": 6,
-      "startTime": "00:31:00",
-      "stopTime": "00:36:00",
-      "dubStartTime": "00:47:44",
+      "startTime": "00:30:00",
+      "stopTime": "00:34:00",
+      "dubStartTime": "00:48:76",
       "dubStopTime": "01:00:00",
       "recordType": 1,
       "soundType": 0,
@@ -88,13 +88,13 @@
     }
   ],
   "subTitle1": {
-    "startTime": "00:02:39",
-    "stopTime": "00:04:31"
+    "startTime": "00:02:00",
+    "stopTime": "00:05:00"
   },
-  "BGM": "TravelerTemplateBGM001",
+  "BGM": "YoungOutingBGM",
   "header": "header001",
   "tailer": "tail001",
-  "templateDescription": "我是旅行模板,拉啦啦",
-  "sampleVideoName": "TravelerTemplateSample001.mp4"
+  "templateDescription": "本模板有7个片段，其中6个慢镜头空镜，1个说话片段。用来拍旅行更赞哦",
+  "sampleVideoName": "YoungOutingSample.mp4"
 }
 

@@ -252,15 +252,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if (error) {
             DLYLog(@"获取后置摄像头失败~");
         }
-            
-//        DLYMobileDevice *mobileDevice = [DLYMobileDevice sharedDevice];
-//        DLYPhoneDeviceType phoneType = [mobileDevice iPhoneType];
-//
-//        if (phoneType == PhoneDeviceTypeIphone_7 || phoneType == PhoneDeviceTypeIphone_7_Plus || phoneType == PhoneDeviceTypeIphone_6s || phoneType == PhoneDeviceTypeIphone_6s_Plus || phoneType == PhoneDeviceTypeIphone_SE) {
-//            self.captureSession.sessionPreset = AVCaptureSessionPreset3840x2160;
-//        }else{
-            self.captureSession.sessionPreset = AVCaptureSessionPreset1280x720;
-//        }
+
+        self.captureSession.sessionPreset = AVCaptureSessionPreset1280x720;
     }
     return _backCameraInput;
 }
@@ -656,29 +649,27 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 #pragma mark - 停止录制 -
 - (void)stopRecording {
     
-//    if(_assetWriter && _assetWriter.status == AVAssetWriterStatusWriting){
-        dispatch_async(_movieWritingQueue, ^{
+    dispatch_async(_movieWritingQueue, ^{
 
-            _isRecording = NO;
-            _readyToRecordVideo = NO;
-            _readyToRecordAudio = NO;
+        _isRecording = NO;
+        _readyToRecordVideo = NO;
+        _readyToRecordAudio = NO;
 
-            [self.assetWriter finishWritingWithCompletionHandler:^{
+        [self.assetWriter finishWritingWithCompletionHandler:^{
 
-                self.assetWriterVideoInput = nil;
-                self.assetWriterAudioInput = nil;
-                self.assetWriter = nil;
+            self.assetWriterVideoInput = nil;
+            self.assetWriterAudioInput = nil;
+            self.assetWriter = nil;
 
-                [self saveRecordedFileByUrl:_currentPart.partUrl];
-                dispatch_async(dispatch_get_main_queue(), ^{
+            [self saveRecordedFileByUrl:_currentPart.partUrl];
+            dispatch_async(dispatch_get_main_queue(), ^{
 
-                    if ([self.delegate respondsToSelector:@selector(didFinishRecordingToOutputFileAtURL:error:)]) {
-                        [self.delegate didFinishRecordingToOutputFileAtURL:_currentPart.partUrl error:nil];
-                    }
-                });
-            }];
-        });
-//    }
+                if ([self.delegate respondsToSelector:@selector(didFinishRecordingToOutputFileAtURL:error:)]) {
+                    [self.delegate didFinishRecordingToOutputFileAtURL:_currentPart.partUrl error:nil];
+                }
+            });
+        }];
+    });
 }
 #pragma mark - 取消录制 -
 - (void)cancelRecording{

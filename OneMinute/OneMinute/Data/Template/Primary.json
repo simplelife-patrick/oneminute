@@ -31,9 +31,9 @@
     "startTime": "00:02:00",
     "stopTime": "00:05:00"
   },
-  "BGM": "PrimaryTemplateBGM",
+  "BGM": "PrimaryBGM",
   "header": "header001",
   "tailer": "tail001",
   "templateDescription": "这个模板成片长度为10s，你可以学会怎么用一分拍风景，以及拍自己说话",
-  "sampleVideoName": "PrimaryTemplateSample.mp4"
+  "sampleVideoName": "PrimarySample.mp4"
 }
