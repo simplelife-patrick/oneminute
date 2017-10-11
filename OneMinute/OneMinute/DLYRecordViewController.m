@@ -1082,23 +1082,17 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.warningIcon.transform = CGAffineTransformMakeRotation(num);
     }
     if (!self.shootGuide.isHidden && self.shootGuide) {
-        if (!self.shootView.isHidden && self.shootView) {
-            if (num == 0) {
-                self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, 270, 30);
-            }else {
-                self.shootGuide.frame = CGRectMake(0, 19, 270, 30);
-            }
-            self.shootGuide.centerX = _shootView.centerX;
-            self.shootGuide.transform = CGAffineTransformMakeRotation(num);
+        if (num == 0) {
+            self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
         }else {
-            if (num == 0) {
-                self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
-            }else {
-                self.shootGuide.frame = CGRectMake(0, 19, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
-            }
-            self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 51;
-            self.shootGuide.transform = CGAffineTransformMakeRotation(num);
+            self.shootGuide.frame = CGRectMake(0, 19, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
         }
+        if (!self.shootView.isHidden && self.shootView) {
+            self.shootGuide.centerX = _shootView.centerX;
+        }else {
+            self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 51;
+        }
+        self.shootGuide.transform = CGAffineTransformMakeRotation(num);
     }
     if (!self.titleView.isHidden && self.titleView) {
         if (num == 0) {
@@ -1666,6 +1660,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     dispatch_source_cancel(_timer);
     _timer = nil;
+    
+    if (self.newState == 1) {
+        self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
+        self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 51;
+        self.shootGuide.transform = CGAffineTransformMakeRotation(0);
+    }else {
+        self.shootGuide.frame = CGRectMake(0, 19, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
+        self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 51;
+        self.shootGuide.transform = CGAffineTransformMakeRotation(M_PI);
+    }
     
     [UIView animateWithDuration:0.5f animations:^{
         self.progressView.hidden = YES;
@@ -2567,11 +2571,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.shootView addSubview:self.warningIcon];
     
     if (self.newState == 1) {
-        self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, 270, 30);
+        self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
         self.shootGuide.centerX = _shootView.centerX;
         self.shootGuide.transform = CGAffineTransformMakeRotation(0);
     }else {
-        self.shootGuide.frame = CGRectMake(0, 19, 270, 30);
+        self.shootGuide.frame = CGRectMake(0, 19, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
         self.shootGuide.centerX = _shootView.centerX;
         self.shootGuide.transform = CGAffineTransformMakeRotation(M_PI);
     }
