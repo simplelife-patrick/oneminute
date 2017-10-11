@@ -91,10 +91,10 @@
     "startTime": "00:20:14",
     "stopTime": "00:30:59"
   },
-  "BGM": "ColorLifeTemplateBGM003",
+  "BGM": "ColorLife003BGM",
   "header": "header001",
   "tailer": "tail001",
   "templateDescription": "我是生活模板,拉啦啦",
-  "sampleVideoName": "ColorLifeTemplateSample003.mp4"
+  "sampleVideoName": "ColorLife003Sample.mp4"
 }
 
