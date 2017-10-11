@@ -425,7 +425,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         part.recordStatus = @"0";
         part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
         part.partTime = [self getDurationwithStartTime:part.dubStartTime andStopTime:part.dubStopTime];
-
+        
     }
     /////////////////////////////////
     if (isExitDraft) {
@@ -587,8 +587,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.chooseScene.titleLabel.font = FONT_SYSTEM(14);
     [self.chooseScene setTitleColor:RGB(0, 0, 0) forState:UIControlStateNormal];
     [self.view addSubview:self.chooseScene];
-    //显示场景的label
-    self.chooseSceneLabel = [[UILabel alloc]initWithFrame:CGRectMake(11, self.chooseScene.bottom + 2, 40, 13)];
+    //显示场景的label 40
+    self.chooseSceneLabel = [[UILabel alloc]initWithFrame:CGRectMake(6, self.chooseScene.bottom + 2, 50, 13)];
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     self.chooseSceneLabel.text = template.templateTitle;
     self.chooseSceneLabel.font = FONT_SYSTEM(12);
@@ -692,6 +692,23 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.deletePartButton.layer.borderWidth = 1;
     [self.playView addSubview:self.deletePartButton];
     
+    self.shootGuide = [[UILabel alloc] init];
+    if (self.newState == 1) {
+        self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
+        self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 51;
+        self.shootGuide.transform = CGAffineTransformMakeRotation(0);
+    }else {
+        self.shootGuide.frame = CGRectMake(0, 19, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
+        self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 51;
+        self.shootGuide.transform = CGAffineTransformMakeRotation(M_PI);
+    }
+    self.shootGuide.backgroundColor = RGBA(0, 0, 0, 0.7);
+    self.shootGuide.textColor = RGB(255, 255, 255);
+    self.shootGuide.font = FONT_SYSTEM(14);
+    self.shootGuide.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:self.shootGuide];
+    [self.view bringSubviewToFront:self.shootGuide];
+    
     //创建片段界面
     [self createPartView];
     //创建场景页面
@@ -781,7 +798,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 -(void)displayRefrenceRect:(CGRect)faceRegion{
     
-//    CGPoint origin = faceRegion.origin;
+    //    CGPoint origin = faceRegion.origin;
     CGSize size = faceRegion.size;
     
     if (size.width != 0 && size.height != 0) {
@@ -1065,13 +1082,23 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.warningIcon.transform = CGAffineTransformMakeRotation(num);
     }
     if (!self.shootGuide.isHidden && self.shootGuide) {
-        if (num == 0) {
-            self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, 270, 30);
+        if (!self.shootView.isHidden && self.shootView) {
+            if (num == 0) {
+                self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, 270, 30);
+            }else {
+                self.shootGuide.frame = CGRectMake(0, 19, 270, 30);
+            }
+            self.shootGuide.centerX = _shootView.centerX;
+            self.shootGuide.transform = CGAffineTransformMakeRotation(num);
         }else {
-            self.shootGuide.frame = CGRectMake(0, 19, 270, 30);
+            if (num == 0) {
+                self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
+            }else {
+                self.shootGuide.frame = CGRectMake(0, 19, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
+            }
+            self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 51;
+            self.shootGuide.transform = CGAffineTransformMakeRotation(num);
         }
-        self.shootGuide.centerX = _shootView.centerX;
-        self.shootGuide.transform = CGAffineTransformMakeRotation(num);
     }
     if (!self.titleView.isHidden && self.titleView) {
         if (num == 0) {
@@ -1109,9 +1136,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     if (!self.chooseSceneLabel.isHidden && self.chooseSceneLabel) {
         if (num == 0) {
-            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.bottom + 2, 40, 13);
+            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.bottom + 2, 50, 13);
         }else {
-            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.top - 15, 40, 13);
+            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.top - 15, 50, 13);
         }
         [UIView animateWithDuration:0.5f animations:^{
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(num);
@@ -1390,15 +1417,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         self.warningIcon.transform = CGAffineTransformMakeRotation(M_PI);
                     }
                     self.warningIcon.hidden = NO;
-                    if (part.recordType == DLYMiniVlogRecordTypeSlomo) {
-                        self.shootGuide.text = @"慢动作拍摄不能录制现场声音";
-                    }else {
-                        self.shootGuide.text = @"快镜头拍摄不能录制现场声音";
-                    }
                 }else
                 {
                     self.warningIcon.hidden = YES;
-                    self.shootGuide.text = @"拍摄指导：请保持光线充足";
                 }
             }
         }
@@ -1516,7 +1537,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 - (void)hideBubbleWhenPush {
-
+    
     if (self.partBubble) {
         [self.partBubble removeFromSuperview];
         self.partBubble = nil;
@@ -1558,10 +1579,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.flashButton.hidden = NO;
         }
         if (self.newState == 1) {
-            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.bottom + 2, 40, 13);
+            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.bottom + 2, 50, 13);
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.top - 15, 40, 13);
+            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.top - 15, 50, 13);
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(M_PI);
         }
         self.chooseSceneLabel.hidden = NO;
@@ -1676,10 +1697,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.flashButton.hidden = NO;
         }
         if (self.newState == 1) {
-            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.bottom + 2, 40, 13);
+            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.bottom + 2, 50, 13);
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.top - 15, 40, 13);
+            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.top - 15, 50, 13);
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(M_PI);
         }
         self.chooseSceneLabel.hidden = NO;
@@ -1943,7 +1964,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         prepareAlpha = 1;
         [_prepareShootTimer setFireDate:[NSDate distantPast]];
     }
+    [self updateShootGuide];
 }
+
+- (void)updateShootGuide {
+    
+    NSInteger i = selectPartTag - 10000;
+    DLYMiniVlogPart *part = partModelArray[i-1];
+    self.shootGuide.text = part.shootGuide;
+}
+
 - (void)createLeftPartView {
     [self.backScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     float episodeHeight = (SCREEN_HEIGHT - 30  * SCALE_HEIGHT - (partModelArray.count - 1) * 2)/ partModelArray.count;
@@ -2138,6 +2168,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         prepareAlpha = 1;
         [_prepareShootTimer setFireDate:[NSDate distantPast]];
     }
+    [self updateShootGuide];
 }
 
 - (void)prepareShootAction {
@@ -2191,7 +2222,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     if([part.recordStatus isEqualToString:@"1"])
     {//说明时已拍摄片段
-        
         for (DLYMiniVlogPart *part in partModelArray) {
             if ([part.prepareRecord isEqualToString:@"1"]) {
                 NSInteger i = [partModelArray indexOfObject:part];
@@ -2199,7 +2229,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 [view removeFromSuperview];
             }
         }
-        
+        [self updateShootGuide];
         DDLogInfo(@"点击了已拍摄片段");
         [UIView animateWithDuration:0.5f animations:^{
             if (self.newState == 1) {
@@ -2305,7 +2335,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         btn.layer.borderColor = RGB(255, 255, 255).CGColor;
         [view addSubview:btn];
         
-        UILabel *typeName = [[UILabel alloc]initWithFrame:CGRectMake(0, btn.bottom + 7, 55, 22)];
+        UILabel *typeName = [[UILabel alloc]initWithFrame:CGRectMake(0, btn.bottom + 7, 70, 22)];
         typeName.tag = 2002 + i;
         typeName.centerX = view.width / 2;
         typeName.text = templateModel.templateTitle;
@@ -2514,10 +2544,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.flashButton.hidden = NO;
         }
         if (self.newState == 1) {
-            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.bottom + 2, 40, 13);
+            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.bottom + 2, 50, 13);
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.top - 15, 40, 13);
+            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.top - 15, 50, 13);
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(M_PI);
         }
         self.chooseSceneLabel.hidden = NO;
@@ -2536,7 +2566,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.warningIcon.image = [UIImage imageWithIcon:@"\U0000e663" inFont:ICONFONT size:32 color:[UIColor redColor]];
     [self.shootView addSubview:self.warningIcon];
     
-    self.shootGuide = [[UILabel alloc] init];
     if (self.newState == 1) {
         self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, 270, 30);
         self.shootGuide.centerX = _shootView.centerX;
@@ -2546,12 +2575,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.shootGuide.centerX = _shootView.centerX;
         self.shootGuide.transform = CGAffineTransformMakeRotation(M_PI);
     }
-    self.shootGuide.backgroundColor = RGBA(0, 0, 0, 0.7);
-    self.shootGuide.text = @"拍摄指导：请保持光线充足";
-    self.shootGuide.textColor = RGB(255, 255, 255);
-    self.shootGuide.font = FONT_SYSTEM(14);
-    self.shootGuide.textAlignment = NSTextAlignmentCenter;
-    [_shootView addSubview:self.shootGuide];
     
     _timeView = [[UIView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH - 70, 0, 60, 60)];
     _timeView.centerY = self.shootView.centerY;
@@ -2698,7 +2721,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }else
             {
                 n++;
-                
             }
         }
         //在这里添加完成页面
@@ -2720,6 +2742,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     [self createPartViewLayout];
     
+    if (self.newState == 1) {
+        self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
+        self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 51;
+        self.shootGuide.transform = CGAffineTransformMakeRotation(0);
+    }else {
+        self.shootGuide.frame = CGRectMake(0, 19, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
+        self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 51;
+        self.shootGuide.transform = CGAffineTransformMakeRotation(M_PI);
+    }
     [UIView animateWithDuration:0.5f animations:^{
         if (self.newState == 1) {
             self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
@@ -2749,10 +2780,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         self.chooseScene.hidden = NO;
         if (self.newState == 1) {
-            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.bottom + 2, 40, 13);
+            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.bottom + 2, 50, 13);
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.chooseSceneLabel.frame = CGRectMake(11, self.chooseScene.top - 15, 40, 13);
+            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.top - 15, 50, 13);
             self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(M_PI);
         }
         self.chooseSceneLabel.hidden = NO;
@@ -3005,3 +3036,4 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 @end
+
