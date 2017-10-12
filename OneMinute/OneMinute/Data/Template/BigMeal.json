@@ -1,0 +1,88 @@
+{
+  "id": "BigMeal.json",
+  "title":"一顿大餐",
+  "info": [
+    {
+      "partNum": 0,
+      "startTime": "00:00:00",
+      "stopTime": "00:01:00",
+      "dubStartTime": "00:00:00",
+      "dubStopTime": "00:02:00",
+      "recordType": 1,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "不录音，慢速"
+    },
+    {
+      "partNum": 1,
+      "startTime": "00:01:00",
+      "stopTime": "00:02:00",
+      "dubStartTime": "00:02:00",
+      "dubStopTime": "00:05:00",
+      "recordType": 1,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "不录音，慢速"
+    },
+    {
+      "partNum": 2,
+      "startTime": "00:02:00",
+      "stopTime": "00:03:00",
+      "dubStartTime": "00:05:00",
+      "dubStopTime": "00:09:00",
+      "recordType": 1,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "不录音，慢速"
+    },
+    {
+      "partNum": 3,
+      "startTime": "00:03:00",
+      "stopTime": "00:18:00",
+      "dubStartTime": "00:09:00",
+      "dubStopTime": "00:19:00",
+      "recordType": 0,
+      "soundType": 1,
+      "BGMVolume": 20,
+      "transitionType": 1,
+      "shootGuide": "录音，常速"
+    },
+    {
+      "partNum": 4,
+      "startTime": "00:18:00",
+      "stopTime": "00:56:00",
+      "dubStartTime": "00:19:00",
+      "dubStopTime": "00:57:00",
+      "recordType": 0,
+      "soundType": 1,
+      "BGMVolume": 20,
+      "transitionType": 1,
+      "shootGuide": "录音，常速"
+    },
+    {
+      "partNum": 5,
+      "startTime": "00:56:00",
+      "stopTime": "00:59:00",
+      "dubStartTime": "00:57:00",
+      "dubStopTime": "01:00:00",
+      "recordType": 0,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 0,
+      "shootGuide": "不录音，常速"
+    }
+  ],
+  "subTitle1": {
+    "startTime": "00:02:00",
+    "stopTime": "00:05:00"
+  },
+  "BGM": "BigMealBGM",
+  "header": "header001",
+  "tailer": "tail001",
+  "templateDescription": "本模板有6个片段，其中3个慢镜头，2个说话的片段。开启你的美食之旅吧",
+  "sampleVideoName": "BigMealSample.mp4"
+}
+

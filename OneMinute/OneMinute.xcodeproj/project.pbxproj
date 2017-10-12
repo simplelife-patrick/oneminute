@@ -45,7 +45,7 @@
 		AD1F7BE41F8C60BA00654499 /* Advanced.json in Resources */ = {isa = PBXBuildFile; fileRef = AD1F7BE11F8C60BA00654499 /* Advanced.json */; };
 		AD26F1A81F53E6DE00565E27 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */; };
 		AD26F1AA1F53E70A00565E27 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */; };
-		AD449CEF1F6F6FC6004DBD72 /* Gourmandism001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD449CEE1F6F6FC6004DBD72 /* Gourmandism001.json */; };
+		AD449CEF1F6F6FC6004DBD72 /* BigMeal.json in Resources */ = {isa = PBXBuildFile; fileRef = AD449CEE1F6F6FC6004DBD72 /* BigMeal.json */; };
 		AD5A06A31F33058A00F26693 /* ColorLife001.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A01F33058A00F26693 /* ColorLife001.json */; };
 		AD5A06A41F33058A00F26693 /* YoungOuting.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A11F33058A00F26693 /* YoungOuting.json */; };
 		AD5B80AF1F34133B0094922B /* header001.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80AA1F34133B0094922B /* header001.mp4 */; };
@@ -62,16 +62,16 @@
 		AD849F441F72019900B1E08F /* DLYConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = AD849F431F72019900B1E08F /* DLYConstants.m */; };
 		AD887A561F7646FF00A85881 /* ColorLife002.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A4E1F7646FE00A85881 /* ColorLife002.json */; };
 		AD887A571F7646FF00A85881 /* GoNorth.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A4F1F7646FF00A85881 /* GoNorth.json */; };
-		AD887A581F7646FF00A85881 /* Gourmandism002.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A501F7646FF00A85881 /* Gourmandism002.json */; };
+		AD887A581F7646FF00A85881 /* AfternoonTea.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A501F7646FF00A85881 /* AfternoonTea.json */; };
 		AD887A5A1F7646FF00A85881 /* MyMaldives.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A521F7646FF00A85881 /* MyMaldives.json */; };
 		AD887A5B1F7646FF00A85881 /* ColorLife003.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A531F7646FF00A85881 /* ColorLife003.json */; };
-		AD887A5C1F7646FF00A85881 /* Gourmandism003.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A541F7646FF00A85881 /* Gourmandism003.json */; };
+		AD887A5C1F7646FF00A85881 /* SoDelicious.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A541F7646FF00A85881 /* SoDelicious.json */; };
 		AD887A731F7661FC00A85881 /* ColorLife001BGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A671F7661FB00A85881 /* ColorLife001BGM.m4a */; };
 		AD887A741F7661FC00A85881 /* ColorLife002BGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A681F7661FB00A85881 /* ColorLife002BGM.m4a */; };
 		AD887A751F7661FC00A85881 /* ColorLife003BGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A691F7661FB00A85881 /* ColorLife003BGM.m4a */; };
-		AD887A761F7661FC00A85881 /* Gourmandism001BGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A6A1F7661FB00A85881 /* Gourmandism001BGM.m4a */; };
-		AD887A771F7661FC00A85881 /* Gourmandism002BGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A6B1F7661FB00A85881 /* Gourmandism002BGM.m4a */; };
-		AD887A781F7661FC00A85881 /* Gourmandism003BGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A6C1F7661FB00A85881 /* Gourmandism003BGM.m4a */; };
+		AD887A761F7661FC00A85881 /* BigMealBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A6A1F7661FB00A85881 /* BigMealBGM.m4a */; };
+		AD887A771F7661FC00A85881 /* AfternoonTeaBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A6B1F7661FB00A85881 /* AfternoonTeaBGM.m4a */; };
+		AD887A781F7661FC00A85881 /* SoDeliciousBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A6C1F7661FB00A85881 /* SoDeliciousBGM.m4a */; };
 		AD887A791F7661FC00A85881 /* YoungOutingBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A6D1F7661FB00A85881 /* YoungOutingBGM.m4a */; };
 		AD887A7A1F7661FC00A85881 /* GoNorthBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A6E1F7661FB00A85881 /* GoNorthBGM.m4a */; };
 		AD887A7B1F7661FC00A85881 /* MyMaldivesBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A6F1F7661FB00A85881 /* MyMaldivesBGM.m4a */; };
@@ -182,7 +182,7 @@
 		AD26F1A61F53E6DE00565E27 /* DLYAVEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAVEngine.h; sourceTree = "<group>"; };
 		AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAVEngine.m; sourceTree = "<group>"; };
 		AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRecordViewController.m; sourceTree = "<group>"; };
-		AD449CEE1F6F6FC6004DBD72 /* Gourmandism001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Gourmandism001.json; sourceTree = "<group>"; };
+		AD449CEE1F6F6FC6004DBD72 /* BigMeal.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = BigMeal.json; sourceTree = "<group>"; };
 		AD5A06A01F33058A00F26693 /* ColorLife001.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ColorLife001.json; sourceTree = "<group>"; };
 		AD5A06A11F33058A00F26693 /* YoungOuting.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = YoungOuting.json; sourceTree = "<group>"; };
 		AD5B80AA1F34133B0094922B /* header001.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = header001.mp4; sourceTree = "<group>"; };
@@ -207,16 +207,16 @@
 		AD849F451F72021200B1E08F /* DLYPublicMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYPublicMacros.h; sourceTree = "<group>"; };
 		AD887A4E1F7646FE00A85881 /* ColorLife002.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ColorLife002.json; sourceTree = "<group>"; };
 		AD887A4F1F7646FF00A85881 /* GoNorth.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = GoNorth.json; sourceTree = "<group>"; };
-		AD887A501F7646FF00A85881 /* Gourmandism002.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Gourmandism002.json; sourceTree = "<group>"; };
+		AD887A501F7646FF00A85881 /* AfternoonTea.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = AfternoonTea.json; sourceTree = "<group>"; };
 		AD887A521F7646FF00A85881 /* MyMaldives.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = MyMaldives.json; sourceTree = "<group>"; };
 		AD887A531F7646FF00A85881 /* ColorLife003.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ColorLife003.json; sourceTree = "<group>"; };
-		AD887A541F7646FF00A85881 /* Gourmandism003.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Gourmandism003.json; sourceTree = "<group>"; };
+		AD887A541F7646FF00A85881 /* SoDelicious.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SoDelicious.json; sourceTree = "<group>"; };
 		AD887A671F7661FB00A85881 /* ColorLife001BGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorLife001BGM.m4a; sourceTree = "<group>"; };
 		AD887A681F7661FB00A85881 /* ColorLife002BGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorLife002BGM.m4a; sourceTree = "<group>"; };
 		AD887A691F7661FB00A85881 /* ColorLife003BGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorLife003BGM.m4a; sourceTree = "<group>"; };
-		AD887A6A1F7661FB00A85881 /* Gourmandism001BGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Gourmandism001BGM.m4a; sourceTree = "<group>"; };
-		AD887A6B1F7661FB00A85881 /* Gourmandism002BGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Gourmandism002BGM.m4a; sourceTree = "<group>"; };
-		AD887A6C1F7661FB00A85881 /* Gourmandism003BGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = Gourmandism003BGM.m4a; sourceTree = "<group>"; };
+		AD887A6A1F7661FB00A85881 /* BigMealBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = BigMealBGM.m4a; sourceTree = "<group>"; };
+		AD887A6B1F7661FB00A85881 /* AfternoonTeaBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = AfternoonTeaBGM.m4a; sourceTree = "<group>"; };
+		AD887A6C1F7661FB00A85881 /* SoDeliciousBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SoDeliciousBGM.m4a; sourceTree = "<group>"; };
 		AD887A6D1F7661FB00A85881 /* YoungOutingBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = YoungOutingBGM.m4a; sourceTree = "<group>"; };
 		AD887A6E1F7661FB00A85881 /* GoNorthBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = GoNorthBGM.m4a; sourceTree = "<group>"; };
 		AD887A6F1F7661FB00A85881 /* MyMaldivesBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyMaldivesBGM.m4a; sourceTree = "<group>"; };
@@ -322,7 +322,6 @@
 		1C7E61811EE7DF4F0088F33F /* OneMinute */ = {
 			isa = PBXGroup;
 			children = (
-				6F806D681F7CEE3300B4EC51 /* DLYFilters */,
 				6F12AE671F3DB73B00CE8CB6 /* DownLoader */,
 				ADD0E7CE1F2D9EBA00996BD6 /* Category */,
 				ADFFF17C1F18A33000FB5BF7 /* AVEngine */,
@@ -437,15 +436,6 @@
 			name = RecordView;
 			sourceTree = "<group>";
 		};
-		6F806D681F7CEE3300B4EC51 /* DLYFilters */ = {
-			isa = PBXGroup;
-			children = (
-				6F806D691F7CEE7700B4EC51 /* DLYVideoFilter.h */,
-				6F806D6A1F7CEE7700B4EC51 /* DLYVideoFilter.m */,
-			);
-			name = DLYFilters;
-			sourceTree = "<group>";
-		};
 		6F8925991F1B128F00256093 /* ExportController */ = {
 			isa = PBXGroup;
 			children = (
@@ -542,9 +532,9 @@
 				AD887A671F7661FB00A85881 /* ColorLife001BGM.m4a */,
 				AD887A681F7661FB00A85881 /* ColorLife002BGM.m4a */,
 				AD887A691F7661FB00A85881 /* ColorLife003BGM.m4a */,
-				AD887A6A1F7661FB00A85881 /* Gourmandism001BGM.m4a */,
-				AD887A6B1F7661FB00A85881 /* Gourmandism002BGM.m4a */,
-				AD887A6C1F7661FB00A85881 /* Gourmandism003BGM.m4a */,
+				AD887A6A1F7661FB00A85881 /* BigMealBGM.m4a */,
+				AD887A6B1F7661FB00A85881 /* AfternoonTeaBGM.m4a */,
+				AD887A6C1F7661FB00A85881 /* SoDeliciousBGM.m4a */,
 				AD887A6D1F7661FB00A85881 /* YoungOutingBGM.m4a */,
 				AD887A6E1F7661FB00A85881 /* GoNorthBGM.m4a */,
 				AD887A6F1F7661FB00A85881 /* MyMaldivesBGM.m4a */,
@@ -601,6 +591,8 @@
 				ADFFF1AD1F18C04400FB5BF7 /* DLYVideoTransition.m */,
 				ADFD08BD1F4D5DEB00DAB6A6 /* DLYMovieObject.h */,
 				ADFD08BE1F4D5DEB00DAB6A6 /* DLYMovieObject.m */,
+				6F806D691F7CEE7700B4EC51 /* DLYVideoFilter.h */,
+				6F806D6A1F7CEE7700B4EC51 /* DLYVideoFilter.m */,
 			);
 			path = AVEngine;
 			sourceTree = "<group>";
@@ -637,9 +629,9 @@
 				AD1F7BDF1F8C60B900654499 /* Primary.json */,
 				AD1F7BE01F8C60B900654499 /* Secondary.json */,
 				AD1F7BE11F8C60BA00654499 /* Advanced.json */,
-				AD449CEE1F6F6FC6004DBD72 /* Gourmandism001.json */,
-				AD887A501F7646FF00A85881 /* Gourmandism002.json */,
-				AD887A541F7646FF00A85881 /* Gourmandism003.json */,
+				AD449CEE1F6F6FC6004DBD72 /* BigMeal.json */,
+				AD887A501F7646FF00A85881 /* AfternoonTea.json */,
+				AD887A541F7646FF00A85881 /* SoDelicious.json */,
 				AD5A06A11F33058A00F26693 /* YoungOuting.json */,
 				AD887A4F1F7646FF00A85881 /* GoNorth.json */,
 				AD887A521F7646FF00A85881 /* MyMaldives.json */,
@@ -782,9 +774,9 @@
 			files = (
 				AD887A7B1F7661FC00A85881 /* MyMaldivesBGM.m4a in Resources */,
 				AD7290291F8CBC7C00BDD506 /* SecondaryBGM.m4a in Resources */,
-				AD887A581F7646FF00A85881 /* Gourmandism002.json in Resources */,
+				AD887A581F7646FF00A85881 /* AfternoonTea.json in Resources */,
 				AD72902A1F8CBC7C00BDD506 /* AdvancedBGM.m4a in Resources */,
-				AD887A5C1F7646FF00A85881 /* Gourmandism003.json in Resources */,
+				AD887A5C1F7646FF00A85881 /* SoDelicious.json in Resources */,
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
 				AD038C9A1F7293F10002C092 /* InfoPlist.strings in Resources */,
 				AD887A7A1F7661FC00A85881 /* GoNorthBGM.m4a in Resources */,
@@ -792,10 +784,10 @@
 				AD1F7BE31F8C60BA00654499 /* Secondary.json in Resources */,
 				AD5B80AF1F34133B0094922B /* header001.mp4 in Resources */,
 				AD72902B1F8CBC7C00BDD506 /* PrimaryBGM.m4a in Resources */,
-				AD887A781F7661FC00A85881 /* Gourmandism003BGM.m4a in Resources */,
+				AD887A781F7661FC00A85881 /* SoDeliciousBGM.m4a in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				AD887A5A1F7646FF00A85881 /* MyMaldives.json in Resources */,
-				AD449CEF1F6F6FC6004DBD72 /* Gourmandism001.json in Resources */,
+				AD449CEF1F6F6FC6004DBD72 /* BigMeal.json in Resources */,
 				AD5B80B61F344C750094922B /* advertisementVideo(10s).mp4 in Resources */,
 				6FA74E8B1F5EC0F100114C93 /* iconfont.ttf in Resources */,
 				AD887A561F7646FF00A85881 /* ColorLife002.json in Resources */,
@@ -808,9 +800,9 @@
 				AD887A741F7661FC00A85881 /* ColorLife002BGM.m4a in Resources */,
 				AD5A06A31F33058A00F26693 /* ColorLife001.json in Resources */,
 				AD1F7BE41F8C60BA00654499 /* Advanced.json in Resources */,
-				AD887A761F7661FC00A85881 /* Gourmandism001BGM.m4a in Resources */,
+				AD887A761F7661FC00A85881 /* BigMealBGM.m4a in Resources */,
 				AD887A5B1F7646FF00A85881 /* ColorLife003.json in Resources */,
-				AD887A771F7661FC00A85881 /* Gourmandism002BGM.m4a in Resources */,
+				AD887A771F7661FC00A85881 /* AfternoonTeaBGM.m4a in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
