@@ -56,6 +56,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIImageView                       *focusCursorImageView;
 @property (nonatomic, strong) UIImageView                       *faceRegionImageView;
 @property (nonatomic, strong) UIView * sceneView; //选择场景的view
+@property (nonatomic, strong) UIView * videoView; //选择样片的view
 @property (nonatomic, strong) UIView * shootView; //拍摄界面
 @property (nonatomic, strong) UIView * timeView;
 @property (nonatomic, strong) NSTimer *shootTimer;          //拍摄读秒计时器
@@ -78,6 +79,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIButton *playButton;         //播放单个视频
 @property (nonatomic, strong) UIButton *deletePartButton;   //删除单个视频
 @property (nonatomic, strong) UIButton *scenceDisapper;     //取消选择模板
+@property (nonatomic, strong) UIButton *videoDisapper;      //取消观看样片
 @property (nonatomic, strong) UIImageView *warningIcon;     //拍摄指导
 @property (nonatomic, strong) UILabel *shootGuide;          //拍摄指导
 @property (nonatomic, strong) UIButton *cancelButton;       //取消拍摄
@@ -86,6 +88,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) DLYResource  *resource;       //资源管理类
 @property (nonatomic, strong) DLYSession *session;          //录制会话管理类
 @property (nonatomic, strong) UILabel *chooseTitleLabel;    //选择场景说明
+@property (nonatomic, strong) UILabel *videoTitleLabel;     //选择样片说明
 @property (nonatomic, strong) UIButton *seeRush;            //观看样片
 @property (nonatomic, strong) UILabel *alertLabel;          //提示文字
 @property (nonatomic, strong) UIButton *sureBtn;            //确定切换场景
@@ -453,7 +456,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     /////////////////////////////////
     typeModelArray = [[NSMutableArray alloc]init];
     //通用,美食,旅行,生活
-    NSArray *typeNameArray = @[@"Primary.json",@"Secondary.json",@"Advanced.json",@"YoungOuting.json",@"GoNorth.json",@"MyMaldives.json",@"Gourmandism001.json",@"ColorLife001.json",@"Gourmandism002.json",@"ColorLife002.json",@"Gourmandism003.json",@"ColorLife003.json"];
+    NSArray *typeNameArray = @[@"Primary.json",@"Secondary.json",@"Advanced.json",@"BigMeal.json",@"AfternoonTea.json",@"SoDelicious.json",@"YoungOuting.json",@"GoNorth.json",@"MyMaldives.json",@"ColorLife001.json",@"ColorLife002.json",@"ColorLife003.json"];
     for(int i = 0; i < typeNameArray.count; i ++)
     {
         DLYMiniVlogTemplate *template = [self.session loadTemplateWithTemplateName:typeNameArray[i]];
@@ -506,7 +509,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     //模板数据
     typeModelArray = [[NSMutableArray alloc]init];
-    NSArray *typeNameArray = @[@"Primary.json",@"Secondary.json",@"Advanced.json",@"YoungOuting.json",@"GoNorth.json",@"MyMaldives.json",@"Gourmandism001.json",@"ColorLife001.json",@"Gourmandism002.json",@"ColorLife002.json",@"Gourmandism003.json",@"ColorLife003.json"];
+    NSArray *typeNameArray = @[@"Primary.json",@"Secondary.json",@"Advanced.json",@"BigMeal.json",@"AfternoonTea.json",@"SoDelicious.json",@"YoungOuting.json",@"GoNorth.json",@"MyMaldives.json",@"ColorLife001.json",@"ColorLife002.json",@"ColorLife003.json"];
     for(int i = 0; i < typeNameArray.count; i ++)
     {
         DLYMiniVlogTemplate *template = [self.session loadTemplateWithTemplateName:typeNameArray[i]];
@@ -596,7 +599,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.chooseSceneLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:self.chooseSceneLabel];
     
-    NSArray *typeNameArray = @[@"Primary.json",@"Secondary.json",@"Advanced.json",@"YoungOuting.json",@"GoNorth.json",@"MyMaldives.json",@"Gourmandism001.json",@"ColorLife001.json",@"Gourmandism002.json",@"ColorLife002.json",@"Gourmandism003.json",@"ColorLife003.json"];
+    NSArray *typeNameArray = @[@"Primary.json",@"Secondary.json",@"Advanced.json",@"BigMeal.json",@"AfternoonTea.json",@"SoDelicious.json",@"YoungOuting.json",@"GoNorth.json",@"MyMaldives.json",@"ColorLife001.json",@"ColorLife002.json",@"ColorLife003.json"];
     for (int i = 0; i < typeNameArray.count; i ++) {
         if ([template.templateId isEqualToString:typeNameArray[i]]) {
             [self.chooseScene setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
@@ -713,6 +716,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self createPartView];
     //创建场景页面
     [self createSceneView];
+    [self createVideoView];
     [self.view addSubview:[self shootView]];
 }
 //添加捏合事件
@@ -1250,7 +1254,37 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }];
         }
     }
-    
+    if (!self.videoView.isHidden) {
+        if (!self.videoDisapper.isHidden && self.videoDisapper) {
+            if (num == 0) {
+                self.videoDisapper.frame = CGRectMake(20, 20, 14, 14);
+            }else {
+                self.videoDisapper.frame = CGRectMake(20, SCREEN_HEIGHT - 34, 14, 14);
+            }
+            [UIView animateWithDuration:0.5f animations:^{
+                self.videoDisapper.transform = CGAffineTransformMakeRotation(num);
+            }];
+        }
+        if (!self.videoTitleLabel.isHidden && self.videoTitleLabel) {
+            if (num == 0) {
+                self.videoTitleLabel.frame = CGRectMake(0, 19, 130, 20);
+                self.videoTitleLabel.centerX = self.videoView.centerX;
+            }else {
+                self.videoTitleLabel.frame = CGRectMake(0, SCREEN_HEIGHT - 39, 130, 20);
+                self.videoTitleLabel.centerX = self.videoView.centerX;
+            }
+            [UIView animateWithDuration:0.5f animations:^{
+                self.videoTitleLabel.transform = CGAffineTransformMakeRotation(num);
+            }];
+        }
+        for(int i = 0; i < typeModelArray.count; i++)
+        {
+            UIView *view = (UIView *)[self.view viewWithTag:500 + i];
+            [UIView animateWithDuration:0.5f animations:^{
+                view.transform = CGAffineTransformMakeRotation(num);
+            }];
+        }
+    }
     if (!self.alert.isHidden && self.alert) {
         [UIView animateWithDuration:0.5f animations:^{
             self.alert.transform = CGAffineTransformMakeRotation(num);
@@ -1510,7 +1544,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.partBubble.showMaskAlpha = 0;
         self.partBubble.dismissOnTouchOutside = NO;
         self.partBubble.dismissOnSelected = NO;
-        
     }
     if (sender.selected == NO) {
         [sender setImage:[UIImage imageWithIcon:@"\U0000e669" inFont:ICONFONT size:24 color:RGB(255, 0, 0)] forState:UIControlStateNormal];
@@ -1592,8 +1625,41 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }];
 }
 
-- (void)changeTypeToPlay {
-    NSInteger num = selectType;
+- (void)showVideoView {
+    if (self.newState == 1) {
+        self.videoDisapper.frame = CGRectMake(20, 20, 14, 14);
+        self.videoDisapper.transform = CGAffineTransformMakeRotation(0);
+        self.videoTitleLabel.frame = CGRectMake(0, 19, 130, 20);
+        self.videoTitleLabel.centerX = self.videoView.centerX;
+        self.videoTitleLabel.transform = CGAffineTransformMakeRotation(0);
+        for(int i = 0; i < typeModelArray.count; i++)
+        {
+            UIView *view = (UIView *)[self.view viewWithTag:500 + i];
+            view.transform = CGAffineTransformMakeRotation(0);
+        }
+    }else {
+        self.videoDisapper.frame = CGRectMake(20, SCREEN_HEIGHT - 34, 14, 14);
+        self.videoDisapper.transform = CGAffineTransformMakeRotation(M_PI);
+        self.videoTitleLabel.frame = CGRectMake(0, SCREEN_HEIGHT - 39, 130, 20);
+        self.videoTitleLabel.centerX = self.videoView.centerX;
+        self.videoTitleLabel.transform = CGAffineTransformMakeRotation(M_PI);
+        for(int i = 0; i < typeModelArray.count; i++)
+        {
+            UIView *view = (UIView *)[self.view viewWithTag:500 + i];
+            view.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+    }
+    
+    self.videoView.hidden = NO;
+}
+
+- (void)hideVideoView {
+    self.videoView.hidden = YES;
+}
+
+- (void)changeVideoToPlay:(UIButton *)sender {
+    
+    NSInteger num = sender.tag - 600;
     //url放在这里
     DLYMiniVlogTemplate *template = typeModelArray[num];
     NSString *videoName = [template.sampleVideoName stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
@@ -2305,7 +2371,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.seeRush setContentEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 4)];
     UIEdgeInsets seeRushedgeInsets = {-10, -10, -10, -10};
     [self.seeRush setHitEdgeInsets:seeRushedgeInsets];
-    [self.seeRush addTarget:self action:@selector(changeTypeToPlay) forControlEvents:UIControlEventTouchUpInside];
+    [self.seeRush addTarget:self action:@selector(showVideoView) forControlEvents:UIControlEventTouchUpInside];
     [self.sceneView addSubview:self.seeRush];
     
     self.typeView = [[UIView alloc]initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH - 80, 190)];
@@ -2387,6 +2453,66 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.sceneView addSubview:self.giveUpBtn];
     
 }
+- (void)createVideoView {
+    
+    [self.view addSubview:[self videoView]];
+    self.videoDisapper = [[UIButton alloc]initWithFrame:CGRectMake(20, 20, 14, 14)];
+    UIEdgeInsets edgeInsets = {-20, -20, -20, -20};
+    [self.videoDisapper setHitEdgeInsets:edgeInsets];
+    [self.videoDisapper setImage:[UIImage imageWithIcon:@"\U0000e666" inFont:ICONFONT size:14 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.videoDisapper addTarget:self action:@selector(hideVideoView) forControlEvents:UIControlEventTouchUpInside];
+    [self.videoView addSubview:self.videoDisapper];
+    
+    self.videoTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 19, 130, 28)];
+    self.videoTitleLabel.centerX = self.videoView.centerX;
+    self.videoTitleLabel.textColor = RGB(255, 255, 255);
+    self.videoTitleLabel.textAlignment = NSTextAlignmentCenter;
+    self.videoTitleLabel.font = FONT_SYSTEM(20);
+    self.videoTitleLabel.text = @"观看样片";
+    [self.videoView addSubview:self.videoTitleLabel];
+    
+    UIView *typeView = [[UIView alloc]initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH - 80, 190)];
+    typeView.centerY = self.videoView.centerY;
+    [self.videoView addSubview:typeView];
+    UIScrollView * videoScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, typeView.width, typeView.height)];
+    videoScrollView.showsVerticalScrollIndicator = NO;
+    videoScrollView.showsHorizontalScrollIndicator = NO;
+    videoScrollView.bounces = NO;
+    [typeView addSubview:videoScrollView];
+    
+    float width = (typeView.width - 50)/6;
+    videoScrollView.contentSize = CGSizeMake(width * 6 + 10 * 5, videoScrollView.height);
+    for(int i = 0; i < typeModelArray.count; i ++)
+    {
+        int wNum = i % 6;
+        int hNum = i / 6;
+        DLYMiniVlogTemplate *templateModel = typeModelArray[i];
+        UIView *view = [[UIView alloc]initWithFrame:CGRectMake((width + 10) * wNum, 100 * hNum, width, 90)];
+        view.tag = 500 + i;
+        [videoScrollView addSubview:view];
+        
+        UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 61, 61)];
+        btn.tag = 600 + i;
+        btn.centerX = view.width / 2;
+        [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+        [btn addTarget:self action:@selector(changeVideoToPlay:) forControlEvents:UIControlEventTouchUpInside];
+        btn.layer.cornerRadius = 30.5;
+        btn.clipsToBounds = YES;
+        btn.layer.borderWidth = 1,0;
+        btn.layer.borderColor = RGB(255, 255, 255).CGColor;
+        [view addSubview:btn];
+        
+        UILabel *typeName = [[UILabel alloc]initWithFrame:CGRectMake(0, btn.bottom + 7, 70, 22)];
+        typeName.tag = 700 + i;
+        typeName.centerX = view.width / 2;
+        typeName.text = templateModel.templateTitle;
+        typeName.textColor = RGB(255, 255, 255);
+        typeName.font = FONT_SYSTEM(16);
+        typeName.textAlignment = NSTextAlignmentCenter;
+        [view addSubview:typeName];
+    }
+}
+
 //确定切换模板
 - (void)onSureClickChangeTypeStatus {
     
@@ -3013,6 +3139,17 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         _sceneView.hidden = YES;
     }
     return _sceneView;
+}
+
+- (UIView *)videoView {
+    if(_videoView == nil)
+    {
+        _videoView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        _videoView.backgroundColor = RGBA(0, 0, 0, 1);
+        _videoView.alpha = 1;
+        _videoView.hidden = YES;
+    }
+    return _videoView;
 }
 
 - (UIView *)shootView {
