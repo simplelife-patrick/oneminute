@@ -634,7 +634,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     NSError *error;
     self.assetWriter = [[AVAssetWriter alloc] initWithURL:_currentPart.partUrl fileType:AVFileTypeMPEG4 error:&error];
     if (error) {
-        DLYLog(@"AVAssetWriter error:%@", error);
+        DLYLog(@"AVAssetWriter error: %@", error);
     }
     _recordingWillBeStarted = YES;
 }
@@ -658,6 +658,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
                 if ([self.delegate respondsToSelector:@selector(didFinishRecordingToOutputFileAtURL:error:)]) {
                     [self.delegate didFinishRecordingToOutputFileAtURL:_currentPart.partUrl error:nil];
                 }
+                [self saveRecordedFile];
             });
         }];
     });
@@ -685,7 +686,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         [self.captureSession stopRunning];
     }
 }
-- (void) saveRecordedFileByUrl:(NSURL *)saveUrl
+- (void) saveRecordedFile
 {
     if (_isRecordingCancel) {
         _isRecordingCancel = NO;
