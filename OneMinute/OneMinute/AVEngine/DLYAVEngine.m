@@ -1960,7 +1960,10 @@ BOOL isOnce = YES;
 #pragma mark - 加滤镜
 - (void)addVideoFilter:(NSURL *)videoUrl audioUrl:BGMUrl videoTitle:videoTitle {
     AVURLAsset* asset = [AVURLAsset assetWithURL:videoUrl];
-    AVAssetTrack *asetTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+    AVAssetTrack *asetTrack;
+    if ([asset tracksWithMediaType:AVMediaTypeVideo].count) {
+        asetTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+    }
     NSString *inputpath = @"outputMovie1.mp4";
     NSString* tempVideoPath = [NSTemporaryDirectory() stringByAppendingPathComponent:inputpath];
     unlink([tempVideoPath UTF8String]);
