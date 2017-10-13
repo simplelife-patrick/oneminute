@@ -593,6 +593,8 @@
 				ADFD08BE1F4D5DEB00DAB6A6 /* DLYMovieObject.m */,
 				6F806D691F7CEE7700B4EC51 /* DLYVideoFilter.h */,
 				6F806D6A1F7CEE7700B4EC51 /* DLYVideoFilter.m */,
+				6F7455111F7A3EDE00682FB8 /* DLYThemesData.h */,
+				6F7455121F7A3EDE00682FB8 /* DLYThemesData.m */,
 			);
 			path = AVEngine;
 			sourceTree = "<group>";
@@ -600,8 +602,6 @@
 		ADFFF1851F18A33000FB5BF7 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				6F7455111F7A3EDE00682FB8 /* DLYThemesData.h */,
-				6F7455121F7A3EDE00682FB8 /* DLYThemesData.m */,
 				ADFFF1861F18A33000FB5BF7 /* Models */,
 				ADFFF18F1F18A33000FB5BF7 /* Template */,
 			);

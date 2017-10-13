@@ -24,7 +24,7 @@
       "soundType": 0,
       "BGMVolume": 100,
       "transitionType": 1,
-      "shootGuide": "录音，常速"
+      "shootGuide": "不录音，常速"
     },
     {
       "partNum": 2,
@@ -36,7 +36,7 @@
       "soundType": 1,
       "BGMVolume": 20,
       "transitionType": 1,
-      "shootGuide": "不录音，常速"
+      "shootGuide": "录音，常速"
     },
     {
       "partNum": 3,
@@ -48,7 +48,7 @@
       "soundType": 0,
       "BGMVolume": 100,
       "transitionType": 1,
-      "shootGuide": "录音，常速"
+      "shootGuide": "不录音，常速"
     },
     {
       "partNum": 4,
