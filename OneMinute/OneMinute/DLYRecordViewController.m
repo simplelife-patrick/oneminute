@@ -41,7 +41,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     double _shootTime;
     NSMutableArray * partModelArray; //模拟存放拍摄片段的模型数组
     NSMutableArray * typeModelArray; //模拟选择样式的模型数组
-    BOOL isNeededToSave;
     BOOL isMicGranted;//麦克风权限是否被允许
     BOOL isFront;
     BOOL isSlomoCamera;
@@ -815,21 +814,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.faceRegionImageView.hidden = YES;
             self.faceRegionImageView.alpha = 1.0;
         }];
-        
     }
 }
 
 - (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL error:(NSError *)error {
     
-    if (error) {
-        NSLog(@"error:%@", error);
-        return;
-    }
-    if (!isNeededToSave) {
-        return;
-    }
-    
-    [self saveRecordedFileByUrl:outputFileURL];
 }
 
 /**
@@ -983,14 +972,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
     }];
 }
-- (void)saveRecordedFileByUrl:(NSURL *)recordedFileUrl {
-    
-    DLYLog(@"Saving...");
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(queue, ^{
-        DLYLog(@"Saved!");
-    });
-}
+
 #pragma mark ==== 左手模式重新布局
 //设备方向改变后调用的方法
 //后面改变的状态
@@ -2826,7 +2808,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         if (self.cancelButton.isHidden) {
             return;
         }
-        isNeededToSave = YES;
         [self.AVEngine stopRecording];
         self.cancelButton.hidden = YES;
         dispatch_source_cancel(_timer);
