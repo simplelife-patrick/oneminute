@@ -171,41 +171,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     return _session;
 }
-#pragma mark - 创建Recorder录制会话 -
--(AVCaptureSession *)captureSession{
-    if (_captureSession == nil) {
-        _captureSession = [[AVCaptureSession alloc] init];
-        _captureSession.sessionPreset = AVCaptureSessionPreset1280x720;
-        
-        //添加后置摄像头的输入
-        if ([self.captureSession canAddInput:self.backCameraInput]) {
-            [self.captureSession addInput:self.backCameraInput];
-        }
-        //添加麦克风的输入
-        if ([_captureSession canAddInput:self.audioMicInput]) {
-            [_captureSession addInput:self.audioMicInput];
-        }
-        //添加视频输出
-        if ([_captureSession canAddOutput:self.videoDataOutput]) {
-            [_captureSession addOutput:self.videoDataOutput];
-        }
-        //添加音频输出
-        if ([_captureSession canAddOutput:self.audioDataOutput]) {
-            [_captureSession addOutput:self.audioDataOutput];
-        }
-        //添加元数据输出
-        BOOL isCameraAvalible = [self checkCameraAuthorization];
-        if (isCameraAvalible) {
-            if ([_captureSession canAddOutput:self.metadataOutput]) {
-                [_captureSession addOutput:self.metadataOutput];
-                self.metadataOutput.metadataObjectTypes = @[AVMetadataObjectTypeFace];
-            }
-        }
-        //设置视频录制的方向
-        self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
-    }
-    return _captureSession;
-}
+
 #pragma mark - 视频录制相关访问权限检测 -
 - (BOOL)checkCameraAuthorization {
     __block BOOL isAvalible = NO;
@@ -383,6 +349,14 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             [_captureSession addOutput:self.audioDataOutput];
         }else{
             NSLog(@"Audio output creation faild");
+        }
+        //添加元数据输出
+        BOOL isCameraAvalible = [self checkCameraAuthorization];
+        if (isCameraAvalible) {
+            if ([_captureSession canAddOutput:self.metadataOutput]) {
+                [_captureSession addOutput:self.metadataOutput];
+                self.metadataOutput.metadataObjectTypes = @[AVMetadataObjectTypeFace];
+            }
         }
         
         //设置视频录制的方向
@@ -612,15 +586,15 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
 
     if (_currentPart.recordType == DLYMiniVlogRecordTypeSlomo) {
-        DLYLog(@"🎬🎬🎬Record Type Is Slomo");
-        [self cameraBackgroundDidClickOpenSlow];
+        DLYLog(@"🎬🎬🎬 慢镜头片段");
+        [self switchFormatWithDesiredFPS:120.0];
         
     }else if (_currentPart.recordType == DLYMiniVlogRecordTypeTimelapse){
-        DLYLog(@"🎬🎬🎬Record Type Is Timelapse");
-        [self cameraBackgroundDidClickCloseSlow];
+        DLYLog(@"🎬🎬🎬 快镜头片段");
+        [self switchFormatWithDesiredFPS:50.0];
     }else{
-        DLYLog(@"🎬🎬🎬Record Type Is Normal");
-        [self cameraBackgroundDidClickCloseSlow];
+        DLYLog(@"🎬🎬🎬 正常拍摄片段");
+        [self switchFormatWithDesiredFPS:50.0];
     }
     
     NSString *_outputPath =  [self.resource getSaveDraftPartWithPartNum:_currentPart.partNum];
@@ -641,6 +615,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 #pragma mark - 停止录制 -
 - (void)stopRecording {
     
+    if (_isCapturing) {
+        _isCapturing = NO;
+    }
     dispatch_async(_movieWritingQueue, ^{
         
         _isRecording = NO;
@@ -654,10 +631,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             self.assetWriter = nil;
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                
-                if ([self.delegate respondsToSelector:@selector(didFinishRecordingToOutputFileAtURL:error:)]) {
-                    [self.delegate didFinishRecordingToOutputFileAtURL:_currentPart.partUrl error:nil];
-                }
                 [self saveRecordedFile];
             });
         }];
@@ -693,7 +666,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         DLYLog(@"取消录制");
     }else{
         
-        //快慢镜头调速之后获取保存在Document中地址
         NSString *exportPath;
         NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
         
@@ -797,18 +769,17 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }];
     }
 }
-#pragma mark - 打开慢动作录制 -
-- (void)cameraBackgroundDidClickOpenSlow {
-    
+
+- (void)switchFormatWithDesiredFPS:(CGFloat)desiredFPS
+{
     BOOL isRunning = self.captureSession.isRunning;
     if (isRunning)  [self.captureSession stopRunning];
     
     AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    
-    CGFloat desiredFPS = 120.0;
     AVCaptureDeviceFormat *selectedFormat = nil;
     int32_t maxWidth = 0;
     AVFrameRateRange *frameRateRange = nil;
+    
     for (AVCaptureDeviceFormat *format in [videoDevice formats]) {
         
         for (AVFrameRateRange *range in format.videoSupportedFrameRateRanges) {
@@ -818,68 +789,33 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             int32_t width = dimensions.width;
             
             if (range.minFrameRate <= desiredFPS && desiredFPS <= range.maxFrameRate && width >= maxWidth) {
+                
                 selectedFormat = format;
                 frameRateRange = range;
                 maxWidth = width;
             }
         }
     }
-    if (selectedFormat) {
-        if ([_currentVideoDeviceInput.device lockForConfiguration:nil]) {
+    
+    if (selectedFormat)
+    {
+        if ([videoDevice lockForConfiguration:nil]) {
             
-            NSLog(@"selected format: %@", selectedFormat);
-            _currentVideoDeviceInput.device.activeFormat = selectedFormat;
-            _currentVideoDeviceInput.device.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
-            _currentVideoDeviceInput.device.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
-            [_currentVideoDeviceInput.device unlockForConfiguration];
-        }
-    }
-    if (isRunning) [self.captureSession startRunning];
-}
-#pragma mark - 关闭慢动作录制 -
-- (void)cameraBackgroundDidClickCloseSlow {
-    
-    [self.captureSession stopRunning];
-    CGFloat desiredFPS = 50.0f;
-    
-    NSLog(@"当前设置的录制帧率是: %f",desiredFPS);
-    AVCaptureDeviceFormat *selectedFormat = nil;
-    int32_t maxWidth = 0;
-    AVFrameRateRange *frameRateRange = nil;
-    
-    for (AVCaptureDeviceFormat *format in [_currentVideoDeviceInput.device formats]) {
-        for (AVFrameRateRange *range in format.videoSupportedFrameRateRanges) {
-            CMFormatDescriptionRef desc = format.formatDescription;
-            CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(desc);
-            int32_t width = dimensions.width;
-            if (range.minFrameRate <= desiredFPS && desiredFPS <= range.maxFrameRate && width >= maxWidth) {
-                selectedFormat = format;
-                frameRateRange = range;
-                maxWidth = width;
-            }
-        }
-    }
-    if (selectedFormat) {
-        if ([_currentVideoDeviceInput.device lockForConfiguration:nil]) {
-            NSLog(@"selected format: %@", selectedFormat);
+            NSLog(@"selected format:%@", selectedFormat);
 //            _captureDeviceInput.device.activeFormat = _defaultFormat;
 //            _captureDeviceInput.device.activeVideoMinFrameDuration = _defaultMinFrameDuration;
 //            _captureDeviceInput.device.activeVideoMaxFrameDuration = _defaultMaxFrameDuration;
 //            [_captureDeviceInput.device unlockForConfiguration];
-            _currentVideoDeviceInput.device.activeFormat = selectedFormat;
-            _currentVideoDeviceInput.device.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
-            _currentVideoDeviceInput.device.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
-            [_currentVideoDeviceInput.device unlockForConfiguration];
+            videoDevice.activeFormat = selectedFormat;
+            videoDevice.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);//设置帧率
+            videoDevice.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+            [videoDevice unlockForConfiguration];
         }
     }
-    [self.captureSession startRunning];
+    
+    if (!isRunning) [self.captureSession startRunning];
 }
-#pragma mark - 内部处理方法
-- (NSString *)movieName {
-    NSDate *datenow = [NSDate date];
-    NSString *timeSp = [NSString stringWithFormat:@"time_%ld", (long)[datenow timeIntervalSince1970]];
-    return [timeSp stringByAppendingString:@".mov"];
-}
+
 #pragma mark - 重置录制session -
 - (void) restartRecording{
     if (!self.captureSession.isRunning) {
@@ -901,7 +837,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         self.onBuffer(sampleBuffer);
     }
     CMFormatDescriptionRef formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer);
-    
     CFRetain(sampleBuffer);
     
     dispatch_async(_movieWritingQueue, ^{
@@ -911,23 +846,19 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             BOOL wasReadyToRecord = (_readyToRecordAudio && _readyToRecordVideo);
             
             if (connection == self.videoConnection) {
-                // Initialize the video input if this is not done yet
                 if (!_readyToRecordVideo) {
                     _readyToRecordVideo = [self setupAssetWriterVideoInput:formatDescription];
                 }
                 
-                // Write video data to file
                 if (_readyToRecordVideo && _readyToRecordAudio) {
                     [self writeSampleBuffer:sampleBuffer ofType:AVMediaTypeVideo];
                 }
             }
             else if (connection == self.audioConnection) {
-                // Initialize the audio input if this is not done yet
                 if (!_readyToRecordAudio) {
                     _readyToRecordAudio = [self setupAssetWriterAudioInput:formatDescription];
                 }
                 
-                // Write audio data to file
                 if (_readyToRecordAudio && _readyToRecordVideo)
                     [self writeSampleBuffer:sampleBuffer ofType:AVMediaTypeAudio];
             }
@@ -2185,7 +2116,6 @@ BOOL isOnce = YES;
                     
                     NSLog(@"MP4 Successful!");
                     callBlock(exportUrl,exportPath);
-                    
                 });
                 
                 break;
