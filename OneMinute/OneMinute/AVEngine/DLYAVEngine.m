@@ -203,8 +203,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     if (_backCameraInput == nil) {
         NSError *error;
         AVCaptureDevice *backCamera = [self cameraWithPosition:AVCaptureDevicePositionBack];
-        _backCameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:backCamera error:&error];
-        
+        _backCameraInput = [AVCaptureDeviceInput deviceInputWithDevice:backCamera error:&error];
+        //[AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo]
         AVCaptureDevice *device = _backCameraInput.device;
         if (device.isSmoothAutoFocusSupported) {
             
@@ -214,12 +214,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
                 [device unlockForConfiguration];
             }
         }
-        
-        if (error) {
-            DLYLog(@"获取后置摄像头失败~");
-        }
-
+        [self.captureSession beginConfiguration];
         self.captureSession.sessionPreset = AVCaptureSessionPreset1280x720;
+        [self.captureSession commitConfiguration];
     }
     return _backCameraInput;
 }
@@ -243,16 +240,18 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if (error) {
             DLYLog(@"获取前置摄像头失败~");
         }
+        [self.captureSession beginConfiguration];
         self.captureSession.sessionPreset = AVCaptureSessionPreset1280x720;
+        [self.captureSession commitConfiguration];
     }
     return _frontCameraInput;
 }
 //麦克风输入
 - (AVCaptureDeviceInput *)audioMicInput {
     if (_audioMicInput == nil) {
-        AVCaptureDevice *mic = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+        AVCaptureDevice *audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
         NSError *error;
-        _audioMicInput = [AVCaptureDeviceInput deviceInputWithDevice:mic error:&error];
+        _audioMicInput = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:&error];
         if (error) {
             DLYLog(@"获取麦克风失败~");
         }
@@ -278,8 +277,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 -(AVCaptureMetadataOutput *)metadataOutput {
     if (_metadataOutput == nil) {
         _metadataOutput = [[AVCaptureMetadataOutput alloc]init];
-        dispatch_queue_t metadataDataOutput = dispatch_queue_create("metadataDataOutput", DISPATCH_QUEUE_SERIAL);
-        [_metadataOutput setMetadataObjectsDelegate:self queue:metadataDataOutput];
+        dispatch_queue_t metadataDataOutputQueue = dispatch_queue_create("metadataDataOutput", DISPATCH_QUEUE_SERIAL);
+        [_metadataOutput setMetadataObjectsDelegate:self queue:metadataDataOutputQueue];
     }
     return _metadataOutput;
 }
@@ -287,28 +286,10 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 - (AVCaptureAudioDataOutput *)audioDataOutput {
     if (_audioDataOutput == nil) {
         _audioDataOutput = [[AVCaptureAudioDataOutput alloc] init];
-        //        [_audioDataOutput setSampleBufferDelegate:self queue:self.captureQueue];
-        dispatch_queue_t audioDataOutput = dispatch_queue_create("audioDataOutput", DISPATCH_QUEUE_SERIAL);
-        [_audioDataOutput setSampleBufferDelegate:self queue:audioDataOutput];
+        dispatch_queue_t audioDataOutputQueue = dispatch_queue_create("audioDataOutput", DISPATCH_QUEUE_SERIAL);
+        [_audioDataOutput setSampleBufferDelegate:self queue:audioDataOutputQueue];
     }
     return _audioDataOutput;
-}
-
-#pragma mark - Recorder录制会话 连接 配置 -
-//视频连接
-- (AVCaptureConnection *)videoConnection {
-    if (!_videoConnection) {
-        _videoConnection = [self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo];
-    }
-    return _videoConnection;
-}
-
-//音频连接
-- (AVCaptureConnection *)audioConnection {
-    if (!_audioConnection) {
-        _audioConnection = [self.audioDataOutput connectionWithMediaType:AVMediaTypeAudio];
-    }
-    return _audioConnection;
 }
 
 #pragma mark - 初始化AVEngine -
@@ -319,6 +300,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         _referenceOrientation = (AVCaptureVideoOrientation)UIDeviceOrientationLandscapeLeft;
         
         self.captureSession = [[AVCaptureSession alloc] init];
+        self.captureSession.sessionPreset = AVCaptureSessionPresetiFrame1280x720;
         
         //添加后置摄像头的输入
         if ([_captureSession canAddInput:self.backCameraInput]) {
@@ -359,14 +341,19 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             }
         }
         
+        //视频连接
+        self.videoConnection = [self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo];
+        //音频连接
+        self.audioConnection = [self.audioDataOutput connectionWithMediaType:AVMediaTypeAudio];
+
         //设置视频录制的方向
         if ([self.videoConnection isVideoOrientationSupported]) {
             [self.videoConnection setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
         }
+        _videoOrientation = [self.videoConnection videoOrientation];
         
         //视频录制队列
         _movieWritingQueue = dispatch_queue_create("movieWritingQueue", DISPATCH_QUEUE_SERIAL);
-        _videoOrientation = [self.videoConnection videoOrientation];
         
         // BufferQueue
         OSStatus err = CMBufferQueueCreate(kCFAllocatorDefault, 1, CMBufferQueueGetCallbacksForUnsortedSampleBuffers(), &_previewBufferQueue);
@@ -412,19 +399,15 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 //用来返回是前置摄像头还是后置摄像头
 - (AVCaptureDevice *)cameraWithPosition:(AVCaptureDevicePosition) position {
     
-    NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+    NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     
-    for (AVCaptureDevice *device in devices) {
+    for (AVCaptureDevice *device in videoDevices) {
+        
         if ([device position] == position) {
-            
-            _defaultFormat = device.activeFormat;
-            _defaultMinFrameDuration = device.activeVideoMinFrameDuration;
-            _defaultMaxFrameDuration = device.activeVideoMaxFrameDuration;
-            DLYLog(@"当前选择的device.activeFormat :",_defaultFormat);
             return device;
         }
     }
-    return nil;
+    return  [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
 }
 //摄像头切换翻转动画
 - (void)changeCameraAnimation {
@@ -626,9 +609,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         
         [self.assetWriter finishWritingWithCompletionHandler:^{
             
+            self.assetWriter = nil;
             self.assetWriterVideoInput = nil;
             self.assetWriterAudioInput = nil;
-            self.assetWriter = nil;
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self saveRecordedFile];
@@ -647,9 +630,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         
         [self.assetWriter finishWritingWithCompletionHandler:^{
             
+            self.assetWriter = nil;
             self.assetWriterVideoInput = nil;
             self.assetWriterAudioInput = nil;
-            self.assetWriter = nil;
         }];
     });
 }
@@ -769,7 +752,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }];
     }
 }
-
+#pragma mark - 改变录制帧率 -
 - (void)switchFormatWithDesiredFPS:(CGFloat)desiredFPS
 {
     BOOL isRunning = self.captureSession.isRunning;
@@ -789,7 +772,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             int32_t width = dimensions.width;
             
             if (range.minFrameRate <= desiredFPS && desiredFPS <= range.maxFrameRate && width >= maxWidth) {
-                
+
                 selectedFormat = format;
                 frameRateRange = range;
                 maxWidth = width;
@@ -813,7 +796,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }
     }
     
-    if (!isRunning) [self.captureSession startRunning];
+    if (isRunning) [self.captureSession startRunning];
 }
 
 #pragma mark - 重置录制session -
@@ -880,8 +863,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             
             CMTime timestamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
             [self.assetWriter startSessionAtSourceTime:timestamp];
-        }
-        else {
+        }else {
             if (self.assetWriter.error) {
                 DLYLog(@"AVAssetWriter startWriting error:%@", self.assetWriter.error);
             }
@@ -1046,6 +1028,7 @@ NSInteger timeCount = 0;
 NSInteger maskCount = 0;
 NSInteger startCount = MAXFLOAT;
 BOOL isOnce = YES;
+
 - (void)createTimer{
     //获得队列
     dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
