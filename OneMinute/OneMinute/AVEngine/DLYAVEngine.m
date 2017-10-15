@@ -1716,7 +1716,7 @@ BOOL isOnce = YES;
     [watermarkLayer setBackgroundColor:[[UIColor colorWithHexString:@"#000000" withAlpha:0.8] CGColor]];
     watermarkLayer.contentsCenter = overlayLayer.contentsCenter;
     CGSize textSize = [watermarkMessage sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
-    watermarkLayer.bounds = CGRectMake(0, 0, textSize.width + 55, textSize.height + 25);
+    watermarkLayer.bounds = CGRectMake(0, 0, textSize.width + 60, textSize.height + 25);
     
     [overlayLayer addSublayer:watermarkLayer];
     return overlayLayer;
