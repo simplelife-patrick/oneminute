@@ -51,7 +51,7 @@
     CocoaSecurityResult *_result;
     BOOL _isRecordingCancel;
     AVAssetExportSession *_exportSession;
-    
+    BOOL flashMode;
 }
 
 @property (nonatomic,strong) AVCaptureMetadataOutput            *metadataOutput;
@@ -59,6 +59,7 @@
 @property (nonatomic, strong) AVCaptureDeviceInput              *audioMicInput;
 @property (nonatomic, strong) AVCaptureDeviceFormat             *defaultFormat;
 @property (nonatomic, strong) AVCaptureConnection               *audioConnection;
+@property (nonatomic, strong) AVCaptureDevice                   *defaultVideoDevice;
 
 @property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;
 @property (nonatomic, strong) AVCaptureAudioDataOutput          *audioOutput;
@@ -147,6 +148,13 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         _session = [[DLYSession alloc] init];
     }
     return _session;
+}
+-(AVCaptureDevice *)defaultVideoDevice{
+    
+    if (!_defaultVideoDevice) {
+        _defaultVideoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    }
+    return _defaultVideoDevice;
 }
 #pragma mark - 视频录制相关访问权限检测 -
 - (BOOL)checkCameraAuthorization {
@@ -276,6 +284,24 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         [self.captureSession startRunning];
     }
     return self;
+}
+#pragma mark - 补光灯开关 -
+- (void) switchFlashMode:(BOOL)isOn
+{
+    flashMode = isOn;
+    AVCaptureDevice *device = self.defaultVideoDevice;
+    if ([device hasTorch]) {
+        
+        if (isOn) {
+            [device lockForConfiguration:nil];
+            [device setTorchMode:AVCaptureTorchModeOn];
+            [device unlockForConfiguration];
+        }else{
+            [device lockForConfiguration:nil];
+            [device setTorchMode:AVCaptureTorchModeOff];
+            [device unlockForConfiguration];
+        }
+    }
 }
 #pragma mark - 切换摄像头 -
 - (void)changeCameraInputDeviceisFront:(BOOL)isFront {
@@ -695,17 +721,28 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
 }
 
+#pragma mark - 改变录制帧率 -
 - (void)switchFormatWithDesiredFPS:(CGFloat)desiredFPS
 {
     BOOL isRunning = self.captureSession.isRunning;
     if (isRunning)  [self.captureSession stopRunning];
     
-    AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    AVCaptureDevice *device = self.defaultVideoDevice;
+    if (flashMode) {
+        [device lockForConfiguration:nil];
+        [device setTorchMode:AVCaptureTorchModeOn];
+        [device unlockForConfiguration];
+    }else{
+        [device lockForConfiguration:nil];
+        [device setTorchMode:AVCaptureTorchModeOff];
+        [device unlockForConfiguration];
+    }
+    
     AVCaptureDeviceFormat *selectedFormat = nil;
     int32_t maxWidth = 0;
     AVFrameRateRange *frameRateRange = nil;
     
-    for (AVCaptureDeviceFormat *format in [videoDevice formats]) {
+    for (AVCaptureDeviceFormat *format in [device formats]) {
         
         for (AVFrameRateRange *range in format.videoSupportedFrameRateRanges) {
             
@@ -724,13 +761,13 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     
     if (selectedFormat)
     {
-        if ([videoDevice lockForConfiguration:nil]) {
+        DLYLog(@"selected format:%@", selectedFormat);
+        if ([device lockForConfiguration:nil]) {
             
-            //            DLYLog(@"selected format:%@", selectedFormat);
-            videoDevice.activeFormat = selectedFormat;
-            videoDevice.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);//设置帧率
-            videoDevice.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
-            [videoDevice unlockForConfiguration];
+            device.activeFormat = selectedFormat;
+            device.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);//设置帧率
+            device.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+            [device unlockForConfiguration];
         }
     }
     
@@ -740,7 +777,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
     
     _currentPart = part;
-    CGFloat desiredFps = 0.0;
     
     if (_currentPart.recordType == DLYMiniVlogRecordTypeSlomo) {
         DLYLog(@"🎬🎬🎬 慢镜头片段");
@@ -753,8 +789,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         DLYLog(@"🎬🎬🎬 正常拍摄片段");
         [self switchFormatWithDesiredFPS:50.0];
     }
-    
-    [self switchFormatWithDesiredFPS:desiredFps];
     
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
     
@@ -950,9 +984,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     
-    if (self.onBuffer) {
-        self.onBuffer(sampleBuffer);
-    }
     CMFormatDescriptionRef formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer);
     
     CFRetain(sampleBuffer);
