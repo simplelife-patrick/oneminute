@@ -204,11 +204,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self setupUI];
     [self initializationRecorder];
     
-    //According to the preview center focus after launch
-    CGPoint point = self.previewView.center;
-    CGPoint cameraPoint = [self.AVEngine.captureVideoPreviewLayer captureDevicePointOfInterestForPoint:point];
-    [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus atPoint:cameraPoint];
-    
     //进入前台
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recordViewWillEnterForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
     
@@ -1384,8 +1379,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (!self.AVEngine.isRecording) {
         
         NSInteger i = selectPartTag - 10000;
-        DLYMiniVlogPart *part = partModelArray[i-1];
-        [self.AVEngine startRecordingWithPart:part];
+        DLYMiniVlogPart *part = partModelArray[i - 1];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self.AVEngine startRecordingWithPart:part];
+        });
         
         //拍摄计时器
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);

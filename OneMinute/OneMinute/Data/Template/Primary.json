@@ -21,7 +21,7 @@
       "dubStartTime": "00:05:00",
       "dubStopTime": "00:10:00",
       "recordType": 0,
-      "soundType": 0,
+      "soundType": 1,
       "BGMVolume": 20,
       "transitionType": 0,
       "shootGuide": "话筒开启，可以录音，说出你的想法吧"
