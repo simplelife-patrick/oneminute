@@ -50,7 +50,9 @@
     NSDictionary *dic = [NSDictionary dictionaryWithContentsOfFile:jsonFile];
     
     NSMutableArray *templateListArrray = [NSMutableArray array];
-    for (NSString *templateId in dic) {
+    for (NSString *num in dic) {
+        
+        NSString *templateId = [dic objectForKey:num];
         [templateListArrray addObject:templateId];
     }
     return templateListArrray;
