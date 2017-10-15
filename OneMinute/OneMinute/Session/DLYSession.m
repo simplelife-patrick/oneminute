@@ -37,7 +37,16 @@
 }
 - (NSArray *) loadAllTemplateFile {
     
-    NSString *jsonFile = [[NSBundle mainBundle] pathForResource:@"TemplateList_v1.plist" ofType:nil];
+    //获取系统版本
+    double systemVersion = [[UIDevice currentDevice] systemVersion].doubleValue;
+    NSString *jsonFile = nil;
+    
+    if (systemVersion <= 1.0) {
+        jsonFile = [[NSBundle mainBundle] pathForResource:@"TemplateList_v1.plist" ofType:nil];
+    }else {
+        jsonFile = [[NSBundle mainBundle] pathForResource:@"TemplateList_v1.plist" ofType:nil];
+    }
+    
     NSDictionary *dic = [NSDictionary dictionaryWithContentsOfFile:jsonFile];
     
     NSMutableArray *templateListArrray = [NSMutableArray array];
@@ -50,7 +59,6 @@
     NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY];
     DLYMiniVlogTemplate *currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
     return currentTemplate;
-
 }
 - (BOOL) isExistDraftAtFile{
     

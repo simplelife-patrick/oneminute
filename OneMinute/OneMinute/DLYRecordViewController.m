@@ -15,7 +15,6 @@
 #import "DLYAVEngine.h"
 #import "DLYSession.h"
 #import "DLYDownloadManager.h"
-#include <libavformat/avformat.h>
 #import "DLYMovieObject.h"
 #import "DLYTitleView.h"
 #import "DLYThemesData.h"
@@ -195,7 +194,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     [DLYThemesData sharedInstance];
     
-    av_register_all();
     [DLYIndicatorView sharedIndicatorView].delegate = self;
     self.isAppear = YES;
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
@@ -1279,22 +1277,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)onClickFlashAction {
     
     self.flashButton.selected = !self.flashButton.selected;
-    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    NSError *error = nil;
     if (self.flashButton.selected == YES) { //打开闪光灯
         [self.flashButton setImage:[UIImage imageWithIcon:@"\U0000e601" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
-        if ([device hasTorch]) {
-            [device lockForConfiguration:&error];
-            [device setTorchMode:AVCaptureTorchModeOn];
-            [device unlockForConfiguration];
-        }
+        [self.AVEngine switchFlashMode:YES];
     }else{//关闭闪光灯
         [self.flashButton setImage:[UIImage imageWithIcon:@"\U0000e600" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
-        if ([device hasTorch]) {
-            [device lockForConfiguration:&error];
-            [device setTorchMode:AVCaptureTorchModeOff];
-            [device unlockForConfiguration];
-        }
+        [self.AVEngine switchFlashMode:NO];
     }
 }
 #pragma mark ==== 切换摄像头

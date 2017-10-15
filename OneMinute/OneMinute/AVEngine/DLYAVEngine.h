@@ -10,14 +10,6 @@
 #import <CoreMedia/CoreMedia.h>
 #import "DLYMiniVlogPart.h"
 
-typedef NS_ENUM(NSUInteger, DLYCameraType) {
-    DLYCameraTypeBack,
-    DLYCameraTypeFront,
-};
-
-typedef void (^TimeLapseSamplebufferBlock)(CMSampleBufferRef sampleBuffer);
-typedef void (^OnBufferBlock)(CMSampleBufferRef sampleBuffer);
-
 typedef void(^SuccessBlock)(void);
 typedef void(^FailureBlock)(NSError *error);
 typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个block返回
@@ -46,9 +38,6 @@ typedef void(^setVideoSpeedBlock)();
 
 @property (nonatomic, assign) id                                                      delegate;
 @property (nonatomic, readonly) BOOL                                                  isRecording;
-
-@property (nonatomic, copy) OnBufferBlock                                             onBuffer;
-@property (nonatomic, copy) TimeLapseSamplebufferBlock                                timeLapseSamplebufferBlock;
 
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer                              *captureVideoPreviewLayer;
 @property (nonatomic, strong) AVCaptureConnection                                     *videoConnection;
@@ -95,6 +84,13 @@ typedef void(^setVideoSpeedBlock)();
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part;
 
 /**
+ 灯光灯开关
+
+ @param isOn 是否打开
+ */
+- (void) switchFlashMode:(BOOL)isOn;
+
+/**
  切换摄像头
 
  @param isFront 是否是前置摄像头
@@ -138,12 +134,10 @@ typedef void(^setVideoSpeedBlock)();
  */
 -(UIImage*)getKeyImage:(NSURL *)assetUrl intervalTime:(NSInteger)intervalTime;
 
+//单次对焦
 - (void) focusOnceWithPoint:(CGPoint)point;
+//连续对焦
 - (void) focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point;
-
-/**
- 创建导出会话
- */
-- (void) makeExportable;
+//时间格式转化
 - (long long)getDateTimeTOMilliSeconds:(NSDate *)datetime;
 @end
