@@ -1267,15 +1267,17 @@ BOOL isOnce = YES;
     CMPersistentTrackID trackID = kCMPersistentTrackID_Invalid;
     AVMutableCompositionTrack *compositionTrackA = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
     AVMutableCompositionTrack *compositionTrackB = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
-    AVMutableCompositionTrack *compositionTrackAudio = [self.composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:trackID];
     
+    AVMutableCompositionTrack *compositionTrackAudioA = [self.composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:trackID];
+    AVMutableCompositionTrack *compositionTrackAudioB = [self.composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:trackID];
     //    compositionVideoTrack.preferredTransform = CGAffineTransformRotate(CGAffineTransformIdentity, M_PI_2);
     
     NSArray *videoTracks = @[compositionTrackA, compositionTrackB];
+    NSArray *audioTracks = @[compositionTrackAudioA, compositionTrackAudioB];
     
     CMTime videoCursorTime = kCMTimeZero;
     CMTime audioCursorTime = kCMTimeZero;
-    CMTime transitionDuration = CMTimeMake(1, 2);
+    CMTime transitionDuration = CMTimeMake(1, 5);
     
     NSMutableArray *videoArray = [NSMutableArray array];
     
@@ -1303,14 +1305,7 @@ BOOL isOnce = YES;
     
     for (NSUInteger i = 0; i < videoArray.count; i++) {
         
-        NSUInteger trackIndex = i % 2;
-        
-        AVURLAsset *asset;
-        //        if (i == 0) {
-        //            asset = [AVURLAsset URLAssetWithURL:newUrl options:nil];
-        //        }else {
-        asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
-        //        }
+        AVURLAsset *asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
         
         AVAssetTrack *assetVideoTrack = nil;
         AVAssetTrack *assetAudioTrack = nil;
@@ -1320,17 +1315,21 @@ BOOL isOnce = YES;
         if ([asset tracksWithMediaType:AVMediaTypeAudio].count != 0) {
             assetAudioTrack = [[asset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
         }
-        AVMutableCompositionTrack *currentTrack = videoTracks[trackIndex];
+        
+        NSUInteger trackIndex = i % 2;
+        AVMutableCompositionTrack *currentVideoTrack = videoTracks[trackIndex];
+        AVMutableCompositionTrack *currentAudioTrack = audioTracks[trackIndex];
         
         CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero, assetVideoTrack.timeRange.duration);
         
-        BOOL isInsertVideoSuccess = [currentTrack insertTimeRange:timeRange
+        BOOL isInsertVideoSuccess = [currentVideoTrack insertTimeRange:timeRange
                                                           ofTrack:assetVideoTrack
                                                            atTime:videoCursorTime error:nil];
         if (isInsertVideoSuccess == NO) {
             DLYLog(@"合并时插入图像轨失败");
         }
-        BOOL isInsertAudioSuccess = [compositionTrackAudio insertTimeRange:timeRange
+        
+        BOOL isInsertAudioSuccess = [currentAudioTrack insertTimeRange:timeRange
                                                                    ofTrack:assetAudioTrack
                                                                     atTime:videoCursorTime error:nil];
         if (isInsertAudioSuccess == NO) {
