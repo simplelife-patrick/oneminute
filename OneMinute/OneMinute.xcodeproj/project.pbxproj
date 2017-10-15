@@ -351,6 +351,7 @@
 		1C7E61821EE7DF4F0088F33F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				AD71EC841F931D27007490BC /* TemplateList_v1.plist */,
 				AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */,
 				6FA74E8A1F5EC0F100114C93 /* iconfont.ttf */,
 				ADFFF1A51F18A36700FB5BF7 /* DLYPrefixHeader.pch */,
@@ -399,7 +400,6 @@
 			children = (
 				1C7E61C11EE7E6730088F33F /* DLYLogModule.h */,
 				1C7E61C21EE7E6730088F33F /* DLYLogModule.m */,
-				AD71EC841F931D27007490BC /* TemplateList_v1.plist */,
 			);
 			name = Log;
 			sourceTree = "<group>";
