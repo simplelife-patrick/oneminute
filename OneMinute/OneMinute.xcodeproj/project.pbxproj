@@ -51,6 +51,7 @@
 		AD5B80AF1F34133B0094922B /* header001.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80AA1F34133B0094922B /* header001.mp4 */; };
 		AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5B80B11F3443080094922B /* UIColor+Hex.m */; };
 		AD5B80B61F344C750094922B /* advertisementVideo(10s).mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */; };
+		AD71EC851F931D27007490BC /* TemplateList_v1.plist in Resources */ = {isa = PBXBuildFile; fileRef = AD71EC841F931D27007490BC /* TemplateList_v1.plist */; };
 		AD7290291F8CBC7C00BDD506 /* SecondaryBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD7290261F8CBC7B00BDD506 /* SecondaryBGM.m4a */; };
 		AD72902A1F8CBC7C00BDD506 /* AdvancedBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD7290271F8CBC7B00BDD506 /* AdvancedBGM.m4a */; };
 		AD72902B1F8CBC7C00BDD506 /* PrimaryBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD7290281F8CBC7B00BDD506 /* PrimaryBGM.m4a */; };
@@ -189,6 +190,7 @@
 		AD5B80B01F3443080094922B /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		AD5B80B11F3443080094922B /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "advertisementVideo(10s).mp4"; sourceTree = "<group>"; };
+		AD71EC841F931D27007490BC /* TemplateList_v1.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = TemplateList_v1.plist; sourceTree = "<group>"; };
 		AD7290261F8CBC7B00BDD506 /* SecondaryBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SecondaryBGM.m4a; sourceTree = "<group>"; };
 		AD7290271F8CBC7B00BDD506 /* AdvancedBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = AdvancedBGM.m4a; sourceTree = "<group>"; };
 		AD7290281F8CBC7B00BDD506 /* PrimaryBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = PrimaryBGM.m4a; sourceTree = "<group>"; };
@@ -397,6 +399,7 @@
 			children = (
 				1C7E61C11EE7E6730088F33F /* DLYLogModule.h */,
 				1C7E61C21EE7E6730088F33F /* DLYLogModule.m */,
+				AD71EC841F931D27007490BC /* TemplateList_v1.plist */,
 			);
 			name = Log;
 			sourceTree = "<group>";
@@ -776,6 +779,7 @@
 				AD7290291F8CBC7C00BDD506 /* SecondaryBGM.m4a in Resources */,
 				AD887A581F7646FF00A85881 /* AfternoonTea.json in Resources */,
 				AD72902A1F8CBC7C00BDD506 /* AdvancedBGM.m4a in Resources */,
+				AD71EC851F931D27007490BC /* TemplateList_v1.plist in Resources */,
 				AD887A5C1F7646FF00A85881 /* SoDelicious.json in Resources */,
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
 				AD038C9A1F7293F10002C092 /* InfoPlist.strings in Resources */,

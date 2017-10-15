@@ -32,6 +32,13 @@
 - (DLYMiniVlogTemplate *)getCurrentTemplate;
 
 /**
+ 加载模板文件名称列表
+
+ @return 返回模板名称的数组
+ */
+- (NSArray *) loadAllTemplateFile;
+
+/**
  判断是否存在草稿
 
  @return 返回结果
