@@ -35,7 +35,17 @@
         DLYLog(@"⚠️⚠️⚠️Current template saved failure!");
     };
 }
-
+- (NSArray *) loadAllTemplateFile {
+    
+    NSString *jsonFile = [[NSBundle mainBundle] pathForResource:@"TemplateList_v1.plist" ofType:nil];
+    NSDictionary *dic = [NSDictionary dictionaryWithContentsOfFile:jsonFile];
+    
+    NSMutableArray *templateListArrray = [NSMutableArray array];
+    for (NSString *templateId in dic) {
+        [templateListArrray addObject:templateId];
+    }
+    return templateListArrray;
+}
 - (DLYMiniVlogTemplate *)getCurrentTemplate{
     NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY];
     DLYMiniVlogTemplate *currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
