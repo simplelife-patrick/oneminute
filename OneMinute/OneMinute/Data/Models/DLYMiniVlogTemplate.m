@@ -15,20 +15,35 @@
     
     if (self = [super init]) {
         
-        [NSBundle mainBundle] ;
-        NSString *path = [[NSBundle mainBundle] pathForResource:templateId ofType:nil];
-        NSData *data = [NSData dataWithContentsOfFile:path];
-        NSMutableDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        
-        self.templateId = [dic objectForKey:@"id"];
-        self.templateTitle = [dic objectForKey:@"title"];
-        self.parts = [dic objectForKey:@"info"];
-        self.BGM = [dic objectForKey:@"BGM"];
-        self.subTitle1 = [dic objectForKey:@"subTitle1"];
-        self.videoHeader = [dic objectForKey:@"header"];
-        self.videoTailer = [dic objectForKey:@"tailer"];
-        self.templateDescription = [dic objectForKey:@"templateDescription"];
-        self.sampleVideoName = [dic objectForKey:@"sampleVideoName"];
+        NSString *path = nil;
+        if (templateId) {
+            path = [[NSBundle mainBundle] pathForResource:templateId ofType:nil];
+            
+            if (path) {
+                NSData *data = nil;
+                data = [NSData dataWithContentsOfFile:path];
+                
+                if (data) {
+                    NSMutableDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                    self.templateId = [dic objectForKey:@"id"];
+                    self.templateTitle = [dic objectForKey:@"title"];
+                    self.parts = [dic objectForKey:@"info"];
+                    self.BGM = [dic objectForKey:@"BGM"];
+                    self.subTitle1 = [dic objectForKey:@"subTitle1"];
+                    self.videoHeader = [dic objectForKey:@"header"];
+                    self.videoTailer = [dic objectForKey:@"tailer"];
+                    self.templateDescription = [dic objectForKey:@"templateDescription"];
+                    self.sampleVideoName = [dic objectForKey:@"sampleVideoName"];
+                }else{
+                    DLYLog(@"模板脚本文件解析出错");
+                }
+            }else{
+                DLYLog(@"模板文件地址获取失败");
+            }
+        }else{
+            templateId = kDEFAULTTEMPLATENAME;
+            DLYLog(@"模板名称为空");
+        }
     }
     return self;
 }

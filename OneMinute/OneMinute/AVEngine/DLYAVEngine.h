@@ -15,8 +15,11 @@ typedef NS_ENUM(NSUInteger, DLYCameraType) {
     DLYCameraTypeFront,
 };
 
-typedef void (^SuccessBlock)(void);
-typedef void (^FailureBlock)(NSError *error);
+typedef void (^TimeLapseSamplebufferBlock)(CMSampleBufferRef sampleBuffer);
+typedef void (^OnBufferBlock)(CMSampleBufferRef sampleBuffer);
+
+typedef void(^SuccessBlock)(void);
+typedef void(^FailureBlock)(NSError *error);
 typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个block返回
 
 typedef void(^setVideoSpeedBlock)();
@@ -25,10 +28,9 @@ typedef void(^setVideoSpeedBlock)();
 
 - (void) didFinishEdititProductUrl:(NSURL *)productUrl;
 
-- (void) didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL error:(NSError *)error;
+- (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL error:(NSError *)error;
 
 - (void) displayRefrenceRect:(CGRect)faceRegion;
-
 @end
 
 @interface DLYAVEngine : DLYModule
@@ -39,29 +41,29 @@ typedef void(^setVideoSpeedBlock)();
 
 @property (nonatomic, assign) CGFloat                                                 effectiveScale;
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *backCameraInput;
+@property (nonatomic, strong) AVCaptureDeviceInput                                    *currentVideoDeviceInput;
 @property (nonatomic, strong) AVCaptureDevice                                         *videoDevice;
 
 @property (nonatomic, assign) id                                                      delegate;
 @property (nonatomic, readonly) BOOL                                                  isRecording;
+
+@property (nonatomic, copy) OnBufferBlock                                             onBuffer;
+@property (nonatomic, copy) TimeLapseSamplebufferBlock                                timeLapseSamplebufferBlock;
+
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer                              *captureVideoPreviewLayer;
 @property (nonatomic, strong) AVCaptureConnection                                     *videoConnection;
 @property (nonatomic, strong) AVCaptureSession                                        *captureSession;
+
+@property (nonatomic, strong) DLYMiniVlogPart                                         *currentPart;
 @property (nonatomic, strong) NSURL                                                   *currentProductUrl;
 @property (nonatomic, assign) BOOL                                                    isTime;
 @property (nonatomic, strong) NSMutableArray                                          *imageArray;
-@property (nonatomic, strong) DLYMiniVlogPart                                         *currentPart;
+
 
 - (void) restartRecording;
 - (void) stopRecording;
 - (void) cancelRecording;
 - (void) pauseRecording;
-
-/**
- 创建单例
-
- @return 返回单例实例
- */
-+ (instancetype) sharedDLYAVEngine;
 /**
  初始化录制组件
 
@@ -84,6 +86,7 @@ typedef void(^setVideoSpeedBlock)();
  左右手模式切换预览画面逆时针旋转动画
  */
 - (void)changeCameraRotateAnticlockwiseAnimation;
+
 /**
  按传入的片段信息开始录制
 
@@ -108,16 +111,17 @@ typedef void(^setVideoSpeedBlock)();
 
 /**
  合并并添加转场效果
-
+ 
  @param videoTitle 视频标题
  @param newUrl  片头要添加上去的片段地址(需要传入单独处理)
  @param successBlock 成功回调
  @param failureBlcok 失败回调
  */
 - (void) addTransitionEffectWithTitle:(NSString *)videoTitle andURL:(NSURL*)newUrl SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
+
 /**
  配音
-
+ 
  @param videoUrl 视频文件Url
  @param audioUrl 音频文件Url
  @param videoTitle 视频标题名称
@@ -135,9 +139,11 @@ typedef void(^setVideoSpeedBlock)();
 -(UIImage*)getKeyImage:(NSURL *)assetUrl intervalTime:(NSInteger)intervalTime;
 
 - (void) focusOnceWithPoint:(CGPoint)point;
--(void)focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point;
+- (void) focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point;
 
-//新方法合成视频
--(long long)getDateTimeTOMilliSeconds:(NSDate *)datetime;
-
+/**
+ 创建导出会话
+ */
+- (void) makeExportable;
+- (long long)getDateTimeTOMilliSeconds:(NSDate *)datetime;
 @end
