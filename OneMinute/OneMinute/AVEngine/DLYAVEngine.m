@@ -236,7 +236,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         }
         
         // save the default format
-        self.defaultFormat = self.currentVideoDeviceInput.device.activeFormat;
+//        self.defaultFormat = self.currentVideoDeviceInput.device.activeFormat;
+        self.defaultFormat = self.videoDevice.activeFormat;
         defaultVideoMaxFrameDuration = self.videoDevice.activeVideoMaxFrameDuration;
         
         if (previewView) {
