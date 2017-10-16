@@ -5,9 +5,9 @@
     {
       "partNum": 0,
       "startTime": "00:00:00",
-      "stopTime": "00:05:00",
+      "stopTime": "00:04:00",
       "dubStartTime": "00:00:00",
-      "dubStopTime": "00:05:00",
+      "dubStopTime": "00:04:00",
       "recordType": 0,
       "soundType": 0,
       "BGMVolume": 100,
@@ -16,15 +16,27 @@
     },
     {
       "partNum": 1,
-      "startTime": "00:05:00",
-      "stopTime": "00:10:00",
-      "dubStartTime": "00:05:00",
-      "dubStopTime": "00:10:00",
+      "startTime": "00:04:00",
+      "stopTime": "00:08:00",
+      "dubStartTime": "00:04:00",
+      "dubStopTime": "00:08:00",
       "recordType": 0,
       "soundType": 1,
       "BGMVolume": 20,
-      "transitionType": 0,
+      "transitionType": 1,
       "shootGuide": "话筒开启，可以录音，说出你的想法吧"
+    },
+    {
+      "partNum": 2,
+      "startTime": "00:08:00",
+      "stopTime": "00:12:00",
+      "dubStartTime": "00:08:00",
+      "dubStopTime": "00:12:00",
+      "recordType": 0,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 0,
+      "shootGuide": "不录音，常速"
     }
   ],
   "subTitle1": {
