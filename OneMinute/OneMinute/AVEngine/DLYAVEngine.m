@@ -52,6 +52,7 @@
     BOOL _isRecordingCancel;
     AVAssetExportSession *_exportSession;
     BOOL flashMode;
+    BOOL isUsedFlash;
 }
 
 @property (nonatomic,strong) AVCaptureMetadataOutput            *metadataOutput;
@@ -297,6 +298,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 #pragma mark - 补光灯开关 -
 - (void) switchFlashMode:(BOOL)isOn
 {
+    isUsedFlash = YES;
     flashMode = isOn;
     AVCaptureDevice *device = self.defaultVideoDevice;
     if ([device hasTorch]) {
@@ -714,14 +716,17 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     if (isRunning)  [self.captureSession stopRunning];
     
     AVCaptureDevice *device = self.defaultVideoDevice;
-    if (flashMode) {
-        [device lockForConfiguration:nil];
-        [device setTorchMode:AVCaptureTorchModeOn];
-        [device unlockForConfiguration];
-    }else{
-        [device lockForConfiguration:nil];
-        [device setTorchMode:AVCaptureTorchModeOff];
-        [device unlockForConfiguration];
+    if (isUsedFlash){
+        isUsedFlash = NO;
+        if (flashMode) {
+            [device lockForConfiguration:nil];
+            [device setTorchMode:AVCaptureTorchModeOn];
+            [device unlockForConfiguration];
+        }else{
+            [device lockForConfiguration:nil];
+            [device setTorchMode:AVCaptureTorchModeOff];
+            [device unlockForConfiguration];
+        }
     }
     
     AVCaptureDeviceFormat *selectedFormat = nil;
@@ -1029,7 +1034,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         isDetectedMetadataObjectTarget = YES;
         AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects.firstObject;
         
-        DLYLog(@"检测到 %lu 个人脸",metadataObjects.count);
+//        DLYLog(@"检测到 %lu 个人脸",metadataObjects.count);
         //取到识别到的人脸区域
         AVMetadataObject *transformedMetadataObject = [self.captureVideoPreviewLayer transformedMetadataObjectForMetadataObject:metadataObject];
         faceRegion = transformedMetadataObject.bounds;
@@ -1175,6 +1180,7 @@ BOOL isOnce = YES;
         [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"片段处理中..."];
         typeof(self) weakSelf = self;
         [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl BGMVolume:_currentPart.BGMVolume recordTypeOfPart:_currentPart.recordType completed:^{
+            
             //添加片头片尾
             [self addVideoEffectsWithUrl:exportUrl recordType:_currentPart.recordType andBGMVolume:_currentPart.BGMVolume];
             DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
@@ -2099,7 +2105,7 @@ BOOL isOnce = YES;
     // Contains CMTime array for the time duration [0-1]
     NSMutableArray *keyTimesArray = [[NSMutableArray alloc] init];
     double currentTime = CMTimeGetSeconds(kCMTimeZero);
-    NSLog(@"currentDuration %f",currentTime);
+    DLYLog(@"成功生成片头片尾动画");
     
     for (int seed = 0; seed < [imagesArray count]; seed++)
     {
