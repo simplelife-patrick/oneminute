@@ -48,7 +48,6 @@
 		AD449CEF1F6F6FC6004DBD72 /* BigMeal.json in Resources */ = {isa = PBXBuildFile; fileRef = AD449CEE1F6F6FC6004DBD72 /* BigMeal.json */; };
 		AD5A06A31F33058A00F26693 /* SpiritTerritory.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A01F33058A00F26693 /* SpiritTerritory.json */; };
 		AD5A06A41F33058A00F26693 /* YoungOuting.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A11F33058A00F26693 /* YoungOuting.json */; };
-		AD5B80AF1F34133B0094922B /* header001.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80AA1F34133B0094922B /* header001.mp4 */; };
 		AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5B80B11F3443080094922B /* UIColor+Hex.m */; };
 		AD5B80B61F344C750094922B /* advertisementVideo(10s).mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */; };
 		AD71EC851F931D27007490BC /* TemplateList_v1.plist in Resources */ = {isa = PBXBuildFile; fileRef = AD71EC841F931D27007490BC /* TemplateList_v1.plist */; };
@@ -186,7 +185,6 @@
 		AD449CEE1F6F6FC6004DBD72 /* BigMeal.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = BigMeal.json; sourceTree = "<group>"; };
 		AD5A06A01F33058A00F26693 /* SpiritTerritory.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SpiritTerritory.json; sourceTree = "<group>"; };
 		AD5A06A11F33058A00F26693 /* YoungOuting.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = YoungOuting.json; sourceTree = "<group>"; };
-		AD5B80AA1F34133B0094922B /* header001.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = header001.mp4; sourceTree = "<group>"; };
 		AD5B80B01F3443080094922B /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		AD5B80B11F3443080094922B /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "advertisementVideo(10s).mp4"; sourceTree = "<group>"; };
@@ -521,7 +519,6 @@
 		AD5B80A91F34133B0094922B /* Header */ = {
 			isa = PBXGroup;
 			children = (
-				AD5B80AA1F34133B0094922B /* header001.mp4 */,
 			);
 			path = Header;
 			sourceTree = "<group>";
@@ -786,7 +783,6 @@
 				AD887A7A1F7661FC00A85881 /* GoNorthBGM.m4a in Resources */,
 				AD887A751F7661FC00A85881 /* SunSetBeachBGM.m4a in Resources */,
 				AD1F7BE31F8C60BA00654499 /* Secondary.json in Resources */,
-				AD5B80AF1F34133B0094922B /* header001.mp4 in Resources */,
 				AD72902B1F8CBC7C00BDD506 /* PrimaryBGM.m4a in Resources */,
 				AD887A781F7661FC00A85881 /* SoDeliciousBGM.m4a in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
