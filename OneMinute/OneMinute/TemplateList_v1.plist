@@ -1,30 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-	<key>T1</key>
+<array>
 	<string>Primary.json</string>
-	<key>T2</key>
 	<string>Secondary.json</string>
-	<key>T3</key>
 	<string>Advanced.json</string>
-	<key>T4</key>
 	<string>BigMeal.json</string>
-	<key>T5</key>
 	<string>AfternoonTea.json</string>
-	<key>T6</key>
 	<string>SoDelicious.json</string>
-	<key>T7</key>
 	<string>YoungOuting.json</string>
-	<key>T8</key>
 	<string>GoNorth.json</string>
-	<key>T9</key>
 	<string>MyMaldives.json</string>
-	<key>T10</key>
 	<string>SpiritTerritory.json</string>
-	<key>T11</key>
 	<string>ColorfulLife.json</string>
-	<key>T12</key>
 	<string>SunSetBeach.json</string>
-</dict>
+</array>
 </plist>
