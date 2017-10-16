@@ -148,13 +148,14 @@
     self.titleField.center = self.view.center;
     self.titleField.delegate = self;
     
-    NSString *text = [[NSUserDefaults standardUserDefaults] objectForKey:@"videoTitle"];
-    NSString *newStr = [text stringByReplacingOccurrencesOfString:@" " withString:@""];
-    if (newStr.length == 0) {
-        self.titleField.placeholder = @"请输入标题";
-    }else {
-        self.titleField.text = text;
-    }
+//    NSString *text = [[NSUserDefaults standardUserDefaults] objectForKey:@"videoTitle"];
+//    NSString *newStr = [text stringByReplacingOccurrencesOfString:@" " withString:@""];
+//    if (newStr.length == 0) {
+//        self.titleField.placeholder = @"请输入标题";
+//    }else {
+//        self.titleField.text = text;
+//    }
+    self.titleField.placeholder = @"请输入标题";
     self.titleField.textAlignment = NSTextAlignmentCenter;
     [self.titleField setValue:RGBA(255, 255, 255, 0.7) forKeyPath:@"_placeholderLabel.textColor"];
     self.titleField.tintColor = RGBA(255, 255, 255, 0.7);
@@ -964,7 +965,7 @@
         //do nothing
     }
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CANPLAY" object:nil];
-    [[NSUserDefaults standardUserDefaults] setObject:self.titleField.text forKey:@"videoTitle"];
+//    [[NSUserDefaults standardUserDefaults] setObject:self.titleField.text forKey:@"videoTitle"];
 }
 
 - (void)dealloc {

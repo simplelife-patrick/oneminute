@@ -236,7 +236,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         }
         
         // save the default format
-        self.defaultFormat = self.currentVideoDeviceInput.device.activeFormat;
+//        self.defaultFormat = self.currentVideoDeviceInput.device.activeFormat;
+        self.defaultFormat = self.videoDevice.activeFormat;
         defaultVideoMaxFrameDuration = self.videoDevice.activeVideoMaxFrameDuration;
         
         
@@ -935,23 +936,27 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
 }
 
-- (void)addVideoEffectsWithUrl:(NSURL *) inputUrl recordType:(DLYMiniVlogRecordType)recordType{
+- (void)addVideoEffectsWithUrl:(NSURL *) inputUrl recordType:(DLYMiniVlogRecordType)recordType andBGMVolume:(float)BGMVolume {
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     if (_currentPart.partNum != 0 && _currentPart.partNum != template.parts.count - 1) {
         return;
     }
     
-    BOOL isNormal;
+    BOOL isAudio;
     if (recordType == DLYMiniVlogRecordTypeNormal) {
-        isNormal = YES;
+        if (BGMVolume < 50) {
+            isAudio = YES;
+        }else {
+            isAudio = NO;
+        }
     }else {
-        isNormal = NO;
+        isAudio = NO;
     }
     if (_currentPart.partNum == 0) {
         NSString *headerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"headerVideo.mp4"];
         NSArray *headArr = [[DLYThemesData sharedInstance] getHeadImageArray];
         NSMutableArray *headArray = [NSMutableArray arrayWithArray:headArr];
-        [self buildVideoEffectsToMP4:headerPath inputVideoURL:inputUrl andImageArray:headArray isRecordNormal:isNormal callback:^(NSURL *finalUrl, NSString *filePath) {
+        [self buildVideoEffectsToMP4:headerPath inputVideoURL:inputUrl andImageArray:headArray andBeginTime:0.1 isAudio:isAudio callback:^(NSURL *finalUrl, NSString *filePath) {
             NSLog(@"片头完成");
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[DLYIndicatorView sharedIndicatorView] stopFlashAnimating];
@@ -962,7 +967,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         NSArray *footArr = [[DLYThemesData sharedInstance] getFootImageArray];
         NSMutableArray *footArray = [NSMutableArray arrayWithArray:footArr];
         
-        [self buildVideoEffectsToMP4:footerPath inputVideoURL:inputUrl andImageArray:footArray isRecordNormal:isNormal callback:^(NSURL *finalUrl, NSString *filePath) {
+        [self buildVideoEffectsToMP4:footerPath inputVideoURL:inputUrl andImageArray:footArray andBeginTime:0.1 isAudio:isAudio callback:^(NSURL *finalUrl, NSString *filePath) {
             NSLog(@"片尾完成");
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[DLYIndicatorView sharedIndicatorView] stopFlashAnimating];
@@ -1171,7 +1176,7 @@ BOOL isOnce = YES;
         typeof(self) weakSelf = self;
         [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl BGMVolume:_currentPart.BGMVolume recordTypeOfPart:_currentPart.recordType completed:^{
             //添加片头片尾
-            [self addVideoEffectsWithUrl:exportUrl recordType:_currentPart.recordType];
+            [self addVideoEffectsWithUrl:exportUrl recordType:_currentPart.recordType andBGMVolume:_currentPart.BGMVolume];
             DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
             [self.resource removePartWithPartNumFormCache:self.currentPart.partNum];
             if (_currentPart.partNum != 0 && _currentPart.partNum != self.session.currentTemplate.parts.count - 1) {
@@ -1909,7 +1914,7 @@ BOOL isOnce = YES;
 }
 
 #pragma mark - 动态水印
-- (BOOL)buildVideoEffectsToMP4:(NSString *)exportVideoFile inputVideoURL:(NSURL *)inputVideoURL andImageArray:(NSMutableArray *)imageArr isRecordNormal:(BOOL)isRecordNormal callback:(Callback )callBlock{
+- (BOOL)buildVideoEffectsToMP4:(NSString *)exportVideoFile inputVideoURL:(NSURL *)inputVideoURL andImageArray:(NSMutableArray *)imageArr andBeginTime:(float)beginTime isAudio:(BOOL)isAudio callback:(Callback )callBlock{
     
     // 1.
     if (!inputVideoURL || ![inputVideoURL isFileURL] || !exportVideoFile || [exportVideoFile isEqualToString:@""]) {
@@ -1958,7 +1963,7 @@ BOOL isOnce = YES;
     [videoTrack insertTimeRange:assetVideoTrack.timeRange ofTrack:assetVideoTrack atTime:CMTimeMake(0, 1) error:nil];
     [videoTrack setPreferredTransform:assetVideoTrack.preferredTransform];
     
-    if (isRecordNormal) {
+    if (isAudio) {
         AVMutableCompositionTrack *audioTrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
         
         if ([[asset tracksWithMediaType:AVMediaTypeAudio] count]>0)
@@ -1983,7 +1988,7 @@ BOOL isOnce = YES;
     // Animation effects
     NSMutableArray *animatedLayers = [[NSMutableArray alloc] init];
     //可以留着
-    CALayer *animatedLayer = [self buildAnimationImages:assetVideoTrack.naturalSize imagesArray:imageArr withTime:0.1];
+    CALayer *animatedLayer = [self buildAnimationImages:assetVideoTrack.naturalSize imagesArray:imageArr withTime:beginTime];
     
     if (animatedLayer) {
         [animatedLayers addObject:(id)animatedLayer];
@@ -2118,7 +2123,7 @@ BOOL isOnce = YES;
     //    [animationLayer setContents:[imagesArray lastObject]];
     
     frameAnimation.autoreverses = NO;
-    frameAnimation.duration = 2.5;
+    frameAnimation.duration = 2.0;
     frameAnimation.repeatCount = 1;
     [frameAnimation setValues:imagesArray];
     [frameAnimation setKeyTimes:keyTimesArray];
