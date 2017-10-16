@@ -55,7 +55,7 @@
     self.flashView.backgroundColor = RGB(255, 255, 255);
     [self.view addSubview:self.flashView];
     
-    self.flashTimer = [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(flashAnimation) userInfo:nil repeats:YES];
+    self.flashTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(flashAnimation) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.flashTimer forMode:NSRunLoopCommonModes];
     self.num = 0;
 }
