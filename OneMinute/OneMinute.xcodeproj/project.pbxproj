@@ -516,13 +516,6 @@
 			name = PopupMenu;
 			sourceTree = "<group>";
 		};
-		AD5B80A91F34133B0094922B /* Header */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Header;
-			sourceTree = "<group>";
-		};
 		AD887A661F7661FB00A85881 /* BGM */ = {
 			isa = PBXGroup;
 			children = (
@@ -546,7 +539,6 @@
 			isa = PBXGroup;
 			children = (
 				AD887A661F7661FB00A85881 /* BGM */,
-				AD5B80A91F34133B0094922B /* Header */,
 			);
 			path = resources;
 			sourceTree = "<group>";

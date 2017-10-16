@@ -26,6 +26,8 @@
 #import "DLYThemesData.h"
 #import "DLYVideoFilter.h"
 
+typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
+
 @interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate>
 {
     CMTime defaultVideoMaxFrameDuration;
@@ -52,6 +54,7 @@
     BOOL _isRecordingCancel;
     AVAssetExportSession *_exportSession;
     BOOL flashMode;
+    BOOL isUsedFlash;
 }
 
 @property (nonatomic,strong) AVCaptureMetadataOutput            *metadataOutput;
@@ -74,7 +77,6 @@
 @property (nonatomic, strong) GPUImageMovie                     *bodyMovie;
 @property (nonatomic, strong) GPUImageMovieWriter               *movieWriter;
 @property (nonatomic, strong) GPUImageChromaKeyBlendFilter      *filter;
-typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 
 @property (nonatomic, strong) AVMutableComposition              *composition;
 @property (nonatomic, strong) NSMutableArray                    *passThroughTimeRanges;
@@ -87,15 +89,15 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 @property (nonatomic, strong) AVMutableVideoComposition         *videoComposition;
 @property (nonatomic, strong) AVAssetExportSession              *assetExporter;
 
-@property (atomic, assign) BOOL isCapturing;//正在录制
-@property (nonatomic, strong) NSMutableArray *imageArr;
-@property (nonatomic, strong) NSTimer *recordTimer; //准备拍摄片段闪烁的计时器
+@property (atomic, assign)    BOOL                              isCapturing;//正在录制
+@property (nonatomic, strong) NSMutableArray                    *imageArr;
+@property (nonatomic, strong) NSTimer                           *recordTimer; //准备拍摄片段闪烁的计时器
 
-@property (nonatomic, strong) NSString                         *currentDeviceType;
+@property (nonatomic, strong) NSString                          *currentDeviceType;
 
-@property (retain, nonatomic) GPUImageMovie *movieFile;
-@property (retain, nonatomic) GPUImageOutput<GPUImageInput> *outputFilter;
-@property (retain, nonatomic) GPUImageMovieWriter *inputMovieWriter;
+@property (retain, nonatomic) GPUImageMovie                     *movieFile;
+@property (retain, nonatomic) GPUImageOutput<GPUImageInput>     *outputFilter;
+@property (retain, nonatomic) GPUImageMovieWriter               *inputMovieWriter;
 
 @end
 
@@ -297,6 +299,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 #pragma mark - 补光灯开关 -
 - (void) switchFlashMode:(BOOL)isOn
 {
+    isUsedFlash = YES;
     flashMode = isOn;
     AVCaptureDevice *device = self.defaultVideoDevice;
     if ([device hasTorch]) {
@@ -714,14 +717,17 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     if (isRunning)  [self.captureSession stopRunning];
     
     AVCaptureDevice *device = self.defaultVideoDevice;
-    if (flashMode) {
-        [device lockForConfiguration:nil];
-        [device setTorchMode:AVCaptureTorchModeOn];
-        [device unlockForConfiguration];
-    }else{
-        [device lockForConfiguration:nil];
-        [device setTorchMode:AVCaptureTorchModeOff];
-        [device unlockForConfiguration];
+    if (isUsedFlash){
+        isUsedFlash = NO;
+        if (flashMode) {
+            [device lockForConfiguration:nil];
+            [device setTorchMode:AVCaptureTorchModeOn];
+            [device unlockForConfiguration];
+        }else{
+            [device lockForConfiguration:nil];
+            [device setTorchMode:AVCaptureTorchModeOff];
+            [device unlockForConfiguration];
+        }
     }
     
     AVCaptureDeviceFormat *selectedFormat = nil;
@@ -1028,7 +1034,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         isDetectedMetadataObjectTarget = YES;
         AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects.firstObject;
         
-        DLYLog(@"检测到 %lu 个人脸",metadataObjects.count);
+//        DLYLog(@"检测到 %lu 个人脸",metadataObjects.count);
         //取到识别到的人脸区域
         AVMetadataObject *transformedMetadataObject = [self.captureVideoPreviewLayer transformedMetadataObjectForMetadataObject:metadataObject];
         faceRegion = transformedMetadataObject.bounds;
@@ -1174,6 +1180,7 @@ BOOL isOnce = YES;
         [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"片段处理中..."];
         typeof(self) weakSelf = self;
         [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl BGMVolume:_currentPart.BGMVolume recordTypeOfPart:_currentPart.recordType completed:^{
+            
             //添加片头片尾
             [self addVideoEffectsWithUrl:exportUrl recordType:_currentPart.recordType andBGMVolume:_currentPart.BGMVolume];
             DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
@@ -1203,8 +1210,8 @@ BOOL isOnce = YES;
             
             for (NSInteger i = 0; i < [draftArray count]; i++) {
                 NSString *path = draftArray[i];
-                DLYLog(@"🔄🔄🔄合并第 %lu 个片段",i);
-                if ([path hasSuffix:@"mov"]) {
+                DLYLog(@"🔄🔄🔄合并-->加载--> 第 %lu 个片段",i);
+                if ([path hasSuffix:@"mp4"]) {
                     NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
                     NSURL *url= [NSURL fileURLWithPath:allPath];
                     [videoArray addObject:url];
@@ -1224,6 +1231,27 @@ BOOL isOnce = YES;
     Float64 tmpDuration =0.0f;
     for (int i=0; i < videoArray.count; i++)
     {
+        AVURLAsset *asset = nil;
+        if (i == 0) {
+            NSString *headerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"headerVideo.mp4"];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:headerPath]) {
+                NSURL *headerUrl = [NSURL fileURLWithPath:headerPath];
+                asset = [AVURLAsset URLAssetWithURL:headerUrl options:nil];
+            }else {
+                asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
+            }
+        }else if (i == videoArray.count - 1) {
+            NSString *footerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"footrVideo.mp4"];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:footerPath]) {
+                NSURL *footerUrl = [NSURL fileURLWithPath:footerPath];
+                asset = [AVURLAsset URLAssetWithURL:footerUrl options:nil];
+            }else {
+                asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
+            }
+        }else {
+            asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
+        }
+        
         AVURLAsset *videoAsset = [[AVURLAsset alloc]initWithURL:videoArray[i] options:nil];
         
         AVAssetTrack *videoAssetTrack = nil;
@@ -1280,13 +1308,12 @@ BOOL isOnce = YES;
         
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@"m4a"];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
-        
         [self addMusicToVideo:productOutputUrl audioUrl:BGMUrl videoTitle:videoTitle successBlock:successBlock failure:failureBlcok];
     }];
 }
 
 #pragma mark - 转场 -
-- (void) addTransitionEffectWithTitle:(NSString *)videoTitle andURL:(NSURL*)newUrl SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
+- (void) addTransitionEffectWithTitle:(NSString *)videoTitle  successBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
     
     self.composition = [AVMutableComposition composition];
     
@@ -1331,8 +1358,7 @@ BOOL isOnce = YES;
     
     for (NSUInteger i = 0; i < videoArray.count; i++) {
         
-        AVURLAsset *asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
-        
+        AVURLAsset *asset = nil;
         if (i == 0) {
             NSString *headerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"headerVideo.mp4"];
             if ([[NSFileManager defaultManager] fileExistsAtPath:headerPath]) {
@@ -2096,7 +2122,7 @@ BOOL isOnce = YES;
     // Contains CMTime array for the time duration [0-1]
     NSMutableArray *keyTimesArray = [[NSMutableArray alloc] init];
     double currentTime = CMTimeGetSeconds(kCMTimeZero);
-    NSLog(@"currentDuration %f",currentTime);
+    DLYLog(@"成功生成片头片尾动画");
     
     for (int seed = 0; seed < [imagesArray count]; seed++)
     {
