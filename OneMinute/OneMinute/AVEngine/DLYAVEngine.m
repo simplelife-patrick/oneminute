@@ -963,10 +963,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             });
         }];
     }else {
-        NSString *footerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"footrVideo.mp4"];
+        NSString *footerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"footerVideo.mp4"];
         NSArray *footArr = [[DLYThemesData sharedInstance] getFootImageArray];
         NSMutableArray *footArray = [NSMutableArray arrayWithArray:footArr];
-        
         [self buildVideoEffectsToMP4:footerPath inputVideoURL:inputUrl andImageArray:footArray andBeginTime:0.1 isAudio:isAudio callback:^(NSURL *finalUrl, NSString *filePath) {
             NSLog(@"片尾完成");
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -1343,7 +1342,7 @@ BOOL isOnce = YES;
                 asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
             }
         }else if (i == videoArray.count - 1) {
-            NSString *footerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"footrVideo.mp4"];
+            NSString *footerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"footerVideo.mp4"];
             if ([[NSFileManager defaultManager] fileExistsAtPath:footerPath]) {
                 NSURL *footerUrl = [NSURL fileURLWithPath:footerPath];
                 asset = [AVURLAsset URLAssetWithURL:footerUrl options:nil];
@@ -1720,17 +1719,15 @@ BOOL isOnce = YES;
                         isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
                         DLYLog(@"%@",isSuccess ? @"⛳️⛳️⛳️成功删除未配音的成片视频 !" : @"❌❌❌删除未配音视频失败");
                     }
-                    NSString *outPath1 = @"outputMovie1.mp4";
-                    NSString *tempoutPath1 = [NSTemporaryDirectory() stringByAppendingPathComponent:outPath1];
-                    if ([[NSFileManager defaultManager] fileExistsAtPath:tempoutPath1]) {
-                        isSuccess = [fileManager removeItemAtPath:tempoutPath1 error:nil];
-                        DLYLog(@"删除滤镜");
+                    NSString *headerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"headerVideo.mp4"];
+                    if ([[NSFileManager defaultManager] fileExistsAtPath:headerPath]) {
+                        isSuccess = [fileManager removeItemAtPath:headerPath error:nil];
+                        DLYLog(@"删除片头");
                     }
-                    NSString *outPath2 = @"outputMovie2.mp4";
-                    NSString *tempoutPath2 = [NSTemporaryDirectory() stringByAppendingPathComponent:outPath2];
-                    if ([[NSFileManager defaultManager] fileExistsAtPath:tempoutPath2]) {
-                        isSuccess = [fileManager removeItemAtPath:tempoutPath2 error:nil];
-                        DLYLog(@"删除片头片尾");
+                    NSString *footerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"footerVideo.mp4"];
+                    if ([[NSFileManager defaultManager] fileExistsAtPath:footerPath]) {
+                        isSuccess = [fileManager removeItemAtPath:footerPath error:nil];
+                        DLYLog(@"删除片尾");
                     }
                     successBlock();
 
