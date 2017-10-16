@@ -1241,7 +1241,7 @@ BOOL isOnce = YES;
                 asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
             }
         }else if (i == videoArray.count - 1) {
-            NSString *footerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"footrVideo.mp4"];
+            NSString *footerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"footerVideo.mp4"];
             if ([[NSFileManager defaultManager] fileExistsAtPath:footerPath]) {
                 NSURL *footerUrl = [NSURL fileURLWithPath:footerPath];
                 asset = [AVURLAsset URLAssetWithURL:footerUrl options:nil];
