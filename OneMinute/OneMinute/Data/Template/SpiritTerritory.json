@@ -71,7 +71,7 @@
       "recordType": 1,
       "soundType": 0,
       "BGMVolume": 100,
-      "transitionType": 0,
+      "transitionType": 1,
       "shootGuide": "不录音，慢速"
     },
     {
