@@ -11,7 +11,7 @@
       "recordType": 0,
       "soundType": 0,
       "BGMVolume": 100,
-      "transitionType": 1,
+      "transitionType": 0,
       "shootGuide": "只录画面，不录声音哦，快去拍下美好的风景吧"
     },
     {
@@ -23,7 +23,7 @@
       "recordType": 0,
       "soundType": 1,
       "BGMVolume": 20,
-      "transitionType": 1,
+      "transitionType": 0,
       "shootGuide": "话筒开启，可以录音，说出你的想法吧"
     },
     {
