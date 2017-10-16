@@ -239,6 +239,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         self.defaultFormat = self.currentVideoDeviceInput.device.activeFormat;
         defaultVideoMaxFrameDuration = self.videoDevice.activeVideoMaxFrameDuration;
         
+        
         if (previewView) {
             self.captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.captureSession];
             self.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
@@ -543,28 +544,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
 }
 
--(void)focusAtPoint:(CGPoint)point{
-    
-    [self changeDeviceProperty:^(AVCaptureDevice *captureDevice) {
-        
-    }];
-}
-
--(void)changeDeviceProperty:(void(^)(AVCaptureDevice *captureDevice))propertyChange{
-    
-    AVCaptureDevice *captureDevice= [self.currentVideoDeviceInput device];
-    NSError *error;
-    
-    if ([captureDevice lockForConfiguration:&error]) {
-        
-        propertyChange(captureDevice);
-        [captureDevice unlockForConfiguration];
-        
-    }else{
-        NSLog(@"设置设备属性过程发生错误，错误信息：%@",error.localizedDescription);
-    }
-}
-
 #pragma mark -视频数据输出设置-
 
 - (BOOL)setupAssetWriterVideoInput:(CMFormatDescriptionRef)currentFormatDescription
@@ -709,23 +688,23 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
 #pragma mark - Public
 
-- (void)resetFormat {
-    
-    BOOL isRunning = self.captureSession.isRunning;
-    
-    if (isRunning) {
-        [self.captureSession stopRunning];
-    }
-    
-    [self.defaultVideoDevice lockForConfiguration:nil];
-    self.defaultVideoDevice.activeFormat = self.defaultFormat;
-    self.defaultVideoDevice.activeVideoMaxFrameDuration = defaultVideoMaxFrameDuration;
-    [self.defaultVideoDevice unlockForConfiguration];
-    
-    if (isRunning) {
-        [self.captureSession startRunning];
-    }
-}
+//- (void)resetFormat {
+//
+//    BOOL isRunning = self.captureSession.isRunning;
+//
+//    if (isRunning) {
+//        [self.captureSession stopRunning];
+//    }
+//
+//    [self.defaultVideoDevice lockForConfiguration:nil];
+//    self.defaultVideoDevice.activeFormat = self.defaultFormat;
+//    self.defaultVideoDevice.activeVideoMaxFrameDuration = defaultVideoMaxFrameDuration;
+//    [self.defaultVideoDevice unlockForConfiguration];
+//
+//    if (isRunning) {
+//        [self.captureSession startRunning];
+//    }
+//}
 
 #pragma mark - 改变录制帧率 -
 - (void)switchFormatWithDesiredFPS:(CGFloat)desiredFPS
@@ -877,10 +856,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 #pragma mark - 视频速度处理 -
 
 // 处理速度视频
-- (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl recordTypeOfPart:(DLYMiniVlogRecordType)recordType completed:(void(^)())completed {
+- (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl BGMVolume:(float)BGMVolume recordTypeOfPart:(DLYMiniVlogRecordType)recordType completed:(void(^)())completed {
     
-    NSLog(@"video set thread: %@", [NSThread currentThread]);
-    NSLog(@"处理视频速度🚀🚀🚀🚀🚀🚀🚀🚀🚀");
+//    NSLog(@"video set thread: %@", [NSThread currentThread]);
+    NSLog(@"🚀...🚀...调节视频速度...");
     // 获取视频
     if (!videoPartUrl) {
         DLYLog(@"待调速的视频片段不存在!");
@@ -900,23 +879,24 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         if(videoPartUrl) {
             videoAsset = [[AVURLAsset alloc]initWithURL:videoPartUrl options:nil];
         }
-        AVAssetTrack *videoAssetTrack = nil;
-        if([videoAsset tracksWithMediaType:AVMediaTypeVideo].count){
-            videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-        }
-        CGAffineTransform videoTransform = videoAssetTrack.preferredTransform;
+//        AVAssetTrack *videoAssetTrack = nil;
+//        if([videoAsset tracksWithMediaType:AVMediaTypeVideo].count){
+//            videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+//        }
+//        CGAffineTransform videoTransform = videoAssetTrack.preferredTransform;
         
-        NSLog(@"preferredTransform a = %.0f     b = %.0f       c = %.0f     d = %.0f,       tx = %.0f       ty = %.0f",videoTransform.a,videoTransform.b,videoTransform.c,videoTransform.d,videoTransform.tx,videoTransform.ty);
-        // 视频混合
+//        NSLog(@"preferredTransform a = %.0f     b = %.0f       c = %.0f     d = %.0f,       tx = %.0f       ty = %.0f",videoTransform.a,videoTransform.b,videoTransform.c,videoTransform.d,videoTransform.tx,videoTransform.ty);
+//        if (videoTransform.a == 0 && videoTransform.b == 1 && videoTransform.c == -1 && videoTransform.d == 0) {
+//            compositionVideoTrack.preferredTransform = CGAffineTransformMakeRotation(M_PI);
+//        }
+        
+        // 视频组合
         AVMutableComposition* mixComposition = [AVMutableComposition composition];
         // 视频轨道
         AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
         
-        //        if (videoTransform.a == 0 && videoTransform.b == 1 && videoTransform.c == -1 && videoTransform.d == 0) {
-        //            compositionVideoTrack.preferredTransform = CGAffineTransformMakeRotation(M_PI);
-        //        }
         
-        if (recordType == DLYMiniVlogRecordTypeNormal) {
+        if (BGMVolume < 50) {
             NSError *error = nil;
             NSFileManager *fileManager = [NSFileManager defaultManager];
             BOOL isSuccess = [fileManager moveItemAtURL:videoPartUrl toURL:outputUrl error:&error];
@@ -934,7 +914,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             // 插入音频轨道
             [compositionAudioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeAudio] firstObject] atTime:kCMTimeZero error:nil];
             
-        }else{//不录音的片段做丢弃原始音频处理
+        }else if (BGMVolume == 100){//不录音的片段做丢弃原始音频处理
             
             // 插入视频轨道
             [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
@@ -1189,7 +1169,7 @@ BOOL isOnce = YES;
     dispatch_async(dispatch_get_main_queue(), ^{
         [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"片段处理中..."];
         typeof(self) weakSelf = self;
-        [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl recordTypeOfPart:_currentPart.recordType completed:^{
+        [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl BGMVolume:_currentPart.BGMVolume recordTypeOfPart:_currentPart.recordType completed:^{
             //添加片头片尾
             [self addVideoEffectsWithUrl:exportUrl recordType:_currentPart.recordType];
             DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
@@ -1683,15 +1663,15 @@ BOOL isOnce = YES;
         CMTimeRange timeRange = CMTimeRangeMake(_startTime, duration);
         CMTimeRange preTimeRange = CMTimeRangeMake(_prePoint, CMTimeMake(2, 1));
         
-        if (part.soundType == DLYMiniVlogAudioTypeMusic) {//空镜
+        if (part.BGMVolume == 100) {//空镜
             [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
-            //            [BGMParameters setVolumeRampFromStartVolume:5.0 toEndVolume:0.4 timeRange:preTimeRange];
+//            [BGMParameters setVolumeRampFromStartVolume:5.0 toEndVolume:0.4 timeRange:preTimeRange];
             
             [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:timeRange];
-        }else if(part.soundType == DLYMiniVlogAudioTypeNarrate){//人声
+        }else if(part.BGMVolume < 50){//人声
             [videoParameters setVolumeRampFromStartVolume:2.0 toEndVolume:2.0 timeRange:timeRange];
             [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
-            //            [BGMParameters setVolumeRampFromStartVolume:0.4 toEndVolume:5.0 timeRange:preTimeRange];
+//            [BGMParameters setVolumeRampFromStartVolume:0.4 toEndVolume:5.0 timeRange:preTimeRange];
         }
     }
     audioMix.inputParameters = @[videoParameters,BGMParameters];
