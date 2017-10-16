@@ -1231,28 +1231,26 @@ BOOL isOnce = YES;
     Float64 tmpDuration =0.0f;
     for (int i=0; i < videoArray.count; i++)
     {
-        AVURLAsset *asset = nil;
+        AVURLAsset *videoAsset = nil;
         if (i == 0) {
             NSString *headerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"headerVideo.mp4"];
             if ([[NSFileManager defaultManager] fileExistsAtPath:headerPath]) {
                 NSURL *headerUrl = [NSURL fileURLWithPath:headerPath];
-                asset = [AVURLAsset URLAssetWithURL:headerUrl options:nil];
+                videoAsset = [AVURLAsset URLAssetWithURL:headerUrl options:nil];
             }else {
-                asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
+                videoAsset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
             }
         }else if (i == videoArray.count - 1) {
             NSString *footerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"footerVideo.mp4"];
             if ([[NSFileManager defaultManager] fileExistsAtPath:footerPath]) {
                 NSURL *footerUrl = [NSURL fileURLWithPath:footerPath];
-                asset = [AVURLAsset URLAssetWithURL:footerUrl options:nil];
+                videoAsset = [AVURLAsset URLAssetWithURL:footerUrl options:nil];
             }else {
-                asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
+                videoAsset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
             }
         }else {
-            asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
+            videoAsset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
         }
-        
-        AVURLAsset *videoAsset = [[AVURLAsset alloc]initWithURL:videoArray[i] options:nil];
         
         AVAssetTrack *videoAssetTrack = nil;
         AVAssetTrack *audioAssetTrack = nil;
@@ -1747,13 +1745,13 @@ BOOL isOnce = YES;
                     }
                     NSString *headerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"headerVideo.mp4"];
                     if ([[NSFileManager defaultManager] fileExistsAtPath:headerPath]) {
-                        isSuccess = [fileManager removeItemAtPath:headerPath error:nil];
-                        DLYLog(@"删除片头");
+//                        isSuccess = [fileManager removeItemAtPath:headerPath error:nil];
+//                        DLYLog(@"删除片头");
                     }
                     NSString *footerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"footerVideo.mp4"];
                     if ([[NSFileManager defaultManager] fileExistsAtPath:footerPath]) {
-                        isSuccess = [fileManager removeItemAtPath:footerPath error:nil];
-                        DLYLog(@"删除片尾");
+//                        isSuccess = [fileManager removeItemAtPath:footerPath error:nil];
+//                        DLYLog(@"删除片尾");
                     }
                     successBlock();
 
