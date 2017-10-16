@@ -21,6 +21,7 @@
 		1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61C21EE7E6730088F33F /* DLYLogModule.m */; };
 		6F12AE6C1F3DB78300CE8CB6 /* DLYDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F12AE691F3DB78300CE8CB6 /* DLYDownloader.m */; };
 		6F12AE6D1F3DB78300CE8CB6 /* DLYDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F12AE6B1F3DB78300CE8CB6 /* DLYDownloadManager.m */; };
+		6F5D26841F948457005F3EB0 /* PromoteVideo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 6F5D26831F948457005F3EB0 /* PromoteVideo.mp4 */; };
 		6F7455131F7A3EDE00682FB8 /* DLYThemesData.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F7455121F7A3EDE00682FB8 /* DLYThemesData.m */; };
 		6F806D6B1F7CEE7700B4EC51 /* DLYVideoFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F806D6A1F7CEE7700B4EC51 /* DLYVideoFilter.m */; };
 		6F89259C1F1B12A100256093 /* DLYExportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F89259B1F1B12A100256093 /* DLYExportViewController.m */; };
@@ -49,7 +50,6 @@
 		AD5A06A31F33058A00F26693 /* SpiritTerritory.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A01F33058A00F26693 /* SpiritTerritory.json */; };
 		AD5A06A41F33058A00F26693 /* YoungOuting.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A11F33058A00F26693 /* YoungOuting.json */; };
 		AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5B80B11F3443080094922B /* UIColor+Hex.m */; };
-		AD5B80B61F344C750094922B /* advertisementVideo(10s).mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */; };
 		AD71EC851F931D27007490BC /* TemplateList_v1.plist in Resources */ = {isa = PBXBuildFile; fileRef = AD71EC841F931D27007490BC /* TemplateList_v1.plist */; };
 		AD7290291F8CBC7C00BDD506 /* SecondaryBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD7290261F8CBC7B00BDD506 /* SecondaryBGM.m4a */; };
 		AD72902A1F8CBC7C00BDD506 /* AdvancedBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD7290271F8CBC7B00BDD506 /* AdvancedBGM.m4a */; };
@@ -138,6 +138,7 @@
 		6F12AE691F3DB78300CE8CB6 /* DLYDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYDownloader.m; sourceTree = "<group>"; };
 		6F12AE6A1F3DB78300CE8CB6 /* DLYDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYDownloadManager.h; sourceTree = "<group>"; };
 		6F12AE6B1F3DB78300CE8CB6 /* DLYDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYDownloadManager.m; sourceTree = "<group>"; };
+		6F5D26831F948457005F3EB0 /* PromoteVideo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = PromoteVideo.mp4; sourceTree = "<group>"; };
 		6F7455111F7A3EDE00682FB8 /* DLYThemesData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYThemesData.h; sourceTree = "<group>"; };
 		6F7455121F7A3EDE00682FB8 /* DLYThemesData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYThemesData.m; sourceTree = "<group>"; };
 		6F806D691F7CEE7700B4EC51 /* DLYVideoFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYVideoFilter.h; sourceTree = "<group>"; };
@@ -187,7 +188,6 @@
 		AD5A06A11F33058A00F26693 /* YoungOuting.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = YoungOuting.json; sourceTree = "<group>"; };
 		AD5B80B01F3443080094922B /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		AD5B80B11F3443080094922B /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
-		AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "advertisementVideo(10s).mp4"; sourceTree = "<group>"; };
 		AD71EC841F931D27007490BC /* TemplateList_v1.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = TemplateList_v1.plist; sourceTree = "<group>"; };
 		AD7290261F8CBC7B00BDD506 /* SecondaryBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SecondaryBGM.m4a; sourceTree = "<group>"; };
 		AD7290271F8CBC7B00BDD506 /* AdvancedBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = AdvancedBGM.m4a; sourceTree = "<group>"; };
@@ -350,8 +350,8 @@
 			isa = PBXGroup;
 			children = (
 				AD71EC841F931D27007490BC /* TemplateList_v1.plist */,
-				AD5B80B41F344C750094922B /* advertisementVideo(10s).mp4 */,
 				6FA74E8A1F5EC0F100114C93 /* iconfont.ttf */,
+				6F5D26831F948457005F3EB0 /* PromoteVideo.mp4 */,
 				ADFFF1A51F18A36700FB5BF7 /* DLYPrefixHeader.pch */,
 				1C7E61831EE7DF4F0088F33F /* main.m */,
 			);
@@ -773,6 +773,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AD887A7B1F7661FC00A85881 /* MyMaldivesBGM.m4a in Resources */,
+				6F5D26841F948457005F3EB0 /* PromoteVideo.mp4 in Resources */,
 				AD7290291F8CBC7C00BDD506 /* SecondaryBGM.m4a in Resources */,
 				AD887A581F7646FF00A85881 /* AfternoonTea.json in Resources */,
 				AD72902A1F8CBC7C00BDD506 /* AdvancedBGM.m4a in Resources */,
@@ -788,7 +789,6 @@
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				AD887A5A1F7646FF00A85881 /* MyMaldives.json in Resources */,
 				AD449CEF1F6F6FC6004DBD72 /* BigMeal.json in Resources */,
-				AD5B80B61F344C750094922B /* advertisementVideo(10s).mp4 in Resources */,
 				6FA74E8B1F5EC0F100114C93 /* iconfont.ttf in Resources */,
 				AD887A561F7646FF00A85881 /* ColorfulLife.json in Resources */,
 				AD887A731F7661FC00A85881 /* SpiritTerritoryBGM.m4a in Resources */,

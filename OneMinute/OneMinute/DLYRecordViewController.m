@@ -1415,7 +1415,18 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     self.warningIcon.hidden = NO;
                 }else
                 {
-                    self.warningIcon.hidden = YES;
+                    if (part.BGMVolume == 100) {
+                        if (self.newState == 1) {
+                            self.warningIcon.frame = CGRectMake(28, SCREEN_HEIGHT - 54, 32, 32);
+                            self.warningIcon.transform = CGAffineTransformMakeRotation(0);
+                        }else {
+                            self.warningIcon.frame = CGRectMake(28, 22, 32, 32);
+                            self.warningIcon.transform = CGAffineTransformMakeRotation(M_PI);
+                        }
+                        self.warningIcon.hidden = NO;
+                    }else {
+                        self.warningIcon.hidden = YES;
+                    }
                 }
             }
         }

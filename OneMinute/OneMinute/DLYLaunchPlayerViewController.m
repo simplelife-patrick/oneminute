@@ -72,7 +72,7 @@
 #pragma mark -- 初始化视频
 - (void)prepareMovie {
     //首次运行
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"advertisementVideo(10s).mp4" ofType:nil];
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"PromoteVideo.mp4" ofType:nil];
     //初始化player
     self.player = [AVPlayer playerWithURL:[NSURL fileURLWithPath:filePath]];
     //视频填充模式 充满
