@@ -1307,14 +1307,14 @@ BOOL isOnce = YES;
     self.composition = [AVMutableComposition composition];
     
     CMPersistentTrackID trackID = kCMPersistentTrackID_Invalid;
-    AVMutableCompositionTrack *compositionTrackA = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
-    AVMutableCompositionTrack *compositionTrackB = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
+    AVMutableCompositionTrack *compositionTrackVideoA = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
+    AVMutableCompositionTrack *compositionTrackVideoB = [self.composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
     
     AVMutableCompositionTrack *compositionTrackAudioA = [self.composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:trackID];
     AVMutableCompositionTrack *compositionTrackAudioB = [self.composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:trackID];
-    //    compositionVideoTrack.preferredTransform = CGAffineTransformRotate(CGAffineTransformIdentity, M_PI_2);
+//    compositionVideoTrack.preferredTransform = CGAffineTransformRotate(CGAffineTransformIdentity, M_PI_2);
     
-    NSArray *videoTracks = @[compositionTrackA, compositionTrackB];
+    NSArray *videoTracks = @[compositionTrackVideoA, compositionTrackVideoB];
     NSArray *audioTracks = @[compositionTrackAudioA, compositionTrackAudioB];
     
     CMTime videoCursorTime = kCMTimeZero;
