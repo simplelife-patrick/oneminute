@@ -47,12 +47,13 @@
         jsonFile = [[NSBundle mainBundle] pathForResource:@"TemplateList_v1.plist" ofType:nil];
     }
     
-    NSDictionary *dic = [NSDictionary dictionaryWithContentsOfFile:jsonFile];
+    NSArray *arrry = [NSArray arrayWithContentsOfFile:jsonFile];
     
     NSMutableArray *templateListArrray = [NSMutableArray array];
-    for (NSString *num in dic) {
+    
+    for (NSInteger i = 0; i < [arrry count]; i++) {
         
-        NSString *templateId = [dic objectForKey:num];
+        NSString *templateId = arrry[i];
         [templateListArrray addObject:templateId];
     }
     return templateListArrray;
