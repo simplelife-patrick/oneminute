@@ -193,9 +193,14 @@
         NSString *productPath = [dataPath stringByAppendingPathComponent:kProductFolder];
         if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
             
-            CocoaSecurityResult * result = [CocoaSecurity md5:[[NSDate date] description]];
+            CocoaSecurityResult *result = [CocoaSecurity md5:[[NSDate date] description]];
             
-            NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,result.hex];
+            //生成随机数
+            int randomNum = (int)(10 + (arc4random() % (9999 - 10 + 1)));
+            NSString *randomString = [NSString stringWithFormat:@"%d",randomNum];
+            NSString *salt = [randomString stringByAppendingString:result.hex];
+            
+            NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,salt];
             _currentProductPath = outputPath;
             NSURL *outPutUrl = [NSURL fileURLWithPath:outputPath];
             return outPutUrl;
