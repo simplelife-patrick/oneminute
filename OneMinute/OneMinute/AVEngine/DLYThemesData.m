@@ -63,6 +63,7 @@
                 UIImage *image = [UIImage imageNamed:imageName];
                 UIImage *newImage = [image scaleToSize:CGSizeMake(600, 600)];
                 [weakSelf.footImgArr addObject:(id)newImage.CGImage];
+//                NSLog(@"片尾个数:%zd", weakSelf.footImgArr.count);
             }
         }
     });
@@ -105,6 +106,7 @@
                 UIImage *image = [UIImage imageNamed:imageName];
                 UIImage *newImage = [image scaleToSize:CGSizeMake(600, 600)];
                 [weakSelf.headImgArr addObject:(id)newImage.CGImage];
+//                NSLog(@"片头个数:%zd", weakSelf.footImgArr.count);
             }
         }
     });
