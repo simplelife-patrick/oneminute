@@ -1,0 +1,100 @@
+{
+  "id": "GoNorth.json",
+  "title":"一路向北",
+  "info": [
+    {
+      "partNum": 0,
+      "startTime": "00:00:00",
+      "stopTime": "00:04:72",
+      "dubStartTime": "00:00:00",
+      "dubStopTime": "00:04:72",
+      "recordType": 0,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "常速镜头，不录音"
+    },
+    {
+      "partNum": 1,
+      "startTime": "00:04:72",
+      "stopTime": "00:09:44",
+      "dubStartTime": "00:04:72",
+      "dubStopTime": "00:09:44",
+      "recordType": 0,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "常速镜头，不录音"
+    },
+    {
+      "partNum": 2,
+      "startTime": "00:09:44",
+      "stopTime": "00:19:24",
+      "dubStartTime": "00:09:44",
+      "dubStopTime": "00:19:24",
+      "recordType": 0,
+      "soundType": 1,
+      "BGMVolume": 20,
+      "transitionType": 1,
+      "shootGuide": "这一段是常速，会录音哦"
+    },
+    {
+      "partNum": 3,
+      "startTime": "00:19:24",
+      "stopTime": "00:24:00",
+      "dubStartTime": "00:19:24",
+      "dubStopTime": "00:24:00",
+      "recordType": 0,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "常速镜头，不录音"
+    },
+    {
+      "partNum": 4,
+      "startTime": "00:24:00",
+      "stopTime": "00:40:00",
+      "dubStartTime": "00:24:00",
+      "dubStopTime": "00:40:00",
+      "recordType": 0,
+      "soundType": 1,
+      "BGMVolume": 20,
+      "transitionType": 1,
+      "shootGuide": "这一段是常速，录音哦"
+    },
+    {
+      "partNum": 5,
+      "startTime": "00:40:00",
+      "stopTime": "00:43:00",
+      "dubStartTime": "00:40:00",
+      "dubStopTime": "00:47:88",
+      "recordType": 1,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "慢镜头，不录音"
+    },
+    {
+      "partNum": 6,
+      "startTime": "00:43:00",
+      "stopTime": "00:47:00",
+      "dubStartTime": "00:47:88",
+      "dubStopTime": "01:00:00",
+      "recordType": 1,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 0,
+      "shootGuide": "慢镜头，不录音"
+    }
+  ],
+  "subTitle1": {
+    "startTime": "00:02:00",
+    "stopTime": "00:05:00"
+  },
+  "BGM": "GoNorthBGM",
+  "header": "header001",
+  "tailer": "tail001",
+  "templateDescription": "本模板有7个片段，其中3个常速空镜，2个慢镜头片段，2个说话片段。再次开启你的旅程吧。",
+  "sampleVideoName": "GoNorthSample.mp4"
+}
+
