@@ -390,7 +390,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     self.btnImg = @[@"\U0000e67e", @"\U0000e67d", @"\U0000e682", @"\U0000e67f",
                     @"\U0000e678", @"\U0000e680", @"\U0000e679", @"\U0000e683",
-                    @"\U0000e67b", @"\U0000e681", @"\U0000e67a", @"\U0000e67c"];
+                    @"\U0000e67b", @"\U0000e681", @"\U0000e684", @"\U0000e67c"];
     
     BOOL isExitDraft = [self.session isExistDraftAtFile];
     NSMutableArray *draftArr = [NSMutableArray array];
@@ -478,7 +478,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     self.btnImg = @[@"\U0000e67e", @"\U0000e67d", @"\U0000e682", @"\U0000e67f",
                     @"\U0000e678", @"\U0000e680", @"\U0000e679", @"\U0000e683",
-                    @"\U0000e67b", @"\U0000e681", @"\U0000e67a", @"\U0000e67c"];
+                    @"\U0000e67b", @"\U0000e681", @"\U0000e684", @"\U0000e67c"];
     
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     [self.session saveCurrentTemplateWithId:template.templateId];
@@ -2440,8 +2440,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.videoDisapper = [[UIButton alloc]initWithFrame:CGRectMake(20, 20, 14, 14)];
     UIEdgeInsets edgeInsets = {-20, -20, -20, -20};
     [self.videoDisapper setHitEdgeInsets:edgeInsets];
-//    [self.videoDisapper setImage:[UIImage imageWithIcon:@"\U0000e66e" inFont:ICONFONT size:14 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
-    [self.videoDisapper setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+    [self.videoDisapper setImage:[UIImage imageWithIcon:@"\U0000e64d" inFont:ICONFONT size:14 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
     [self.videoDisapper addTarget:self action:@selector(hideVideoView) forControlEvents:UIControlEventTouchUpInside];
     [self.videoView addSubview:self.videoDisapper];
     
