@@ -713,6 +713,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 #pragma mark - 改变录制帧率 -
 - (void)switchFormatWithDesiredFPS:(CGFloat)desiredFPS
 {
+    DLYLog(@"最终设定的最佳帧率: %f",desiredFPS);
     BOOL isRunning = self.captureSession.isRunning;
     if (isRunning)  [self.captureSession stopRunning];
     
@@ -743,7 +744,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             int32_t width = dimensions.width;
             
             if (range.minFrameRate <= desiredFPS && desiredFPS <= range.maxFrameRate && width >= maxWidth) {
-                DLYLog(@"最终设定的最佳帧率: %f",desiredFPS);
                 selectedFormat = format;
                 frameRateRange = range;
                 maxWidth = width;
@@ -1217,6 +1217,7 @@ BOOL isOnce = YES;
     }
     DLYLog(@"待合成的视频片段: %@",videoArray);
     
+    CMTime cursorTime = kCMTimeZero;
     for (NSUInteger i = 0; i < videoArray.count; i++) {
 
         AVURLAsset *asset = nil;
@@ -1243,8 +1244,6 @@ BOOL isOnce = YES;
         AVAssetTrack *assetVideoTrack = nil;
         AVAssetTrack *assetAudioTrack = nil;
         
-        CMTime cursorTime = kCMTimeZero;
-        
         if ([asset tracksWithMediaType:AVMediaTypeVideo].count != 0) {
             assetVideoTrack = [[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
         }
@@ -1265,7 +1264,6 @@ BOOL isOnce = YES;
         if (audioError) {
             DLYLog(@"视频合成过程音频轨道插入发生错误,错误信息 :%@",audioError);
         }
-        
         cursorTime = CMTimeAdd(cursorTime, timeRange.duration);
     }
     
