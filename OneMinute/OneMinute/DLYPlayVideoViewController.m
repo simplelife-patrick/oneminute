@@ -211,7 +211,13 @@
     typeof(self) weakSelf = self;
     
     //开始合并
-    [self.AVEngine mergeVideoWithVideoTitle:self.titleField.text SuccessBlock:^{
+//    [self.AVEngine mergeVideoWithVideoTitle:self.titleField.text SuccessBlock:^{
+//        weakSelf.AVEngine.finishOperation = [weakSelf.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
+//        NSLog(@"🥇🥇🥇成片耗时: %lld s ⚡️⚡️⚡️",(weakSelf.AVEngine.finishOperation - weakSelf.AVEngine.startOperation)/1000);
+//    } failure:^(NSError *error) {
+//
+//    }];
+    [self.AVEngine addVideoHeaderWithTitle:self.titleField.text SuccessBlock:^{
         weakSelf.AVEngine.finishOperation = [weakSelf.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
         NSLog(@"🥇🥇🥇成片耗时: %lld s ⚡️⚡️⚡️",(weakSelf.AVEngine.finishOperation - weakSelf.AVEngine.startOperation)/1000);
     } failure:^(NSError *error) {
