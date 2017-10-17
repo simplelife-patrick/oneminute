@@ -23,6 +23,7 @@
 		6F12AE6D1F3DB78300CE8CB6 /* DLYDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F12AE6B1F3DB78300CE8CB6 /* DLYDownloadManager.m */; };
 		6F5D26841F948457005F3EB0 /* PromoteVideo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 6F5D26831F948457005F3EB0 /* PromoteVideo.mp4 */; };
 		6F7455131F7A3EDE00682FB8 /* DLYThemesData.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F7455121F7A3EDE00682FB8 /* DLYThemesData.m */; };
+		6F7BC3971F95933400E89185 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6F7BC3961F95933400E89185 /* iconfont.ttf */; };
 		6F806D6B1F7CEE7700B4EC51 /* DLYVideoFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F806D6A1F7CEE7700B4EC51 /* DLYVideoFilter.m */; };
 		6F89259C1F1B12A100256093 /* DLYExportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F89259B1F1B12A100256093 /* DLYExportViewController.m */; };
 		6F8925AF1F1B135100256093 /* DLYPlayVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925AE1F1B135100256093 /* DLYPlayVideoViewController.m */; };
@@ -35,7 +36,6 @@
 		6F8925E01F1B142300256093 /* DLYPopupMenuPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DC1F1B142300256093 /* DLYPopupMenuPath.m */; };
 		6F8925E11F1B142300256093 /* DLYRectConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DE1F1B142300256093 /* DLYRectConst.m */; };
 		6FA74E871F5E48B800114C93 /* DLYTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA74E861F5E48B800114C93 /* DLYTitleView.m */; };
-		6FA74E8B1F5EC0F100114C93 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6FA74E8A1F5EC0F100114C93 /* iconfont.ttf */; };
 		6FD13ABE1F5FDAF4000B72FC /* DLYAnimationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FD13ABD1F5FDAF4000B72FC /* DLYAnimationViewController.m */; };
 		6FD13AC41F60EC02000B72FC /* DLYIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FD13AC31F60EC02000B72FC /* DLYIndicatorView.m */; };
 		822650B2C2F69335E52B0573 /* libPods-OneMinute.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D600523FDE25F6D3C6635F4 /* libPods-OneMinute.a */; };
@@ -141,6 +141,7 @@
 		6F5D26831F948457005F3EB0 /* PromoteVideo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = PromoteVideo.mp4; sourceTree = "<group>"; };
 		6F7455111F7A3EDE00682FB8 /* DLYThemesData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYThemesData.h; sourceTree = "<group>"; };
 		6F7455121F7A3EDE00682FB8 /* DLYThemesData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYThemesData.m; sourceTree = "<group>"; };
+		6F7BC3961F95933400E89185 /* iconfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = iconfont.ttf; sourceTree = "<group>"; };
 		6F806D691F7CEE7700B4EC51 /* DLYVideoFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYVideoFilter.h; sourceTree = "<group>"; };
 		6F806D6A1F7CEE7700B4EC51 /* DLYVideoFilter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DLYVideoFilter.m; sourceTree = "<group>"; };
 		6F89259A1F1B12A100256093 /* DLYExportViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYExportViewController.h; sourceTree = "<group>"; };
@@ -165,7 +166,6 @@
 		6F8925DE1F1B142300256093 /* DLYRectConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRectConst.m; sourceTree = "<group>"; };
 		6FA74E851F5E48B800114C93 /* DLYTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYTitleView.h; sourceTree = "<group>"; };
 		6FA74E861F5E48B800114C93 /* DLYTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYTitleView.m; sourceTree = "<group>"; };
-		6FA74E8A1F5EC0F100114C93 /* iconfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = iconfont.ttf; sourceTree = "<group>"; };
 		6FD13ABC1F5FDAF4000B72FC /* DLYAnimationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAnimationViewController.h; sourceTree = "<group>"; };
 		6FD13ABD1F5FDAF4000B72FC /* DLYAnimationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAnimationViewController.m; sourceTree = "<group>"; };
 		6FD13AC21F60EC02000B72FC /* DLYIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYIndicatorView.h; sourceTree = "<group>"; };
@@ -350,7 +350,7 @@
 			isa = PBXGroup;
 			children = (
 				AD71EC841F931D27007490BC /* TemplateList_v1.plist */,
-				6FA74E8A1F5EC0F100114C93 /* iconfont.ttf */,
+				6F7BC3961F95933400E89185 /* iconfont.ttf */,
 				6F5D26831F948457005F3EB0 /* PromoteVideo.mp4 */,
 				ADFFF1A51F18A36700FB5BF7 /* DLYPrefixHeader.pch */,
 				1C7E61831EE7DF4F0088F33F /* main.m */,
@@ -781,7 +781,6 @@
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				AD887A5A1F7646FF00A85881 /* MyMaldives.json in Resources */,
 				AD449CEF1F6F6FC6004DBD72 /* BigMeal.json in Resources */,
-				6FA74E8B1F5EC0F100114C93 /* iconfont.ttf in Resources */,
 				AD887A561F7646FF00A85881 /* ColorfulLife.json in Resources */,
 				AD887A731F7661FC00A85881 /* SpiritTerritoryBGM.m4a in Resources */,
 				AD5A06A41F33058A00F26693 /* YoungOuting.json in Resources */,
@@ -792,6 +791,7 @@
 				AD887A741F7661FC00A85881 /* ColorfulLifeBGM.m4a in Resources */,
 				AD5A06A31F33058A00F26693 /* SpiritTerritory.json in Resources */,
 				AD1F7BE41F8C60BA00654499 /* Advanced.json in Resources */,
+				6F7BC3971F95933400E89185 /* iconfont.ttf in Resources */,
 				AD887A761F7661FC00A85881 /* BigMealBGM.m4a in Resources */,
 				AD887A5B1F7646FF00A85881 /* SunSetBeach.json in Resources */,
 				AD887A771F7661FC00A85881 /* AfternoonTeaBGM.m4a in Resources */,

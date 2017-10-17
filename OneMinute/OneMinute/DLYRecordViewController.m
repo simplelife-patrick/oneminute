@@ -388,9 +388,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark ==== 初始化数据
 - (NSInteger)initDataReadDraft {
     
-    self.btnImg = @[@"\U0000e665", @"\U0000e780", @"\U0000e6f1", @"\U0000e671",
-                    @"\U0000e665", @"\U0000e780", @"\U0000e6f1", @"\U0000e671",
-                    @"\U0000e665", @"\U0000e780", @"\U0000e6f1", @"\U0000e671"];
+    self.btnImg = @[@"\U0000e67e", @"\U0000e67d", @"\U0000e682", @"\U0000e67f",
+                    @"\U0000e678", @"\U0000e680", @"\U0000e679", @"\U0000e683",
+                    @"\U0000e67b", @"\U0000e681", @"\U0000e67a", @"\U0000e67c"];
     
     BOOL isExitDraft = [self.session isExistDraftAtFile];
     NSMutableArray *draftArr = [NSMutableArray array];
@@ -476,9 +476,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 - (void)initData {
     
-    self.btnImg = @[@"\U0000e665", @"\U0000e780", @"\U0000e6f1", @"\U0000e671",
-                    @"\U0000e665", @"\U0000e780", @"\U0000e6f1", @"\U0000e671",
-                    @"\U0000e665", @"\U0000e780", @"\U0000e6f1", @"\U0000e671"];
+    self.btnImg = @[@"\U0000e67e", @"\U0000e67d", @"\U0000e682", @"\U0000e67f",
+                    @"\U0000e678", @"\U0000e680", @"\U0000e679", @"\U0000e683",
+                    @"\U0000e67b", @"\U0000e681", @"\U0000e67a", @"\U0000e67c"];
     
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     [self.session saveCurrentTemplateWithId:template.templateId];
@@ -2375,18 +2375,18 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         view.tag = 101 + i;
         [typeScrollView addSubview:view];
         
-        UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 61, 61)];
+        UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 7, 61, 61)];
         btn.tag = 1002 + i;
         btn.centerX = view.width / 2;
         [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(changeTypeStatus:) forControlEvents:UIControlEventTouchUpInside];
-        btn.layer.cornerRadius = 30.5;
-        btn.clipsToBounds = YES;
-        btn.layer.borderWidth = 1,0;
-        btn.layer.borderColor = RGB(255, 255, 255).CGColor;
+//        btn.layer.cornerRadius = 30.5;
+//        btn.clipsToBounds = YES;
+//        btn.layer.borderWidth = 1,0;
+//        btn.layer.borderColor = RGB(255, 255, 255).CGColor;
         [view addSubview:btn];
         
-        UILabel *typeName = [[UILabel alloc]initWithFrame:CGRectMake(0, btn.bottom + 7, 70, 22)];
+        UILabel *typeName = [[UILabel alloc]initWithFrame:CGRectMake(0, btn.bottom, 70, 22)];
         typeName.tag = 2002 + i;
         typeName.centerX = view.width / 2;
         typeName.text = templateModel.templateTitle;
@@ -2397,7 +2397,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         if(i == selectType) {
             [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 122, 0, 1)] forState:UIControlStateNormal];
-            btn.layer.borderColor = RGB(255, 122, 0).CGColor;
+//            btn.layer.borderColor = RGB(255, 122, 0).CGColor;
             typeName.textColor = RGB(255, 122, 0);
         }
     }
@@ -2440,7 +2440,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.videoDisapper = [[UIButton alloc]initWithFrame:CGRectMake(20, 20, 14, 14)];
     UIEdgeInsets edgeInsets = {-20, -20, -20, -20};
     [self.videoDisapper setHitEdgeInsets:edgeInsets];
-    [self.videoDisapper setImage:[UIImage imageWithIcon:@"\U0000e666" inFont:ICONFONT size:14 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+//    [self.videoDisapper setImage:[UIImage imageWithIcon:@"\U0000e66e" inFont:ICONFONT size:14 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.videoDisapper setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
     [self.videoDisapper addTarget:self action:@selector(hideVideoView) forControlEvents:UIControlEventTouchUpInside];
     [self.videoView addSubview:self.videoDisapper];
     
@@ -2472,15 +2473,18 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         view.tag = 500 + i;
         [videoScrollView addSubview:view];
         
-        UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 61, 61)];
+        UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 31, 30, 30)];
+        UIEdgeInsets edgeInsets = {-15, -15, -15, -15};
+        [btn setHitEdgeInsets:edgeInsets];
         btn.tag = 600 + i;
         btn.centerX = view.width / 2;
-        [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+        [btn setImage:[UIImage imageWithIcon:@"\U0000e63f" inFont:ICONFONT size:30 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(changeVideoToPlay:) forControlEvents:UIControlEventTouchUpInside];
-        btn.layer.cornerRadius = 30.5;
+        btn.backgroundColor = RGB(149, 145, 141);
+        btn.layer.cornerRadius = 15;
         btn.clipsToBounds = YES;
-        btn.layer.borderWidth = 1,0;
-        btn.layer.borderColor = RGB(255, 255, 255).CGColor;
+//        btn.layer.borderWidth = 1,0;
+//        btn.layer.borderColor = RGB(255, 255, 255).CGColor;
         [view addSubview:btn];
         
         UILabel *typeName = [[UILabel alloc]initWithFrame:CGRectMake(0, btn.bottom + 7, 70, 22)];
@@ -2614,14 +2618,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         if(num == i)
         {
             [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 122, 0, 1)] forState:UIControlStateNormal];
-            btn.layer.borderColor = RGB(255, 122, 0).CGColor;
+//            btn.layer.borderColor = RGB(255, 122, 0).CGColor;
             typeName.textColor = RGB(255, 122, 0);
             [self.chooseScene setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
             
         }else
         {
             [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
-            btn.layer.borderColor = RGB(255, 255, 255).CGColor;
+//            btn.layer.borderColor = RGB(255, 255, 255).CGColor;
             typeName.textColor = RGB(255, 255, 255);
         }
     }
