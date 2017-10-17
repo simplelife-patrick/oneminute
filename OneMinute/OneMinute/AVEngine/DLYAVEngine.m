@@ -874,7 +874,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }else{
         
         // 适配视频速度比率
-        CGFloat scale = 0;
+        Float64 scale = 0;
         if(recordType == DLYMiniVlogRecordTypeTimelapse){
             scale = 0.2f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(低帧率)
         } else if (recordType == DLYMiniVlogRecordTypeSlomo) {
@@ -917,7 +917,25 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
             
             // 根据速度比率调节音频和视频
-            [compositionVideoTrack scaleTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) toDuration:CMTimeMake(videoAsset.duration.value * scale , videoAsset.duration.timescale)];
+            CMTimeRange scaleRange = CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale));
+//            NSLog(@"scaleRange");
+//            CMTimeRangeShow(scaleRange);
+            
+            CMTime toDuration_before = CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale);
+            CMTime toDuration_after = CMTimeMake(videoAsset.duration.value * scale , videoAsset.duration.timescale);
+            
+            NSLog(@"value_original -----------%lld",videoAsset.duration.value);
+            NSLog(@"value_value -----------%f",videoAsset.duration.value * (Float64)scale);
+//            Float64 durationWithSecond_befor = CMTimeGetSeconds(toDuration_before);
+//            Float64 durationWithSecond_after = CMTimeGetSeconds(toDuration_after);
+//
+//            CMTimeShow(toDuration_before);
+//            NSLog(@"durationWithSecond_befor -----------%f",durationWithSecond_befor);
+//
+//            CMTimeShow(toDuration_after);
+//            NSLog(@"durationWithSecond_after -----------%f",durationWithSecond_after);
+            
+            [compositionVideoTrack scaleTimeRange:scaleRange toDuration:toDuration_after];
         }
         // 配置导出
         AVAssetExportSession *assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1280x720];
