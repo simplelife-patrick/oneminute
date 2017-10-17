@@ -930,7 +930,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
 }
 
-#pragma mark -添加视频片头-
+#pragma mark -添加片头片尾-
 - (void)addVideoHeaderWithTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
     
     NSURL *headerUrl;

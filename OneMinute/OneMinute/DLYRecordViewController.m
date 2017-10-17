@@ -1643,18 +1643,18 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //url放在这里
     DLYMiniVlogTemplate *template = typeModelArray[num];
     NSString *videoName = [template.sampleVideoName stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
-    NSArray *urlArr = @[@"http://dly.oss-cn-shanghai.aliyuncs.com/PrimaryTemplateSample.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/SecondaryTemplateSample.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/AdvancedTemplateSample.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/GourmandismTemplateSample.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/TravelerTemplateSample.mp4",
+    NSArray *urlArr = @[@"http://dly.oss-cn-shanghai.aliyuncs.com/Primary.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/Secondary.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/Advanced.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/BigMeal.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/AfternoonTea.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/SoDelicious.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/YoungOuting.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/GoNorth.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/MyMaldives.mp4",
                         @"http://dly.oss-cn-shanghai.aliyuncs.com/ColorLifeTemplateSample.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/GourmandismTemplateSample002.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/TravelerTemplateSample002.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/ColorLifeTemplateSample002.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/GourmandismTemplateSample003.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/TravelerTemplateSample003.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/ColorLifeTemplateSample003.mp4"];
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/ColorfulLife.mp4",
+                        @"http://dly.oss-cn-shanghai.aliyuncs.com/SunSetBeach.mp4"];
     NSString *videoUrl = urlArr[num];
     //路径
     NSString *finishPath = [kPathDocument stringByAppendingFormat:@"/FinishVideo/%@.mp4", videoName];
