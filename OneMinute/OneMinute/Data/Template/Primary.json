@@ -29,9 +29,9 @@
     {
       "partNum": 2,
       "startTime": "00:08:00",
-      "stopTime": "00:12:00",
+      "stopTime": "00:10:00",
       "dubStartTime": "00:08:00",
-      "dubStopTime": "00:12:00",
+      "dubStopTime": "00:10:00",
       "recordType": 0,
       "soundType": 0,
       "BGMVolume": 100,
