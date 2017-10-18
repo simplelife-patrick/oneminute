@@ -1164,7 +1164,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
 #pragma mark - 录制用的计时器 -
 - (void)createRecorderTimerWithStartTime:(float)startTime stopTime:(float)stopTime {
-
+    counter = 0;
     __block float recordDuration = stopTime - startTime;
     dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
     dispatch_source_t enliveTime = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
@@ -1199,15 +1199,15 @@ BOOL isOnce = YES;
     //获得队列
     dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
     //创建一个定时器
-    dispatch_source_t enliveTime = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+    dispatch_source_t enliveTime2 = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
     //设置开始时间
     dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC));
     //设置时间间隔
     uint64_t interval = (uint64_t)(1.0 * NSEC_PER_SEC);
     //设置定时器
-    dispatch_source_set_timer(enliveTime, start, interval, 0);
+    dispatch_source_set_timer(enliveTime2, start, interval, 0);
     //设置回调
-    dispatch_source_set_event_handler(enliveTime, ^{
+    dispatch_source_set_event_handler(enliveTime2, ^{
         
         CGFloat distance = distanceBetweenPoints(faceRegion.origin, lastFaceRegion.origin);
         lastFaceRegion = faceRegion;
@@ -1236,12 +1236,12 @@ BOOL isOnce = YES;
             }
         });
         if(timeCount > MAXFLOAT){
-            dispatch_cancel(enliveTime);
+            dispatch_cancel(enliveTime2);
         }
         
     });
     //启动定时器
-    dispatch_resume(enliveTime);
+    dispatch_resume(enliveTime2);
 }
 #pragma mark -延时拍摄-
 //获取视频某一帧图像
