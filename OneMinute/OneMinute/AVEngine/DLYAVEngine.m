@@ -690,8 +690,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
 }
 
-#pragma mark - Public
-
 //- (void)resetFormat {
 //
 //    BOOL isRunning = self.captureSession.isRunning;
@@ -780,10 +778,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         
     }else if (_currentPart.recordType == DLYMiniVlogRecordTypeTimelapse){
         DLYLog(@"🎬🎬🎬 快镜头片段");
-        [self switchFormatWithDesiredFPS:50.0];
+        [self switchFormatWithDesiredFPS:25.0];
     }else{
         DLYLog(@"🎬🎬🎬 正常拍摄片段");
-        [self switchFormatWithDesiredFPS:50.0];
+        [self switchFormatWithDesiredFPS:25.0];
     }
     
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
@@ -878,7 +876,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         if(recordType == DLYMiniVlogRecordTypeTimelapse){
             scale = 0.2f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(低帧率)
         } else if (recordType == DLYMiniVlogRecordTypeSlomo) {
-            scale = 3.0f;  // 慢速 x3   播放时间拉长帧率平均(高帧率)
+            scale = 4.8f;  // 3.0对应  慢速 x3   播放时间拉长帧率平均(高帧率)
         }else{
             scale = 1.0f;
         }
