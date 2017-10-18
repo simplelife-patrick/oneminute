@@ -17,7 +17,7 @@
 
 #define kMaxLength 16
 
-@interface DLYPlayVideoViewController ()<UITextFieldDelegate,DLYCaptureManagerDelegate,YBPopupMenuDelegate>
+@interface DLYPlayVideoViewController ()<UITextFieldDelegate,DLYCaptureAVEngineDelegate,YBPopupMenuDelegate>
 {
     float mRestoreAfterScrubbingRate;
     //1.流量 2.WiFi 3.不可用

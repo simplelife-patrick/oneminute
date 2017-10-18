@@ -16,13 +16,22 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个bl
 
 typedef void(^setVideoSpeedBlock)();
 
-@protocol DLYCaptureManagerDelegate <NSObject>
+@protocol DLYCaptureAVEngineDelegate <NSObject>
 
 - (void) didFinishEdititProductUrl:(NSURL *)productUrl;
 
 - (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL error:(NSError *)error;
 
 - (void) displayRefrenceRect:(CGRect)faceRegion;
+
+- (void) startedRecording;
+
+- (void) finishedRecording;
+
+- (void) canceledRecording;
+
+- (void) statutUpdateWithClockTick:(long long)count;
+
 @end
 
 @interface DLYAVEngine : DLYModule
@@ -50,6 +59,7 @@ typedef void(^setVideoSpeedBlock)();
 
 
 - (void) restartRecording;
+//- (void) stopRecordingWithCompletionHandler:(void (^)(void))handler;
 - (void) stopRecording;
 - (void) cancelRecording;
 - (void) pauseRecording;
