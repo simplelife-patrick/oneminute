@@ -21,7 +21,7 @@
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
 
-@interface DLYRecordViewController ()<DLYCaptureManagerDelegate,UIAlertViewDelegate,UIGestureRecognizerDelegate,YBPopupMenuDelegate,DLYIndicatorViewDelegate>
+@interface DLYRecordViewController ()<DLYCaptureAVEngineDelegate,UIAlertViewDelegate,UIGestureRecognizerDelegate,YBPopupMenuDelegate,DLYIndicatorViewDelegate>
 {
     NSInteger cursorTag;
     //记录选中的样片类型
@@ -100,7 +100,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @end
 
 @implementation DLYRecordViewController
-
+-(void)startedRecording{
+    DLYLog(@"哈哈哈---开始了");
+}
+-(void)finishedRecordingByConsuming{
+    DLYLog(@"哈哈哈---结束了");
+}
+-(void)canceledRecording{
+    DLYLog(@"哈哈哈---结束了");
+}
 - (DLYResource *)resource{
     if (!_resource) {
         _resource = [[DLYResource alloc] init];
@@ -1374,7 +1382,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //拍摄视频按键
 - (void)startRecordBtnAction {
 
-    NSLog(@"开始拍摄时间 :%@",[self getCurrentTime_MS]);
     [MobClick event:@"StartRecord"];
     // REC START
     if (!self.AVEngine.isRecording) {
@@ -1402,6 +1409,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             });
         });
         dispatch_resume(_timer);
+        NSLog(@"计时器开始计时 :%@",[self getCurrentTime_MS]);
         
         // change UI
         [self.shootView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
@@ -2815,7 +2823,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             return;
         }
         [self.AVEngine stopRecording];
-        NSLog(@"结束拍摄时间 :%@",[self getCurrentTime_MS]);
+        NSLog(@"计时器结束计时 :%@",[self getCurrentTime_MS]);
+
         
         self.cancelButton.hidden = YES;
         dispatch_source_cancel(_timer);

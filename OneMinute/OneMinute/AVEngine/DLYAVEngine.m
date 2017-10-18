@@ -43,6 +43,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     CMTime _startTime;
     CMTime _stopTime;
     CMTime _prePoint;
+    
     CGSize videoSize;
     NSURL *fileUrl;
     CGRect faceRegion;
@@ -55,6 +56,11 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     AVAssetExportSession *_exportSession;
     BOOL flashMode;
     BOOL isUsedFlash;
+    NSString *AVEngine_startTime;
+    NSString *AVEngine_stopTime;
+    
+    NSString *AVEngine_startWritting;
+    NSString *AVEngine_stopWritting;
 }
 
 @property (nonatomic,strong) AVCaptureMetadataOutput            *metadataOutput;
@@ -91,13 +97,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 
 @property (atomic, assign)    BOOL                              isCapturing;//正在录制
 @property (nonatomic, strong) NSMutableArray                    *imageArr;
-@property (nonatomic, strong) NSTimer                           *recordTimer; //准备拍摄片段闪烁的计时器
+@property (nonatomic, strong) NSTimer                           *recorderTimer; //录制计时器
 
 @property (nonatomic, strong) NSString                          *currentDeviceType;
-
-@property (retain, nonatomic) GPUImageMovie                     *movieFile;
-@property (retain, nonatomic) GPUImageOutput<GPUImageInput>     *outputFilter;
-@property (retain, nonatomic) GPUImageMovieWriter               *inputMovieWriter;
 
 @end
 
@@ -208,7 +210,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 - (instancetype)initWithPreviewView:(UIView *)previewView{
     if (self = [super init]) {
         
-        [self createTimer];
+        [self createFaceRecognitionTimer];
+        
         referenceOrientation = (AVCaptureVideoOrientation)UIDeviceOrientationPortrait;
         
         NSError *error;
@@ -772,6 +775,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 }
 #pragma mark - 开始录制 -
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
+    DLYLog(@"开始录制");
+    AVEngine_startTime = [self getCurrentTime_MS];
+    DLYLog(@"开始录制 : %@",AVEngine_startTime);
     
     _currentPart = part;
     
@@ -818,11 +824,29 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
     
     recordingWillBeStarted = YES;
+    if (self.delegate && [self.delegate respondsToSelector:@selector(startedRecording)]) {
+        [self.delegate startedRecording];
+    }
+    
+    NSArray *startArr = [part.starTime componentsSeparatedByString:@":"];
+    NSString *startTimeStr = startArr[1];
+    float startTime = [startTimeStr floatValue];
+
+    NSArray *stopArr = [part.stopTime componentsSeparatedByString:@":"];
+    NSString *stopTimeStr = stopArr[1];
+    float stopTime = [stopTimeStr floatValue];
+
+    [self createRecorderTimerWithStartTime:(long long)startTime stopTime:(long long)stopTime];
+    
+    AVEngine_startWritting = [self getCurrentTime_MS];
+    DLYLog(@"开始写入 : %@",AVEngine_startWritting);
 }
 #pragma mark - 停止录制 -
 - (void)stopRecording {
     
     DLYLog(@"停止录制");
+    AVEngine_stopTime = [self getCurrentTime_MS];
+    NSLog(@"AVEngine停止录制时间 : %@",AVEngine_stopTime);
     dispatch_async(movieWritingQueue, ^{
         
         _isRecording = NO;
@@ -830,6 +854,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         readyToRecordAudio = NO;
         
         [self.assetWriter finishWritingWithCompletionHandler:^{
+            
+            AVEngine_stopWritting = [self getCurrentTime_MS];
+            DLYLog(@"结束写入 : %@",AVEngine_stopWritting);
             
             self.assetWriterVideoInput = nil;
             self.assetWriterAudioInput = nil;
@@ -841,6 +868,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }];
     });
 }
+
 #pragma mark - 取消录制 -
 - (void)cancelRecording{
     
@@ -875,7 +903,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 // 处理速度视频
 - (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl BGMVolume:(float)BGMVolume recordTypeOfPart:(DLYMiniVlogRecordType)recordType completed:(void(^)())completed {
     
-//    NSLog(@"video set thread: %@", [NSThread currentThread]);
     NSLog(@"🚀...🚀...调节视频速度...");
     // 获取视频
     if (!videoPartUrl) {
@@ -1136,12 +1163,41 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         faceRegion = CGRectZero;
     }
 }
+
+long long counter = 0;
+#pragma mark - 录制用的计时器 -
+- (void)createRecorderTimerWithStartTime:(long long)startTime stopTime:(long long)stopTime {
+
+    dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
+    dispatch_source_t enliveTime = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+    //开始时间
+    dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC));
+    //时间间隔
+    uint64_t interval = (uint64_t)(0.001 * NSEC_PER_SEC); //定时器时间精度 1ms
+    dispatch_source_set_timer(enliveTime, start, interval, 0);
+    //回调
+    dispatch_source_set_event_handler(enliveTime, ^{
+        counter++;
+        if (self.delegate && [self.delegate respondsToSelector:@selector(statutUpdateWithClockTick:)]) {
+            [self.delegate statutUpdateWithClockTick:counter / 1000];
+        }
+        if (counter >= stopTime){
+            [self stopRecording];
+            if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
+                [self.delegate finishedRecording];
+            }
+        }
+
+    });
+    //启动定时器
+    dispatch_resume(enliveTime);
+}
+
 NSInteger timeCount = 0;
 NSInteger maskCount = 0;
 NSInteger startCount = MAXFLOAT;
 BOOL isOnce = YES;
-
-- (void)createTimer{
+- (void)createFaceRecognitionTimer{
     //获得队列
     dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
     //创建一个定时器
@@ -2261,6 +2317,12 @@ BOOL isOnce = YES;
     NSTimeInterval interval = [datetime timeIntervalSince1970];
     long long totalMilliseconds = interval * 1000;
     return totalMilliseconds;
+}
+- (NSString *)getCurrentTime_MS {
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"HH:mm:ss:SSS"];
+    NSString *dateTime = [formatter stringFromDate:[NSDate date]];
+    return dateTime;
 }
 
 @end
