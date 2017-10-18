@@ -92,8 +92,8 @@
     "stopTime": "00:05:00"
   },
   "BGM": "AfternoonTeaBGM",
-  "header": "header001",
-  "tailer": "tail001",
+  "header": 1,
+  "tailer": 1,
   "templateDescription": "本模板有7个片段，其中2个说话的片段。带我们看看都有啥好吃的呗",
   "sampleVideoName": "AfternoonTeaBGMSample.mp4"
 }
