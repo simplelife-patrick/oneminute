@@ -17,7 +17,6 @@
 #import "DLYDownloadManager.h"
 #import "DLYMovieObject.h"
 #import "DLYTitleView.h"
-#import "DLYThemesData.h"
 
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
@@ -192,7 +191,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     self.isAvalible = [self monitorPermission];
     
-    [DLYThemesData sharedInstance];
+//    [DLYThemesData sharedInstance];
     
     [DLYIndicatorView sharedIndicatorView].delegate = self;
     self.isAppear = YES;
