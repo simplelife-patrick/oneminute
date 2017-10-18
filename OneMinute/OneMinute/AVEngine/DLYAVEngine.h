@@ -14,8 +14,6 @@ typedef void(^SuccessBlock)(void);
 typedef void(^FailureBlock)(NSError *error);
 typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个block返回
 
-typedef void(^setVideoSpeedBlock)();
-
 @protocol DLYCaptureAVEngineDelegate <NSObject>
 
 - (void) didFinishEdititProductUrl:(NSURL *)productUrl;
@@ -57,12 +55,11 @@ typedef void(^setVideoSpeedBlock)();
 @property (nonatomic, assign) BOOL                                                    isTime;
 @property (nonatomic, strong) NSMutableArray                                          *imageArray;
 
-
 - (void) restartRecording;
-//- (void) stopRecordingWithCompletionHandler:(void (^)(void))handler;
-- (void) stopRecording;
-- (void) cancelRecording;
 - (void) pauseRecording;
+//- (void) stopRecording;
+//- (void) cancelRecording;
+
 /**
  初始化录制组件
 
