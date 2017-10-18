@@ -1374,7 +1374,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //拍摄视频按键
 - (void)startRecordBtnAction {
-    
+
+    NSLog(@"开始拍摄时间 :%@",[self getCurrentTime_MS]);
     [MobClick event:@"StartRecord"];
     // REC START
     if (!self.AVEngine.isRecording) {
@@ -1389,7 +1390,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         //拍摄计时器
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
-        dispatch_source_set_timer(_timer,dispatch_walltime(NULL, 0), 0.01 * NSEC_PER_SEC, 0); //每秒执行
+        
+        //设置开始时间
+        dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC));
+        //设置时间间隔
+        uint64_t interval = (uint64_t)(0.04 * NSEC_PER_SEC);
+        
+        dispatch_source_set_timer(_timer,start, interval, 0); //每秒执行
         dispatch_source_set_event_handler(_timer, ^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self shootAction];
@@ -2793,7 +2800,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     NSInteger partNumber = selectPartTag - 10000;
     DLYMiniVlogPart *part = partModelArray[partNumber - 1];
-    _shootTime += 0.01;
+    _shootTime += 0.04;
     
     if((int)(_shootTime * 100) % 100 == 0)
     {
@@ -2804,12 +2811,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     double partDuration = [part.duration doubleValue];
     [_progressView drawProgress:_shootTime / partDuration];
-    if(_shootTime > partDuration)
-    {
+    if(_shootTime > partDuration) {
         if (self.cancelButton.isHidden) {
             return;
         }
         [self.AVEngine stopRecording];
+        NSLog(@"结束拍摄时间 :%@",[self getCurrentTime_MS]);
+        
         self.cancelButton.hidden = YES;
         dispatch_source_cancel(_timer);
         _timer = nil;
@@ -3157,6 +3165,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
-
+- (NSString *)getCurrentTime_MS {
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"HH:mm:ss:SSS"];
+    NSString *dateTime = [formatter stringFromDate:[NSDate date]];
+    return dateTime;
+}
 @end
 
