@@ -36,14 +36,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSInteger selectPartTag;
     //将要更换最新片段
     NSInteger selectNewPartTag;
-    double _shootTime;
     NSMutableArray * partModelArray; //模拟存放拍摄片段的模型数组
     NSMutableArray * typeModelArray; //模拟选择样式的模型数组
     BOOL isMicGranted;//麦克风权限是否被允许
     BOOL isFront;
     BOOL isSlomoCamera;
     CGFloat _initialPinchZoom;
-    dispatch_source_t _timer;
 }
 @property (nonatomic,assign) CGFloat                            beginGestureScale;//记录开始的缩放比例
 @property (nonatomic,assign) CGFloat                            effectiveScale;//最后的缩放比例
@@ -462,7 +460,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [typeModelArray addObject:template];
     }
     
-    _shootTime = 0;
     cursorTag = 10001;
     self.isSuccess = NO;
     selectPartTag = 10001; //也不影响吧
@@ -516,7 +513,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [typeModelArray addObject:template];
     }
     
-    _shootTime = 0;
     selectPartTag = 10001;
     cursorTag = 10001;
     self.isSuccess = NO;
@@ -1392,28 +1388,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self.AVEngine startRecordingWithPart:part];
         });
-        
-        //拍摄计时器
-        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-        _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
-        
-        //设置开始时间
-        dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC));
-        //设置时间间隔
-        uint64_t interval = (uint64_t)(0.04 * NSEC_PER_SEC);
-        
-        dispatch_source_set_timer(_timer,start, interval, 0); //每秒执行
-        dispatch_source_set_event_handler(_timer, ^{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self shootAction];
-            });
-        });
-        dispatch_resume(_timer);
+
         NSLog(@"计时器开始计时 :%@",[self getCurrentTime_MS]);
         
         // change UI
         [self.shootView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-        _shootTime = 0;
         [self createShootView];
         for (DLYMiniVlogPart *part in partModelArray) {
             if([part.prepareRecord isEqualToString:@"1"])
@@ -1459,6 +1438,127 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }];
     }
 }
+
+- (void) statutUpdateWithClockTick:(float)count{
+    NSInteger partNumber = selectPartTag - 10000;
+    DLYMiniVlogPart *part = partModelArray[partNumber - 1];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if((int)(count * 100) % 100 == 0)
+        {
+            if (![self.timeNumber.text isEqualToString:@"1"]) {
+                self.timeNumber.text = [NSString stringWithFormat:@"%.0f",[part.duration intValue] - count];
+            }
+        }
+        double partDuration = [part.duration doubleValue];
+        [_progressView drawProgress: count / partDuration];
+    });
+
+}
+
+- (void)finishedRecording {
+    NSInteger partNumber = selectPartTag - 10000;
+    DLYMiniVlogPart *part = partModelArray[partNumber - 1];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.cancelButton.hidden = YES;
+        for(int i = 0; i < partModelArray.count; i++)
+        {
+            DLYMiniVlogPart *part1 = partModelArray[i];
+            part1.prepareRecord = @"0";
+        }
+        part.prepareRecord = @"0";
+        part.recordStatus = @"1";
+        
+        NSInteger n = 0;
+        for(int i = 0; i < partModelArray.count; i++)
+        {
+            DLYMiniVlogPart *part2 = partModelArray[i];
+            if([part2.recordStatus isEqualToString:@"0"])
+            {
+                part2.prepareRecord = @"1";
+                break;
+            }else
+            {
+                n++;
+            }
+        }
+        //在这里添加完成页面
+        self.progressView.hidden = YES;
+        self.timeNumber.hidden = YES;
+        if (self.newState == 1) {
+            self.completeButton.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.completeButton.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+        self.completeButton.hidden = NO;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            self.completeButton.hidden = YES;
+        });
+
+    });
+}
+
+//#pragma mark ==== 拍摄计时操作
+//- (void)shootAction {
+//    NSInteger partNumber = selectPartTag - 10000;
+//    DLYMiniVlogPart *part = partModelArray[partNumber - 1];
+//
+//    if((int)(_shootTime * 100) % 100 == 0)
+//    {
+//        if (![self.timeNumber.text isEqualToString:@"1"]) {
+//            self.timeNumber.text = [NSString stringWithFormat:@"%.0f",[part.duration intValue] - _shootTime];
+//        }
+//    }
+//
+//    double partDuration = [part.duration doubleValue];
+//    [_progressView drawProgress:_shootTime / partDuration];
+//    if(_shootTime > partDuration) {
+//        if (self.cancelButton.isHidden) {
+//            return;
+//        }
+//        [self.AVEngine stopRecording];
+//        NSLog(@"计时器结束计时 :%@",[self getCurrentTime_MS]);
+//
+//
+//        self.cancelButton.hidden = YES;
+//
+//        for(int i = 0; i < partModelArray.count; i++)
+//        {
+//            DLYMiniVlogPart *part1 = partModelArray[i];
+//            part1.prepareRecord = @"0";
+//        }
+//        part.prepareRecord = @"0";
+//        part.recordStatus = @"1";
+//
+//        NSInteger n = 0;
+//        for(int i = 0; i < partModelArray.count; i++)
+//        {
+//            DLYMiniVlogPart *part2 = partModelArray[i];
+//            if([part2.recordStatus isEqualToString:@"0"])
+//            {
+//                part2.prepareRecord = @"1";
+//                break;
+//            }else
+//            {
+//                n++;
+//            }
+//        }
+//        //在这里添加完成页面
+//        self.progressView.hidden = YES;
+//        self.timeNumber.hidden = YES;
+//        if (self.newState == 1) {
+//            self.completeButton.transform = CGAffineTransformMakeRotation(0);
+//        }else {
+//            self.completeButton.transform = CGAffineTransformMakeRotation(M_PI);
+//        }
+//        self.completeButton.hidden = NO;
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+//            self.completeButton.hidden = YES;
+//        });
+//    }
+//}
+
 //跳转至下一个界面按键
 - (void)onClickNextStep:(UIButton *)sender {
     [MobClick event:@"NextStep"];
@@ -1717,9 +1817,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     NSInteger partNum = selectPartTag - 10000 - 1;
     [self.resource removePartWithPartNumFormCache:partNum];
-    
-    dispatch_source_cancel(_timer);
-    _timer = nil;
     
     if (self.newState == 1) {
         self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
@@ -2800,70 +2897,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     self.cancelButton.hidden = NO;
     
-}
-
-#pragma mark ==== 拍摄计时操作
-- (void)shootAction {
-    
-    NSInteger partNumber = selectPartTag - 10000;
-    DLYMiniVlogPart *part = partModelArray[partNumber - 1];
-    _shootTime += 0.04;
-    
-    if((int)(_shootTime * 100) % 100 == 0)
-    {
-        if (![self.timeNumber.text isEqualToString:@"1"]) {
-            self.timeNumber.text = [NSString stringWithFormat:@"%.0f",[part.duration intValue] - _shootTime];
-        }
-    }
-    
-    double partDuration = [part.duration doubleValue];
-    [_progressView drawProgress:_shootTime / partDuration];
-    if(_shootTime > partDuration) {
-        if (self.cancelButton.isHidden) {
-            return;
-        }
-        [self.AVEngine stopRecording];
-        NSLog(@"计时器结束计时 :%@",[self getCurrentTime_MS]);
-
-        
-        self.cancelButton.hidden = YES;
-        dispatch_source_cancel(_timer);
-        _timer = nil;
-        
-        for(int i = 0; i < partModelArray.count; i++)
-        {
-            DLYMiniVlogPart *part1 = partModelArray[i];
-            part1.prepareRecord = @"0";
-        }
-        part.prepareRecord = @"0";
-        part.recordStatus = @"1";
-        
-        NSInteger n = 0;
-        for(int i = 0; i < partModelArray.count; i++)
-        {
-            DLYMiniVlogPart *part2 = partModelArray[i];
-            if([part2.recordStatus isEqualToString:@"0"])
-            {
-                part2.prepareRecord = @"1";
-                break;
-            }else
-            {
-                n++;
-            }
-        }
-        //在这里添加完成页面
-        self.progressView.hidden = YES;
-        self.timeNumber.hidden = YES;
-        if (self.newState == 1) {
-            self.completeButton.transform = CGAffineTransformMakeRotation(0);
-        }else {
-            self.completeButton.transform = CGAffineTransformMakeRotation(M_PI);
-        }
-        self.completeButton.hidden = NO;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            self.completeButton.hidden = YES;
-        });
-    }
 }
 
 - (void)showControlView {
