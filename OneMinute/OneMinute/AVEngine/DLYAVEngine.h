@@ -18,7 +18,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个bl
 
 - (void) didFinishEdititProductUrl:(NSURL *)productUrl;
 
-- (void)didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL error:(NSError *)error;
+- (void) didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL error:(NSError *)error;
 
 - (void) displayRefrenceRect:(CGRect)faceRegion;
 
