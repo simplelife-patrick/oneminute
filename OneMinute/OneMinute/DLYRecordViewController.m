@@ -1394,7 +1394,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         //设置开始时间
         dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC));
         //设置时间间隔
-        uint64_t interval = (uint64_t)(0.01 * NSEC_PER_SEC);
+        uint64_t interval = (uint64_t)(0.04 * NSEC_PER_SEC);
         
         dispatch_source_set_timer(_timer,start, interval, 0); //每秒执行
         dispatch_source_set_event_handler(_timer, ^{
@@ -2801,7 +2801,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     NSInteger partNumber = selectPartTag - 10000;
     DLYMiniVlogPart *part = partModelArray[partNumber - 1];
-    _shootTime += 0.01;
+    _shootTime += 0.04;
     
     if((int)(_shootTime * 100) % 100 == 0)
     {
