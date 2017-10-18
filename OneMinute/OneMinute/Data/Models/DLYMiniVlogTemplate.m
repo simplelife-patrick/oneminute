@@ -30,8 +30,8 @@
                     self.parts = [dic objectForKey:@"info"];
                     self.BGM = [dic objectForKey:@"BGM"];
                     self.subTitle1 = [dic objectForKey:@"subTitle1"];
-                    self.videoHeader = [dic objectForKey:@"header"];
-                    self.videoTailer = [dic objectForKey:@"tailer"];
+                    self.videoHeaderType = [[dic objectForKey:@"header"] integerValue];
+                    self.videoTailerType = [[dic objectForKey:@"tailer"] integerValue];
                     self.templateDescription = [dic objectForKey:@"templateDescription"];
                     self.sampleVideoName = [dic objectForKey:@"sampleVideoName"];
                 }else{

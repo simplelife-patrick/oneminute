@@ -9,6 +9,33 @@
 #import "DLYModule.h"
 #import "DLYMiniVlogPart.h"
 
+/**
+ 片头类型
+
+ - DLYMiniVlogHeaderType_A: 片头A
+ - DLYMiniVlogHeaderType_B: 片头B
+ - DLYMiniVlogHeaderType_C: 片头C
+ */
+typedef NS_ENUM(NSInteger, DLYMiniVlogHeaderType)
+{
+    DLYMiniVlogHeaderType_A = 0,
+    DLYMiniVlogHeaderType_B,
+    DLYMiniVlogHeaderType_C
+};
+
+/**
+ 片尾类型
+
+ - DLYMiniVlogFooterType_A: 片尾A
+ - DLYMiniVlogFooterType_B: 片尾B
+ - DLYMiniVlogFooterType_C: 片尾C
+ */
+typedef NS_ENUM(NSInteger, DLYMiniVlogTailerType)
+{
+    DLYMiniVlogTailerType_A = 0,
+    DLYMiniVlogTailerType_B,
+    DLYMiniVlogTailerType_C
+};
 
 @interface DLYMiniVlogTemplate : DLYModule
 
@@ -47,14 +74,14 @@
 @property (nonatomic, strong) NSDictionary                    *subTitle1;
 
 /**
- 片头
+ 片头类型
  */
-@property (nonatomic, strong) NSURL                           *videoHeader;
+@property (nonatomic, assign) DLYMiniVlogHeaderType           videoHeaderType;
 
 /**
- 片尾
+ 片尾类型
  */
-@property (nonatomic, strong) NSURL                           *videoTailer;
+@property (nonatomic, assign) DLYMiniVlogTailerType           videoTailerType;
 
 /**
  初始化模板

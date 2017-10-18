@@ -892,15 +892,8 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         // 视频轨道
         AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
         
-        
         if (BGMVolume < 50) {
-            NSError *error = nil;
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            BOOL isSuccess = [fileManager moveItemAtURL:videoPartUrl toURL:outputUrl error:&error];
-            DLYLog(@"%@",isSuccess ? @"移动不需要调速的视频片段成功":@"移动不需要调速的频段片段失败");
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[DLYIndicatorView sharedIndicatorView] stopFlashAnimating];
-            });
+
             // 音频轨道
             AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
             
@@ -908,6 +901,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
             // 插入音频轨道
             [compositionAudioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeAudio] firstObject] atTime:kCMTimeZero error:nil];
+            
+            NSLog(@"value_original -----------%lld",videoAsset.duration.value);
+            NSLog(@"timescale_original -----------%d",videoAsset.duration.timescale);
+
             
         }else if (BGMVolume == 100){//不录音的片段做丢弃原始音频处理
             
@@ -923,15 +920,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             CMTime toDuration_after = CMTimeMake(videoAsset.duration.value * scale , videoAsset.duration.timescale);
             
             NSLog(@"value_original -----------%lld",videoAsset.duration.value);
-            NSLog(@"value_value -----------%f",videoAsset.duration.value * (Float64)scale);
-//            Float64 durationWithSecond_befor = CMTimeGetSeconds(toDuration_before);
-//            Float64 durationWithSecond_after = CMTimeGetSeconds(toDuration_after);
-//
-//            CMTimeShow(toDuration_before);
-//            NSLog(@"durationWithSecond_befor -----------%f",durationWithSecond_befor);
-//
-//            CMTimeShow(toDuration_after);
-//            NSLog(@"durationWithSecond_after -----------%f",durationWithSecond_after);
+            NSLog(@"timescale_original -----------%d",videoAsset.duration.timescale);
+
+            NSLog(@"value_after -----------%f",videoAsset.duration.value * (Float64)scale);
+            NSLog(@"timescale_after -----------%d",videoAsset.duration.timescale);
             
             [compositionVideoTrack scaleTimeRange:scaleRange toDuration:toDuration_after];
         }

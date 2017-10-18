@@ -80,8 +80,8 @@
     "stopTime": "00:05:00"
   },
   "BGM": "AdvancedBGM",
-  "header": "header001",
-  "tailer": "tail001",
+  "header": 0,
+  "tailer": 0,
   "templateDescription": "这个模板成片长度为60s，你可以熟练掌握一分的基本成片套路啦，恭喜你熟练掌握了一分的套路，接下来就开启你的神奇之旅呗",
   "sampleVideoName": "AdvancedSample.mp4"
 }

@@ -92,8 +92,8 @@
     "stopTime": "00:05:00"
   },
   "BGM": "SpiritTerritoryBGM",
-  "header": "header001",
-  "tailer": "tail001",
+  "header": 2,
+  "tailer": 2,
   "templateDescription": "本模板有7个片段，没有录音片段，适合静静地拍摄哦。",
   "sampleVideoName": "SpiritTerritorySample.mp4"
 }
