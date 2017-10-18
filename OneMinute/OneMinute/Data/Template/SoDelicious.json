@@ -92,8 +92,8 @@
     "stopTime": "00:05:00"
   },
   "BGM": "SoDeliciousBGM",
-  "header": 1,
-  "tailer": 1,
+  "header": 0,
+  "tailer": 0,
   "templateDescription": "本模板有7个片段，其中2个说话的片段。啊～ 民以食为天",
   "sampleVideoName": "SoDeliciousSample.mp4"
 }
