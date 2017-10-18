@@ -61,7 +61,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     NSString *AVEngine_startWritting;
     NSString *AVEngine_stopWritting;
-    long long counter;
+    float counter;
+    dispatch_source_t _enliveTime;
 }
 
 @property (nonatomic,strong) AVCaptureMetadataOutput            *metadataOutput;
@@ -1167,19 +1168,20 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     counter = 0;
     __block float recordDuration = stopTime - startTime;
     dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
-    dispatch_source_t enliveTime = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+    _enliveTime = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
     //开始时间
     dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC));
     //时间间隔
     uint64_t interval = (uint64_t)(0.001 * NSEC_PER_SEC); //定时器时间精度 1ms
-    dispatch_source_set_timer(enliveTime, start, interval, 0);
+    dispatch_source_set_timer(_enliveTime, start, interval, 0);
     //回调
-    dispatch_source_set_event_handler(enliveTime, ^{
+    dispatch_source_set_event_handler(_enliveTime, ^{
         if (self.delegate && [self.delegate respondsToSelector:@selector(statutUpdateWithClockTick:)]) {
-            [self.delegate statutUpdateWithClockTick:counter / 1000];
+            [self.delegate statutUpdateWithClockTick:counter];
         }
         counter += 0.001;
         if (counter >= recordDuration){
+            dispatch_cancel(_enliveTime);
             [self stopRecording];
             if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
                 [self.delegate finishedRecording];
@@ -1188,7 +1190,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
     });
     //启动定时器
-    dispatch_resume(enliveTime);
+    dispatch_resume(_enliveTime);
 }
 
 NSInteger timeCount = 0;

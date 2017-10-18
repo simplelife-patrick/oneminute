@@ -1440,52 +1440,62 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 - (void) statutUpdateWithClockTick:(float)count{
-    NSLog(@"%f", count);
     NSInteger partNumber = selectPartTag - 10000;
     DLYMiniVlogPart *part = partModelArray[partNumber - 1];
-    self.timeNumber.text = [NSString stringWithFormat:@"%.0f",[part.duration intValue] - count];
-   
-    double partDuration = [part.duration doubleValue];
-    [_progressView drawProgress: count / partDuration];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if((int)(count * 100) % 100 == 0)
+        {
+            if (![self.timeNumber.text isEqualToString:@"1"]) {
+                self.timeNumber.text = [NSString stringWithFormat:@"%.0f",[part.duration intValue] - count];
+            }
+        }
+        double partDuration = [part.duration doubleValue];
+        [_progressView drawProgress: count / partDuration];
+    });
+
 }
 
 - (void)finishedRecording {
     NSInteger partNumber = selectPartTag - 10000;
     DLYMiniVlogPart *part = partModelArray[partNumber - 1];
     
-    self.cancelButton.hidden = YES;
-    for(int i = 0; i < partModelArray.count; i++)
-    {
-        DLYMiniVlogPart *part1 = partModelArray[i];
-        part1.prepareRecord = @"0";
-    }
-    part.prepareRecord = @"0";
-    part.recordStatus = @"1";
-    
-    NSInteger n = 0;
-    for(int i = 0; i < partModelArray.count; i++)
-    {
-        DLYMiniVlogPart *part2 = partModelArray[i];
-        if([part2.recordStatus isEqualToString:@"0"])
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.cancelButton.hidden = YES;
+        for(int i = 0; i < partModelArray.count; i++)
         {
-            part2.prepareRecord = @"1";
-            break;
-        }else
-        {
-            n++;
+            DLYMiniVlogPart *part1 = partModelArray[i];
+            part1.prepareRecord = @"0";
         }
-    }
-    //在这里添加完成页面
-    self.progressView.hidden = YES;
-    self.timeNumber.hidden = YES;
-    if (self.newState == 1) {
-        self.completeButton.transform = CGAffineTransformMakeRotation(0);
-    }else {
-        self.completeButton.transform = CGAffineTransformMakeRotation(M_PI);
-    }
-    self.completeButton.hidden = NO;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        self.completeButton.hidden = YES;
+        part.prepareRecord = @"0";
+        part.recordStatus = @"1";
+        
+        NSInteger n = 0;
+        for(int i = 0; i < partModelArray.count; i++)
+        {
+            DLYMiniVlogPart *part2 = partModelArray[i];
+            if([part2.recordStatus isEqualToString:@"0"])
+            {
+                part2.prepareRecord = @"1";
+                break;
+            }else
+            {
+                n++;
+            }
+        }
+        //在这里添加完成页面
+        self.progressView.hidden = YES;
+        self.timeNumber.hidden = YES;
+        if (self.newState == 1) {
+            self.completeButton.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            self.completeButton.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+        self.completeButton.hidden = NO;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            self.completeButton.hidden = YES;
+        });
+
     });
 }
 
