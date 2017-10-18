@@ -61,7 +61,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     NSString *AVEngine_startWritting;
     NSString *AVEngine_stopWritting;
-    long long counter = 0;
+    long long counter;
 }
 
 @property (nonatomic,strong) AVCaptureMetadataOutput            *metadataOutput;
@@ -825,9 +825,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
     
     recordingWillBeStarted = YES;
-    if (self.delegate && [self.delegate respondsToSelector:@selector(startedRecording)]) {
-        [self.delegate startedRecording];
-    }
     
     NSArray *startArr = [part.starTime componentsSeparatedByString:@":"];
     NSString *startTimeStr = startArr[1];
@@ -837,7 +834,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     NSString *stopTimeStr = stopArr[1];
     float stopTime = [stopTimeStr floatValue];
 
-    [self createRecorderTimerWithStartTime:(long long)startTime stopTime:(long long)stopTime];
+    [self createRecorderTimerWithStartTime:(float)startTime stopTime:(float)stopTime];
     
     AVEngine_startWritting = [self getCurrentTime_MS];
     DLYLog(@"开始写入 : %@",AVEngine_startWritting);
@@ -1166,8 +1163,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 }
 
 #pragma mark - 录制用的计时器 -
-- (void)createRecorderTimerWithStartTime:(long long)startTime stopTime:(long long)stopTime {
+- (void)createRecorderTimerWithStartTime:(float)startTime stopTime:(float)stopTime {
 
+    __block float recordDuration = stopTime - startTime;
     dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
     dispatch_source_t enliveTime = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
     //开始时间
@@ -1177,11 +1175,11 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     dispatch_source_set_timer(enliveTime, start, interval, 0);
     //回调
     dispatch_source_set_event_handler(enliveTime, ^{
-        counter++;
         if (self.delegate && [self.delegate respondsToSelector:@selector(statutUpdateWithClockTick:)]) {
-            [self.delegate statutUpdateWithClockTick:counter / 1000];
+            [self.delegate statutUpdateWithClockTick:recordDuration];
         }
-        if (counter >= stopTime){
+        recordDuration -= 0.001;
+        if (recordDuration == 0){
             [self stopRecording];
             if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
                 [self.delegate finishedRecording];
