@@ -61,7 +61,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     NSString *AVEngine_startWritting;
     NSString *AVEngine_stopWritting;
-    long long counter = 0;
+    long long counter;
 }
 
 @property (nonatomic,strong) AVCaptureMetadataOutput            *metadataOutput;
