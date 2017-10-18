@@ -1439,14 +1439,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
 }
 
-- (void) statutUpdateWithClockTick:(long long)count{
+- (void) statutUpdateWithClockTick:(float)count{
     NSLog(@"%f", count);
     NSInteger partNumber = selectPartTag - 10000;
     DLYMiniVlogPart *part = partModelArray[partNumber - 1];
-    self.timeNumber.text = [NSString stringWithFormat:@"%lld", count];
+    self.timeNumber.text = [NSString stringWithFormat:@"%.0f",[part.duration intValue] - count];
    
     double partDuration = [part.duration doubleValue];
-    [_progressView drawProgress:(partDuration - count) / partDuration];
+    [_progressView drawProgress: count / partDuration];
 }
 
 - (void)finishedRecording {
