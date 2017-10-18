@@ -2372,8 +2372,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     float width = (self.typeView.width - 50)/6;
     typeScrollView.contentSize = CGSizeMake(width * 6 + 10 * 5, typeScrollView.height);
-//    for(int i = 0; i < typeModelArray.count; i ++)
-    for(int i = 0; i < 3; i ++)
+    for(int i = 0; i < typeModelArray.count; i ++)
     {
         int wNum = i % 6;
         int hNum = i / 6;
