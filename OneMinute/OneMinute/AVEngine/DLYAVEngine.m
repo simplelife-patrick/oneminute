@@ -690,8 +690,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
 }
 
-#pragma mark - Public
-
 //- (void)resetFormat {
 //
 //    BOOL isRunning = self.captureSession.isRunning;
@@ -714,8 +712,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 - (void)switchFormatWithDesiredFPS:(CGFloat)desiredFPS
 {
     DLYLog(@"最终设定的最佳帧率: %f",desiredFPS);
-    BOOL isRunning = self.captureSession.isRunning;
-    if (isRunning)  [self.captureSession stopRunning];
+//    BOOL isRunning = self.captureSession.isRunning;
+//    if (isRunning)  [self.captureSession stopRunning];
+    [self.captureSession beginConfiguration];
     
     AVCaptureDevice *device = self.defaultVideoDevice;
     if (isUsedFlash){
@@ -767,7 +766,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     self.captureSession.sessionPreset = AVCaptureSessionPresetiFrame1280x720;
     [self.captureSession commitConfiguration];
     
-    if (isRunning) [self.captureSession startRunning];
+//    if (isRunning) [self.captureSession startRunning];
+    [self.captureSession commitConfiguration];
+
 }
 #pragma mark - 开始录制 -
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
@@ -776,14 +777,23 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     
     if (_currentPart.recordType == DLYMiniVlogRecordTypeSlomo) {
         DLYLog(@"🎬🎬🎬 慢镜头片段");
-        [self switchFormatWithDesiredFPS:120.0];
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_async(queue, ^{
+            [self switchFormatWithDesiredFPS:120.0];
+        });
         
     }else if (_currentPart.recordType == DLYMiniVlogRecordTypeTimelapse){
         DLYLog(@"🎬🎬🎬 快镜头片段");
-        [self switchFormatWithDesiredFPS:50.0];
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_async(queue, ^{
+            [self switchFormatWithDesiredFPS:25.0];
+        });
     }else{
         DLYLog(@"🎬🎬🎬 正常拍摄片段");
-        [self switchFormatWithDesiredFPS:50.0];
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_async(queue, ^{
+            [self switchFormatWithDesiredFPS:25.0];
+        });
     }
     
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
@@ -878,7 +888,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         if(recordType == DLYMiniVlogRecordTypeTimelapse){
             scale = 0.2f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(低帧率)
         } else if (recordType == DLYMiniVlogRecordTypeSlomo) {
-            scale = 3.0f;  // 慢速 x3   播放时间拉长帧率平均(高帧率)
+            scale = 3.0f;  // 3.0对应  慢速 x3   播放时间拉长帧率平均(高帧率)
         }else{
             scale = 1.0f;
         }
@@ -2196,6 +2206,7 @@ BOOL isOnce = YES;
     NSString *dateTime = [formatter stringFromDate:[NSDate date]];
     return dateTime;
 }
+
 - (long long)getDateTimeTOMilliSeconds:(NSDate *)datetime {
     NSTimeInterval interval = [datetime timeIntervalSince1970];
     long long totalMilliseconds = interval * 1000;
