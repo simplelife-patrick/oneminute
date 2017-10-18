@@ -1169,17 +1169,17 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
     dispatch_source_t enliveTime = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
     //开始时间
-    dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(startTime));
+    dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC));
     //时间间隔
     uint64_t interval = (uint64_t)(0.001 * NSEC_PER_SEC); //定时器时间精度 1ms
     dispatch_source_set_timer(enliveTime, start, interval, 0);
     //回调
     dispatch_source_set_event_handler(enliveTime, ^{
         if (self.delegate && [self.delegate respondsToSelector:@selector(statutUpdateWithClockTick:)]) {
-            [self.delegate statutUpdateWithClockTick:recordDuration];
+            [self.delegate statutUpdateWithClockTick:counter / 1000];
         }
-        recordDuration -= 0.001;
-        if (recordDuration == 0){
+        counter += 0.001;
+        if (counter >= recordDuration){
             [self stopRecording];
             if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
                 [self.delegate finishedRecording];
