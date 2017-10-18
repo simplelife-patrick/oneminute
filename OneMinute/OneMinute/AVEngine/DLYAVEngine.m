@@ -898,11 +898,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             NSFileManager *fileManager = [NSFileManager defaultManager];
             BOOL isSuccess = [fileManager moveItemAtURL:videoPartUrl toURL:outputUrl error:&error];
             DLYLog(@"%@",isSuccess ? @"移动不需要调速的视频片段成功":@"移动不需要调速的频段片段失败");
-            if (_currentPart.partNum != 0 && _currentPart.partNum != self.session.currentTemplate.parts.count - 1) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[DLYIndicatorView sharedIndicatorView] stopFlashAnimating];
-                });
-            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[DLYIndicatorView sharedIndicatorView] stopFlashAnimating];
+            });
             // 音频轨道
             AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
             
@@ -950,43 +948,59 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
 }
 
-- (void)addVideoEffectsWithUrl:(NSURL *) inputUrl recordType:(DLYMiniVlogRecordType)recordType andBGMVolume:(float)BGMVolume {
-    DLYMiniVlogTemplate *template = self.session.currentTemplate;
-    if (_currentPart.partNum != 0 && _currentPart.partNum != template.parts.count - 1) {
-        return;
+#pragma mark -添加片头片尾-
+- (void)addVideoHeaderWithTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
+    
+    NSURL *headerUrl;
+    NSURL *footerUrl;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:dataPath]) {
+        
+        NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
+            
+            NSArray *draftArray = [fileManager contentsOfDirectoryAtPath:draftPath error:nil];
+            NSString *headerPath = draftArray[0];
+            if ([headerPath hasSuffix:@"mp4"]) {
+                NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",headerPath];
+                headerUrl = [NSURL fileURLWithPath:allPath];
+            }
+            
+            NSString *footerPath = draftArray[draftArray.count - 1];
+            if ([footerPath hasSuffix:@"mp4"]) {
+                NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",footerPath];
+                footerUrl = [NSURL fileURLWithPath:allPath];
+            }
+        }
     }
     
-    BOOL isAudio;
-    if (recordType == DLYMiniVlogRecordTypeNormal) {
-        if (BGMVolume < 50) {
-            isAudio = YES;
-        }else {
-            isAudio = NO;
-        }
-    }else {
-        isAudio = NO;
-    }
-    if (_currentPart.partNum == 0) {
-        NSString *headerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"headerVideo.mp4"];
-        NSArray *headArr = [[DLYThemesData sharedInstance] getHeadImageArray];
-        NSMutableArray *headArray = [NSMutableArray arrayWithArray:headArr];
-        [self buildVideoEffectsToMP4:headerPath inputVideoURL:inputUrl andImageArray:headArray andBeginTime:0.1 isAudio:isAudio callback:^(NSURL *finalUrl, NSString *filePath) {
-            NSLog(@"片头完成");
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[DLYIndicatorView sharedIndicatorView] stopFlashAnimating];
-            });
-        }];
-    }else {
+    [self addVideoEffectsWithHeaderUrl:headerUrl andFooterUrl:footerUrl withTitle:videoTitle];
+}
+
+- (void)addVideoEffectsWithHeaderUrl:(NSURL *)headerUrl andFooterUrl:(NSURL *)footerUrl withTitle:(NSString *)title  {
+    
+    BOOL isAudio = NO;
+    
+    NSString *headerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"headerVideo.mp4"];
+    NSArray *headArr = [[DLYThemesData sharedInstance] getHeadImageArray];
+    NSMutableArray *headArray = [NSMutableArray arrayWithArray:headArr];
+    [self buildVideoEffectsToMP4:headerPath inputVideoURL:headerUrl andImageArray:headArray andBeginTime:0.1 isAudio:isAudio callback:^(NSURL *finalUrl, NSString *filePath) {
+        NSLog(@"片头完成");
+        
         NSString *footerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"footerVideo.mp4"];
         NSArray *footArr = [[DLYThemesData sharedInstance] getFootImageArray];
         NSMutableArray *footArray = [NSMutableArray arrayWithArray:footArr];
-        [self buildVideoEffectsToMP4:footerPath inputVideoURL:inputUrl andImageArray:footArray andBeginTime:0.1 isAudio:isAudio callback:^(NSURL *finalUrl, NSString *filePath) {
+        [self buildVideoEffectsToMP4:footerPath inputVideoURL:headerUrl andImageArray:footArray andBeginTime:0.1 isAudio:isAudio callback:^(NSURL *finalUrl, NSString *filePath) {
             NSLog(@"片尾完成");
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[DLYIndicatorView sharedIndicatorView] stopFlashAnimating];
-            });
+            
+            [self mergeVideoWithVideoTitle:title SuccessBlock:^{
+                //成功
+            } failure:^(NSError *error) {
+                //
+            }];
         }];
-    }
+    }];
 }
 
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
@@ -1188,16 +1202,11 @@ BOOL isOnce = YES;
         [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"片段处理中..."];
         typeof(self) weakSelf = self;
         [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl BGMVolume:_currentPart.BGMVolume recordTypeOfPart:_currentPart.recordType completed:^{
-            
-            //添加片头片尾
-            [self addVideoEffectsWithUrl:exportUrl recordType:_currentPart.recordType andBGMVolume:_currentPart.BGMVolume];
             DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
             [self.resource removePartWithPartNumFormCache:self.currentPart.partNum];
-            if (_currentPart.partNum != 0 && _currentPart.partNum != self.session.currentTemplate.parts.count - 1) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [[DLYIndicatorView sharedIndicatorView] stopFlashAnimating];
-                });
-            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[DLYIndicatorView sharedIndicatorView] stopFlashAnimating];
+            });
         }];
     });
 }
@@ -1748,13 +1757,13 @@ BOOL isOnce = YES;
                     }
                     NSString *headerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"headerVideo.mp4"];
                     if ([[NSFileManager defaultManager] fileExistsAtPath:headerPath]) {
-//                        isSuccess = [fileManager removeItemAtPath:headerPath error:nil];
-//                        DLYLog(@"删除片头");
+                        isSuccess = [fileManager removeItemAtPath:headerPath error:nil];
+                        DLYLog(@"删除片头");
                     }
                     NSString *footerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"footerVideo.mp4"];
                     if ([[NSFileManager defaultManager] fileExistsAtPath:footerPath]) {
-//                        isSuccess = [fileManager removeItemAtPath:footerPath error:nil];
-//                        DLYLog(@"删除片尾");
+                        isSuccess = [fileManager removeItemAtPath:footerPath error:nil];
+                        DLYLog(@"删除片尾");
                     }
                     successBlock();
 
