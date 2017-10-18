@@ -983,7 +983,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         NSString *footerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"footerVideo.mp4"];
         NSArray *footArr = [[DLYThemesData sharedInstance] getFootImageArray];
         NSMutableArray *footArray = [NSMutableArray arrayWithArray:footArr];
-        [self buildVideoEffectsToMP4:footerPath inputVideoURL:headerUrl andImageArray:footArray andBeginTime:0.1 isAudio:isAudio callback:^(NSURL *finalUrl, NSString *filePath) {
+        [self buildVideoEffectsToMP4:footerPath inputVideoURL:footerUrl andImageArray:footArray andBeginTime:0.1 isAudio:isAudio callback:^(NSURL *finalUrl, NSString *filePath) {
             NSLog(@"片尾完成");
             
             [self mergeVideoWithVideoTitle:title SuccessBlock:^{
