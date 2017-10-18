@@ -61,6 +61,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     NSString *AVEngine_startWritting;
     NSString *AVEngine_stopWritting;
+    long long counter = 0;
 }
 
 @property (nonatomic,strong) AVCaptureMetadataOutput            *metadataOutput;
@@ -880,7 +881,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         readyToRecordAudio = NO;
         
         [self.assetWriter finishWritingWithCompletionHandler:^{
-            
+            counter = 0;
             self.assetWriterVideoInput = nil;
             self.assetWriterAudioInput = nil;
             self.assetWriter = nil;
@@ -1164,7 +1165,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
 }
 
-long long counter = 0;
 #pragma mark - 录制用的计时器 -
 - (void)createRecorderTimerWithStartTime:(long long)startTime stopTime:(long long)stopTime {
 
@@ -1186,10 +1186,6 @@ long long counter = 0;
             if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
                 [self.delegate finishedRecording];
             }
-        }
-        if (self.delegate && [self.delegate respondsToSelector:@selector(canceledRecording)]) {
-            [self.delegate canceledRecording];
-            counter = 0;
         }
 
     });

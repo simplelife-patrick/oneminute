@@ -26,7 +26,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个bl
 
 - (void) finishedRecording;
 
-- (void) canceledRecording;
+//- (void) canceledRecording;
 
 - (void) statutUpdateWithClockTick:(long long)count;
 
@@ -58,7 +58,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个bl
 - (void) restartRecording;
 - (void) pauseRecording;
 //- (void) stopRecording;
-//- (void) cancelRecording;
+- (void) cancelRecording;
 
 /**
  初始化录制组件
