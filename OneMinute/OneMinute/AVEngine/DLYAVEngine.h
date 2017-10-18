@@ -28,7 +28,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个bl
 
 //- (void) canceledRecording;
 
-- (void) statutUpdateWithClockTick:(long long)count;
+- (void) statutUpdateWithClockTick:(float)count;
 
 @end
 
