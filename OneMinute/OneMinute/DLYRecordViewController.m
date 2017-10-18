@@ -1439,7 +1439,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
 }
 
-
+- (void) statutUpdateWithClockTick:(long long)count{
+    
+}
 //跳转至下一个界面按键
 - (void)onClickNextStep:(UIButton *)sender {
     [MobClick event:@"NextStep"];
