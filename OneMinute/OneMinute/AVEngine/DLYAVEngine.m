@@ -23,8 +23,8 @@
 #import <math.h>
 #import "DLYMovieObject.h"
 #import <CoreMotion/CoreMotion.h>
-#import "DLYThemesData.h"
 #import "DLYVideoFilter.h"
+#import "UIImage+Extension.h"
 
 typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 
@@ -1010,26 +1010,86 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 - (void)addVideoEffectsWithHeaderUrl:(NSURL *)headerUrl andFooterUrl:(NSURL *)footerUrl withTitle:(NSString *)title  {
     
     BOOL isAudio = NO;
+    int templateNum = 1;
+    int startNum = 20;
+    int endNum = 124;
     
-    NSString *headerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"headerVideo.mp4"];
-    NSArray *headArr = [[DLYThemesData sharedInstance] getHeadImageArray];
-    NSMutableArray *headArray = [NSMutableArray arrayWithArray:headArr];
-    [self buildVideoEffectsToMP4:headerPath inputVideoURL:headerUrl andImageArray:headArray andBeginTime:0.1 isAudio:isAudio callback:^(NSURL *finalUrl, NSString *filePath) {
-        NSLog(@"片头完成");
+    DLYMiniVlogTemplate *template = self.session.currentTemplate;
+    if (template.videoHeaderType == DLYMiniVlogHeaderType_A) {
+        templateNum = 1;
+        startNum = 20;
+        endNum = 124;
+//        NSLog(@"陈立勇打印==第一种");
+    }else if (template.videoHeaderType == DLYMiniVlogHeaderType_B){
+        templateNum = 2;
+        startNum = 39;
+        endNum = 300;
+//        NSLog(@"陈立勇打印==第二种");
+    }else{
+        templateNum = 3;
+        startNum = 109;
+        endNum = 210;
+//        NSLog(@"陈立勇打印==第三种");
+    }
         
-        NSString *footerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"footerVideo.mp4"];
-        NSArray *footArr = [[DLYThemesData sharedInstance] getFootImageArray];
-        NSMutableArray *footArray = [NSMutableArray arrayWithArray:footArr];
-        [self buildVideoEffectsToMP4:footerPath inputVideoURL:footerUrl andImageArray:footArray andBeginTime:0.1 isAudio:isAudio callback:^(NSURL *finalUrl, NSString *filePath) {
-            NSLog(@"片尾完成");
+    NSString *headerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"headerVideo.mp4"];
+    
+    NSMutableArray *headArray = [NSMutableArray array];
+    __weak typeof(self) weakSelf = self;
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(queue, ^{
+        
+        for (int i = startNum; i<endNum; i++)
+        {
+            @autoreleasepool {
+                NSString *imageName = [NSString stringWithFormat:@"MyHeader%d_00%03d.png", templateNum, i];
+                UIImage *image = [UIImage imageNamed:imageName];
+                UIImage *newImage = [image scaleToSize:CGSizeMake(600, 600)];
+                [headArray addObject:(id)newImage.CGImage];
+//                NSLog(@"片头图片:%zd", headArray.count);
+            }
+        }
+        [weakSelf buildVideoEffectsToMP4:headerPath inputVideoURL:headerUrl andImageArray:headArray andBeginTime:0.1 isAudio:isAudio callback:^(NSURL *finalUrl, NSString *filePath) {
+//            NSLog(@"片头完成");
             
-            [self mergeVideoWithVideoTitle:title SuccessBlock:^{
-                //成功
-            } failure:^(NSError *error) {
-                //
-            }];
+            NSString *footerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"footerVideo.mp4"];
+            NSMutableArray *footArray = [NSMutableArray array];
+            
+            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            dispatch_async(queue, ^{
+                
+                for (int i = 15; i<210; i++)
+                {
+                    @autoreleasepool {
+                        NSString *imageName = [NSString stringWithFormat:@"MyFooter%d_00%03d.png", templateNum, i];
+                        UIImage *image = [UIImage imageNamed:imageName];
+                        UIImage *newImage = [image scaleToSize:CGSizeMake(600, 600)];
+                        [footArray addObject:(id)newImage.CGImage];
+//                        NSLog(@"片尾图片:%zd", footArray.count);
+                    }
+                }
+                AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:footerUrl options:nil];
+                Float64 timeSeconds = CMTimeGetSeconds(asset.duration);
+                float beginTime;
+                if (timeSeconds > 2.2) {
+                    beginTime = (float)timeSeconds - 2.2;
+//                    NSLog(@"立勇计算==第一种");
+                }else{
+                    beginTime = 0.1;
+//                    NSLog(@"立勇计算==第二种");
+                }
+//                NSLog(@"立勇计算结果:%f%f", timeSeconds, beginTime);
+                [weakSelf buildVideoEffectsToMP4:footerPath inputVideoURL:footerUrl andImageArray:footArray andBeginTime:beginTime isAudio:isAudio callback:^(NSURL *finalUrl, NSString *filePath) {
+//                    NSLog(@"片尾完成");
+                    [weakSelf mergeVideoWithVideoTitle:title SuccessBlock:^{
+                        //成功
+                    } failure:^(NSError *error) {
+                        //
+                    }];
+                }];
+            });
         }];
-    }];
+    });
 }
 
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
@@ -2203,7 +2263,7 @@ BOOL isOnce = YES;
     CALayer *animationLayer = [CALayer layer];
     
     animationLayer.opacity = 1.0;
-    animationLayer.frame = CGRectMake(0, 0, 900, 600);
+    animationLayer.frame = CGRectMake(0, 0, 1200, 900);
     animationLayer.position = CGPointMake(640, 360);
     
     CAKeyframeAnimation *frameAnimation = [[CAKeyframeAnimation alloc] init];
@@ -2220,17 +2280,7 @@ BOOL isOnce = YES;
     [frameAnimation setKeyTimes:keyTimesArray];
     //    [frameAnimation setRemovedOnCompletion:NO];
     [animationLayer addAnimation:frameAnimation forKey:@"contents"];
-    //        if (keyTimesArray)
-    //        {
-    //            [keyTimesArray release];
-    //            keyTimesArray = nil;
-    //        }
-    //
-    //        if (frameAnimation)
-    //        {
-    //            [frameAnimation release];
-    //            frameAnimation = nil;
-    //        }
+
     return animationLayer;
 }
 #pragma mark - 时间处理 -

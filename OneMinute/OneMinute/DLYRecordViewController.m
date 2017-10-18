@@ -17,7 +17,6 @@
 #import "DLYDownloadManager.h"
 #import "DLYMovieObject.h"
 #import "DLYTitleView.h"
-#import "DLYThemesData.h"
 
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
@@ -200,7 +199,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     self.isAvalible = [self monitorPermission];
     
-    [DLYThemesData sharedInstance];
+//    [DLYThemesData sharedInstance];
     
     [DLYIndicatorView sharedIndicatorView].delegate = self;
     self.isAppear = YES;
@@ -2380,8 +2379,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     float width = (self.typeView.width - 50)/6;
     typeScrollView.contentSize = CGSizeMake(width * 6 + 10 * 5, typeScrollView.height);
-//    for(int i = 0; i < typeModelArray.count; i ++)
-    for(int i = 0; i < 3; i ++)
+    for(int i = 0; i < typeModelArray.count; i ++)
     {
         int wNum = i % 6;
         int hNum = i / 6;
