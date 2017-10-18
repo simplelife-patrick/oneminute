@@ -1374,7 +1374,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //拍摄视频按键
 - (void)startRecordBtnAction {
-    
+
+    NSLog(@"开始拍摄时间 :%@",[self getCurrentTime_MS]);
     [MobClick event:@"StartRecord"];
     // REC START
     if (!self.AVEngine.isRecording) {
@@ -2816,6 +2817,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             return;
         }
         [self.AVEngine stopRecording];
+        NSLog(@"结束拍摄时间 :%@",[self getCurrentTime_MS]);
+        
         self.cancelButton.hidden = YES;
         dispatch_source_cancel(_timer);
         _timer = nil;
@@ -3163,6 +3166,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
-
+- (NSString *)getCurrentTime_MS {
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"HH:mm:ss:SSS"];
+    NSString *dateTime = [formatter stringFromDate:[NSDate date]];
+    return dateTime;
+}
 @end
 

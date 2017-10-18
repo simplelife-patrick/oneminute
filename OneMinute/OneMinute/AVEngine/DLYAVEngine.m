@@ -2194,6 +2194,7 @@ BOOL isOnce = YES;
     NSString *dateTime = [formatter stringFromDate:[NSDate date]];
     return dateTime;
 }
+
 - (long long)getDateTimeTOMilliSeconds:(NSDate *)datetime {
     NSTimeInterval interval = [datetime timeIntervalSince1970];
     long long totalMilliseconds = interval * 1000;
