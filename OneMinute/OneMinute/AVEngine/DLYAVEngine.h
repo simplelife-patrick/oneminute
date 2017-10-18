@@ -22,7 +22,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个bl
 
 - (void) displayRefrenceRect:(CGRect)faceRegion;
 
-- (void) startedRecording;
+//- (void) startedRecording;
 
 - (void) finishedRecording;
 
@@ -57,7 +57,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个bl
 
 - (void) restartRecording;
 - (void) pauseRecording;
-//- (void) stopRecording;
+- (void) stopRecording;
 - (void) cancelRecording;
 
 /**
