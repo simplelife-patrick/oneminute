@@ -5,7 +5,7 @@
     {
       "partNum": 0,
       "startTime": "00:00:00",
-      "stopTime": "00:04:00",
+      "stopTime": "00:03:33",
       "dubStartTime": "00:00:00",
       "dubStopTime": "00:10:00",
       "recordType": 1,
@@ -16,8 +16,8 @@
     },
     {
       "partNum": 1,
-      "startTime": "00:04:00",
-      "stopTime": "00:12:00",
+      "startTime": "00:03:33",
+      "stopTime": "00:11:33",
       "dubStartTime": "00:10:00",
       "dubStopTime": "00:18:00",
       "recordType": 0,
@@ -28,8 +28,8 @@
     },
     {
       "partNum": 2,
-      "startTime": "00:12:00",
-      "stopTime": "00:16:00",
+      "startTime": "00:11:33",
+      "stopTime": "00:15:33",
       "dubStartTime": "00:18:00",
       "dubStopTime": "00:31:00",
       "recordType": 1,
@@ -40,8 +40,8 @@
     },
     {
       "partNum": 3,
-      "startTime": "00:16:00",
-      "stopTime": "00:41:00",
+      "startTime": "00:15:33",
+      "stopTime": "00:40:33",
       "dubStartTime": "00:31:00",
       "dubStopTime": "00:36:00",
       "recordType": 2,
@@ -52,8 +52,8 @@
     },
     {
       "partNum": 4,
-      "startTime": "00:41:00",
-      "stopTime": "00:55:00",
+      "startTime": "00:40:33",
+      "stopTime": "00:54:33",
       "dubStartTime": "00:36:00",
       "dubStopTime": "00:50:00",
       "recordType": 0,
@@ -64,8 +64,8 @@
     },
     {
       "partNum": 5,
-      "startTime": "00:55:00",
-      "stopTime": "01:06:00",
+      "startTime": "00:54:33",
+      "stopTime": "01:04:33",
       "dubStartTime": "00:50:00",
       "dubStopTime": "01:00:00",
       "recordType": 0,
@@ -80,8 +80,8 @@
     "stopTime": "00:05:00"
   },
   "BGM": "AdvancedBGM",
-  "header": "header001",
-  "tailer": "tail001",
+  "header": 0,
+  "tailer": 0,
   "templateDescription": "这个模板成片长度为60s，你可以熟练掌握一分的基本成片套路啦，恭喜你熟练掌握了一分的套路，接下来就开启你的神奇之旅呗",
   "sampleVideoName": "AdvancedSample.mp4"
 }
