@@ -11,7 +11,7 @@ def main_pods
 #pod 'Masonry'
 #pod 'fmdb'
 pod 'ZipArchive', '1.4.0'
-pod 'CocoaLumberjack', '2.0.1'
+pod 'CocoaLumberjack', '3.3.0'
 pod 'GPUImage', '~> 0.1.7'
 pod 'Masonry', '~> 1.0.2'
 pod 'CocoaSecurity', '~> 1.2.4'
