@@ -103,7 +103,7 @@
 }
 
 - (void)onClickComplete {
-
+    [DLYUserTrack recordAndEventKey:@"ExportFinish"];
     DLYResource *resource = [[DLYResource alloc] init];
     [resource removeCurrentAllPartFromCache];
     [resource removeCurrentAllPartFromDocument];
@@ -150,7 +150,8 @@
 #pragma mark - 页面将要显示
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [MobClick beginLogPageView:@"ExportView"];
+    [DLYUserTrack recordAndEventKey:@"ExportViewStart"];
+    [DLYUserTrack beginRecordPageViewWith:@"ExportView"];
     if (self.beforeState == 1) {
         NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
         [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
@@ -162,7 +163,8 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [MobClick endLogPageView:@"ExportView"];
+    [DLYUserTrack recordAndEventKey:@"ExportViewEnd"];
+    [DLYUserTrack endRecordPageViewWith:@"ExportView"];
 }
 #pragma mark - 重写父类方法
 - (void)deviceChangeAndHomeOnTheLeft {

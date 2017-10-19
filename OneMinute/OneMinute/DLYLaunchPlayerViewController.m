@@ -197,7 +197,19 @@
     [self.timer invalidate];
     self.timer = nil;
     self.player = nil;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [DLYUserTrack recordAndEventKey:@"LaunchViewStart"];
+    [DLYUserTrack beginRecordPageViewWith:@"LaunchView"];
     
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [DLYUserTrack recordAndEventKey:@"LaunchViewEnd"];
+    [DLYUserTrack endRecordPageViewWith:@"LaunchView"];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

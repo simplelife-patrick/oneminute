@@ -24,6 +24,7 @@
 		6F643AF41F97583E001FDA76 /* PromoteVideo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 6F643AF31F97583E001FDA76 /* PromoteVideo.mp4 */; };
 		6F7455131F7A3EDE00682FB8 /* DLYThemesData.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F7455121F7A3EDE00682FB8 /* DLYThemesData.m */; };
 		6F806D6B1F7CEE7700B4EC51 /* DLYVideoFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F806D6A1F7CEE7700B4EC51 /* DLYVideoFilter.m */; };
+		6F81E7BD1F985564008A2FC9 /* DLYUserTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F81E7BC1F985564008A2FC9 /* DLYUserTrack.m */; };
 		6F89259C1F1B12A100256093 /* DLYExportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F89259B1F1B12A100256093 /* DLYExportViewController.m */; };
 		6F8925AF1F1B135100256093 /* DLYPlayVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925AE1F1B135100256093 /* DLYPlayVideoViewController.m */; };
 		6F8925C61F1B13B400256093 /* DLYLaunchPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925C51F1B13B400256093 /* DLYLaunchPlayerViewController.m */; };
@@ -143,6 +144,8 @@
 		6F7455121F7A3EDE00682FB8 /* DLYThemesData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYThemesData.m; sourceTree = "<group>"; };
 		6F806D691F7CEE7700B4EC51 /* DLYVideoFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYVideoFilter.h; sourceTree = "<group>"; };
 		6F806D6A1F7CEE7700B4EC51 /* DLYVideoFilter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DLYVideoFilter.m; sourceTree = "<group>"; };
+		6F81E7BB1F985564008A2FC9 /* DLYUserTrack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYUserTrack.h; sourceTree = "<group>"; };
+		6F81E7BC1F985564008A2FC9 /* DLYUserTrack.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DLYUserTrack.m; sourceTree = "<group>"; };
 		6F89259A1F1B12A100256093 /* DLYExportViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYExportViewController.h; sourceTree = "<group>"; };
 		6F89259B1F1B12A100256093 /* DLYExportViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYExportViewController.m; sourceTree = "<group>"; };
 		6F8925AD1F1B135100256093 /* DLYPlayVideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYPlayVideoViewController.h; sourceTree = "<group>"; };
@@ -293,6 +296,8 @@
 		1C2CA0171F10A5050085B662 /* UserTrack */ = {
 			isa = PBXGroup;
 			children = (
+				6F81E7BB1F985564008A2FC9 /* DLYUserTrack.h */,
+				6F81E7BC1F985564008A2FC9 /* DLYUserTrack.m */,
 			);
 			name = UserTrack;
 			sourceTree = "<group>";
@@ -913,6 +918,7 @@
 				AD7608F51F70C07F00556E20 /* UIImage+iconfont.m in Sources */,
 				6FD13AC41F60EC02000B72FC /* DLYIndicatorView.m in Sources */,
 				1C7E618A1EE7DF4F0088F33F /* ViewController.m in Sources */,
+				6F81E7BD1F985564008A2FC9 /* DLYUserTrack.m in Sources */,
 				1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */,
 				ADFFF1AB1F18C00200FB5BF7 /* DLYTransitionInstructions.m in Sources */,
 				1C7E61871EE7DF4F0088F33F /* AppDelegate.m in Sources */,
