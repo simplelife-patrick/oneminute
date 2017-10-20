@@ -197,7 +197,13 @@
 
 - (void)makeVideo {
     
-    [MobClick event:@"Skip"];
+    NSString *newStr = [self.titleField.text stringByReplacingOccurrencesOfString:@" " withString:@""];
+    if (newStr.length == 0) {
+        [DLYUserTrack recordAndEventKey:@"Skip"];
+    }else {
+        [DLYUserTrack recordAndEventKey:@"Skip" andDescribeStr:self.titleField.text];
+    }
+
     //隐藏所有控件
     self.backView.hidden = YES;
     self.titleField.hidden = YES;
@@ -350,7 +356,7 @@
 
 - (void)onClickBack:(UIButton *)sender{
     
-    [MobClick event:@"BackView"];
+    [DLYUserTrack recordAndEventKey:@"BackView"];
     //返回
     if(self.DismissBlock){
         self.DismissBlock();
@@ -360,7 +366,7 @@
 
 - (void)onClickPlayOrPause:(UIButton *)sender {
     
-    [MobClick event:@"PlayOrPause"];
+    [DLYUserTrack recordAndEventKey:@"PlayOrPause"];
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     if([self isPlaying])
     {//之前是播放那就暂停 显示暂停图标
@@ -651,7 +657,8 @@
 #pragma mark ==== 页面将要显示
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [MobClick beginLogPageView:@"PlayVideoView"];
+    [DLYUserTrack recordAndEventKey:@"PlayVideoViewStart"];
+    [DLYUserTrack beginRecordPageViewWith:@"PlayVideoView"];
     if([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight) {
         NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
         [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
@@ -966,7 +973,8 @@
         [self.waitIndicator stopAnimating];
     }
     
-    [MobClick endLogPageView:@"PlayVideoView"];
+    [DLYUserTrack recordAndEventKey:@"PlayVideoViewEnd"];
+    [DLYUserTrack endRecordPageViewWith:@"PlayVideoView"];
     [_manager stopMonitoring];
     [self pause];
     [self.player replaceCurrentItemWithPlayerItem:nil];

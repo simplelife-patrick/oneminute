@@ -124,6 +124,19 @@
     }
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [DLYUserTrack recordAndEventKey:@"PromoteVideoViewStart"];
+    [DLYUserTrack beginRecordPageViewWith:@"PromoteVideoView"];
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [DLYUserTrack recordAndEventKey:@"PromoteVideoViewEnd"];
+    [DLYUserTrack endRecordPageViewWith:@"PromoteVideoView"];
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

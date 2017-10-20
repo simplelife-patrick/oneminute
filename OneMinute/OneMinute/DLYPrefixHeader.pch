@@ -34,5 +34,12 @@
 #import <AFNetworking/AFNetworking.h>
 #import "DLYIndicatorView.h"
 #import "DLYPopupMenu.h"
+#import "DLYUserTrack.h"
+
+#ifdef DEBUG
+static const int ddLogLevel = DDLogLevelVerbose;
+#else
+static const int ddLogLevel = DDLogLevelVerbose;
+#endif
 
 #endif /* DLY_PrefixHeader_pch */

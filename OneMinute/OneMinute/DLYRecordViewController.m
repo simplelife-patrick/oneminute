@@ -137,8 +137,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)viewWillAppear:(BOOL)animated {
     
     [self.AVEngine restartRecording];
-    [MobClick beginLogPageView:@"RecordView"];
-    
+    [DLYUserTrack recordAndEventKey:@"RecordViewStart"];
+    [DLYUserTrack beginRecordPageViewWith:@"RecordView"];
     self.isAppear = YES;
     NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
@@ -190,7 +190,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self.AVEngine pauseRecording];
-    [MobClick endLogPageView:@"RecordView"];
+    [DLYUserTrack recordAndEventKey:@"RecordViewEnd"];
+    [DLYUserTrack endRecordPageViewWith:@"RecordView"];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -1274,7 +1275,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark ==== button点击事件
 //补光灯开关
 - (void)onClickFlashAction {
-    
+    [DLYUserTrack recordAndEventKey:@"FlashBtn"];
     self.flashButton.selected = !self.flashButton.selected;
     if (self.flashButton.selected == YES) { //打开闪光灯
         [self.flashButton setImage:[UIImage imageWithIcon:@"\U0000e601" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
@@ -1287,7 +1288,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark ==== 切换摄像头
 - (void)toggleCameraAction {
     
-    [MobClick event:@"toggleCamera"];
+    [DLYUserTrack recordAndEventKey:@"ToggleCamera"];
+    
     if (isSlomoCamera) {
         if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showSlomoCameraPopup"]){
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showSlomoCameraPopup"];
@@ -1319,8 +1321,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //选择场景
 - (void)onClickChooseScene:(UIButton *)sender {
-    
-    [MobClick event:@"ChooseScene"];
+    [DLYUserTrack recordAndEventKey:@"ChooseScene"];
     [self showChooseSceneView];
 }
 //显示模板页面
@@ -1364,6 +1365,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }
         }
     } completion:^(BOOL finished) {
+        [DLYUserTrack recordAndEventKey:@"ChooseSceneViewStart"];
+        [DLYUserTrack beginRecordPageViewWith:@"ChooseSceneView"];
         self.sceneView.hidden = NO;
         self.sceneView.alpha = 1;
         //气泡
@@ -1378,7 +1381,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //拍摄视频按键
 - (void)startRecordBtnAction {
 
-    [MobClick event:@"StartRecord"];
+    [DLYUserTrack recordAndEventKey:@"StartRecord"];
     // REC START
     if (!self.AVEngine.isRecording) {
         
@@ -1499,69 +1502,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     });
 }
 
-//#pragma mark ==== 拍摄计时操作
-//- (void)shootAction {
-//    NSInteger partNumber = selectPartTag - 10000;
-//    DLYMiniVlogPart *part = partModelArray[partNumber - 1];
-//
-//    if((int)(_shootTime * 100) % 100 == 0)
-//    {
-//        if (![self.timeNumber.text isEqualToString:@"1"]) {
-//            self.timeNumber.text = [NSString stringWithFormat:@"%.0f",[part.duration intValue] - _shootTime];
-//        }
-//    }
-//
-//    double partDuration = [part.duration doubleValue];
-//    [_progressView drawProgress:_shootTime / partDuration];
-//    if(_shootTime > partDuration) {
-//        if (self.cancelButton.isHidden) {
-//            return;
-//        }
-//        [self.AVEngine stopRecording];
-//        NSLog(@"计时器结束计时 :%@",[self getCurrentTime_MS]);
-//
-//
-//        self.cancelButton.hidden = YES;
-//
-//        for(int i = 0; i < partModelArray.count; i++)
-//        {
-//            DLYMiniVlogPart *part1 = partModelArray[i];
-//            part1.prepareRecord = @"0";
-//        }
-//        part.prepareRecord = @"0";
-//        part.recordStatus = @"1";
-//
-//        NSInteger n = 0;
-//        for(int i = 0; i < partModelArray.count; i++)
-//        {
-//            DLYMiniVlogPart *part2 = partModelArray[i];
-//            if([part2.recordStatus isEqualToString:@"0"])
-//            {
-//                part2.prepareRecord = @"1";
-//                break;
-//            }else
-//            {
-//                n++;
-//            }
-//        }
-//        //在这里添加完成页面
-//        self.progressView.hidden = YES;
-//        self.timeNumber.hidden = YES;
-//        if (self.newState == 1) {
-//            self.completeButton.transform = CGAffineTransformMakeRotation(0);
-//        }else {
-//            self.completeButton.transform = CGAffineTransformMakeRotation(M_PI);
-//        }
-//        self.completeButton.hidden = NO;
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-//            self.completeButton.hidden = YES;
-//        });
-//    }
-//}
-
 //跳转至下一个界面按键
 - (void)onClickNextStep:(UIButton *)sender {
-    [MobClick event:@"NextStep"];
+    [DLYUserTrack recordAndEventKey:@"NextStep"];
     DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];
     fvc.playUrl = self.AVEngine.currentProductUrl;
     fvc.isAll = YES;
@@ -1573,8 +1516,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //删除全部视频
 - (void)onClickDelete:(UIButton *)sender {
-    [MobClick event:@"DeleteAll"];
-    
+    [DLYUserTrack recordAndEventKey:@"DeleteAll"];
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"deleteAllPopup"]){
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"deleteAllPopup"];
         self.allBubble = [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除全部片段"] icons:nil menuWidth:120 delegate:self];
@@ -1617,7 +1559,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //播放某个片段
 - (void)onClickPlayPartVideo:(UIButton *)sender{
-    [MobClick event:@"PlayPart"];
+    [DLYUserTrack recordAndEventKey:@"PlayPart"];
     NSInteger partNum = selectPartTag - 10000 - 1;
     DLYPlayVideoViewController *playVC = [[DLYPlayVideoViewController alloc] init];
     playVC.playUrl = [self.resource getPartUrlWithPartNum:partNum];
@@ -1630,7 +1572,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //删除某个片段
 - (void)onClickDeletePartVideo:(UIButton *)sender {
-    [MobClick event:@"DeletePart"];
+    [DLYUserTrack recordAndEventKey:@"DeletePart"];
     
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"deletePartPopup"]){
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"deletePartPopup"];
@@ -1671,7 +1613,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 //取消选择场景
 - (void)onClickCancelSelect:(UIButton *)sender {
-    [MobClick event:@"CancelSelect"];
+    [DLYUserTrack recordAndEventKey:@"CancelSelect"];
     [UIView animateWithDuration:0.5f animations:^{
         if (self.newState == 1) {
             self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
@@ -1745,10 +1687,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     self.videoView.hidden = NO;
+    [DLYUserTrack recordAndEventKey:@"ChooseVideoViewStart"];
+    [DLYUserTrack beginRecordPageViewWith:@"ChooseVideoView"];
 }
 
 - (void)hideVideoView {
+    [DLYUserTrack recordAndEventKey:@"BackVideoView"];
     self.videoView.hidden = YES;
+    [DLYUserTrack recordAndEventKey:@"ChooseVideoViewEnd"];
+    [DLYUserTrack endRecordPageViewWith:@"ChooseVideoView"];
 }
 
 - (void)changeVideoToPlay:(UIButton *)sender {
@@ -1756,6 +1703,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSInteger num = sender.tag - 600;
     //url放在这里
     DLYMiniVlogTemplate *template = typeModelArray[num];
+    [DLYUserTrack recordAndEventKey:@"ChoosePlayVideo" andDescribeStr:template.templateTitle];
     NSString *videoName = [template.sampleVideoName stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
     NSArray *urlArr = @[@"http://dly.oss-cn-shanghai.aliyuncs.com/Primary.mp4",
                         @"http://dly.oss-cn-shanghai.aliyuncs.com/Secondary.mp4",
@@ -1812,7 +1760,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 //取消拍摄按键
 - (void)onClickCancelClick:(UIButton *)sender {
-    [MobClick event:@"CancelRecord"];
+    [DLYUserTrack recordAndEventKey:@"CancelRecord"];
     [self.AVEngine cancelRecording];
     
     NSInteger partNum = selectPartTag - 10000 - 1;
@@ -2087,7 +2035,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         }
                         self.flashButton.hidden = NO;
                     }
-                    [self.toggleCameraBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateNormal];
+                    [self.toggleCameraBtn setImage:[UIImage imageWithIcon:@"\U0000e685" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+
                     isSlomoCamera = YES;
                 }else
                 {//延时
@@ -2291,7 +2240,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         }
                         self.flashButton.hidden = NO;
                     }
-                    [self.toggleCameraBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateNormal];
+                    [self.toggleCameraBtn setImage:[UIImage imageWithIcon:@"\U0000e685" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+
                     isSlomoCamera = YES;
                 }else
                 {//延时
@@ -2378,6 +2328,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSInteger i = button.tag - 10000;
     selectPartTag = button.tag;
     DLYMiniVlogPart *part = partModelArray[i-1];
+    
+    DLYMiniVlogTemplate *template = self.session.currentTemplate;
+    NSString *partStr = [NSString stringWithFormat:@"第%ld段", (long)i];
+    [DLYUserTrack recordAndEventKey:@"ChooseRecordPart" andDescribeStr:template.templateTitle andPartNum:partStr];
     //点击哪个item，光标移动到当前item
     prepareTag = button.tag;
     
@@ -2648,6 +2602,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.giveUpBtn.hidden = YES;
     self.typeView.hidden = NO;
     self.seeRush.hidden = NO;
+    
+    DLYMiniVlogTemplate *template = self.session.currentTemplate;
+    [DLYUserTrack recordAndEventKey:@"ChooseUseScene" andDescribeStr:template.templateTitle];
 }
 //放弃切换模板
 - (void)onGiveUpClickChangeTypeStatus {
@@ -2658,9 +2615,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.typeView.hidden = NO;
     self.seeRush.hidden = NO;
 }
-
-
-#pragma mark === 更改样片选中状态
+//点击某个模板
 - (void)changeTypeStatus:(UIButton *)sender {
     
     NSInteger num = sender.tag - 1002;
@@ -2779,6 +2734,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
     } completion:^(BOOL finished) {
         self.sceneView.hidden = YES;
+        [DLYUserTrack recordAndEventKey:@"ChooseSceneViewEnd"];
+        [DLYUserTrack endRecordPageViewWith:@"ChooseSceneView"];
     }];
 }
 

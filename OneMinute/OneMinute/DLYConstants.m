@@ -8,9 +8,9 @@
 
 #import "DLYConstants.h"
 
-int const ddLogLevel = DDLogLevelVerbose;
-
-int const ddLogError = DDLogLevelError;
+//int const ddLogLevel = DDLogLevelVerbose;
+//
+//int const ddLogError = DDLogLevelError;
 
 @implementation DLYConstants
 
