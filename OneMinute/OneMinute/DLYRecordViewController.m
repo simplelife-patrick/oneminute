@@ -941,7 +941,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         while ([writerInput isReadyForMoreMediaData]) {
             if(++frame >= count) {
                 [writerInput markAsFinished];
-                [videoWriter finishWriting];
+                [videoWriter finishWritingWithCompletionHandler:^{
+
+                }];
                 NSLog(@"comp completed !");
                 if (completedBlock) {
                     completedBlock(YES);
@@ -1380,14 +1382,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
     [MobClick event:@"StartRecord"];
     // REC START
-    if (!self.AVEngine.isRecording) {
-        
+//    if (!self.AVEngine.isRecording) {
+    
         NSInteger i = selectPartTag - 10000;
         DLYMiniVlogPart *part = partModelArray[i - 1];
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self.AVEngine startRecordingWithPart:part];
-        });
+//        });
 
         NSLog(@"计时器开始计时 :%@",[self getCurrentTime_MS]);
         
@@ -1436,7 +1438,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.shootView.hidden = NO;
             self.shootView.alpha = 1;
         }];
-    }
+//    }
 }
 
 - (void) statutUpdateWithClockTick:(float)count{

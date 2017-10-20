@@ -28,16 +28,14 @@
 
 typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 
-@interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate>
+@interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate,AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate>
 {
     CMTime defaultVideoMaxFrameDuration;
     BOOL readyToRecordAudio;
     BOOL readyToRecordVideo;
-    BOOL recordingWillBeStarted;
     
     AVCaptureVideoOrientation videoOrientation;
     AVCaptureVideoOrientation referenceOrientation;
-    dispatch_queue_t movieWritingQueue;
     CMBufferQueueRef previewBufferQueue;
     
     CMTime _startTime;
@@ -65,7 +63,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     dispatch_source_t _enliveTime;
 }
 
-@property (nonatomic,strong) AVCaptureMetadataOutput            *metadataOutput;
+@property (nonatomic, strong) AVCaptureMetadataOutput           *metadataOutput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *frontCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *audioMicInput;
 @property (nonatomic, strong) AVCaptureDeviceFormat             *defaultFormat;
@@ -75,8 +73,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 @property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;
 @property (nonatomic, strong) AVCaptureAudioDataOutput          *audioOutput;
 @property (nonatomic, strong) AVCaptureMovieFileOutput          *movieFileOutput;
+@property (nonatomic, strong) dispatch_queue_t                  movieWritingQueue;
+@property (nonatomic, strong) dispatch_queue_t                  videoQueue;
 
-// For video data output
 @property (nonatomic, strong) AVAssetWriter                     *assetWriter;
 @property (nonatomic, strong) AVAssetWriterInput                *assetWriterVideoInput;
 @property (nonatomic, strong) AVAssetWriterInput                *assetWriterAudioInput;
@@ -187,6 +186,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     return isAvalible;
 }
 -(AVCaptureSession *)captureSession{
+    
     if (_captureSession == nil) {
         _captureSession = [[AVCaptureSession alloc] init];
         
@@ -288,7 +288,9 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             [self.videoConnection setVideoOrientation:AVCaptureVideoOrientationLandscapeRight];
         }
         // Video
-        movieWritingQueue = dispatch_queue_create("moviewriting", DISPATCH_QUEUE_SERIAL);
+        self.movieWritingQueue = dispatch_queue_create("moviewriting", DISPATCH_QUEUE_SERIAL);
+        self.videoQueue = dispatch_queue_create("videoQueue",NULL);
+
         videoOrientation = [self.videoConnection videoOrientation];
         
         // BufferQueue
@@ -331,6 +333,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.frontCameraInput];//切换成了前置
+            _currentVideoDeviceInput = self.frontCameraInput;
             self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         }
     }else {
@@ -340,6 +343,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         if ([self.captureSession canAddInput:self.backCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.backCameraInput];//切换成了后置
+            _currentVideoDeviceInput = self.frontCameraInput;
         }
     }
     [self.captureSession startRunning];
@@ -380,7 +384,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     return _audioMicInput;
 }
--(AVCaptureMovieFileOutput *)movieFileOutput{
+- (AVCaptureMovieFileOutput *)movieFileOutput{
     if (_movieFileOutput == nil) {
         _movieFileOutput = [[AVCaptureMovieFileOutput alloc]init];
     }
@@ -400,7 +404,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     }
     return _videoOutput;
 }
--(AVCaptureMetadataOutput *)metadataOutput {
+- (AVCaptureMetadataOutput *)metadataOutput {
     if (_metadataOutput == nil) {
         _metadataOutput = [[AVCaptureMetadataOutput alloc]init];
         dispatch_queue_t metadataOutputQueue = dispatch_queue_create("metadataOutput", DISPATCH_QUEUE_SERIAL);
@@ -656,6 +660,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         
         if ([self.assetWriter startWriting]) {
             
+            DLYLog(@"AVEngine开始写入 : %@",[self getCurrentTime_MS]);
             CMTime timestamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
             [self.assetWriter startSessionAtSourceTime:timestamp];
         }
@@ -674,7 +679,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
                 
                 if (![self.assetWriterVideoInput appendSampleBuffer:sampleBuffer]) {
                     
-                    DLYLog(@"isRecording:%d, willBeStarted:%d", self.isRecording, recordingWillBeStarted);
+                    DLYLog(@"isRecording:%d", self.isRecording);
                     if (self.assetWriter.error) {
                         DLYLog(@"AVAssetWriterInput video appendSampleBuffer error:%@", self.assetWriter.error);
                     }
@@ -695,30 +700,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
 }
 
-//- (void)resetFormat {
-//
-//    BOOL isRunning = self.captureSession.isRunning;
-//
-//    if (isRunning) {
-//        [self.captureSession stopRunning];
-//    }
-//
-//    [self.defaultVideoDevice lockForConfiguration:nil];
-//    self.defaultVideoDevice.activeFormat = self.defaultFormat;
-//    self.defaultVideoDevice.activeVideoMaxFrameDuration = defaultVideoMaxFrameDuration;
-//    [self.defaultVideoDevice unlockForConfiguration];
-//
-//    if (isRunning) {
-//        [self.captureSession startRunning];
-//    }
-//}
-
 #pragma mark - 改变录制帧率 -
 - (void)switchFormatWithDesiredFPS:(CGFloat)desiredFPS
 {
     DLYLog(@"最终设定的最佳帧率: %f",desiredFPS);
-//    BOOL isRunning = self.captureSession.isRunning;
-//    if (isRunning)  [self.captureSession stopRunning];
     [self.captureSession beginConfiguration];
     
     AVCaptureDevice *device = self.defaultVideoDevice;
@@ -767,42 +752,32 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }
     }
     
-    [self.captureSession beginConfiguration];
     self.captureSession.sessionPreset = AVCaptureSessionPresetiFrame1280x720;
-    [self.captureSession commitConfiguration];
     
-//    if (isRunning) [self.captureSession startRunning];
     [self.captureSession commitConfiguration];
 
 }
 #pragma mark - 开始录制 -
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
-    DLYLog(@"开始录制");
-    AVEngine_startTime = [self getCurrentTime_MS];
-    DLYLog(@"开始录制 : %@",AVEngine_startTime);
     
     _currentPart = part;
     
+    int desiredFPS = 0;
     if (_currentPart.recordType == DLYMiniVlogRecordTypeSlomo) {
         DLYLog(@"🎬🎬🎬 慢镜头片段");
-        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-        dispatch_async(queue, ^{
-            [self switchFormatWithDesiredFPS:120.0];
-        });
-        
+        desiredFPS = 120;
     }else if (_currentPart.recordType == DLYMiniVlogRecordTypeTimelapse){
         DLYLog(@"🎬🎬🎬 快镜头片段");
-        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-        dispatch_async(queue, ^{
-            [self switchFormatWithDesiredFPS:25.0];
-        });
-    }else{
+        desiredFPS = 25;
+    }else {
         DLYLog(@"🎬🎬🎬 正常拍摄片段");
-        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-        dispatch_async(queue, ^{
-            [self switchFormatWithDesiredFPS:25.0];
-        });
+        desiredFPS = 25;
     }
+    
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(queue, ^{
+        [self switchFormatWithDesiredFPS:desiredFPS];
+    });
     
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
     
@@ -825,38 +800,36 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         DLYLog(@"AVAssetWriter error:%@", error);
     }
     
-    recordingWillBeStarted = YES;
-    
     NSArray *startArr = [part.starTime componentsSeparatedByString:@":"];
-    NSString *startTimeStr = startArr[1];
-    float startTime = [startTimeStr floatValue];
+    NSString *startTimeStr_M = startArr[0];
+    NSString *startTimeStr_S = startArr[1];
+    NSString *startTimeStr_MS = startArr[2];
+    double startTime_M = [startTimeStr_M doubleValue] * 60 * 1000;
+    double startTime_S = [startTimeStr_S doubleValue] * 1000;
+    double startTime_MS = [startTimeStr_MS doubleValue];
+    double startTime = startTime_M + startTime_S + startTime_MS;
 
     NSArray *stopArr = [part.stopTime componentsSeparatedByString:@":"];
-    NSString *stopTimeStr = stopArr[1];
-    float stopTime = [stopTimeStr floatValue];
+    NSString *stopTimeStr_M = stopArr[0];
+    NSString *stopTimeStr_S = stopArr[1];
+    NSString *stopTimeStr_MS = stopArr[2];
+    double stopTime_M = [stopTimeStr_M doubleValue] * 60 * 1000;
+    double stopTime_S = [stopTimeStr_S doubleValue] * 1000;
+    double stopTime_MS = [stopTimeStr_MS doubleValue];
+    double stopTime = stopTime_M + stopTime_S + stopTime_MS;
 
-    [self createRecorderTimerWithStartTime:(float)startTime stopTime:(float)stopTime];
-    
-    AVEngine_startWritting = [self getCurrentTime_MS];
-    DLYLog(@"开始写入 : %@",AVEngine_startWritting);
+    counter = 0;
+    [self createRecorderTimerWithStartTime:startTime / 1000 stopTime:stopTime / 1000];
 }
 #pragma mark - 停止录制 -
 - (void)stopRecording {
     
-    DLYLog(@"停止录制");
-    AVEngine_stopTime = [self getCurrentTime_MS];
-    NSLog(@"AVEngine停止录制时间 : %@",AVEngine_stopTime);
-    dispatch_async(movieWritingQueue, ^{
-        
-        _isRecording = NO;
-        readyToRecordVideo = NO;
-        readyToRecordAudio = NO;
-        
+    dispatch_async(_movieWritingQueue, ^{
+    
         [self.assetWriter finishWritingWithCompletionHandler:^{
             
-            AVEngine_stopWritting = [self getCurrentTime_MS];
-            DLYLog(@"结束写入 : %@",AVEngine_stopWritting);
-            
+            DLYLog(@"AVEngine停止写入 : %@",[self getCurrentTime_MS]);
+
             self.assetWriterVideoInput = nil;
             self.assetWriterAudioInput = nil;
             self.assetWriter = nil;
@@ -867,18 +840,70 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }];
     });
 }
+#pragma mark - 录制用的计时器 -
+- (void)createRecorderTimerWithStartTime:(float)startTime stopTime:(float)stopTime {
+    
+    counter = 0;
+    __block float recordDuration = stopTime - startTime;
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+    _enliveTime = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+    //开始时间
+    dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.001 * NSEC_PER_SEC));
+    //时间间隔
+    uint64_t interval = (uint64_t)(1 * NSEC_PER_MSEC); //定时器时间精度 1ms
+    dispatch_source_set_timer(_enliveTime, start, interval, 0);
+    //回调
+    dispatch_source_set_event_handler(_enliveTime, ^{
+
+//        DLYLog(@"定时器启动 : %@",[self getCurrentTime_MS]);
+
+        if (![self.captureSession isRunning]) {
+            [self.captureSession startRunning];
+        }
+        _isRecording = YES;
+//        DLYLog(@"AVEngine开始采集 : %@",[self getCurrentTime_MS]);
+
+        if (self.delegate && [self.delegate respondsToSelector:@selector(statutUpdateWithClockTick:)]) {
+            [self.delegate statutUpdateWithClockTick:counter];
+        }
+        counter += 0.001;
+        if (counter >= recordDuration){
+            NSLog(@"定时时长 counter: %f,片段要求时长 recordDuration :%f",counter,recordDuration);
+            
+            _isRecording = NO;
+            readyToRecordVideo = NO;
+            readyToRecordAudio = NO;
+//            DLYLog(@"AVEngine停止采集 : %@",[self getCurrentTime_MS]);
+            
+            if ([self.captureSession isRunning]) {
+                [self.captureSession stopRunning];
+            }
+
+            [self stopRecording];
+            dispatch_cancel(_enliveTime);
+//            DLYLog(@"停止定时器 : %@",[self getCurrentTime_MS]);
+
+            if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
+                [self.delegate finishedRecording];
+            }
+            if (![self.captureSession isRunning]) {
+                [self.captureSession startRunning];
+            }
+        }
+    });
+    //启动定时器
+    dispatch_resume(_enliveTime);
+    
+}
 
 #pragma mark - 取消录制 -
 - (void)cancelRecording{
     
     DLYLog(@"取消录制");
-    dispatch_async(movieWritingQueue, ^{
-        
-        _isRecording = NO;
-        readyToRecordVideo = NO;
-        readyToRecordAudio = NO;
-        
+    dispatch_async(_movieWritingQueue, ^{
+    
         [self.assetWriter finishWritingWithCompletionHandler:^{
+
             counter = 0;
             self.assetWriterVideoInput = nil;
             self.assetWriterAudioInput = nil;
@@ -1093,42 +1118,39 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
-    
+
     CMFormatDescriptionRef formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer);
     
     CFRetain(sampleBuffer);
     
-    dispatch_async(movieWritingQueue, ^{
+    dispatch_async(_movieWritingQueue, ^{
         
-        if (self.assetWriter && (self.isRecording || recordingWillBeStarted)) {
+        if (self.assetWriter && (self.isRecording)) {
             
             BOOL wasReadyToRecord = (readyToRecordAudio && readyToRecordVideo);
             
             if (connection == self.videoConnection) {
-                // Initialize the video input if this is not done yet
+                
                 if (!readyToRecordVideo) {
                     readyToRecordVideo = [self setupAssetWriterVideoInput:formatDescription];
                 }
                 
-                // Write video data to file
                 if (readyToRecordVideo && readyToRecordAudio) {
                     [self writeSampleBuffer:sampleBuffer ofType:AVMediaTypeVideo];
                 }
             }
             else if (connection == self.audioConnection) {
-                // Initialize the audio input if this is not done yet
+                
                 if (!readyToRecordAudio) {
                     readyToRecordAudio = [self setupAssetWriterAudioInput:formatDescription];
                 }
                 
-                // Write audio data to file
                 if (readyToRecordAudio && readyToRecordVideo)
                     [self writeSampleBuffer:sampleBuffer ofType:AVMediaTypeAudio];
             }
             
             BOOL isReadyToRecord = (readyToRecordAudio && readyToRecordVideo);
             if (!wasReadyToRecord && isReadyToRecord) {
-                recordingWillBeStarted = NO;
                 _isRecording = YES;
             }
         }
@@ -1163,43 +1185,13 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
 }
 
-#pragma mark - 录制用的计时器 -
-- (void)createRecorderTimerWithStartTime:(float)startTime stopTime:(float)stopTime {
-    counter = 0;
-    __block float recordDuration = stopTime - startTime;
-    dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
-    _enliveTime = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
-    //开始时间
-    dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC));
-    //时间间隔
-    uint64_t interval = (uint64_t)(0.001 * NSEC_PER_SEC); //定时器时间精度 1ms
-    dispatch_source_set_timer(_enliveTime, start, interval, 0);
-    //回调
-    dispatch_source_set_event_handler(_enliveTime, ^{
-        if (self.delegate && [self.delegate respondsToSelector:@selector(statutUpdateWithClockTick:)]) {
-            [self.delegate statutUpdateWithClockTick:counter];
-        }
-        counter += 0.001;
-        if (counter >= recordDuration){
-            dispatch_cancel(_enliveTime);
-            [self stopRecording];
-            if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
-                [self.delegate finishedRecording];
-            }
-        }
-
-    });
-    //启动定时器
-    dispatch_resume(_enliveTime);
-}
-
 NSInteger timeCount = 0;
 NSInteger maskCount = 0;
 NSInteger startCount = MAXFLOAT;
 BOOL isOnce = YES;
 - (void)createFaceRecognitionTimer{
     //获得队列
-    dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     //创建一个定时器
     dispatch_source_t enliveTime2 = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
     //设置开始时间
@@ -1710,7 +1702,7 @@ BOOL isOnce = YES;
     }
     return transitionInstructions;
 }
-#pragma mark - 配音 -
+#pragma mark - 双音轨合成控制 -
 - (void) addMusicToVideo:(NSURL *)videoUrl audioUrl:(NSURL *)audioUrl videoTitle:(NSString *)videoTitle successBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
     
     AVURLAsset *videoAsset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
@@ -2014,9 +2006,7 @@ BOOL isOnce = YES;
         [weakSelf.movieWriter finishRecording];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            
-            // 保存到相册
-            //            [weakSelf writeToAlbum:outputUrl];
+            //保存到相册
         });
     }];
 }
@@ -2305,13 +2295,6 @@ BOOL isOnce = YES;
 - (NSString *)returnFormatString:(NSString *)str {
     return [str stringByReplacingOccurrencesOfString:@" " withString:@" "];
 }
-//获取当地时间
-- (NSString *)getCurrentTime {
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"yyyy.MM.dd  HH:mm:ss"];
-    NSString *dateTime = [formatter stringFromDate:[NSDate date]];
-    return dateTime;
-}
 
 - (long long)getDateTimeTOMilliSeconds:(NSDate *)datetime {
     NSTimeInterval interval = [datetime timeIntervalSince1970];
@@ -2324,6 +2307,12 @@ BOOL isOnce = YES;
     NSString *dateTime = [formatter stringFromDate:[NSDate date]];
     return dateTime;
 }
-
+//获取当地时间
+- (NSString *)getCurrentTime {
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy.MM.dd  HH:mm:ss"];
+    NSString *dateTime = [formatter stringFromDate:[NSDate date]];
+    return dateTime;
+}
 @end
 
