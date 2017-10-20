@@ -2035,7 +2035,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         }
                         self.flashButton.hidden = NO;
                     }
-                    [self.toggleCameraBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateNormal];
+                    [self.toggleCameraBtn setImage:[UIImage imageWithIcon:@"\U0000e685" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+
                     isSlomoCamera = YES;
                 }else
                 {//延时
@@ -2239,7 +2240,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         }
                         self.flashButton.hidden = NO;
                     }
-                    [self.toggleCameraBtn setImage:[UIImage imageNamed:@"camera"] forState:UIControlStateNormal];
+                    [self.toggleCameraBtn setImage:[UIImage imageWithIcon:@"\U0000e685" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+
                     isSlomoCamera = YES;
                 }else
                 {//延时
