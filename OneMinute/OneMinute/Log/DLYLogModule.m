@@ -104,7 +104,8 @@ SINGLETON(DLYLogModule)
         {
             // TODO: 邓柯
 //            _DLYLogInfo(log,nil);
-            NSLog([NSString stringWithFormat:@"%@", log], nil);
+            DDLogInfo(log, nil);
+//            NSLog([NSString stringWithFormat:@"%@", log], nil);
         }
     }
 }
@@ -153,18 +154,17 @@ SINGLETON(DLYLogModule)
 {
     // sends log to a file into ~/Library/Caches/Logs/log-*
     NSString *cacheDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    _logDirectory = [NSString stringWithFormat:@"%@/Logs/VideoConference", cacheDirectory];
+    _logDirectory = [NSString stringWithFormat:@"%@/Logs/", cacheDirectory];
+    
     _logFileManager = [[DDLogFileManagerDefault alloc] initWithLogsDirectory:_logDirectory];
+    [DDLog addLogger:[DDTTYLogger sharedInstance]]; // TTY = Xcode console
+    [DDLog addLogger:[DDASLLogger sharedInstance]]; // ASL = Apple System Logs
     
-    _logger = [[DDFileLogger alloc] initWithLogFileManager:_logFileManager];
-    [_logger.logFileManager setMaximumNumberOfLogFiles:DTVideoMaximumNumberOfLogFiles];
-    [_logger setMaximumFileSize:DTVideoMaximumFileSize];
-    [_logger setRollingFrequency:3600.f * 24];
-    
-    DLYLogFormatter *logFormatter = [[DLYLogFormatter alloc] init];
-    [_logger setLogFormatter:logFormatter];
-    
-    [DDLog addLogger:_logger withLevel:LOG_LEVEL_VIDEO_INFO];
+    DDFileLogger *fileLogger = [[DDFileLogger alloc] initWithLogFileManager:_logFileManager]; // File Logger
+    fileLogger.rollingFrequency = 60 * 60 * 24; // 24 hour rolling
+    fileLogger.logFileManager.maximumNumberOfLogFiles = DTVideoMaximumNumberOfLogFiles;
+    fileLogger.maximumFileSize = DTVideoMaximumFileSize;
+    [DDLog addLogger:fileLogger];
 }
 
 @end
