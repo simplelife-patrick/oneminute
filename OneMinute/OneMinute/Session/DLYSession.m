@@ -17,11 +17,15 @@
     if ([[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY]) {
         
         NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY];
+        DLYLog(@"当前保存到模板名称 :%@",savedCurrentTemplateName);
         _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
         
     }else{
+        DLYLog(@"当前保存的模板名称键值为空,加载默认模板");
         _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:kDEFAULTTEMPLATENAME];
     }
+    DLYLog(@"当前加载的模板是 :%@",_currentTemplate.templateId);
+
     return _currentTemplate;
 }
 - (void)saveCurrentTemplateWithId:(NSString *)currentTemplateId{
@@ -32,16 +36,18 @@
     if ([defaults synchronize]) {
 
     }else{
-        DLYLog(@"⚠️⚠️⚠️Current template saved failure!");
+        DLYLog(@"保存当前模板失败!");
     };
 }
 - (NSArray *) loadAllTemplateFile {
     
-    //获取系统版本
-    double systemVersion = [[UIDevice currentDevice] systemVersion].doubleValue;
+    //获取应用当前版本号
+    NSDictionary*infoDic = [[NSBundle mainBundle] infoDictionary];
+    double localVersion = [[infoDic objectForKey:@"CFBundleShortVersionString"] doubleValue];
+    
     NSString *jsonFile = nil;
     
-    if (systemVersion <= 1.0) {
+    if (localVersion <= 1.0) {
         jsonFile = [[NSBundle mainBundle] pathForResource:@"TemplateList_v1.plist" ofType:nil];
     }else {
         jsonFile = [[NSBundle mainBundle] pathForResource:@"TemplateList_v1.plist" ofType:nil];

@@ -1,6 +1,7 @@
 {
   "id": "ColorfulLife.json",
   "title":"过年好",
+  "version": 1.0,
   "info": [
     {
       "partNum": 0,
@@ -17,9 +18,9 @@
     {
       "partNum": 1,
       "startTime": "00:08:28",
-      "stopTime": "00:12:26",
+      "stopTime": "00:12:36",
       "dubStartTime": "00:08:28",
-      "dubStopTime": "00:12:26",
+      "dubStopTime": "00:12:36",
       "recordType": 0,
       "soundType": 0,
       "BGMVolume": 100,
@@ -28,9 +29,9 @@
     },
     {
       "partNum": 2,
-      "startTime": "00:12:26",
+      "startTime": "00:12:36",
       "stopTime": "00:28:72",
-      "dubStartTime": "00:12:26",
+      "dubStartTime": "00:12:36",
       "dubStopTime": "00:28:72",
       "recordType": 0,
       "soundType": 1,

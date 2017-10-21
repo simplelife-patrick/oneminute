@@ -24,9 +24,11 @@
                 data = [NSData dataWithContentsOfFile:path];
                 
                 if (data) {
+                    DLYLog(@"模板的JOSN文件Data数据 :%@",data);
                     NSMutableDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                     self.templateId = [dic objectForKey:@"id"];
                     self.templateTitle = [dic objectForKey:@"title"];
+                    self.version = [[dic objectForKey:@"version"] doubleValue];
                     self.parts = [dic objectForKey:@"info"];
                     self.BGM = [dic objectForKey:@"BGM"];
                     self.subTitle1 = [dic objectForKey:@"subTitle1"];

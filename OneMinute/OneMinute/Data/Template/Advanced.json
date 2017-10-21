@@ -1,6 +1,7 @@
 {
   "id": "Advanced.json",
   "title":"熟练操作",
+  "version": 1.0,
   "info": [
     {
       "partNum": 0,
@@ -29,7 +30,7 @@
     {
       "partNum": 2,
       "startTime": "00:11:33",
-      "stopTime": "00:15:33",
+      "stopTime": "00:15:67",
       "dubStartTime": "00:18:00",
       "dubStopTime": "00:31:00",
       "recordType": 1,
@@ -40,8 +41,8 @@
     },
     {
       "partNum": 3,
-      "startTime": "00:15:33",
-      "stopTime": "00:40:33",
+      "startTime": "00:15:67",
+      "stopTime": "00:40:67",
       "dubStartTime": "00:31:00",
       "dubStopTime": "00:36:00",
       "recordType": 2,
@@ -52,8 +53,8 @@
     },
     {
       "partNum": 4,
-      "startTime": "00:40:33",
-      "stopTime": "00:54:33",
+      "startTime": "00:40:67",
+      "stopTime": "00:54:67",
       "dubStartTime": "00:36:00",
       "dubStopTime": "00:50:00",
       "recordType": 0,
@@ -64,8 +65,8 @@
     },
     {
       "partNum": 5,
-      "startTime": "00:54:33",
-      "stopTime": "01:04:33",
+      "startTime": "00:54:67",
+      "stopTime": "01:04:67",
       "dubStartTime": "00:50:00",
       "dubStopTime": "01:00:00",
       "recordType": 0,

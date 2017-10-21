@@ -43,9 +43,9 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个bl
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *currentVideoDeviceInput;
 @property (nonatomic, strong) AVCaptureDevice                                         *videoDevice;
 
-@property (nonatomic, assign) id                                                      delegate;
-@property (nonatomic, readonly) BOOL                                                  isRecording;
+@property (nonatomic, assign) BOOL                                                    isRecording;
 
+@property (nonatomic, assign) id                                                      delegate;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer                              *captureVideoPreviewLayer;
 @property (nonatomic, strong) AVCaptureConnection                                     *videoConnection;
 @property (nonatomic, strong) AVCaptureSession                                        *captureSession;
@@ -146,7 +146,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个bl
  @param intervalTime 某一时刻
  @return 返回获取的图片
  */
--(UIImage*)getKeyImage:(NSURL *)assetUrl intervalTime:(NSInteger)intervalTime;
+-(UIImage*)getKeyImage:(NSURL *)assetUrl intervalTime:(Float32)intervalTime;
 
 //单次对焦
 - (void) focusOnceWithPoint:(CGPoint)point;
