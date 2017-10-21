@@ -433,9 +433,10 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
             defaultVideoMaxFrameDuration = device.activeVideoMaxFrameDuration;
             DLYLog(@"device.activeFormat:%@", device.activeFormat);
             
-            if([device isSmoothAutoFocusSupported]){
-                [device setSmoothAutoFocusEnabled:YES];
-            }
+//            if([device isSmoothAutoFocusSupported]){
+////                [device setSmoothAutoFocusEnabled:YES];
+//                device.smoothAutoFocusEnabled = YES;;
+//            }
             return device;
         }
     }
