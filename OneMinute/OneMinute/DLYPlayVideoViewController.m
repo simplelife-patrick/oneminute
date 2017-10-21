@@ -17,7 +17,7 @@
 
 #define kMaxLength 16
 
-@interface DLYPlayVideoViewController ()<UITextFieldDelegate,DLYCaptureAVEngineDelegate,YBPopupMenuDelegate>
+@interface DLYPlayVideoViewController ()<UITextFieldDelegate,UIGestureRecognizerDelegate,DLYCaptureAVEngineDelegate,YBPopupMenuDelegate>
 {
     float mRestoreAfterScrubbingRate;
     //1.流量 2.WiFi 3.不可用
@@ -237,6 +237,14 @@
 //    }];
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    if(touch.view == self.progressSlider ) {
+        return NO;
+    }else {
+        return YES;
+    }
+}
+
 - (void)setupUI{
     //创建播放器层
     self.view.backgroundColor = RGB(0, 0, 0);
@@ -301,7 +309,7 @@
         [self.waitIndicator startAnimating];
     }
     if (self.isAll && self.isSuccess == NO) {
-        [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"正在成片中..."];
+        [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"请勿退出应用..."];
     }
     //滑块
     self.progressSlider = [[UISlider alloc] initWithFrame:CGRectMake(85, SCREEN_HEIGHT - 45, SCREEN_WIDTH - 170, 20)];
@@ -351,6 +359,7 @@
     
     //手势
     UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleControls:)];
+    singleTap.delegate = self;
     [self.view addGestureRecognizer:singleTap];
 }
 
