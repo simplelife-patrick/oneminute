@@ -146,7 +146,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个bl
  @param intervalTime 某一时刻
  @return 返回获取的图片
  */
--(UIImage*)getKeyImage:(NSURL *)assetUrl intervalTime:(NSInteger)intervalTime;
+-(UIImage*)getKeyImage:(NSURL *)assetUrl intervalTime:(Float32)intervalTime;
 
 //单次对焦
 - (void) focusOnceWithPoint:(CGPoint)point;
