@@ -1,11 +1,12 @@
 {
   "id": "YoungOuting.json",
   "title":"青春壮游",
+  "version": 1.0,
   "info": [
     {
       "partNum": 0,
       "startTime": "00:00:00",
-      "stopTime": "00:01:00",
+      "stopTime": "00:01:53",
       "dubStartTime": "00:00:00",
       "dubStopTime": "00:03:106",
       "recordType": 1,
@@ -16,8 +17,8 @@
     },
     {
       "partNum": 1,
-      "startTime": "00:01:00",
-      "stopTime": "00:03:00",
+      "startTime": "00:01:53",
+      "stopTime": "00:03:65",
       "dubStartTime": "00:03:16",
       "dubStopTime": "00:10:24",
       "recordType": 1,
@@ -28,8 +29,8 @@
     },
     {
       "partNum": 2,
-      "startTime": "00:03:00",
-      "stopTime": "00:05:00",
+      "startTime": "00:03:65",
+      "stopTime": "00:05:74",
       "dubStartTime": "00:10:24",
       "dubStopTime": "00:16:52",
       "recordType": 1,
@@ -40,8 +41,8 @@
     },
     {
       "partNum": 3,
-      "startTime": "00:05:00",
-      "stopTime": "00:26:00",
+      "startTime": "00:05:74",
+      "stopTime": "00:27:62",
       "dubStartTime": "00:16:52",
       "dubStopTime": "00:38:40",
       "recordType": 0,
@@ -52,8 +53,8 @@
     },
     {
       "partNum": 4,
-      "startTime": "00:26:00",
-      "stopTime": "00:28:00",
+      "startTime": "00:27:62",
+      "stopTime": "00:29:53",
       "dubStartTime": "00:38:40",
       "dubStopTime": "00:44:12",
       "recordType": 1,
@@ -64,8 +65,8 @@
     },
     {
       "partNum": 5,
-      "startTime": "00:28:00",
-      "stopTime": "00:30:00",
+      "startTime": "00:29:53",
+      "stopTime": "00:31:08",
       "dubStartTime": "00:44:12",
       "dubStopTime": "00:48:76",
       "recordType": 1,
@@ -76,8 +77,8 @@
     },
     {
       "partNum": 6,
-      "startTime": "00:30:00",
-      "stopTime": "00:34:00",
+      "startTime": "00:31:08",
+      "stopTime": "00:34:82",
       "dubStartTime": "00:48:76",
       "dubStopTime": "01:00:00",
       "recordType": 1,

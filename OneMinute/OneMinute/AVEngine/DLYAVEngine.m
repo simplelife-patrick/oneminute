@@ -72,7 +72,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 
 @property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;
 @property (nonatomic, strong) AVCaptureAudioDataOutput          *audioOutput;
-@property (nonatomic, strong) AVCaptureMovieFileOutput          *movieFileOutput;
 @property (nonatomic, strong) dispatch_queue_t                  movieWritingQueue;
 @property (nonatomic, strong) dispatch_queue_t                  videoQueue;
 
@@ -189,23 +188,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     if (_captureSession == nil) {
         _captureSession = [[AVCaptureSession alloc] init];
-        
-        //添加后置摄像头的输出
-        if ([_captureSession canAddInput:self.backCameraInput]) {
-            [_captureSession addInput:self.backCameraInput];
-        }
-        //添加后置麦克风的输出
-        if ([_captureSession canAddInput:self.audioMicInput]) {
-            [_captureSession addInput:self.audioMicInput];
-        }
-        //添加视频输出
-        if ([_captureSession canAddOutput:self.videoOutput]) {
-            [_captureSession addOutput:self.videoOutput];
-        }
-        //添加音频输出
-        if ([_captureSession canAddOutput:self.audioOutput]) {
-            [_captureSession addOutput:self.audioOutput];
-        }
     }
     return _captureSession;
 }
@@ -383,12 +365,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
         }
     }
     return _audioMicInput;
-}
-- (AVCaptureMovieFileOutput *)movieFileOutput{
-    if (_movieFileOutput == nil) {
-        _movieFileOutput = [[AVCaptureMovieFileOutput alloc]init];
-    }
-    return _movieFileOutput;
 }
 //视频输出
 - (AVCaptureVideoDataOutput *)videoOutput {
@@ -768,10 +744,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         desiredFPS = 120;
     }else if (_currentPart.recordType == DLYMiniVlogRecordTypeTimelapse){
         DLYLog(@"🎬🎬🎬 快镜头片段");
-        desiredFPS = 25;
+        desiredFPS = 30;
     }else {
         DLYLog(@"🎬🎬🎬 正常拍摄片段");
-        desiredFPS = 25;
+        desiredFPS = 30;
     }
     
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -870,15 +846,14 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         if (counter >= recordDuration){
             NSLog(@"定时时长 counter: %f,片段要求时长 recordDuration :%f",counter,recordDuration);
             
+            if ([self.captureSession isRunning]) {
+                [self.captureSession stopRunning];
+            }
             _isRecording = NO;
             readyToRecordVideo = NO;
             readyToRecordAudio = NO;
 //            DLYLog(@"AVEngine停止采集 : %@",[self getCurrentTime_MS]);
             
-            if ([self.captureSession isRunning]) {
-                [self.captureSession stopRunning];
-            }
-
             [self stopRecording];
             dispatch_cancel(_enliveTime);
 //            DLYLog(@"停止定时器 : %@",[self getCurrentTime_MS]);
@@ -1190,17 +1165,15 @@ NSInteger maskCount = 0;
 NSInteger startCount = MAXFLOAT;
 BOOL isOnce = YES;
 - (void)createFaceRecognitionTimer{
-    //获得队列
+    
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    //创建一个定时器
     dispatch_source_t enliveTime2 = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
-    //设置开始时间
+    
     dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC));
-    //设置时间间隔
     uint64_t interval = (uint64_t)(1.0 * NSEC_PER_SEC);
-    //设置定时器
+    
     dispatch_source_set_timer(enliveTime2, start, interval, 0);
-    //设置回调
+    
     dispatch_source_set_event_handler(enliveTime2, ^{
         
         CGFloat distance = distanceBetweenPoints(faceRegion.origin, lastFaceRegion.origin);
@@ -1237,7 +1210,7 @@ BOOL isOnce = YES;
     //启动定时器
     dispatch_resume(enliveTime2);
 }
-#pragma mark -延时拍摄-
+#pragma mark - 视频取帧 -
 //获取视频某一帧图像
 -(UIImage*)getKeyImage:(NSURL *)assetUrl intervalTime:(NSInteger)intervalTime{
     
@@ -1343,7 +1316,7 @@ BOOL isOnce = YES;
             
             for (NSInteger i = 0; i < [draftArray count]; i++) {
                 NSString *path = draftArray[i];
-                DLYLog(@"🔄🔄🔄合并-->加载--> 第 %lu 个片段",i);
+                DLYLog(@"合并-->加载--> 第 %lu 个片段",i);
                 if ([path hasSuffix:@"mp4"]) {
                     NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
                     NSURL *url= [NSURL fileURLWithPath:allPath];
@@ -1413,7 +1386,7 @@ BOOL isOnce = YES;
         if (outputPath) {
             productOutputUrl = [NSURL fileURLWithPath:outputPath];
         }else{
-            DLYLog(@"❌❌❌合并视频保存地址获取失败 !");
+            DLYLog(@"合并视频保存地址获取失败 !");
         }
     }
     
@@ -1423,7 +1396,7 @@ BOOL isOnce = YES;
     assetExportSession.shouldOptimizeForNetworkUse = YES;
     
     [assetExportSession exportAsynchronouslyWithCompletionHandler:^{
-        DLYLog(@"⛳️⛳️⛳️全部片段merge成功");
+        DLYLog(@"全部片段merge成功");
         DLYMiniVlogTemplate *template = self.session.currentTemplate;
         
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@"m4a"];
@@ -1460,7 +1433,7 @@ BOOL isOnce = YES;
             
             for (NSInteger i = 0; i < [draftArray count]; i++) {
                 NSString *path = draftArray[i];
-                DLYLog(@"🔄🔄🔄合并-->加载--> 第 %lu 个片段",i);
+                DLYLog(@"合并-->加载--> 第 %lu 个片段",i);
                 if ([path hasSuffix:@"mp4"]) {
                     NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
                     NSURL *url= [NSURL fileURLWithPath:allPath];
@@ -1550,7 +1523,7 @@ BOOL isOnce = YES;
         if (outputPath) {
             productOutputUrl = [NSURL fileURLWithPath:outputPath];
         }else{
-            DLYLog(@"❌❌❌合并视频保存地址获取失败 !");
+            DLYLog(@"合并视频保存地址获取失败 !");
         }
     }
     
@@ -1561,7 +1534,7 @@ BOOL isOnce = YES;
     assetExportSession.shouldOptimizeForNetworkUse = YES;
     
     [assetExportSession exportAsynchronouslyWithCompletionHandler:^{
-        DLYLog(@"⛳️⛳️⛳️全部片段merge成功");
+        DLYLog(@"全部片段merge成功");
         DLYMiniVlogTemplate *template = self.session.currentTemplate;
         
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@"m4a"];
@@ -1852,7 +1825,7 @@ BOOL isOnce = YES;
                 }
                 ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
                 [assetLibrary saveVideo:outPutUrl toAlbum:@"一分" completionBlock:^(NSURL *assetURL, NSError *error) {
-                    DLYLog(@"⛳️⛳️⛳️配音完成后保存在手机相册");
+                    DLYLog(@"配音完成后保存在手机相册");
                     BOOL isSuccess = NO;
                     NSFileManager *fileManager = [NSFileManager defaultManager];
                     
@@ -1863,7 +1836,7 @@ BOOL isOnce = YES;
                         
                         NSString *targetPath = [productPath stringByAppendingFormat:@"/%@.mp4",_result.hex];
                         isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
-                        DLYLog(@"%@",isSuccess ? @"⛳️⛳️⛳️成功删除未配音的成片视频 !" : @"❌❌❌删除未配音视频失败");
+                        DLYLog(@"%@",isSuccess ? @"成功删除未配音的成片视频 !" : @"删除未配音视频失败");
                     }
                     NSString *headerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"headerVideo.mp4"];
                     if ([[NSFileManager defaultManager] fileExistsAtPath:headerPath]) {

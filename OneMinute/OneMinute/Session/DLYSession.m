@@ -32,16 +32,18 @@
     if ([defaults synchronize]) {
 
     }else{
-        DLYLog(@"⚠️⚠️⚠️Current template saved failure!");
+        DLYLog(@"Current template saved failure!");
     };
 }
 - (NSArray *) loadAllTemplateFile {
     
-    //获取系统版本
-    double systemVersion = [[UIDevice currentDevice] systemVersion].doubleValue;
+    //获取应用当前版本号
+    NSDictionary*infoDic = [[NSBundle mainBundle] infoDictionary];
+    double localVersion = [[infoDic objectForKey:@"CFBundleShortVersionString"] doubleValue];
+    
     NSString *jsonFile = nil;
     
-    if (systemVersion <= 1.0) {
+    if (localVersion <= 1.0) {
         jsonFile = [[NSBundle mainBundle] pathForResource:@"TemplateList_v1.plist" ofType:nil];
     }else {
         jsonFile = [[NSBundle mainBundle] pathForResource:@"TemplateList_v1.plist" ofType:nil];

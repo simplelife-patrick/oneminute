@@ -1,6 +1,7 @@
 {
   "id": "BigMeal.json",
   "title":"一顿大餐",
+  "version": 1.0,
   "info": [
     {
       "partNum": 0,

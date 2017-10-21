@@ -283,7 +283,7 @@
                     isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
                 }
             }
-            DLYLog(@"%@",isSuccess?@"⛳️⛳️⛳️成功删除Cache中全部草稿片段":@"❌❌❌删除Cache中全部草稿片段失败");
+            DLYLog(@"%@",isSuccess?@"成功删除Cache中全部草稿片段":@"删除Cache中全部草稿片段失败");
         }else{
             DLYLog(@"现在Cache中无视频片段");
         }
@@ -308,7 +308,7 @@
                     isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
                 }
             }
-            DLYLog(@"%@",isSuccess?@"⛳️⛳️⛳️成功删除Document中的成片视频":@"❌❌❌删除Document成片视频失败");
+            DLYLog(@"%@",isSuccess?@"成功删除Document中的成片视频":@"删除Document成片视频失败");
         }else{
             DLYLog(@"Document中无成片视频");
         }
@@ -332,7 +332,7 @@
                     isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
                 }
             }
-            DLYLog(@"%@",isSuccess?@"⛳️⛳️⛳️成功删除Document全部草稿片段":@"❌❌❌删除Document全部草稿片段失败");
+            DLYLog(@"%@",isSuccess?@"成功删除Document全部草稿片段":@"删除Document全部草稿片段失败");
         }else{
             DLYLog(@"现在Document中无视频片段");
         }
