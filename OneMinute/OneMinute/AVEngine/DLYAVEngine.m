@@ -1386,7 +1386,7 @@ BOOL isOnce = YES;
         if (outputPath) {
             productOutputUrl = [NSURL fileURLWithPath:outputPath];
         }else{
-            DLYLog(@"❌❌❌合并视频保存地址获取失败 !");
+            DLYLog(@"合并视频保存地址获取失败 !");
         }
     }
     
@@ -1396,7 +1396,7 @@ BOOL isOnce = YES;
     assetExportSession.shouldOptimizeForNetworkUse = YES;
     
     [assetExportSession exportAsynchronouslyWithCompletionHandler:^{
-        DLYLog(@"⛳️⛳️⛳️全部片段merge成功");
+        DLYLog(@"全部片段merge成功");
         DLYMiniVlogTemplate *template = self.session.currentTemplate;
         
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@"m4a"];
@@ -1433,7 +1433,7 @@ BOOL isOnce = YES;
             
             for (NSInteger i = 0; i < [draftArray count]; i++) {
                 NSString *path = draftArray[i];
-                DLYLog(@"🔄🔄🔄合并-->加载--> 第 %lu 个片段",i);
+                DLYLog(@"合并-->加载--> 第 %lu 个片段",i);
                 if ([path hasSuffix:@"mp4"]) {
                     NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
                     NSURL *url= [NSURL fileURLWithPath:allPath];
@@ -1523,7 +1523,7 @@ BOOL isOnce = YES;
         if (outputPath) {
             productOutputUrl = [NSURL fileURLWithPath:outputPath];
         }else{
-            DLYLog(@"❌❌❌合并视频保存地址获取失败 !");
+            DLYLog(@"合并视频保存地址获取失败 !");
         }
     }
     
@@ -1534,7 +1534,7 @@ BOOL isOnce = YES;
     assetExportSession.shouldOptimizeForNetworkUse = YES;
     
     [assetExportSession exportAsynchronouslyWithCompletionHandler:^{
-        DLYLog(@"⛳️⛳️⛳️全部片段merge成功");
+        DLYLog(@"全部片段merge成功");
         DLYMiniVlogTemplate *template = self.session.currentTemplate;
         
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@"m4a"];
@@ -1825,7 +1825,7 @@ BOOL isOnce = YES;
                 }
                 ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
                 [assetLibrary saveVideo:outPutUrl toAlbum:@"一分" completionBlock:^(NSURL *assetURL, NSError *error) {
-                    DLYLog(@"⛳️⛳️⛳️配音完成后保存在手机相册");
+                    DLYLog(@"配音完成后保存在手机相册");
                     BOOL isSuccess = NO;
                     NSFileManager *fileManager = [NSFileManager defaultManager];
                     
@@ -1836,7 +1836,7 @@ BOOL isOnce = YES;
                         
                         NSString *targetPath = [productPath stringByAppendingFormat:@"/%@.mp4",_result.hex];
                         isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
-                        DLYLog(@"%@",isSuccess ? @"⛳️⛳️⛳️成功删除未配音的成片视频 !" : @"❌❌❌删除未配音视频失败");
+                        DLYLog(@"%@",isSuccess ? @"成功删除未配音的成片视频 !" : @"删除未配音视频失败");
                     }
                     NSString *headerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"headerVideo.mp4"];
                     if ([[NSFileManager defaultManager] fileExistsAtPath:headerPath]) {

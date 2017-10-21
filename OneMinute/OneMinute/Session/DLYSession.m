@@ -32,7 +32,7 @@
     if ([defaults synchronize]) {
 
     }else{
-        DLYLog(@"⚠️⚠️⚠️Current template saved failure!");
+        DLYLog(@"Current template saved failure!");
     };
 }
 - (NSArray *) loadAllTemplateFile {
