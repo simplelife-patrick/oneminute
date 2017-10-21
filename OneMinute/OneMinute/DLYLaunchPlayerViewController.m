@@ -11,7 +11,7 @@
 #import "AppDelegate.h"
 #import "DLYBaseNavigationController.h"
 #import "DLYRecordViewController.h"
-
+#import <MediaPlayer/MediaPlayer.h>
 
 @interface DLYLaunchPlayerViewController ()
 /** 播放开始之前的图片 */
@@ -22,7 +22,7 @@
 @property (nonatomic , strong)NSTimer *timer;
 /** 结束按钮 */
 @property (nonatomic , strong)UIButton *enterMainButton;
-
+@property (nonatomic,  strong)MPVolumeView *volumeView;
 
 @end
 
@@ -53,9 +53,23 @@
     _enterMainButton.backgroundColor = RGBA(0, 0, 0, 0.7);
     [_enterMainButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [_enterMainButton setTitle:@"开启Vlog" forState:UIControlStateNormal];
-    _enterMainButton.hidden = YES;
-    [self.view addSubview:_enterMainButton];
+    [self.contentOverlayView addSubview:_enterMainButton];
     [_enterMainButton addTarget:self action:@selector(enterMainAction:) forControlEvents:UIControlEventTouchUpInside];
+    
+    //音量
+    _volumeView = [[MPVolumeView alloc]init];
+    [_volumeView sizeToFit];
+    [_volumeView userActivity];
+    
+    for (UIView* newView in _volumeView.subviews) {
+        if ([newView.class.description isEqualToString:@"MPVolumeSlider"]){
+            UISlider *volumeViewSlider = (UISlider*)newView;
+            //            volumeViewSlider.value = 0.2;
+            [volumeViewSlider setValue:0.1 animated:YES];
+            [volumeViewSlider setValue:0.2 animated:YES];
+            break;
+        }
+    }
 }
 #pragma mark -- 监听以及实现方法
 - (void)addNotification {
@@ -141,10 +155,10 @@
     
     [self.player seekToTime:kCMTimeZero];
     [self.player play];
-    if (_enterMainButton.isHidden) {
-        _enterMainButton.hidden = NO;
-     [self.view bringSubviewToFront:_enterMainButton];
-    }
+//    if (_enterMainButton.isHidden) {
+//        _enterMainButton.hidden = NO;
+//     [self.view bringSubviewToFront:_enterMainButton];
+//    }
 }
 
 //进入主界面，对视频做完成操作
