@@ -37,8 +37,10 @@
 }
 - (NSArray *) loadAllTemplateFile {
     
-    //获取系统版本
-    double systemVersion = [[UIDevice currentDevice] systemVersion].doubleValue;
+    //获取应用当前版本号
+    NSDictionary*infoDic = [[NSBundle mainBundle] infoDictionary];
+    double localVersion = [[infoDic objectForKey:@"CFBundleShortVersionString"] doubleValue];
+    
     NSString *jsonFile = nil;
     
     if (systemVersion <= 1.0) {

@@ -744,10 +744,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         desiredFPS = 120;
     }else if (_currentPart.recordType == DLYMiniVlogRecordTypeTimelapse){
         DLYLog(@"🎬🎬🎬 快镜头片段");
-        desiredFPS = 25;
+        desiredFPS = 30;
     }else {
         DLYLog(@"🎬🎬🎬 正常拍摄片段");
-        desiredFPS = 25;
+        desiredFPS = 30;
     }
     
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -1210,7 +1210,7 @@ BOOL isOnce = YES;
     //启动定时器
     dispatch_resume(enliveTime2);
 }
-#pragma mark -延时拍摄-
+#pragma mark - 视频取帧 -
 //获取视频某一帧图像
 -(UIImage*)getKeyImage:(NSURL *)assetUrl intervalTime:(NSInteger)intervalTime{
     
@@ -1316,7 +1316,7 @@ BOOL isOnce = YES;
             
             for (NSInteger i = 0; i < [draftArray count]; i++) {
                 NSString *path = draftArray[i];
-                DLYLog(@"🔄🔄🔄合并-->加载--> 第 %lu 个片段",i);
+                DLYLog(@"合并-->加载--> 第 %lu 个片段",i);
                 if ([path hasSuffix:@"mp4"]) {
                     NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
                     NSURL *url= [NSURL fileURLWithPath:allPath];
