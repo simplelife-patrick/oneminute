@@ -45,6 +45,11 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogTailerType)
 @property (nonatomic, strong) NSString                        *templateId;
 
 /**
+ 模板版本
+ */
+@property (nonatomic, assign) double                         version;
+
+/**
  模板标题
  */
 @property (nonatomic, strong) NSString                        *templateTitle;

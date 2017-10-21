@@ -43,7 +43,7 @@
     
     NSString *jsonFile = nil;
     
-    if (systemVersion <= 1.0) {
+    if (localVersion <= 1.0) {
         jsonFile = [[NSBundle mainBundle] pathForResource:@"TemplateList_v1.plist" ofType:nil];
     }else {
         jsonFile = [[NSBundle mainBundle] pathForResource:@"TemplateList_v1.plist" ofType:nil];
