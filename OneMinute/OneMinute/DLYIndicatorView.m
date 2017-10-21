@@ -59,7 +59,7 @@
     [self addSubview:self.mainView];
     
     //文字说明
-    self.titlelabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 84, 20)];
+    self.titlelabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 20)];
     self.titlelabel.top = self.mainView.bottom + 9;
     self.titlelabel.centerX = self.width / 2;
     self.titlelabel.textColor = RGB(153, 153, 153);
