@@ -67,7 +67,7 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogTailerType)
 /**
  模板详情
  */
-@property (nonatomic, strong) NSArray                         <DLYMiniVlogPart *>*parts;
+@property (nonatomic, strong) NSArray<DLYMiniVlogPart *>      *parts;
 /**
  背景音乐
  */
