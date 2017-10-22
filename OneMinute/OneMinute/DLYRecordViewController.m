@@ -15,7 +15,6 @@
 #import "DLYAVEngine.h"
 #import "DLYSession.h"
 #import "DLYDownloadManager.h"
-#import "DLYMovieObject.h"
 #import "DLYTitleView.h"
 
 typedef void(^CompCompletedBlock)(BOOL success);
