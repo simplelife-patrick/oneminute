@@ -16,7 +16,6 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 #import "DLYLogModule.h"
-#import <CocoaSecurity.h>
 #import <CoreGraphics/CoreGraphics.h>
 
 #import "DLYAlertView.h"
