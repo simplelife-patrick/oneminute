@@ -193,14 +193,9 @@
         NSString *productPath = [dataPath stringByAppendingPathComponent:kProductFolder];
         if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
             
-            CocoaSecurityResult *result = [CocoaSecurity md5:[[NSDate date] description]];
+            NSString *UUIDString = [self stringWithUUID];
             
-            //生成随机数
-            int randomNum = (int)(10 + (arc4random() % (9999 - 10 + 1)));
-            NSString *randomString = [NSString stringWithFormat:@"%d",randomNum];
-            NSString *salt = [randomString stringByAppendingString:result.hex];
-            
-            NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,salt];
+            NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,UUIDString];
             _currentProductPath = outputPath;
             NSURL *outPutUrl = [NSURL fileURLWithPath:outputPath];
             return outPutUrl;
@@ -210,7 +205,8 @@
 }
 - (NSURL *) saveToSandboxWithPath:(NSString *)resourcePath suffixType:(NSString *)suffixName{
     
-    CocoaSecurityResult * result = [CocoaSecurity md5:[[NSDate date] description]];
+//    CocoaSecurityResult * result = [CocoaSecurity md5:[[NSDate date] description]];
+    NSString *UUIDString = [self stringWithUUID];
     
     NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
     if (![[NSFileManager defaultManager] fileExistsAtPath:dataPath]) {
@@ -221,13 +217,14 @@
         [[NSFileManager defaultManager] createDirectoryAtPath:subFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
     
-    NSString *outputPath = [NSString stringWithFormat:@"%@/%@%@",subFolderPath,result.hex,suffixName];
+    NSString *outputPath = [NSString stringWithFormat:@"%@/%@%@",subFolderPath,UUIDString,suffixName];
     NSURL *outPutUrl = [NSURL fileURLWithPath:outputPath];
     return outPutUrl;
 }
 - (NSURL *) saveToSandboxFolderType:(NSSearchPathDirectory)sandboxFolderType subfolderName:(NSString *)subfolderName suffixType:(NSString *)suffixName{
     
-    CocoaSecurityResult * result = [CocoaSecurity md5:[[NSDate date] description]];
+//    CocoaSecurityResult * result = [CocoaSecurity md5:[[NSDate date] description]];
+    NSString *UUIDString = [self stringWithUUID];
     
     NSArray *homeDir = NSSearchPathForDirectoriesInDomains(sandboxFolderType, NSUserDomainMask,YES);
     NSString *documentsDir = [homeDir objectAtIndex:0];
@@ -235,7 +232,7 @@
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
         [[NSFileManager defaultManager] createDirectoryAtPath:filePath withIntermediateDirectories:YES attributes:nil error:nil];
     }
-    NSString *outputPath = [NSString stringWithFormat:@"%@/%@%@",filePath,result.hex,suffixName];
+    NSString *outputPath = [NSString stringWithFormat:@"%@/%@%@",filePath,UUIDString,suffixName];
     NSURL *outPutUrl = [NSURL fileURLWithPath:outputPath];
     if ([[NSFileManager defaultManager] fileExistsAtPath:outputPath])
     {
@@ -361,5 +358,12 @@
         return targetUrl;
     }
     return nil;
+}
+- (NSString *) stringWithUUID {
+    
+    CFUUIDRef uuidObj = CFUUIDCreate(nil);
+    NSString *uuidString = (NSString*)CFBridgingRelease(CFUUIDCreateString(nil, uuidObj));
+    CFRelease(uuidObj);
+    return uuidString;
 }
 @end

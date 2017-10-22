@@ -119,14 +119,12 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
  */
 - (NSURL *) getProductWithProductName:(NSString *)productName;
 
+/**
+ 获取UUID唯一码
 
-
-
-
-
-
-
-
+ @return 返回UUID字符串
+ */
+- (NSString *) stringWithUUID;
 
 - (NSString *) getSaveDraftPartWithPartNum:(NSInteger)partNum;
 

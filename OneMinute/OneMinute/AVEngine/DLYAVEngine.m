@@ -48,7 +48,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     BOOL isDetectedMetadataObjectTarget;
     BOOL isMicGranted;//麦克风权限是否被允许
     
-    CocoaSecurityResult *_result;
+    NSString *UUIDString;
     BOOL _isRecordingCancel;
     AVAssetExportSession *_exportSession;
     BOOL flashMode;
@@ -1385,8 +1385,8 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     NSString *productPath = [dataPath stringByAppendingPathComponent:kProductFolder];
     if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
         
-        _result = [CocoaSecurity md5:[[NSDate date] description]];
-        NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,_result.hex];
+        UUIDString = [self.resource stringWithUUID];
+        NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,UUIDString];
         if (outputPath) {
             productOutputUrl = [NSURL fileURLWithPath:outputPath];
         }else{
@@ -1522,8 +1522,8 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     NSString *productPath = [dataPath stringByAppendingPathComponent:kProductFolder];
     if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
         
-        _result = [CocoaSecurity md5:[[NSDate date] description]];
-        NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,_result.hex];
+        UUIDString = [self.resource stringWithUUID];
+        NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,UUIDString];
         if (outputPath) {
             productOutputUrl = [NSURL fileURLWithPath:outputPath];
         }else{
@@ -1838,7 +1838,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
                     
                     if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
                         
-                        NSString *targetPath = [productPath stringByAppendingFormat:@"/%@.mp4",_result.hex];
+                        NSString *targetPath = [productPath stringByAppendingFormat:@"/%@.mp4",UUIDString];
                         isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
                         DLYLog(@"%@",isSuccess ? @"成功删除未配音的成片视频 !" : @"删除未配音视频失败");
                     }
