@@ -218,7 +218,7 @@
     [self.AVEngine addVideoHeaderWithTitle:self.titleField.text SuccessBlock:^{
         
         weakSelf.AVEngine.finishOperation = [weakSelf.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
-        NSLog(@"🥇🥇🥇成片耗时: %lld s ⚡️⚡️⚡️",(weakSelf.AVEngine.finishOperation - weakSelf.AVEngine.startOperation)/1000);
+        DLYLog(@"成片耗时: %lld s",(weakSelf.AVEngine.finishOperation - weakSelf.AVEngine.startOperation)/1000);
     } failure:^(NSError *error) {
         
     }];

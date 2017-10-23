@@ -894,7 +894,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 // 处理速度视频
 - (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl BGMVolume:(float)BGMVolume recordTypeOfPart:(DLYMiniVlogRecordType)recordType completed:(void(^)())completed {
     
-    DLYLog(@"🚀...🚀...调节视频速度...");
+    DLYLog(@"调节视频速度...");
     // 获取视频
     if (!videoPartUrl) {
         DLYLog(@"待调速的视频片段不存在!");
