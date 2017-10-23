@@ -54,7 +54,7 @@
 		AD14ED401F9E039E000DB796 /* SunSetBeach.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED341F9E039D000DB796 /* SunSetBeach.dly */; };
 		AD14ED411F9E039E000DB796 /* GoNorth.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED351F9E039D000DB796 /* GoNorth.dly */; };
 		AD14ED421F9E039E000DB796 /* Advanced.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED361F9E039E000DB796 /* Advanced.dly */; };
-		AD14ED441F9E0421000DB796 /* templateList_v1.plist in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED431F9E0421000DB796 /* templateList_v1.plist */; };
+		AD14ED461F9E0ABD000DB796 /* templateList_v1.plist in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED451F9E0ABD000DB796 /* templateList_v1.plist */; };
 		AD26F1A81F53E6DE00565E27 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */; };
 		AD26F1AA1F53E70A00565E27 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */; };
 		AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5B80B11F3443080094922B /* UIColor+Hex.m */; };
@@ -191,7 +191,7 @@
 		AD14ED341F9E039D000DB796 /* SunSetBeach.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = SunSetBeach.dly; sourceTree = "<group>"; };
 		AD14ED351F9E039D000DB796 /* GoNorth.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = GoNorth.dly; sourceTree = "<group>"; };
 		AD14ED361F9E039E000DB796 /* Advanced.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Advanced.dly; sourceTree = "<group>"; };
-		AD14ED431F9E0421000DB796 /* templateList_v1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = templateList_v1.plist; path = ../../../templateList_v1.plist; sourceTree = "<group>"; };
+		AD14ED451F9E0ABD000DB796 /* templateList_v1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = templateList_v1.plist; sourceTree = "<group>"; };
 		AD26F1A61F53E6DE00565E27 /* DLYAVEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAVEngine.h; sourceTree = "<group>"; };
 		AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAVEngine.m; sourceTree = "<group>"; };
 		AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRecordViewController.m; sourceTree = "<group>"; };
@@ -351,7 +351,6 @@
 		1C7E61821EE7DF4F0088F33F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				AD14ED431F9E0421000DB796 /* templateList_v1.plist */,
 				6F32F7A61F99A57D004C4553 /* iconfont.ttf */,
 				6F643AF31F97583E001FDA76 /* PromoteVideo.mp4 */,
 				ADFFF1A51F18A36700FB5BF7 /* DLYPrefixHeader.pch */,
@@ -613,6 +612,7 @@
 		ADFFF1851F18A33000FB5BF7 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				AD14ED451F9E0ABD000DB796 /* templateList_v1.plist */,
 				AD14EC881F9DF0E9000DB796 /* templates */,
 				ADFFF1861F18A33000FB5BF7 /* Models */,
 			);
@@ -770,7 +770,6 @@
 				AD72902A1F8CBC7C00BDD506 /* AdvancedBGM.m4a in Resources */,
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
 				AD14ED3C1F9E039E000DB796 /* AfternoonTea.dly in Resources */,
-				AD14ED441F9E0421000DB796 /* templateList_v1.plist in Resources */,
 				AD038C9A1F7293F10002C092 /* InfoPlist.strings in Resources */,
 				AD14ED401F9E039E000DB796 /* SunSetBeach.dly in Resources */,
 				AD887A7A1F7661FC00A85881 /* GoNorthBGM.m4a in Resources */,
@@ -786,6 +785,7 @@
 				AD14ED3B1F9E039E000DB796 /* ColorfulLife.dly in Resources */,
 				AD14ED3F1F9E039E000DB796 /* SoDelicious.dly in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
+				AD14ED461F9E0ABD000DB796 /* templateList_v1.plist in Resources */,
 				AD887A791F7661FC00A85881 /* YoungOutingBGM.m4a in Resources */,
 				AD887A741F7661FC00A85881 /* ColorfulLifeBGM.m4a in Resources */,
 				6F32F7A71F99A57D004C4553 /* iconfont.ttf in Resources */,

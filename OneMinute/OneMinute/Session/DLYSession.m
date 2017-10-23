@@ -112,7 +112,7 @@
         
         _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:currentTemplate.templateId];
     }else{
-        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:@"Primary.json"];
+        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:@"Primary.dly"];
     }
 }
 

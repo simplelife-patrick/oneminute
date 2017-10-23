@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<string>Primary.dly</string>
+	<string>Secondary.dly</string>
+	<string>Advanced.dly</string>
+	<string>BigMeal.dly</string>
+	<string>AfternoonTea.dly</string>
+	<string>SoDelicious.dly</string>
+	<string>YoungOuting.dly</string>
+	<string>GoNorth.dly</string>
+	<string>MyMaldives.dly</string>
+	<string>SpiritTerritory.dly</string>
+	<string>ColorfulLife.dly</string>
+	<string>SunSetBeach.dly</string>
+</array>
+</plist>
