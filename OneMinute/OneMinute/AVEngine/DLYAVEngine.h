@@ -74,16 +74,6 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个bl
 - (void)changeCameraAnimation;
 
 /**
- 左右手模式切换预览画面顺时针旋转动画
- */
-- (void)changeCameraRotateClockwiseAnimation;
-
-/**
- 左右手模式切换预览画面逆时针旋转动画
- */
-- (void)changeCameraRotateAnticlockwiseAnimation;
-
-/**
  按传入的片段信息开始录制
 
  @param part info
