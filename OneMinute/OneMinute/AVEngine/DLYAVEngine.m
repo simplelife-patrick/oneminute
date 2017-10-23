@@ -1250,7 +1250,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     NSURL *exportUrl = [NSURL fileURLWithPath:exportPath];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"片段处理中..."];
+        [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"处理中,请稍后"];
         typeof(self) weakSelf = self;
         [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl BGMVolume:_currentPart.BGMVolume recordTypeOfPart:_currentPart.recordType completed:^{
             DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
