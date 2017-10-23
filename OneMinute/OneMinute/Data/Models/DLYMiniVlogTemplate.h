@@ -47,7 +47,7 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogTailerType)
 /**
  模板版本
  */
-@property (nonatomic, assign) double                         version;
+@property (nonatomic, assign) double                          version;
 
 /**
  模板标题

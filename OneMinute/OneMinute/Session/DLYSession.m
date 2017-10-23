@@ -13,20 +13,25 @@
 @implementation DLYSession
 
 -(DLYMiniVlogTemplate *)currentTemplate{
-    
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY]) {
+    if (!_currentTemplate) {
         
-        NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY];
-        DLYLog(@"当前保存到模板名称 :%@",savedCurrentTemplateName);
-        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
+        DLYMiniVlogTemplate *template = nil;
+        if ([[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY]) {
+            
+            NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY];
+            DLYLog(@"当前保存到模板名称 :%@",savedCurrentTemplateName);
+            template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
+            
+        }else{
+            DLYLog(@"当前保存的模板名称键值为空,加载默认模板");
+            template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:kDEFAULTTEMPLATENAME];
+        }
+        DLYLog(@"当前加载的模板是 :%@",template.templateId);
         
+        return template;
     }else{
-        DLYLog(@"当前保存的模板名称键值为空,加载默认模板");
-        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:kDEFAULTTEMPLATENAME];
+        return _currentTemplate;
     }
-    DLYLog(@"当前加载的模板是 :%@",_currentTemplate.templateId);
-
-    return _currentTemplate;
 }
 - (void)saveCurrentTemplateWithId:(NSString *)currentTemplateId{
     
