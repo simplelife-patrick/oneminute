@@ -98,7 +98,7 @@
                     setCategory:AVAudioSessionCategoryPlayback
                     error:&error];
     if (!success) {
-        NSLog(@"Could not use AVAudioSessionCategoryPlayback");
+        DLYLog(@"Could not use AVAudioSessionCategoryPlayback");
     }
     [self.player play];
 }

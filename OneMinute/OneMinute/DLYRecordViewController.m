@@ -93,18 +93,19 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) NSMutableArray *viewArr;      //视图数组
 @property (nonatomic, strong) NSMutableArray *bubbleTitleArr;//视图数组
 @property (nonatomic, assign) BOOL isAvalible;              //权限都已经许可
+@property (nonatomic, strong) UILabel *versionLabel;        //版本显示
 
 @end
 
 @implementation DLYRecordViewController
 -(void)startedRecording{
-    DLYLog(@"哈哈哈---开始了");
+    DLYLog(@"开始了");
 }
 -(void)finishedRecordingByConsuming{
-    DLYLog(@"哈哈哈---结束了");
+    DLYLog(@"结束了");
 }
 -(void)canceledRecording{
-    DLYLog(@"哈哈哈---结束了");
+    DLYLog(@"结束了");
 }
 - (DLYResource *)resource{
     if (!_resource) {
@@ -294,7 +295,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             if (newValue > 3) newValue = 3;
         } else {
             newValue =  - (3.0 * (1 - pin.scale)) * 0.02;
-            NSLog(@"pin.scale: %f, newValue:%f", pin.scale, newValue);
+            DLYLog(@"pin.scale: %f, newValue:%f", pin.scale, newValue);
             if (newValue < 1) newValue = 1;
         }
         [self cameraBackgroundDidChangeZoom:newValue];
@@ -333,10 +334,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.effectiveScale = 1.0;
         }
         
-        NSLog(@"%f-------------- %f ------------recognizerScale%f",self.effectiveScale,self.beginGestureScale,recognizer.scale);
+        DLYLog(@"%f-------------- %f ------------recognizerScale%f",self.effectiveScale,self.beginGestureScale,recognizer.scale);
         
         //        CGFloat maxScaleAndCropFactor = self.AVEngine.videoConnection.videoMaxScaleAndCropFactor;
-        //        NSLog(@"预览最大倍率: %f",maxScaleAndCropFactor);
+        //        DLYLog(@"预览最大倍率: %f",maxScaleAndCropFactor);
         
         //        if (self.effectiveScale > maxScaleAndCropFactor)
         //            self.effectiveScale = maxScaleAndCropFactor;
@@ -625,6 +626,17 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.backView.backgroundColor = RGBA(0, 0, 0, 0.7);
     [self.view addSubview:self.backView];
     
+    //版本页面
+    self.versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.backView.height - 20, 50, 20)];
+    self.versionLabel.textColor = [UIColor whiteColor];
+    NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
+    NSString *appVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];
+    NSString *buildVersion = [infoDic objectForKey:@"CFBundleVersion"];
+    NSString *labelText = [NSString stringWithFormat:@"%@(%@)", appVersion,buildVersion];
+    self.versionLabel.text = labelText;
+    self.versionLabel.font =  FONT_SYSTEM(12);
+    [self.backView addSubview:self.versionLabel];
+
     //拍摄按钮
     self.recordBtn = [[UIButton alloc]initWithFrame:CGRectMake(43 * SCALE_WIDTH, 0, 60*SCALE_WIDTH, 60 * SCALE_WIDTH)];
     self.recordBtn.centerY = self.backView.centerY;
@@ -904,7 +916,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 [videoWriter finishWritingWithCompletionHandler:^{
 
                 }];
-                NSLog(@"comp completed !");
+                DLYLog(@"comp completed !");
                 if (completedBlock) {
                     completedBlock(YES);
                 }
@@ -920,7 +932,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }
             if (buffer) {
                 if(![adaptor appendPixelBuffer:buffer withPresentationTime:CMTimeMake(frame, fps)]) {
-                    NSLog(@"FAIL");
+                    DLYLog(@"FAIL");
                     if (completedBlock) {
                         completedBlock(NO);
                     }
@@ -947,7 +959,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self.AVEngine.captureSession commitConfiguration];
         
     }else{
-        DLYLog(@"⚠️⚠️⚠️录制过程中不再重设录制正方向");
+        DLYLog(@"录制过程中不再重设录制正方向");
     }
     NSArray *viewArr = self.navigationController.viewControllers;
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
@@ -968,7 +980,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self.AVEngine.captureSession commitConfiguration];
         
     }else{
-        DLYLog(@"⚠️⚠️⚠️录制过程中不再重设录制正方向");
+        DLYLog(@"录制过程中不再重设录制正方向");
     }
     NSArray *viewArr = self.navigationController.viewControllers;
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
@@ -1109,6 +1121,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.playButton.transform = CGAffineTransformMakeRotation(num);
             self.deletePartButton.transform = CGAffineTransformMakeRotation(num);
         }];
+    }
+    if (!self.versionLabel.isHidden && self.versionLabel) {
+        if (num == 0) {
+            self.versionLabel.frame = CGRectMake(0, self.backView.height - 20, 50, 20);
+        }else {
+            self.versionLabel.frame = CGRectMake(0, 0, 50, 20);
+        }
+        self.versionLabel.transform = CGAffineTransformMakeRotation(num);
     }
     
     if (!self.deleteButton.isHidden && self.deleteButton) {
@@ -1353,7 +1373,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             [self.AVEngine startRecordingWithPart:part];
 //        });
 
-        NSLog(@"计时器开始计时 :%@",[self getCurrentTime_MS]);
+        DLYLog(@"计时器开始计时 :%@",[self getCurrentTime_MS]);
         
         // change UI
         [self.shootView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
@@ -2306,7 +2326,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }
         }
         [self updateShootGuide];
-        DDLogInfo(@"点击了已拍摄片段");
+        DLYLogInfo(@"点击了已拍摄片段");
         [UIView animateWithDuration:0.5f animations:^{
             if (self.newState == 1) {
                 self.playButton.transform = CGAffineTransformMakeRotation(0);
@@ -2887,7 +2907,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 return;
             }
         }
-        DDLogInfo(@"完成后跳转");
+        DLYLogInfo(@"完成后跳转");
         self.recordBtn.hidden = YES;
         __weak typeof(self) weakSelf = self;
         DLYPlayVideoViewController * fvc = [[DLYPlayVideoViewController alloc]init];

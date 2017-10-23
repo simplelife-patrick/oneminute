@@ -56,7 +56,7 @@ static float const kModuleWeightFactorDefault = 0.1;
     [self setModuleIdentity:moduleName];
     [self.serviceThread setName:moduleName];
     
-//    NSLog(@"%@ - initModule", self.moduleIdentity);
+//    DLYLog(@"%@ - initModule", self.moduleIdentity);
     
     [self registerNotifications];
     
@@ -65,7 +65,7 @@ static float const kModuleWeightFactorDefault = 0.1;
 
 -(void) releaseModule
 {
-//    NSLog(@"%@ - releaseModule", self.moduleIdentity);
+//    DLYLog(@"%@ - releaseModule", self.moduleIdentity);
     
     [self unregisterNotifications];
     
@@ -74,7 +74,7 @@ static float const kModuleWeightFactorDefault = 0.1;
 
 -(void) startService
 {
-    NSLog(@"%@ - startService", self.moduleIdentity);
+    DLYLog(@"%@ - startService", self.moduleIdentity);
     
     if (self.individualThread)
     {
@@ -90,17 +90,17 @@ static float const kModuleWeightFactorDefault = 0.1;
 
 -(void) pauseService
 {
-    NSLog(@"%@ - pauseService", self.moduleIdentity);
+    DLYLog(@"%@ - pauseService", self.moduleIdentity);
 }
 
 -(void) resumeService
 {
-    NSLog(@"%@ - resumeService", self.moduleIdentity);
+    DLYLog(@"%@ - resumeService", self.moduleIdentity);
 }
 
 -(void) processService
 {
-    NSLog(@"%@ - processService", self.moduleIdentity);
+    DLYLog(@"%@ - processService", self.moduleIdentity);
     
     if (0 < DLYModule_ModuleDelay)
     {
@@ -112,12 +112,12 @@ static float const kModuleWeightFactorDefault = 0.1;
 
 -(void) stopService
 {
-    NSLog(@"%@ - stopService", self.moduleIdentity);
+    DLYLog(@"%@ - stopService", self.moduleIdentity);
 }
 
 -(void) registerNotifications
 {
-    NSLog(@"%@ - registerNotifications", self.moduleIdentity);
+    DLYLog(@"%@ - registerNotifications", self.moduleIdentity);
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationWillResignActive:)
@@ -143,7 +143,7 @@ static float const kModuleWeightFactorDefault = 0.1;
 
 -(void) unregisterNotifications
 {
-//    NSLog(@"%@ - unregisterNotifications", self.moduleIdentity);
+//    DLYLog(@"%@ - unregisterNotifications", self.moduleIdentity);
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
@@ -154,27 +154,27 @@ static float const kModuleWeightFactorDefault = 0.1;
 
 -(void) applicationWillResignActive:(NSNotification*) notification
 {
-    NSLog(@"%@ - applicationWillResignActive", self.moduleIdentity);
+    DLYLog(@"%@ - applicationWillResignActive", self.moduleIdentity);
 }
 
 -(void) applicationDidEnterBackground:(NSNotification*) notification
 {
-    NSLog(@"%@ - applicationDidEnterBackground", self.moduleIdentity);
+    DLYLog(@"%@ - applicationDidEnterBackground", self.moduleIdentity);
 }
 
 -(void) applicationWillEnterForeground:(NSNotification*) notification
 {
-    NSLog(@"%@ - applicationWillEnterForeground", self.moduleIdentity);
+    DLYLog(@"%@ - applicationWillEnterForeground", self.moduleIdentity);
 }
 
 -(void) applicationDidBecomeActive:(NSNotification*) notification
 {
-    NSLog(@"%@ - applicationDidBecomeActive", self.moduleIdentity);
+    DLYLog(@"%@ - applicationDidBecomeActive", self.moduleIdentity);
 }
 
 -(void) applicationWillTerminate:(NSNotification*) notification
 {
-    NSLog(@"%@ - applicationWillTerminate", self.moduleIdentity);
+    DLYLog(@"%@ - applicationWillTerminate", self.moduleIdentity);
 }
 
 @end
