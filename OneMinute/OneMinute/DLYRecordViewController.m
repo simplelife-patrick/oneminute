@@ -940,7 +940,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (![self.AVEngine isRecording]) {
         
         self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
-        self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
+        });
     }else{
         DLYLog(@"⚠️⚠️⚠️录制过程中不再重设录制正方向");
     }
@@ -956,7 +958,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (![self.AVEngine isRecording]) {
         
         self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
-        self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
+        });
     }else{
         DLYLog(@"⚠️⚠️⚠️录制过程中不再重设录制正方向");
     }
