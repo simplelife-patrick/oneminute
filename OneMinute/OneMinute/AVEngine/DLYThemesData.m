@@ -48,22 +48,11 @@
         for (int i = 6; i<294; i++)
         {
             @autoreleasepool {
-                //1.
-//                NSString *imageName = [NSString stringWithFormat:@"2_00%03d", i];
-//                UIImage *image = [UIImage imageNamed:imageName];
-//                UIImage *newImage = [weakSelf imageWithImageSimple:image scaledToSize:CGSizeMake(600, 600)];
-//                [weakSelf.footImgArr addObject:(id)newImage.CGImage];
-                //2.
-//                NSString *imageName = [NSString stringWithFormat:@"2_00%03d.png", i];
-//                UIImage *image = [UIImage imageNamed:imageName];
-//                [weakSelf.footImgArr addObject:(id)image.CGImage];
-//                NSLog(@"片尾个数：%zd", self.footImgArr.count);
-                //3.
                 NSString *imageName = [NSString stringWithFormat:@"2_00%03d.png", i];
                 UIImage *image = [UIImage imageNamed:imageName];
                 UIImage *newImage = [image scaleToSize:CGSizeMake(600, 600)];
                 [weakSelf.footImgArr addObject:(id)newImage.CGImage];
-//                NSLog(@"片尾个数:%zd", weakSelf.footImgArr.count);
+//                DLYLog(@"片尾个数:%zd", weakSelf.footImgArr.count);
             }
         }
     });
@@ -91,36 +80,14 @@
         for (int i = 0; i < 200; i++)
         {
             @autoreleasepool {
-                //1.
-//                NSString *imageName = [NSString stringWithFormat:@"Title 02_00%03d", i];
-//                UIImage *image = [UIImage imageNamed:imageName];
-//                UIImage *newImage = [weakSelf imageWithImageSimple:image scaledToSize:CGSizeMake(600, 600)];
-//                [weakSelf.headImgArr addObject:(id)newImage.CGImage];
-                //2.
-//                NSString *imageName = [NSString stringWithFormat:@"Title_02_00%03d.png", i];
-//                UIImage *image = [UIImage imageNamed:imageName];
-//                [weakSelf.headImgArr addObject:(id)image.CGImage];
-//                NSLog(@"片头个数：%zd", self.headImgArr.count);
-                //3.
                 NSString *imageName = [NSString stringWithFormat:@"Title_02_00%03d.png", i];
                 UIImage *image = [UIImage imageNamed:imageName];
                 UIImage *newImage = [image scaleToSize:CGSizeMake(600, 600)];
                 [weakSelf.headImgArr addObject:(id)newImage.CGImage];
-//                NSLog(@"片头个数:%zd", weakSelf.footImgArr.count);
+//                DLYLog(@"片头个数:%zd", weakSelf.footImgArr.count);
             }
         }
     });
 }
-
-//- (UIImage *)imageWithImageSimple:(UIImage*)image scaledToSize:(CGSize)newSize {
-//    
-//    UIGraphicsBeginImageContext(newSize);
-//    [image drawInRect:CGRectMake(0,0,newSize.width,newSize.height)];
-//    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
-//    UIGraphicsEndImageContext();
-////    CGImageRelease(image.CGImage);
-////    image = nil;
-//    return newImage;
-//}
 
 @end

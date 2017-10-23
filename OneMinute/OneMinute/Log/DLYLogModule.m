@@ -105,7 +105,6 @@ SINGLETON(DLYLogModule)
             // TODO: 邓柯
 //            _DLYLogInfo(log,nil);
             DDLogInfo(log, nil);
-//            NSLog([NSString stringWithFormat:@"%@", log], nil);
         }
     }
 }

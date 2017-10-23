@@ -743,13 +743,13 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     
     int desiredFPS = 0;
     if (_currentPart.recordType == DLYMiniVlogRecordTypeSlomo) {
-        DLYLog(@"🎬🎬🎬 慢镜头片段");
+        DLYLog(@"慢镜头片段");
         desiredFPS = 120;
     }else if (_currentPart.recordType == DLYMiniVlogRecordTypeTimelapse){
-        DLYLog(@"🎬🎬🎬 快镜头片段");
+        DLYLog(@"快镜头片段");
         desiredFPS = 30;
     }else {
-        DLYLog(@"🎬🎬🎬 正常拍摄片段");
+        DLYLog(@"正常拍摄片段");
         desiredFPS = 30;
     }
     
@@ -1008,17 +1008,14 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         templateNum = 1;
         startNum = 20;
         endNum = 124;
-//        DLYLog(@"陈立勇打印==第一种");
     }else if (template.videoHeaderType == DLYMiniVlogHeaderType_B){
         templateNum = 2;
         startNum = 39;
         endNum = 300;
-//        DLYLog(@"陈立勇打印==第二种");
     }else{
         templateNum = 3;
         startNum = 109;
         endNum = 210;
-//        DLYLog(@"陈立勇打印==第三种");
     }
         
     NSString *headerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"headerVideo.mp4"];
@@ -1062,12 +1059,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
                 float beginTime;
                 if (timeSeconds > 2.2) {
                     beginTime = (float)timeSeconds - 2.2;
-//                    DLYLog(@"立勇计算==第一种");
                 }else{
                     beginTime = 0.1;
-//                    DLYLog(@"立勇计算==第二种");
                 }
-//                DLYLog(@"立勇计算结果:%f%f", timeSeconds, beginTime);
                 [weakSelf buildVideoEffectsToMP4:footerPath inputVideoURL:footerUrl andImageArray:footArray andBeginTime:beginTime isAudio:isAudio callback:^(NSURL *finalUrl, NSString *filePath) {
 //                    DLYLog(@"片尾完成");
                     [weakSelf mergeVideoWithVideoTitle:title SuccessBlock:^{

@@ -410,7 +410,7 @@
         
         if (status == AFNetworkReachabilityStatusReachableViaWWAN) {
             statusNum = AFNetworkReachabilityStatusReachableViaWWAN;
-            //            NSLog(@"当前处于非WIFI状态");
+            //            DLYLog(@"当前处于非WIFI状态");
             [weakSelf pause];
             [weakSelf hideControlsFast];
             weakSelf.alert = [[DLYAlertView alloc] initWithMessage:@"当前处于非WIFI状态\n是否继续观看?" andCancelButton:@"取消" andSureButton:@"确定"];
@@ -426,7 +426,7 @@
             
         }else if (status == AFNetworkReachabilityStatusUnknown || status == AFNetworkReachabilityStatusNotReachable){
             statusNum = -1;
-            //            NSLog(@"当前无可用网络,请联网后播放");
+            //            DLYLog(@"当前无可用网络,请联网后播放");
             weakSelf.alert = [[DLYAlertView alloc] initWithMessage:@"当前无可用网络,请联网后播放" withSureButton:@"确定"];
             weakSelf.alert.sureButtonAction = ^{
                 
@@ -724,12 +724,12 @@
         //        float startSeconds = CMTimeGetSeconds(timeRange.start);
         //        float durationSeconds = CMTimeGetSeconds(timeRange.duration);
         //        NSTimeInterval totalBuffer = startSeconds + durationSeconds;
-        //        NSLog(@"共缓存: %.2f",totalBuffer);
+        //        DLYLog(@"共缓存: %.2f",totalBuffer);
     } else if ([keyPath isEqualToString:@"playbackBufferEmpty"]) {
         //        [self.loadingView startAnimating];
         // 当缓冲是空的时候
         //        if (self.playerItem.playbackBufferEmpty) {
-        //            NSLog(@"缓存为空");
+        //            DLYLog(@"缓存为空");
         //            [self loadedTimeRanges];
         //        }
         
@@ -737,7 +737,7 @@
         //        [self.loadingView stopAnimating];
         // 当缓冲好的时候
         //        if (self.playerItem.playbackLikelyToKeepUp && self.state == WMPlayerStateBuffering){
-        //            NSLog(@"55555%s WMPlayerStatePlaying",__FUNCTION__);
+        //            DLYLog(@"55555%s WMPlayerStatePlaying",__FUNCTION__);
         //            self.state = WMPlayerStatePlaying;
         //        }
     }
@@ -808,7 +808,7 @@
     }
     
     NSString *lang = [[textField textInputMode] primaryLanguage]; // 获取当前键盘输入模式
-    //    NSLog(@"%@",lang);
+    //    DLYLog(@"%@",lang);
     if([lang isEqualToString:@"zh-Hans"]) { //简体中文输入,第三方输入法（搜狗）所有模式下都会显示“zh-Hans”
         UITextRange *selectedRange = [textField markedTextRange];
         //获取高亮部分
