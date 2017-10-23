@@ -14,12 +14,6 @@
 #import <MediaPlayer/MediaPlayer.h>
 
 @interface DLYLaunchPlayerViewController ()
-/** 播放开始之前的图片 */
-@property (nonatomic , strong)UIImageView *startPlayerImageView;
-/** 播放中断时的图片 */
-@property (nonatomic , strong)UIImageView *pausePlayerImageView;
-/** 定时器 */
-@property (nonatomic , strong)NSTimer *timer;
 /** 结束按钮 */
 @property (nonatomic , strong)UIButton *enterMainButton;
 @property (nonatomic,  strong)MPVolumeView *volumeView;
@@ -41,10 +35,6 @@
 }
 #pragma mark -- 初始化视图逻辑
 - (void)setupView {
-    self.startPlayerImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"lauch"]];
-    _startPlayerImageView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    [self.contentOverlayView addSubview:_startPlayerImageView];
-    
     //进入应用button
     self.enterMainButton = [[UIButton alloc] init];
     _enterMainButton.frame = CGRectMake((SCREEN_WIDTH - 190) /2, SCREEN_HEIGHT - 32 - 50, 190, 50);
@@ -80,8 +70,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewWillEnterForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
     //视频播放结束
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlaybackEnd) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
-    //播放开始
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlaybackStart) name:AVPlayerItemTimeJumpedNotification object:nil];
+    
 }
 #pragma mark -- 初始化视频
 - (void)prepareMovie {
@@ -107,80 +96,20 @@
 - (void)enterMainAction:(UIButton *)btn {
     //视频暂停
     [self.player pause];
-    self.pausePlayerImageView = [[UIImageView alloc] init];
-    _pausePlayerImageView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    [self.contentOverlayView addSubview:_pausePlayerImageView];
-    self.pausePlayerImageView.contentMode = UIViewContentModeScaleToFill;
-    //获取当前暂停时的截图
-    [self getoverPlayerImage];
-}
-- (void)getoverPlayerImage {
-    AVAssetImageGenerator *gen = [[AVAssetImageGenerator alloc] initWithAsset:self.player.currentItem.asset];
-    gen.appliesPreferredTrackTransform = YES;
-    NSError *error = nil;
-    CMTime actualTime;
-    CMTime now = self.player.currentTime;
-    [gen setRequestedTimeToleranceAfter:kCMTimeZero];
-    [gen setRequestedTimeToleranceBefore:kCMTimeZero];
-    CGImageRef image = [gen copyCGImageAtTime:now actualTime:&actualTime error:&error];
-    if (!error) {
-        UIImage *thumb = [[UIImage alloc] initWithCGImage:image];
-        self.pausePlayerImageView.image = thumb;
-    }
-    DLYLog(@"%f , %f",CMTimeGetSeconds(now),CMTimeGetSeconds(actualTime));
-    DLYLog(@"%@",error);
-    //视频播放结束
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self moviePlaybackComplete];
-    });
     
-}
-//进入主界面
-- (void)enterMain {
     AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     DLYRecordViewController *vc = [[DLYRecordViewController alloc] init];
     DLYBaseNavigationController *nvc = [[DLYBaseNavigationController alloc] initWithRootViewController:vc];
     delegate.window.rootViewController = nvc;
     [delegate.window makeKeyWindow];
 }
-//开始播放
-- (void)moviePlaybackStart {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.startPlayerImageView removeFromSuperview];
-        self.startPlayerImageView = nil;
-    });
-}
 
 - (void)moviePlaybackEnd {
     
     [self.player seekToTime:kCMTimeZero];
     [self.player play];
-//    if (_enterMainButton.isHidden) {
-//        _enterMainButton.hidden = NO;
-//     [self.view bringSubviewToFront:_enterMainButton];
-//    }
 }
 
-//进入主界面，对视频做完成操作
-- (void)moviePlaybackComplete {
-    //发送推送之后就删除  否则 界面显示有问题
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:AVPlayerItemDidPlayToEndTimeNotification
-                                                  object:nil];
-    
-    [self.startPlayerImageView removeFromSuperview];
-    self.startPlayerImageView = nil;
-    
-    [self.pausePlayerImageView removeFromSuperview];
-    self.pausePlayerImageView = nil;
-    
-    if (self.timer){
-        [self.timer invalidate];
-        self.timer = nil;
-    }
-    //进入主界面
-    [self enterMain];
-}
 //即将进入后台，暂停视频
 - (void)applicationWillResignActive {
     
@@ -199,6 +128,7 @@
         [self.player play];
     }
 }
+#pragma mark -- 基本配置
 //不允许旋转
 - (BOOL)shouldAutorotate {
     return NO;
@@ -208,8 +138,6 @@
 }
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self.timer invalidate];
-    self.timer = nil;
     self.player = nil;
 }
 
@@ -231,3 +159,4 @@
 }
 
 @end
+

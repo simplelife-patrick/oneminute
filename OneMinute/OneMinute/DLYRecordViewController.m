@@ -252,7 +252,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showFirstPopup"];
         NSArray *arr = @[self.chooseScene, self.flashButton, self.toggleCameraBtn, self.recordBtn];
         self.viewArr = [NSMutableArray arrayWithArray:arr];
-        NSArray *titleArr = @[@"选择场景", @"闪光灯", @"切换摄像头", @"录制视频"];
+        NSArray *titleArr = @[@"选择场景", @"补光灯", @"切换摄像头", @"录制视频"];
         self.bubbleTitleArr = [NSMutableArray arrayWithArray:titleArr];
         [self showPopupMenu];
     }
