@@ -21,7 +21,6 @@
 #import "DLYSession.h"
 #import "ALAssetsLibrary+CustomPhotoAlbum.h"
 #import <math.h>
-#import "DLYMovieObject.h"
 #import <CoreMotion/CoreMotion.h>
 #import "DLYVideoFilter.h"
 #import "UIImage+Extension.h"
@@ -49,7 +48,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     BOOL isDetectedMetadataObjectTarget;
     BOOL isMicGranted;//麦克风权限是否被允许
     
-    CocoaSecurityResult *_result;
+    NSString *UUIDString;
     BOOL _isRecordingCancel;
     AVAssetExportSession *_exportSession;
     BOOL flashMode;
@@ -766,7 +765,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         referenceOrientation = (AVCaptureVideoOrientation)orientation;
     }
     
-    NSString *_outputPath =  [self.resource getSaveDraftPartWithPartNum:_currentPart.partNum];
+    NSString *_outputPath =  [self.resource saveDraftPartWithPartNum:_currentPart.partNum];
     if (_outputPath) {
         _currentPart.partUrl = [NSURL fileURLWithPath:_outputPath];
         DLYLog(@"第 %lu 个片段的地址 :%@",_currentPart.partNum + 1,_currentPart.partUrl);
@@ -779,28 +778,14 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     if (error) {
         DLYLog(@"AVAssetWriter error:%@", error);
     }
+
+    double startTime = [self getTimeWithString:part.starTime];
+    double stopTime = [self getTimeWithString:part.stopTime];
     
-    NSArray *startArr = [part.starTime componentsSeparatedByString:@":"];
-    NSString *startTimeStr_M = startArr[0];
-    NSString *startTimeStr_S = startArr[1];
-    NSString *startTimeStr_MS = startArr[2];
-    double startTime_M = [startTimeStr_M doubleValue] * 60 * 1000;
-    double startTime_S = [startTimeStr_S doubleValue] * 1000;
-    double startTime_MS = [startTimeStr_MS doubleValue];
-    double startTime = startTime_M + startTime_S + startTime_MS;
-
-    NSArray *stopArr = [part.stopTime componentsSeparatedByString:@":"];
-    NSString *stopTimeStr_M = stopArr[0];
-    NSString *stopTimeStr_S = stopArr[1];
-    NSString *stopTimeStr_MS = stopArr[2];
-    double stopTime_M = [stopTimeStr_M doubleValue] * 60 * 1000;
-    double stopTime_S = [stopTimeStr_S doubleValue] * 1000;
-    double stopTime_MS = [stopTimeStr_MS doubleValue];
-    double stopTime = stopTime_M + stopTime_S + stopTime_MS;
-
     counter = 0;
     [self createRecorderTimerWithStartTime:startTime / 1000 stopTime:stopTime / 1000];
 }
+
 #pragma mark - 停止录制 -
 - (void)stopRecording {
     
@@ -819,6 +804,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             });
         }];
     });
+    if (![self.captureSession isRunning]) {
+        [self.captureSession startRunning];
+    }
 }
 #pragma mark - 录制用的计时器 -
 - (void)createRecorderTimerWithStartTime:(float)startTime stopTime:(float)stopTime {
@@ -865,9 +853,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
                 [self.delegate finishedRecording];
             }
-            if (![self.captureSession isRunning]) {
-                [self.captureSession startRunning];
-            }
         }
     });
     //启动定时器
@@ -889,6 +874,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             self.assetWriter = nil;
         }];
     });
+    if (![self.captureSession isRunning]) {
+        [self.captureSession startRunning];
+    }
 }
 - (void) restartRecording{
     if (!self.captureSession.isRunning) {
@@ -906,7 +894,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 // 处理速度视频
 - (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl BGMVolume:(float)BGMVolume recordTypeOfPart:(DLYMiniVlogRecordType)recordType completed:(void(^)())completed {
     
-    DLYLog(@"🚀...🚀...调节视频速度...");
+    DLYLog(@"调节视频速度...");
     // 获取视频
     if (!videoPartUrl) {
         DLYLog(@"待调速的视频片段不存在!");
@@ -1291,7 +1279,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         typeof(self) weakSelf = self;
         [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl BGMVolume:_currentPart.BGMVolume recordTypeOfPart:_currentPart.recordType completed:^{
             DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
-            [self.resource removePartWithPartNumFormCache:self.currentPart.partNum];
+            [self.resource removePartWithPartNumFormTemp:self.currentPart.partNum];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[DLYIndicatorView sharedIndicatorView] stopFlashAnimating];
             });
@@ -1386,8 +1374,8 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     NSString *productPath = [dataPath stringByAppendingPathComponent:kProductFolder];
     if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
         
-        _result = [CocoaSecurity md5:[[NSDate date] description]];
-        NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,_result.hex];
+        UUIDString = [self.resource stringWithUUID];
+        NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,UUIDString];
         if (outputPath) {
             productOutputUrl = [NSURL fileURLWithPath:outputPath];
         }else{
@@ -1523,8 +1511,8 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     NSString *productPath = [dataPath stringByAppendingPathComponent:kProductFolder];
     if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
         
-        _result = [CocoaSecurity md5:[[NSDate date] description]];
-        NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,_result.hex];
+        UUIDString = [self.resource stringWithUUID];
+        NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,UUIDString];
         if (outputPath) {
             productOutputUrl = [NSURL fileURLWithPath:outputPath];
         }else{
@@ -1839,7 +1827,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
                     
                     if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
                         
-                        NSString *targetPath = [productPath stringByAppendingFormat:@"/%@.mp4",_result.hex];
+                        NSString *targetPath = [productPath stringByAppendingFormat:@"/%@.mp4",UUIDString];
                         isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
                         DLYLog(@"%@",isSuccess ? @"成功删除未配音的成片视频 !" : @"删除未配音视频失败");
                     }
@@ -2270,6 +2258,19 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
     return timePoint;
 }
+- (double)getTimeWithString:(NSString *)timeString
+{
+    NSArray *stringArr = [timeString componentsSeparatedByString:@":"];
+    NSString *timeStr_M = stringArr[0];
+    NSString *timeStr_S = stringArr[1];
+    NSString *timeStr_MS = stringArr[2];
+    
+    double timeNum_M = [timeStr_M doubleValue] * 60 * 1000;
+    double timeNum_S = [timeStr_S doubleValue] * 1000;
+    double timeNum_MS = [timeStr_MS doubleValue];
+    double timeNum = timeNum_M + timeNum_S + timeNum_MS;
+    return timeNum;
+}
 - (NSString *)returnFormatString:(NSString *)str {
     return [str stringByReplacingOccurrencesOfString:@" " withString:@" "];
 }
@@ -2279,13 +2280,14 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     long long totalMilliseconds = interval * 1000;
     return totalMilliseconds;
 }
+#pragma mark - 获取当地当前时间 -
+
 - (NSString *)getCurrentTime_MS {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"HH:mm:ss:SSS"];
     NSString *dateTime = [formatter stringFromDate:[NSDate date]];
     return dateTime;
 }
-//获取当地时间
 - (NSString *)getCurrentTime {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy.MM.dd  HH:mm:ss"];

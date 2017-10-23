@@ -44,7 +44,7 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
  
  @return 返回草稿全部片段
  */
-- (NSArray *)loadDraftPartsFromCache;
+- (NSArray *)loadDraftPartsFromTemp;
 
 /**
  加载草稿片段从Document
@@ -80,11 +80,11 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
 - (NSURL *) saveToSandboxFolderType:(NSSearchPathDirectory)sandboxFolderType subfolderName:(NSString *)subfolderName suffixType:(NSString *)suffixName;
 
 /**
- 按片段序号删除Cache中的草稿片段
+ 按片段序号删除Temp中的草稿片段
 
  @param partNum 草稿片段序号
  */
-- (void) removePartWithPartNumFormCache:(NSInteger)partNum;
+- (void) removePartWithPartNumFormTemp:(NSInteger)partNum;
 
 /**
  按片段序号删除Document中的草稿片段
@@ -94,9 +94,9 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
 - (void) removePartWithPartNumFromDocument:(NSInteger)partNum;
 
 /**
- 删除Cache中全部草稿片段
+ 删除Temp中全部草稿片段
  */
-- (void) removeCurrentAllPartFromCache;
+- (void) removeCurrentAllPartFromTemp;
 
 /**
   删除Document中全部草稿片段
@@ -119,15 +119,13 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
  */
 - (NSURL *) getProductWithProductName:(NSString *)productName;
 
+/**
+ 获取UUID唯一码
 
+ @return 返回UUID字符串
+ */
+- (NSString *) stringWithUUID;
 
-
-
-
-
-
-
-
-- (NSString *) getSaveDraftPartWithPartNum:(NSInteger)partNum;
+- (NSString *) saveDraftPartWithPartNum:(NSInteger)partNum;
 
 @end
