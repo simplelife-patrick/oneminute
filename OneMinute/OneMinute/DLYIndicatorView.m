@@ -64,7 +64,7 @@
     self.titlelabel.textColor = RGB(153, 153, 153);
     self.titlelabel.font = FONT_SYSTEM(14);
     self.titlelabel.textAlignment = NSTextAlignmentCenter;
-    self.titlelabel.text = @"正在成片中...";
+    self.titlelabel.text = @"处理中,请稍后";
     [self.mainView addSubview:self.titlelabel];
     
     for (int i = 0; i < 6; i++) {
@@ -107,7 +107,7 @@
 - (void)startFlashAnimatingWithTitle:(NSString *)title {
     NSString *newStr = [title stringByReplacingOccurrencesOfString:@" " withString:@""];
     if (newStr.length <= 0) {
-        self.titlelabel.text = @"正在成片中...";
+        self.titlelabel.text = @"处理中,请稍后";
     }else{
         self.titlelabel.text = title;
     }
