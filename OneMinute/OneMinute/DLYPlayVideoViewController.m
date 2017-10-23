@@ -163,6 +163,7 @@
     self.titleField.textColor = RGBA(255, 255, 255, 0.7);
     self.titleField.returnKeyType = UIReturnKeyDone;
     [self.view addSubview:self.titleField];
+    [self.titleField becomeFirstResponder];
     [self.titleField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     
     //跳过button
