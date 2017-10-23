@@ -42,7 +42,7 @@
 #define kVideoPath NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).lastObject
 
 //默认模板
-#define kDEFAULTTEMPLATENAME  @"Primary.json"
+#define kDEFAULTTEMPLATENAME  @"Primary.dly"
 //全局当前模板
 #define kCURRENTTEMPLATEKEY  @"CURRENTTEMPLATEKEY"
 

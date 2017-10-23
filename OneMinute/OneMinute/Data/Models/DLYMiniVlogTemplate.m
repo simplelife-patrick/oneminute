@@ -8,6 +8,7 @@
 //
 
 #import "DLYMiniVlogTemplate.h"
+#import <RNDecryptor.h>
 
 @implementation DLYMiniVlogTemplate
 
@@ -15,31 +16,31 @@
     
     if (self = [super init]) {
         
-        NSString *path = nil;
         if (templateId) {
-            path = [[NSBundle mainBundle] pathForResource:templateId ofType:nil];
             
-            if (path) {
-                NSData *data = nil;
-                data = [NSData dataWithContentsOfFile:path];
-                
-                if (data) {
-                    NSMutableDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                    self.templateId = [dic objectForKey:@"id"];
-                    self.templateTitle = [dic objectForKey:@"title"];
-                    self.version = [[dic objectForKey:@"version"] doubleValue];
-                    self.parts = [dic objectForKey:@"info"];
-                    self.BGM = [dic objectForKey:@"BGM"];
-                    self.subTitle1 = [dic objectForKey:@"subTitle1"];
-                    self.videoHeaderType = [[dic objectForKey:@"header"] integerValue];
-                    self.videoTailerType = [[dic objectForKey:@"tailer"] integerValue];
-                    self.templateDescription = [dic objectForKey:@"templateDescription"];
-                    self.sampleVideoName = [dic objectForKey:@"sampleVideoName"];
-                }else{
-                    DLYLog(@"模板脚本文件解析出错");
-                }
+            NSData *encryptedData = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:templateId ofType:nil]];
+            
+            NSError *error;
+            NSData *decryptedData = [RNDecryptor decryptData:encryptedData withPassword:@"dlyvlog2016" error:&error];
+            
+            if (!error) {
+                DLYLog(@"JSON Data Dencrypt Success!");
+            }
+            
+            if (decryptedData) {
+                NSMutableDictionary *dic = [NSJSONSerialization JSONObjectWithData:decryptedData options:NSJSONReadingMutableContainers error:nil];
+                self.templateId = [dic objectForKey:@"id"];
+                self.templateTitle = [dic objectForKey:@"title"];
+                self.version = [[dic objectForKey:@"version"] doubleValue];
+                self.parts = [dic objectForKey:@"info"];
+                self.BGM = [dic objectForKey:@"BGM"];
+                self.subTitle1 = [dic objectForKey:@"subTitle1"];
+                self.videoHeaderType = [[dic objectForKey:@"header"] integerValue];
+                self.videoTailerType = [[dic objectForKey:@"tailer"] integerValue];
+                self.templateDescription = [dic objectForKey:@"templateDescription"];
+                self.sampleVideoName = [dic objectForKey:@"sampleVideoName"];
             }else{
-                DLYLog(@"模板文件地址获取失败");
+                DLYLog(@"模板脚本文件解析出错");
             }
         }else{
             templateId = kDEFAULTTEMPLATENAME;

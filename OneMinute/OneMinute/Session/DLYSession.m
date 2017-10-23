@@ -53,9 +53,10 @@
     NSString *jsonFile = nil;
     
     if (localVersion <= 1.0) {
-        jsonFile = [[NSBundle mainBundle] pathForResource:@"TemplateList_v1.plist" ofType:nil];
+//        jsonFile = [[NSBundle mainBundle] pathForResource:@"templateList_v1.plist" ofType:nil];
+        jsonFile = [[NSBundle mainBundle] pathForResource:@"templateList_v1.plist" ofType:nil];
     }else {
-        jsonFile = [[NSBundle mainBundle] pathForResource:@"TemplateList_v1.plist" ofType:nil];
+        jsonFile = [[NSBundle mainBundle] pathForResource:@"templateList_v1.plist" ofType:nil];
     }
     
     NSArray *arrry = [NSArray arrayWithContentsOfFile:jsonFile];
@@ -111,7 +112,7 @@
         
         _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:currentTemplate.templateId];
     }else{
-        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:@"Universal001.json"];
+        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:@"Primary.json"];
     }
 }
 
