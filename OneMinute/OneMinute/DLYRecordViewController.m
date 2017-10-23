@@ -94,6 +94,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) NSMutableArray *viewArr;      //视图数组
 @property (nonatomic, strong) NSMutableArray *bubbleTitleArr;//视图数组
 @property (nonatomic, assign) BOOL isAvalible;              //权限都已经许可
+@property (nonatomic, strong) UILabel *versionLabel;        //版本显示
 
 @end
 
@@ -626,6 +627,17 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.backView.backgroundColor = RGBA(0, 0, 0, 0.7);
     [self.view addSubview:self.backView];
     
+    //版本页面
+    self.versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.backView.height - 20, 50, 20)];
+    self.versionLabel.textColor = [UIColor whiteColor];
+    NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
+    NSString *appVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];
+    NSString *buildVersion = [infoDic objectForKey:@"CFBundleVersion"];
+    NSString *labelText = [NSString stringWithFormat:@"%@(%@)", appVersion,buildVersion];
+    self.versionLabel.text = labelText;
+    self.versionLabel.font =  FONT_SYSTEM(12);
+    [self.backView addSubview:self.versionLabel];
+
     //拍摄按钮
     self.recordBtn = [[UIButton alloc]initWithFrame:CGRectMake(43 * SCALE_WIDTH, 0, 60*SCALE_WIDTH, 60 * SCALE_WIDTH)];
     self.recordBtn.centerY = self.backView.centerY;
@@ -1110,6 +1122,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.playButton.transform = CGAffineTransformMakeRotation(num);
             self.deletePartButton.transform = CGAffineTransformMakeRotation(num);
         }];
+    }
+    if (!self.versionLabel.isHidden && self.versionLabel) {
+        if (num == 0) {
+            self.versionLabel.frame = CGRectMake(0, self.backView.height - 20, 50, 20);
+        }else {
+            self.versionLabel.frame = CGRectMake(0, 0, 50, 20);
+        }
+        self.versionLabel.transform = CGAffineTransformMakeRotation(num);
     }
     
     if (!self.deleteButton.isHidden && self.deleteButton) {
