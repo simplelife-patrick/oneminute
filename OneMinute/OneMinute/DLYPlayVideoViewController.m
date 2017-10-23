@@ -296,7 +296,7 @@
         [self.waitIndicator startAnimating];
     }
     if (self.isAll && self.isSuccess == NO) {
-        [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"请勿退出应用..."];
+        [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"正在成片,请勿退出应用..."];
     }
     //滑块
     self.progressSlider = [[UISlider alloc] initWithFrame:CGRectMake(85, SCREEN_HEIGHT - 45, SCREEN_WIDTH - 170, 20)];

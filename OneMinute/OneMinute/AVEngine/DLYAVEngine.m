@@ -793,8 +793,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     
         [self.assetWriter finishWritingWithCompletionHandler:^{
             
-            DLYLog(@"AVEngine停止写入 : %@",[self getCurrentTime_MS]);
-
             self.assetWriterVideoInput = nil;
             self.assetWriterAudioInput = nil;
             self.assetWriter = nil;
@@ -813,42 +811,36 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     
     counter = 0;
     __block float recordDuration = stopTime - startTime;
+    
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
     _enliveTime = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
-    //开始时间
     dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.001 * NSEC_PER_SEC));
-    //时间间隔
-    uint64_t interval = (uint64_t)(1 * NSEC_PER_MSEC); //定时器时间精度 1ms
+    uint64_t interval = (uint64_t)(1 * NSEC_PER_MSEC);
     dispatch_source_set_timer(_enliveTime, start, interval, 0);
-    //回调
+    
     dispatch_source_set_event_handler(_enliveTime, ^{
-
-//        DLYLog(@"定时器启动 : %@",[self getCurrentTime_MS]);
 
         if (![self.captureSession isRunning]) {
             [self.captureSession startRunning];
         }
         _isRecording = YES;
-//        DLYLog(@"AVEngine开始采集 : %@",[self getCurrentTime_MS]);
 
         if (self.delegate && [self.delegate respondsToSelector:@selector(statutUpdateWithClockTick:)]) {
             [self.delegate statutUpdateWithClockTick:counter];
         }
         counter += 0.001;
         if (counter >= recordDuration){
-            DLYLog(@"定时时长 counter: %f,片段要求时长 recordDuration :%f",counter,recordDuration);
+            
+            _isRecording = NO;
+            readyToRecordVideo = NO;
+            readyToRecordAudio = NO;
             
             if ([self.captureSession isRunning]) {
                 [self.captureSession stopRunning];
             }
-            _isRecording = NO;
-            readyToRecordVideo = NO;
-            readyToRecordAudio = NO;
-//            DLYLog(@"AVEngine停止采集 : %@",[self getCurrentTime_MS]);
             
             [self stopRecording];
             dispatch_cancel(_enliveTime);
-//            DLYLog(@"停止定时器 : %@",[self getCurrentTime_MS]);
 
             if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
                 [self.delegate finishedRecording];
@@ -857,13 +849,19 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     });
     //启动定时器
     dispatch_resume(_enliveTime);
-    
 }
 
 #pragma mark - 取消录制 -
 - (void)cancelRecording{
     
     DLYLog(@"取消录制");
+    
+    _isRecording = NO;
+    readyToRecordVideo = NO;
+    readyToRecordAudio = NO;
+    
+    dispatch_cancel(_enliveTime);
+    
     dispatch_async(_movieWritingQueue, ^{
     
         [self.assetWriter finishWritingWithCompletionHandler:^{
@@ -878,6 +876,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         [self.captureSession startRunning];
     }
 }
+#pragma mark - 重置录制 -
 - (void) restartRecording{
     if (!self.captureSession.isRunning) {
         [self.captureSession startRunning];
@@ -889,8 +888,8 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         [self.captureSession stopRunning];
     }
 }
-#pragma mark - 视频速度处理 -
 
+#pragma mark - 视频速度处理 -
 // 处理速度视频
 - (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl BGMVolume:(float)BGMVolume recordTypeOfPart:(DLYMiniVlogRecordType)recordType completed:(void(^)())completed {
     

@@ -71,5 +71,7 @@
     }
     return [mArray copy];
 }
-
+- (NSString*)description{
+    return [NSString stringWithFormat:@"<%@: %p> {templateId: %@ ,version: %f ,templateTitle: %@,templateDescription:%@,sampleVideoName: %@ ,parts: %@ ,BGM: %@,subTitle1:%@,videoHeaderType: %@ ,videoTailerType: %@}",[self class],self,self.templateId,self.version,self.templateTitle,self,self.templateDescription,self.sampleVideoName,self.parts,self.BGM,self.subTitle1,self.videoHeaderType,self.videoTailerType];
+}
 @end
