@@ -93,8 +93,8 @@
     "stopTime": "00:05:00"
   },
   "BGM": "SunSetBeachBGM",
-  "header": 2,
-  "tailer": 2,
+  "header": 0,
+  "tailer": 0,
   "templateDescription": "本模板有7个片段，其中有2个片段可以说话哦，午后的阳光暖洋洋，出去喝杯茶吧",
   "sampleVideoName": "SunSetBeachSample.mp4"
 }

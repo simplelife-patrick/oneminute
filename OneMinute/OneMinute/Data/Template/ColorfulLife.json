@@ -81,8 +81,8 @@
     "stopTime": "00:05:00"
   },
   "BGM": "ColorfulLifeBGM",
-  "header": 2,
-  "tailer": 2,
+  "header": 0,
+  "tailer": 0,
   "templateDescription": "本模板有6个片段，其中有2个片段可以说话哦，一起记录家里有趣的事情吧",
   "sampleVideoName": "ColorfulLifeSample.mp4"
 }

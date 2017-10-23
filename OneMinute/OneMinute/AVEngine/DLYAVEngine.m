@@ -999,25 +999,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 - (void)addVideoEffectsWithHeaderUrl:(NSURL *)headerUrl andFooterUrl:(NSURL *)footerUrl withTitle:(NSString *)title  {
     
     BOOL isAudio = NO;
-    int templateNum = 1;
-    int startNum = 20;
-    int endNum = 124;
     
-    DLYMiniVlogTemplate *template = self.session.currentTemplate;
-    if (template.videoHeaderType == DLYMiniVlogHeaderType_A) {
-        templateNum = 1;
-        startNum = 20;
-        endNum = 124;
-    }else if (template.videoHeaderType == DLYMiniVlogHeaderType_B){
-        templateNum = 2;
-        startNum = 39;
-        endNum = 300;
-    }else{
-        templateNum = 3;
-        startNum = 109;
-        endNum = 210;
-    }
-        
     NSString *headerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"headerVideo.mp4"];
     
     NSMutableArray *headArray = [NSMutableArray array];
@@ -1025,10 +1007,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
         
-        for (int i = startNum; i<endNum; i++)
+        for (int i = 20; i<124; i++)
         {
             @autoreleasepool {
-                NSString *imageName = [NSString stringWithFormat:@"MyHeader%d_00%03d.png", templateNum, i];
+                NSString *imageName = [NSString stringWithFormat:@"MyHeader1_00%03d.png", i];
                 UIImage *image = [UIImage imageNamed:imageName];
                 UIImage *newImage = [image scaleToSize:CGSizeMake(600, 600)];
                 [headArray addObject:(id)newImage.CGImage];
@@ -1047,7 +1029,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
                 for (int i = 15; i<210; i++)
                 {
                     @autoreleasepool {
-                        NSString *imageName = [NSString stringWithFormat:@"MyFooter%d_00%03d.png", templateNum, i];
+                        NSString *imageName = [NSString stringWithFormat:@"MyFooter1_00%03d.png", i];
                         UIImage *image = [UIImage imageNamed:imageName];
                         UIImage *newImage = [image scaleToSize:CGSizeMake(600, 600)];
                         [footArray addObject:(id)newImage.CGImage];
