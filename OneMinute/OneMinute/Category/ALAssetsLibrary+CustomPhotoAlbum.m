@@ -53,7 +53,7 @@
             __weak typeof(self) weakSelf = self;
             
             if (! [self respondsToSelector:@selector(addAssetsGroupAlbumWithName:resultBlock:failureBlock:)])
-                NSLog(@"![WARNING][LIB:ALAssetsLibrary+CustomPhotoAlbum]: \
+                DLYLog(@"![WARNING][LIB:ALAssetsLibrary+CustomPhotoAlbum]: \
                       |-addAssetsGroupAlbumWithName:resultBlock:failureBlock:| \
                       only available on iOS 5.0 or later. \
                       ASSET cannot be saved to album!");

@@ -2,8 +2,8 @@
 platform :ios, '10.0'
 inhibit_all_warnings!
 
-ali_source 'alibaba-specs'
-ali_source 'alibaba-specs-mirror'
+#ali_source 'alibaba-specs'
+#ali_source 'alibaba-specs-mirror'
 
 def main_pods
 

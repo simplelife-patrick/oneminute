@@ -173,7 +173,7 @@
         [UIView animateWithDuration:0.5 animations:^{
             NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeRight];
             [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-//            NSLog(@"导出页面左转");
+//            DLYLog(@"导出页面左转");
         }];
     }
 }
@@ -184,7 +184,7 @@
         [UIView animateWithDuration:0.5 animations:^{
             NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
             [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-//            NSLog(@"导出页面右转");
+//            DLYLog(@"导出页面右转");
         }];
     }
 }
