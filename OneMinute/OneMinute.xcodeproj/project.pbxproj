@@ -19,6 +19,7 @@
 		1C7E61BE1EE7E4AC0088F33F /* DLYModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61B91EE7E4AC0088F33F /* DLYModule.m */; };
 		1C7E61BF1EE7E4AC0088F33F /* DLYModuleManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61BB1EE7E4AC0088F33F /* DLYModuleManager.m */; };
 		1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61C21EE7E6730088F33F /* DLYLogModule.m */; };
+		6F07B8FFA11D613AD0C6371B /* libPods-OneMinute.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 98DBC5BCCC8288A2A795F99B /* libPods-OneMinute.a */; };
 		6F12AE6C1F3DB78300CE8CB6 /* DLYDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F12AE691F3DB78300CE8CB6 /* DLYDownloader.m */; };
 		6F12AE6D1F3DB78300CE8CB6 /* DLYDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F12AE6B1F3DB78300CE8CB6 /* DLYDownloadManager.m */; };
 		6F32F7A71F99A57D004C4553 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6F32F7A61F99A57D004C4553 /* iconfont.ttf */; };
@@ -39,19 +40,24 @@
 		6FA74E871F5E48B800114C93 /* DLYTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA74E861F5E48B800114C93 /* DLYTitleView.m */; };
 		6FD13ABE1F5FDAF4000B72FC /* DLYAnimationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FD13ABD1F5FDAF4000B72FC /* DLYAnimationViewController.m */; };
 		6FD13AC41F60EC02000B72FC /* DLYIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FD13AC31F60EC02000B72FC /* DLYIndicatorView.m */; };
-		822650B2C2F69335E52B0573 /* libPods-OneMinute.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D600523FDE25F6D3C6635F4 /* libPods-OneMinute.a */; };
 		AD038C9A1F7293F10002C092 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD038C9C1F7293F10002C092 /* InfoPlist.strings */; };
 		AD13AC381F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = AD13AC371F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m */; };
-		AD1F7BE21F8C60BA00654499 /* Primary.json in Resources */ = {isa = PBXBuildFile; fileRef = AD1F7BDF1F8C60B900654499 /* Primary.json */; };
-		AD1F7BE31F8C60BA00654499 /* Secondary.json in Resources */ = {isa = PBXBuildFile; fileRef = AD1F7BE01F8C60B900654499 /* Secondary.json */; };
-		AD1F7BE41F8C60BA00654499 /* Advanced.json in Resources */ = {isa = PBXBuildFile; fileRef = AD1F7BE11F8C60BA00654499 /* Advanced.json */; };
+		AD14ED371F9E039E000DB796 /* Secondary.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED2B1F9E039A000DB796 /* Secondary.dly */; };
+		AD14ED381F9E039E000DB796 /* YoungOuting.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED2C1F9E039B000DB796 /* YoungOuting.dly */; };
+		AD14ED391F9E039E000DB796 /* SpiritTerritory.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED2D1F9E039B000DB796 /* SpiritTerritory.dly */; };
+		AD14ED3A1F9E039E000DB796 /* MyMaldives.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED2E1F9E039C000DB796 /* MyMaldives.dly */; };
+		AD14ED3B1F9E039E000DB796 /* ColorfulLife.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED2F1F9E039C000DB796 /* ColorfulLife.dly */; };
+		AD14ED3C1F9E039E000DB796 /* AfternoonTea.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED301F9E039C000DB796 /* AfternoonTea.dly */; };
+		AD14ED3D1F9E039E000DB796 /* BigMeal.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED311F9E039C000DB796 /* BigMeal.dly */; };
+		AD14ED3E1F9E039E000DB796 /* Primary.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED321F9E039D000DB796 /* Primary.dly */; };
+		AD14ED3F1F9E039E000DB796 /* SoDelicious.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED331F9E039D000DB796 /* SoDelicious.dly */; };
+		AD14ED401F9E039E000DB796 /* SunSetBeach.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED341F9E039D000DB796 /* SunSetBeach.dly */; };
+		AD14ED411F9E039E000DB796 /* GoNorth.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED351F9E039D000DB796 /* GoNorth.dly */; };
+		AD14ED421F9E039E000DB796 /* Advanced.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED361F9E039E000DB796 /* Advanced.dly */; };
+		AD14ED461F9E0ABD000DB796 /* templateList_v1.plist in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED451F9E0ABD000DB796 /* templateList_v1.plist */; };
 		AD26F1A81F53E6DE00565E27 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */; };
 		AD26F1AA1F53E70A00565E27 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */; };
-		AD449CEF1F6F6FC6004DBD72 /* BigMeal.json in Resources */ = {isa = PBXBuildFile; fileRef = AD449CEE1F6F6FC6004DBD72 /* BigMeal.json */; };
-		AD5A06A31F33058A00F26693 /* SpiritTerritory.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A01F33058A00F26693 /* SpiritTerritory.json */; };
-		AD5A06A41F33058A00F26693 /* YoungOuting.json in Resources */ = {isa = PBXBuildFile; fileRef = AD5A06A11F33058A00F26693 /* YoungOuting.json */; };
 		AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5B80B11F3443080094922B /* UIColor+Hex.m */; };
-		AD71EC851F931D27007490BC /* TemplateList_v1.plist in Resources */ = {isa = PBXBuildFile; fileRef = AD71EC841F931D27007490BC /* TemplateList_v1.plist */; };
 		AD7290291F8CBC7C00BDD506 /* SecondaryBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD7290261F8CBC7B00BDD506 /* SecondaryBGM.m4a */; };
 		AD72902A1F8CBC7C00BDD506 /* AdvancedBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD7290271F8CBC7B00BDD506 /* AdvancedBGM.m4a */; };
 		AD72902B1F8CBC7C00BDD506 /* PrimaryBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD7290281F8CBC7B00BDD506 /* PrimaryBGM.m4a */; };
@@ -61,12 +67,6 @@
 		AD7608F61F70C08000556E20 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608F01F70C07F00556E20 /* UIView+Extension.m */; };
 		AD7608F71F70C08000556E20 /* UIView+Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608F21F70C07F00556E20 /* UIView+Utility.m */; };
 		AD849F441F72019900B1E08F /* DLYConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = AD849F431F72019900B1E08F /* DLYConstants.m */; };
-		AD887A561F7646FF00A85881 /* ColorfulLife.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A4E1F7646FE00A85881 /* ColorfulLife.json */; };
-		AD887A571F7646FF00A85881 /* GoNorth.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A4F1F7646FF00A85881 /* GoNorth.json */; };
-		AD887A581F7646FF00A85881 /* AfternoonTea.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A501F7646FF00A85881 /* AfternoonTea.json */; };
-		AD887A5A1F7646FF00A85881 /* MyMaldives.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A521F7646FF00A85881 /* MyMaldives.json */; };
-		AD887A5B1F7646FF00A85881 /* SunSetBeach.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A531F7646FF00A85881 /* SunSetBeach.json */; };
-		AD887A5C1F7646FF00A85881 /* SoDelicious.json in Resources */ = {isa = PBXBuildFile; fileRef = AD887A541F7646FF00A85881 /* SoDelicious.json */; };
 		AD887A731F7661FC00A85881 /* SpiritTerritoryBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A671F7661FB00A85881 /* SpiritTerritoryBGM.m4a */; };
 		AD887A741F7661FC00A85881 /* ColorfulLifeBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A681F7661FB00A85881 /* ColorfulLifeBGM.m4a */; };
 		AD887A751F7661FC00A85881 /* SunSetBeachBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD887A691F7661FB00A85881 /* SunSetBeachBGM.m4a */; };
@@ -133,7 +133,6 @@
 		1C7E61BC1EE7E4AC0088F33F /* DLYSharedInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DLYSharedInstance.h; path = Common/DLYSharedInstance.h; sourceTree = "<group>"; };
 		1C7E61C11EE7E6730088F33F /* DLYLogModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DLYLogModule.h; path = Log/DLYLogModule.h; sourceTree = "<group>"; };
 		1C7E61C21EE7E6730088F33F /* DLYLogModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DLYLogModule.m; path = Log/DLYLogModule.m; sourceTree = "<group>"; };
-		4D600523FDE25F6D3C6635F4 /* libPods-OneMinute.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OneMinute.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F12AE681F3DB78300CE8CB6 /* DLYDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYDownloader.h; sourceTree = "<group>"; };
 		6F12AE691F3DB78300CE8CB6 /* DLYDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYDownloader.m; sourceTree = "<group>"; };
 		6F12AE6A1F3DB78300CE8CB6 /* DLYDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYDownloadManager.h; sourceTree = "<group>"; };
@@ -173,24 +172,31 @@
 		6FD13AC21F60EC02000B72FC /* DLYIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYIndicatorView.h; sourceTree = "<group>"; };
 		6FD13AC31F60EC02000B72FC /* DLYIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYIndicatorView.m; sourceTree = "<group>"; };
 		7E6CECB0326EA6C818C5A4ED /* Pods-OneMinute.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneMinute.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute.debug.xcconfig"; sourceTree = "<group>"; };
+		98DBC5BCCC8288A2A795F99B /* libPods-OneMinute.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OneMinute.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD038C961F7293C50002C092 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		AD038C971F7293C50002C092 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		AD038C9B1F7293F10002C092 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		AD038C9D1F7293F30002C092 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD13AC361F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALAssetsLibrary+CustomPhotoAlbum.h"; sourceTree = "<group>"; };
 		AD13AC371F35A51A00B2B8F3 /* ALAssetsLibrary+CustomPhotoAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ALAssetsLibrary+CustomPhotoAlbum.m"; sourceTree = "<group>"; };
-		AD1F7BDF1F8C60B900654499 /* Primary.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Primary.json; sourceTree = "<group>"; };
-		AD1F7BE01F8C60B900654499 /* Secondary.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Secondary.json; sourceTree = "<group>"; };
-		AD1F7BE11F8C60BA00654499 /* Advanced.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Advanced.json; sourceTree = "<group>"; };
+		AD14ED2B1F9E039A000DB796 /* Secondary.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Secondary.dly; sourceTree = "<group>"; };
+		AD14ED2C1F9E039B000DB796 /* YoungOuting.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = YoungOuting.dly; sourceTree = "<group>"; };
+		AD14ED2D1F9E039B000DB796 /* SpiritTerritory.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = SpiritTerritory.dly; sourceTree = "<group>"; };
+		AD14ED2E1F9E039C000DB796 /* MyMaldives.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyMaldives.dly; sourceTree = "<group>"; };
+		AD14ED2F1F9E039C000DB796 /* ColorfulLife.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorfulLife.dly; sourceTree = "<group>"; };
+		AD14ED301F9E039C000DB796 /* AfternoonTea.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = AfternoonTea.dly; sourceTree = "<group>"; };
+		AD14ED311F9E039C000DB796 /* BigMeal.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = BigMeal.dly; sourceTree = "<group>"; };
+		AD14ED321F9E039D000DB796 /* Primary.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Primary.dly; sourceTree = "<group>"; };
+		AD14ED331F9E039D000DB796 /* SoDelicious.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = SoDelicious.dly; sourceTree = "<group>"; };
+		AD14ED341F9E039D000DB796 /* SunSetBeach.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = SunSetBeach.dly; sourceTree = "<group>"; };
+		AD14ED351F9E039D000DB796 /* GoNorth.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = GoNorth.dly; sourceTree = "<group>"; };
+		AD14ED361F9E039E000DB796 /* Advanced.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Advanced.dly; sourceTree = "<group>"; };
+		AD14ED451F9E0ABD000DB796 /* templateList_v1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = templateList_v1.plist; sourceTree = "<group>"; };
 		AD26F1A61F53E6DE00565E27 /* DLYAVEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAVEngine.h; sourceTree = "<group>"; };
 		AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAVEngine.m; sourceTree = "<group>"; };
 		AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRecordViewController.m; sourceTree = "<group>"; };
-		AD449CEE1F6F6FC6004DBD72 /* BigMeal.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = BigMeal.json; sourceTree = "<group>"; };
-		AD5A06A01F33058A00F26693 /* SpiritTerritory.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SpiritTerritory.json; sourceTree = "<group>"; };
-		AD5A06A11F33058A00F26693 /* YoungOuting.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = YoungOuting.json; sourceTree = "<group>"; };
 		AD5B80B01F3443080094922B /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		AD5B80B11F3443080094922B /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
-		AD71EC841F931D27007490BC /* TemplateList_v1.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = TemplateList_v1.plist; sourceTree = "<group>"; };
 		AD7290261F8CBC7B00BDD506 /* SecondaryBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SecondaryBGM.m4a; sourceTree = "<group>"; };
 		AD7290271F8CBC7B00BDD506 /* AdvancedBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = AdvancedBGM.m4a; sourceTree = "<group>"; };
 		AD7290281F8CBC7B00BDD506 /* PrimaryBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = PrimaryBGM.m4a; sourceTree = "<group>"; };
@@ -207,12 +213,6 @@
 		AD849F421F72019900B1E08F /* DLYConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYConstants.h; sourceTree = "<group>"; };
 		AD849F431F72019900B1E08F /* DLYConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYConstants.m; sourceTree = "<group>"; };
 		AD849F451F72021200B1E08F /* DLYPublicMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYPublicMacros.h; sourceTree = "<group>"; };
-		AD887A4E1F7646FE00A85881 /* ColorfulLife.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ColorfulLife.json; sourceTree = "<group>"; };
-		AD887A4F1F7646FF00A85881 /* GoNorth.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = GoNorth.json; sourceTree = "<group>"; };
-		AD887A501F7646FF00A85881 /* AfternoonTea.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = AfternoonTea.json; sourceTree = "<group>"; };
-		AD887A521F7646FF00A85881 /* MyMaldives.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = MyMaldives.json; sourceTree = "<group>"; };
-		AD887A531F7646FF00A85881 /* SunSetBeach.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SunSetBeach.json; sourceTree = "<group>"; };
-		AD887A541F7646FF00A85881 /* SoDelicious.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SoDelicious.json; sourceTree = "<group>"; };
 		AD887A671F7661FB00A85881 /* SpiritTerritoryBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SpiritTerritoryBGM.m4a; sourceTree = "<group>"; };
 		AD887A681F7661FB00A85881 /* ColorfulLifeBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorfulLifeBGM.m4a; sourceTree = "<group>"; };
 		AD887A691F7661FB00A85881 /* SunSetBeachBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SunSetBeachBGM.m4a; sourceTree = "<group>"; };
@@ -256,7 +256,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				822650B2C2F69335E52B0573 /* libPods-OneMinute.a in Frameworks */,
+				6F07B8FFA11D613AD0C6371B /* libPods-OneMinute.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,7 +351,6 @@
 		1C7E61821EE7DF4F0088F33F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				AD71EC841F931D27007490BC /* TemplateList_v1.plist */,
 				6F32F7A61F99A57D004C4553 /* iconfont.ttf */,
 				6F643AF31F97583E001FDA76 /* PromoteVideo.mp4 */,
 				ADFFF1A51F18A36700FB5BF7 /* DLYPrefixHeader.pch */,
@@ -416,7 +415,7 @@
 		5FEBA52BCEB5FEC50E919499 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4D600523FDE25F6D3C6635F4 /* libPods-OneMinute.a */,
+				98DBC5BCCC8288A2A795F99B /* libPods-OneMinute.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -518,6 +517,25 @@
 			name = PopupMenu;
 			sourceTree = "<group>";
 		};
+		AD14EC881F9DF0E9000DB796 /* templates */ = {
+			isa = PBXGroup;
+			children = (
+				AD14ED361F9E039E000DB796 /* Advanced.dly */,
+				AD14ED301F9E039C000DB796 /* AfternoonTea.dly */,
+				AD14ED311F9E039C000DB796 /* BigMeal.dly */,
+				AD14ED2F1F9E039C000DB796 /* ColorfulLife.dly */,
+				AD14ED351F9E039D000DB796 /* GoNorth.dly */,
+				AD14ED2E1F9E039C000DB796 /* MyMaldives.dly */,
+				AD14ED321F9E039D000DB796 /* Primary.dly */,
+				AD14ED2B1F9E039A000DB796 /* Secondary.dly */,
+				AD14ED331F9E039D000DB796 /* SoDelicious.dly */,
+				AD14ED2D1F9E039B000DB796 /* SpiritTerritory.dly */,
+				AD14ED341F9E039D000DB796 /* SunSetBeach.dly */,
+				AD14ED2C1F9E039B000DB796 /* YoungOuting.dly */,
+			);
+			path = templates;
+			sourceTree = "<group>";
+		};
 		AD887A661F7661FB00A85881 /* BGM */ = {
 			isa = PBXGroup;
 			children = (
@@ -594,8 +612,9 @@
 		ADFFF1851F18A33000FB5BF7 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				AD14ED451F9E0ABD000DB796 /* templateList_v1.plist */,
+				AD14EC881F9DF0E9000DB796 /* templates */,
 				ADFFF1861F18A33000FB5BF7 /* Models */,
-				ADFFF18F1F18A33000FB5BF7 /* Template */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -613,25 +632,6 @@
 				ADFFF18E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		ADFFF18F1F18A33000FB5BF7 /* Template */ = {
-			isa = PBXGroup;
-			children = (
-				AD1F7BDF1F8C60B900654499 /* Primary.json */,
-				AD1F7BE01F8C60B900654499 /* Secondary.json */,
-				AD1F7BE11F8C60BA00654499 /* Advanced.json */,
-				AD5A06A11F33058A00F26693 /* YoungOuting.json */,
-				AD887A4F1F7646FF00A85881 /* GoNorth.json */,
-				AD887A521F7646FF00A85881 /* MyMaldives.json */,
-				AD449CEE1F6F6FC6004DBD72 /* BigMeal.json */,
-				AD887A501F7646FF00A85881 /* AfternoonTea.json */,
-				AD887A541F7646FF00A85881 /* SoDelicious.json */,
-				AD5A06A01F33058A00F26693 /* SpiritTerritory.json */,
-				AD887A4E1F7646FE00A85881 /* ColorfulLife.json */,
-				AD887A531F7646FF00A85881 /* SunSetBeach.json */,
-			);
-			path = Template;
 			sourceTree = "<group>";
 		};
 		ADFFF1911F18A33000FB5BF7 /* Resource */ = {
@@ -767,34 +767,34 @@
 				AD887A7B1F7661FC00A85881 /* MyMaldivesBGM.m4a in Resources */,
 				6F643AF41F97583E001FDA76 /* PromoteVideo.mp4 in Resources */,
 				AD7290291F8CBC7C00BDD506 /* SecondaryBGM.m4a in Resources */,
-				AD887A581F7646FF00A85881 /* AfternoonTea.json in Resources */,
 				AD72902A1F8CBC7C00BDD506 /* AdvancedBGM.m4a in Resources */,
-				AD71EC851F931D27007490BC /* TemplateList_v1.plist in Resources */,
-				AD887A5C1F7646FF00A85881 /* SoDelicious.json in Resources */,
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
+				AD14ED3C1F9E039E000DB796 /* AfternoonTea.dly in Resources */,
 				AD038C9A1F7293F10002C092 /* InfoPlist.strings in Resources */,
+				AD14ED401F9E039E000DB796 /* SunSetBeach.dly in Resources */,
 				AD887A7A1F7661FC00A85881 /* GoNorthBGM.m4a in Resources */,
 				AD887A751F7661FC00A85881 /* SunSetBeachBGM.m4a in Resources */,
-				AD1F7BE31F8C60BA00654499 /* Secondary.json in Resources */,
 				AD72902B1F8CBC7C00BDD506 /* PrimaryBGM.m4a in Resources */,
 				AD887A781F7661FC00A85881 /* SoDeliciousBGM.m4a in Resources */,
+				AD14ED421F9E039E000DB796 /* Advanced.dly in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
-				AD887A5A1F7646FF00A85881 /* MyMaldives.json in Resources */,
-				AD449CEF1F6F6FC6004DBD72 /* BigMeal.json in Resources */,
-				AD887A561F7646FF00A85881 /* ColorfulLife.json in Resources */,
+				AD14ED411F9E039E000DB796 /* GoNorth.dly in Resources */,
 				AD887A731F7661FC00A85881 /* SpiritTerritoryBGM.m4a in Resources */,
-				AD5A06A41F33058A00F26693 /* YoungOuting.json in Resources */,
-				AD887A571F7646FF00A85881 /* GoNorth.json in Resources */,
-				AD1F7BE21F8C60BA00654499 /* Primary.json in Resources */,
+				AD14ED381F9E039E000DB796 /* YoungOuting.dly in Resources */,
+				AD14ED371F9E039E000DB796 /* Secondary.dly in Resources */,
+				AD14ED3B1F9E039E000DB796 /* ColorfulLife.dly in Resources */,
+				AD14ED3F1F9E039E000DB796 /* SoDelicious.dly in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
+				AD14ED461F9E0ABD000DB796 /* templateList_v1.plist in Resources */,
 				AD887A791F7661FC00A85881 /* YoungOutingBGM.m4a in Resources */,
 				AD887A741F7661FC00A85881 /* ColorfulLifeBGM.m4a in Resources */,
-				AD5A06A31F33058A00F26693 /* SpiritTerritory.json in Resources */,
-				AD1F7BE41F8C60BA00654499 /* Advanced.json in Resources */,
 				6F32F7A71F99A57D004C4553 /* iconfont.ttf in Resources */,
 				AD887A761F7661FC00A85881 /* BigMealBGM.m4a in Resources */,
-				AD887A5B1F7646FF00A85881 /* SunSetBeach.json in Resources */,
+				AD14ED3A1F9E039E000DB796 /* MyMaldives.dly in Resources */,
+				AD14ED391F9E039E000DB796 /* SpiritTerritory.dly in Resources */,
 				AD887A771F7661FC00A85881 /* AfternoonTeaBGM.m4a in Resources */,
+				AD14ED3E1F9E039E000DB796 /* Primary.dly in Resources */,
+				AD14ED3D1F9E039E000DB796 /* BigMeal.dly in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -859,22 +859,18 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-OneMinute/Pods-OneMinute-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
 				"${BUILT_PRODUCTS_DIR}/CocoaLumberjack/CocoaLumberjack.framework",
-				"${BUILT_PRODUCTS_DIR}/CocoaSecurity/CocoaSecurity.framework",
 				"${BUILT_PRODUCTS_DIR}/GPUImage/GPUImage.framework",
 				"${BUILT_PRODUCTS_DIR}/Masonry/Masonry.framework",
-				"${BUILT_PRODUCTS_DIR}/PHImageKit/PHImageKit.framework",
-				"${BUILT_PRODUCTS_DIR}/PhiLipsStack/PhiLipsStack.framework",
+				"${BUILT_PRODUCTS_DIR}/RNCryptor/RNCryptor.framework",
 				"${BUILT_PRODUCTS_DIR}/ZipArchive/ZipArchive.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaLumberjack.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CocoaSecurity.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GPUImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Masonry.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PHImageKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PhiLipsStack.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RNCryptor.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZipArchive.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -897,7 +893,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
