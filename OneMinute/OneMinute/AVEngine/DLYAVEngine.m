@@ -804,6 +804,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             });
         }];
     });
+    if (![self.captureSession isRunning]) {
+        [self.captureSession startRunning];
+    }
 }
 #pragma mark - 录制用的计时器 -
 - (void)createRecorderTimerWithStartTime:(float)startTime stopTime:(float)stopTime {
@@ -850,9 +853,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
                 [self.delegate finishedRecording];
             }
-            if (![self.captureSession isRunning]) {
-                [self.captureSession startRunning];
-            }
         }
     });
     //启动定时器
@@ -874,6 +874,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             self.assetWriter = nil;
         }];
     });
+    if (![self.captureSession isRunning]) {
+        [self.captureSession startRunning];
+    }
 }
 - (void) restartRecording{
     if (!self.captureSession.isRunning) {
