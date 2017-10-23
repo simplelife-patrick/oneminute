@@ -1493,7 +1493,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.allBubble = nil;
         }
         sender.backgroundColor = RGBA(0, 0, 0, 0.4);
-        [self.resource removeCurrentAllPartFromCache];
+        [self.resource removeCurrentAllPartFromTemp];
         [self.resource removeCurrentAllPartFromDocument];
         //数组初始化，view布局
         if (!self.playView.isHidden && self.playView) {
@@ -1553,7 +1553,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [sender setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
         sender.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
         NSInteger partNum = selectPartTag - 10000 - 1;
-        [self.resource removePartWithPartNumFormCache:partNum];
+        [self.resource removePartWithPartNumFormTemp:partNum];
         [self.resource removePartWithPartNumFromDocument:partNum];
         [self deleteSelectPartVideo];
     }
@@ -1725,7 +1725,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.AVEngine cancelRecording];
     
     NSInteger partNum = selectPartTag - 10000 - 1;
-    [self.resource removePartWithPartNumFormCache:partNum];
+    [self.resource removePartWithPartNumFormTemp:partNum];
     
     if (self.newState == 1) {
         self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
@@ -2525,7 +2525,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //确定切换模板
 - (void)onSureClickChangeTypeStatus {
     
-    [self.resource removeCurrentAllPartFromCache];
+    [self.resource removeCurrentAllPartFromTemp];
     [self.resource removeCurrentAllPartFromDocument];
     
     //数组初始化，view布局
@@ -2594,7 +2594,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     if (isEmpty) {
         //数组初始化，view布局 弹出选择
-        [self.resource removeCurrentAllPartFromCache];
+        [self.resource removeCurrentAllPartFromTemp];
         [self changeSceneWithSelectNum:num];
         [self initData];
         [self createPartViewLayout];

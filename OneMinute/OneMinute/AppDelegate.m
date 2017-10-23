@@ -49,6 +49,11 @@
                 [fileManager createDirectoryAtPath:draftPath withIntermediateDirectories:YES attributes:nil error:nil];
             }
             
+            NSString *tempPath = [dataPath stringByAppendingPathComponent:kTempFolder];
+            if (![fileManager fileExistsAtPath:tempPath]) {
+                [fileManager createDirectoryAtPath:tempPath withIntermediateDirectories:YES attributes:nil error:nil];
+            }
+            
             NSString *productsPath = [dataPath stringByAppendingPathComponent:kProductFolder];
             if (![fileManager fileExistsAtPath:productsPath]) {
                 [fileManager createDirectoryAtPath:productsPath withIntermediateDirectories:YES attributes:nil error:nil];
@@ -56,12 +61,6 @@
         }
         NSArray *dataFolderArray = [fileManager contentsOfDirectoryAtPath:dataPath error:nil];
         DLYLog(@"当前Document/Data目录下有 %lu 个文件夹\n %@",dataFolderArray.count,dataFolderArray);
-        
-        NSString *draftPath = [kCachePath stringByAppendingPathComponent:kDraftFolder];
-        if (![fileManager fileExistsAtPath:draftPath]) {
-            [fileManager createDirectoryAtPath:draftPath withIntermediateDirectories:YES attributes:nil error:nil];
-        }
-        DLYLog(@"%@",[fileManager fileExistsAtPath:draftPath]? @"Library/Cache/目录下Draft文件夹已成功创建":@"Library/Cache/目录下Draft文件夹创建失败");
 
     }else{
         DLYLog(@"The Application isn't First Finish Launch !");

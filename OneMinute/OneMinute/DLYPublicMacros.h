@@ -24,6 +24,7 @@
 #define kResourceFolder @"Resource"
 #define kProductFolder @"Product"
 #define kDraftFolder @"Draft"
+#define kTempFolder @"Temp"
 #define kBGMFolder @"BGM"
 #define kVideoHeaderFolder @"VideoHeader"
 #define kVideoTailerFolder @"VideoTailer"
