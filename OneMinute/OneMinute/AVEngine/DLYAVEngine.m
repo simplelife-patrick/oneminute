@@ -891,7 +891,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
 #pragma mark - 视频速度处理 -
 // 处理速度视频
-- (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl BGMVolume:(float)BGMVolume recordTypeOfPart:(DLYMiniVlogRecordType)recordType completed:(void(^)())completed {
+- (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl soundType:(DLYMiniVlogAudioType)soundType recordTypeOfPart:(DLYMiniVlogRecordType)recordType completed:(void(^)())completed {
     
     DLYLog(@"调节视频速度...");
     // 获取视频
@@ -921,7 +921,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         
         CMTimeRange videoTimeRange = CMTimeRangeMake(kCMTimeZero,CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale));
 
-        if (BGMVolume < 50) {
+        if (soundType == DLYMiniVlogAudioTypeNarrate) {
 
             // 音频轨道
             AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
@@ -934,7 +934,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             DLYLog(@"value_original -----------%lld",videoAsset.duration.value);
             DLYLog(@"timescale_original -----------%d",videoAsset.duration.timescale);
 
-        }else if (BGMVolume == 100){//不录音的片段做丢弃原始音频处理
+        }else if (soundType == DLYMiniVlogAudioTypeMusic){//不录音的片段做丢弃原始音频处理
             
             // 插入视频轨道
             [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
@@ -1252,7 +1252,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     dispatch_async(dispatch_get_main_queue(), ^{
         [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"处理中,请稍后"];
         typeof(self) weakSelf = self;
-        [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl BGMVolume:_currentPart.BGMVolume recordTypeOfPart:_currentPart.recordType completed:^{
+        [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl soundType:_currentPart.soundType recordTypeOfPart:_currentPart.recordType completed:^{
             DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
             [self.resource removePartWithPartNumFormTemp:self.currentPart.partNum];
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -1998,7 +1998,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     exportSession.outputFileType = AVFileTypeMPEG4;
     exportSession.shouldOptimizeForNetworkUse = YES;
     [exportSession exportAsynchronouslyWithCompletionHandler:^{
-        NSLog(@"视频截取成功");
+        DLYLog(@"视频截取成功");
     }];
 }
 
