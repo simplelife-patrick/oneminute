@@ -891,7 +891,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
 #pragma mark - 视频速度处理 -
 // 处理速度视频
-- (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl BGMVolume:(float)BGMVolume recordTypeOfPart:(DLYMiniVlogRecordType)recordType completed:(void(^)())completed {
+- (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl soundType:(DLYMiniVlogAudioType)soundType recordTypeOfPart:(DLYMiniVlogRecordType)recordType completed:(void(^)())completed {
     
     DLYLog(@"调节视频速度...");
     // 获取视频
@@ -919,28 +919,28 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         // 视频轨道
         AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
         
-        if (BGMVolume < 50) {
+        CMTimeRange videoTimeRange = CMTimeRangeMake(kCMTimeZero,CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale));
+
+        if (soundType == DLYMiniVlogAudioTypeNarrate) {
 
             // 音频轨道
             AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
             
             // 插入视频轨道
-            [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
+            [compositionVideoTrack insertTimeRange:videoTimeRange ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
             // 插入音频轨道
-            [compositionAudioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeAudio] firstObject] atTime:kCMTimeZero error:nil];
+            [compositionAudioTrack insertTimeRange:videoTimeRange ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeAudio] firstObject] atTime:kCMTimeZero error:nil];
             
             DLYLog(@"value_original -----------%lld",videoAsset.duration.value);
             DLYLog(@"timescale_original -----------%d",videoAsset.duration.timescale);
 
-        }else if (BGMVolume == 100){//不录音的片段做丢弃原始音频处理
+        }else if (soundType == DLYMiniVlogAudioTypeMusic){//不录音的片段做丢弃原始音频处理
             
             // 插入视频轨道
             [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
             
             // 根据速度比率调节音频和视频
             CMTimeRange scaleRange = CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale));
-//            DLYLog(@"scaleRange");
-//            CMTimeRangeShow(scaleRange);
             
             CMTime toDuration_before = CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale);
             CMTime toDuration_after = CMTimeMake(videoAsset.duration.value * scale , videoAsset.duration.timescale);
@@ -1252,7 +1252,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     dispatch_async(dispatch_get_main_queue(), ^{
         [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"处理中,请稍后"];
         typeof(self) weakSelf = self;
-        [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl BGMVolume:_currentPart.BGMVolume recordTypeOfPart:_currentPart.recordType completed:^{
+        [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl soundType:_currentPart.soundType recordTypeOfPart:_currentPart.recordType completed:^{
             DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
             [self.resource removePartWithPartNumFormTemp:self.currentPart.partNum];
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -1295,6 +1295,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
     DLYLog(@"待合成的视频片段: %@",videoArray);
     
+    DLYMiniVlogTemplate *template = self.session.currentTemplate;
+    NSArray *parts = template.parts;
+    
     CMTime cursorTime = kCMTimeZero;
     for (NSUInteger i = 0; i < videoArray.count; i++) {
 
@@ -1329,7 +1332,14 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             assetAudioTrack = [[asset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
         }
         
-        CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero,asset.duration);
+        DLYMiniVlogPart *part = parts[i];
+        
+        double startTime = [self getTimeWithString:part.dubStartTime];
+        double stopTime = [self getTimeWithString:part.dubStopTime];
+        double duration = (stopTime - startTime) / 1000;
+        
+        CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(duration, asset.duration.timescale));
+//        CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero,asset.duration);
         
         NSError *videoError = nil;
         [compositionVideoTrack insertTimeRange:timeRange ofTrack:assetVideoTrack atTime:cursorTime error:&videoError];
@@ -1754,14 +1764,20 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         CMTimeRange timeRange = CMTimeRangeMake(_startTime, duration);
         CMTimeRange preTimeRange = CMTimeRangeMake(_prePoint, CMTimeMake(2, 1));
         
-        if (part.BGMVolume == 100) {//空镜
-            [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
+        if (part.soundType == DLYMiniVlogAudioTypeMusic) {//空镜
+            [BGMParameters setVolume:part.BGMVolume / 100 atTime:_startTime];
+            [videoParameters setVolume:0 atTime:_startTime];
+            
+//            [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
 //            [BGMParameters setVolumeRampFromStartVolume:5.0 toEndVolume:0.4 timeRange:preTimeRange];
             
-            [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:timeRange];
-        }else if(part.BGMVolume < 50){//人声
-            [videoParameters setVolumeRampFromStartVolume:2.0 toEndVolume:2.0 timeRange:timeRange];
-            [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
+//            [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:timeRange];
+        }else if(part.soundType == DLYMiniVlogAudioTypeNarrate){//人声
+            [videoParameters setVolume:2.0 atTime:_startTime];
+            [BGMParameters setVolume:part.BGMVolume / 100 atTime:_startTime];
+            
+//            [videoParameters setVolumeRampFromStartVolume:2.0 toEndVolume:2.0 timeRange:timeRange];
+//            [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
 //            [BGMParameters setVolumeRampFromStartVolume:0.4 toEndVolume:5.0 timeRange:preTimeRange];
         }
     }
@@ -1974,25 +1990,16 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     [videoCompositionTrack insertTimeRange:videoTimeRange ofTrack:videoAssertTrack atTime:kCMTimeZero error:nil];
     [audioCompositionTrack insertTimeRange:videoTimeRange ofTrack:audioAssertTrack atTime:kCMTimeZero error:nil];
     
-    AVMutableVideoCompositionLayerInstruction *videoCompositionLayerIns = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoAssertTrack];
-    [videoCompositionLayerIns setTransform:videoAssertTrack.preferredTransform atTime:kCMTimeZero];
+    NSURL *outputUrl = nil;
     
-    AVMutableVideoCompositionInstruction *videoCompositionIns = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-    [videoCompositionIns setTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssertTrack.timeRange.duration)];
+    AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]initWithAsset:composition presetName:AVAssetExportPreset1280x720];
     
-    AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
-    videoComposition.instructions = @[videoCompositionIns];
-    videoComposition.renderSize = CGSizeMake(videoAssertTrack.naturalSize.height,videoAssertTrack.naturalSize.width);
-    
-    videoComposition.frameDuration = CMTimeMake(1, 60);
-    
-    AVMutableVideoCompositionLayerInstruction *layerInst;
-    layerInst = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoAssertTrack];
-    [layerInst setTransform:videoAssertTrack.preferredTransform atTime:kCMTimeZero];
-    AVMutableVideoCompositionInstruction *inst = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-    inst.timeRange = CMTimeRangeMake(kCMTimeZero, selectedAsset.duration);
-    inst.layerInstructions = [NSArray arrayWithObject:layerInst];
-    videoComposition.instructions = [NSArray arrayWithObject:inst];
+    exportSession.outputURL = outputUrl;
+    exportSession.outputFileType = AVFileTypeMPEG4;
+    exportSession.shouldOptimizeForNetworkUse = YES;
+    [exportSession exportAsynchronouslyWithCompletionHandler:^{
+        DLYLog(@"视频截取成功");
+    }];
 }
 
 #pragma mark - 动态水印
@@ -2092,7 +2099,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
     videoComposition.instructions = [NSArray arrayWithObject:passThroughInstruction];
     videoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
-    videoComposition.frameDuration = CMTimeMake(1, 60); // 30 fps
+    videoComposition.frameDuration = CMTimeMake(1, 30); // 30 fps
     videoComposition.renderSize =  assetVideoTrack.naturalSize;
     
     parentLayer = nil;
