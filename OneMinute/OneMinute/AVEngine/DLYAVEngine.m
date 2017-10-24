@@ -58,8 +58,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     
     NSString *AVEngine_startWritting;
     NSString *AVEngine_stopWritting;
-    float counter;
-    dispatch_source_t _enliveTime;
 }
 
 //@property (nonatomic, strong) AVCaptureMetadataOutput           *metadataOutput;
@@ -783,9 +781,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     double stopTime = [self getTimeWithString:part.stopTime];
     double duration = stopTime - startTime;
     
-    counter = 0;
-//    [self createRecorderTimerWithStartTime:startTime / 1000 stopTime:stopTime / 1000];
-    
     [self timerClockBegin];
     DLYLog(@"AVEngine定时器启动 : %@",[self getCurrentTime_MS]);
     _isRecording = YES;
@@ -793,35 +788,24 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 }
 - (void) timerClockBegin
 {
-    DLYLog(@"AVEngine定时器启动 : %@",[self getCurrentTime_MS]);
-//    if (![self.captureSession isRunning]) {
-//        [self.captureSession startRunning];
-//    }
+//    DLYLog(@"AVEngine定时器启动 : %@",[self getCurrentTime_MS]);
     _isRecording = YES;
-    
-//    if (self.delegate && [self.delegate respondsToSelector:@selector(statutUpdateWithClockTick:)]) {
-//        [self.delegate statutUpdateWithClockTick:counter];
-//    }
 }
 - (void) timerClockFinish
 {
-    DLYLog(@"AVEngine定时器停止 : %@",[self getCurrentTime_MS]);
+//    DLYLog(@"AVEngine定时器停止 : %@",[self getCurrentTime_MS]);
     _isRecording = NO;
     readyToRecordVideo = NO;
     readyToRecordAudio = NO;
     
-//    if ([self.captureSession isRunning]) {
-//        [self.captureSession stopRunning];
-//    }
-    
     [self stopRecording];
+}
+#pragma mark - 停止录制 -
+- (void)stopRecording {
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
         [self.delegate finishedRecording];
     }
-}
-#pragma mark - 停止录制 -
-- (void)stopRecording {
     
     dispatch_async(_movieWritingQueue, ^{
     
@@ -840,52 +824,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 //        [self.captureSession startRunning];
 //    }
 }
-#pragma mark - 录制用的计时器 -
-- (void)createRecorderTimerWithStartTime:(float)startTime stopTime:(float)stopTime {
-    
-    counter = 0;
-    __block float recordDuration = stopTime - startTime;
-    
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
-    _enliveTime = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
-    dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.001 * NSEC_PER_SEC));
-    uint64_t interval = (uint64_t)(1 * NSEC_PER_MSEC);
-    dispatch_source_set_timer(_enliveTime, start, interval, 0);
-    
-    dispatch_source_set_event_handler(_enliveTime, ^{
-
-        DLYLog(@"定时器启动 : %@",[self getCurrentTime_MS]);
-        if (![self.captureSession isRunning]) {
-            [self.captureSession startRunning];
-        }
-        _isRecording = YES;
-
-        if (self.delegate && [self.delegate respondsToSelector:@selector(statutUpdateWithClockTick:)]) {
-            [self.delegate statutUpdateWithClockTick:counter];
-        }
-        counter += 0.001;
-        if (counter >= recordDuration){
-            DLYLog(@"定时器停止 : %@",[self getCurrentTime_MS]);
-
-            _isRecording = NO;
-            readyToRecordVideo = NO;
-            readyToRecordAudio = NO;
-            
-            if ([self.captureSession isRunning]) {
-                [self.captureSession stopRunning];
-            }
-            
-            [self stopRecording];
-            dispatch_cancel(_enliveTime);
-
-            if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
-                [self.delegate finishedRecording];
-            }
-        }
-    });
-    //启动定时器
-    dispatch_resume(_enliveTime);
-}
 
 #pragma mark - 取消录制 -
 - (void)cancelRecording{
@@ -896,13 +834,10 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     readyToRecordVideo = NO;
     readyToRecordAudio = NO;
     
-    dispatch_cancel(_enliveTime);
-    
     dispatch_async(_movieWritingQueue, ^{
     
         [self.assetWriter finishWritingWithCompletionHandler:^{
 
-            counter = 0;
             self.assetWriterVideoInput = nil;
             self.assetWriterAudioInput = nil;
             self.assetWriter = nil;
