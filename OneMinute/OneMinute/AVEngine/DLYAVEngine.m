@@ -781,11 +781,45 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
     double startTime = [self getTimeWithString:part.starTime];
     double stopTime = [self getTimeWithString:part.stopTime];
+    double duration = stopTime - startTime;
     
     counter = 0;
-    [self createRecorderTimerWithStartTime:startTime / 1000 stopTime:stopTime / 1000];
+//    [self createRecorderTimerWithStartTime:startTime / 1000 stopTime:stopTime / 1000];
+    
+    [self timerClockBegin];
+    DLYLog(@"AVEngine定时器启动 : %@",[self getCurrentTime_MS]);
+    _isRecording = YES;
+    [self performSelector:@selector(timerClockFinish) withObject:nil afterDelay:duration / 1000];
 }
-
+- (void) timerClockBegin
+{
+    DLYLog(@"AVEngine定时器启动 : %@",[self getCurrentTime_MS]);
+//    if (![self.captureSession isRunning]) {
+//        [self.captureSession startRunning];
+//    }
+    _isRecording = YES;
+    
+//    if (self.delegate && [self.delegate respondsToSelector:@selector(statutUpdateWithClockTick:)]) {
+//        [self.delegate statutUpdateWithClockTick:counter];
+//    }
+}
+- (void) timerClockFinish
+{
+    DLYLog(@"AVEngine定时器停止 : %@",[self getCurrentTime_MS]);
+    _isRecording = NO;
+    readyToRecordVideo = NO;
+    readyToRecordAudio = NO;
+    
+//    if ([self.captureSession isRunning]) {
+//        [self.captureSession stopRunning];
+//    }
+    
+    [self stopRecording];
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
+        [self.delegate finishedRecording];
+    }
+}
 #pragma mark - 停止录制 -
 - (void)stopRecording {
     
@@ -802,9 +836,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             });
         }];
     });
-    if (![self.captureSession isRunning]) {
-        [self.captureSession startRunning];
-    }
+//    if (![self.captureSession isRunning]) {
+//        [self.captureSession startRunning];
+//    }
 }
 #pragma mark - 录制用的计时器 -
 - (void)createRecorderTimerWithStartTime:(float)startTime stopTime:(float)stopTime {
@@ -820,6 +854,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     
     dispatch_source_set_event_handler(_enliveTime, ^{
 
+        DLYLog(@"定时器启动 : %@",[self getCurrentTime_MS]);
         if (![self.captureSession isRunning]) {
             [self.captureSession startRunning];
         }
@@ -830,7 +865,8 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         }
         counter += 0.001;
         if (counter >= recordDuration){
-            
+            DLYLog(@"定时器停止 : %@",[self getCurrentTime_MS]);
+
             _isRecording = NO;
             readyToRecordVideo = NO;
             readyToRecordAudio = NO;
@@ -1338,8 +1374,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         double stopTime = [self getTimeWithString:part.dubStopTime];
         double duration = (stopTime - startTime) / 1000;
         
-        CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithSeconds(duration, asset.duration.timescale));
-//        CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero,asset.duration);
+        CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero,asset.duration);
         
         NSError *videoError = nil;
         [compositionVideoTrack insertTimeRange:timeRange ofTrack:assetVideoTrack atTime:cursorTime error:&videoError];
