@@ -1,0 +1,101 @@
+{
+  "id": "AfternoonTea.json",
+  "title":"轻松吃吃",
+  "version": 1.0,
+  "info": [
+    {
+      "partNum": 0,
+      "startTime": "00:00:00",
+      "stopTime": "00:11:56",
+      "dubStartTime": "00:00:00",
+      "dubStopTime": "00:11:56",
+      "recordType": 0,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "不录音，常速"
+    },
+    {
+      "partNum": 1,
+      "startTime": "00:11:56",
+      "stopTime": "00:15:36",
+      "dubStartTime": "00:11:56",
+      "dubStopTime": "00:15:36",
+      "recordType": 0,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "不录音，慢速"
+    },
+    {
+      "partNum": 2,
+      "startTime": "00:15:36",
+      "stopTime": "00:33:84",
+      "dubStartTime": "00:15:36",
+      "dubStopTime": "00:33:84",
+      "recordType": 0,
+      "soundType": 1,
+      "BGMVolume": 20,
+      "transitionType": 1,
+      "shootGuide": "录音，常速"
+    },
+    {
+      "partNum": 3,
+      "startTime": "00:33:84",
+      "stopTime": "00:37:52",
+      "dubStartTime": "00:33:84",
+      "dubStopTime": "00:37:52",
+      "recordType": 0,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "不录音，常速"
+    },
+    {
+      "partNum": 4,
+      "startTime": "00:37:52",
+      "stopTime": "00:41:20",
+      "dubStartTime": "00:37:52",
+      "dubStopTime": "00:41:20",
+      "recordType": 0,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "不录音，常速"
+    },
+    {
+      "partNum": 5,
+      "startTime": "00:41:20",
+      "stopTime": "00:50:44",
+      "dubStartTime": "00:41:20",
+      "dubStopTime": "00:50:44",
+      "recordType": 0,
+      "soundType": 1,
+      "BGMVolume": 20,
+      "transitionType": 1,
+      "shootGuide": "录音，常速"
+    },
+    {
+      "partNum": 6,
+      "startTime": "00:50:44",
+      "stopTime": "01:00:00",
+      "dubStartTime": "00:50:44",
+      "dubStopTime": "01:00:00",
+      "recordType": 0,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 0,
+      "shootGuide": "不录音，常速"
+    }
+  ],
+  "subTitle1": {
+    "startTime": "00:02:00",
+    "stopTime": "00:05:00"
+  },
+  "BGM": "AfternoonTeaBGM",
+  "header": 0,
+  "tailer": 0,
+  "templateDescription": "本模板有7个片段，其中2个说话的片段。带我们看看都有啥好吃的呗",
+  "sampleVideoName": "AfternoonTeaBGMSample.mp4"
+}
+
