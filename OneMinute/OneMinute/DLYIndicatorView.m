@@ -59,14 +59,13 @@
     [self addSubview:self.mainView];
     
     //文字说明
-    self.titlelabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 20)];
-    self.titlelabel.top = self.mainView.bottom + 9;
-    self.titlelabel.centerX = self.width / 2;
+    self.titlelabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 98, 150, 20)];
+    self.titlelabel.centerX = 90;
     self.titlelabel.textColor = RGB(153, 153, 153);
     self.titlelabel.font = FONT_SYSTEM(14);
     self.titlelabel.textAlignment = NSTextAlignmentCenter;
-    self.titlelabel.text = @"正在成片中...";
-    [self addSubview:self.titlelabel];
+    self.titlelabel.text = @"处理中,请稍后";
+    [self.mainView addSubview:self.titlelabel];
     
     for (int i = 0; i < 6; i++) {
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(25 + 22 * i, 87, 20, 6)];
@@ -108,7 +107,7 @@
 - (void)startFlashAnimatingWithTitle:(NSString *)title {
     NSString *newStr = [title stringByReplacingOccurrencesOfString:@" " withString:@""];
     if (newStr.length <= 0) {
-        self.titlelabel.text = @"正在成片中...";
+        self.titlelabel.text = @"处理中,请稍后";
     }else{
         self.titlelabel.text = title;
     }
@@ -138,3 +137,4 @@
 }
 
 @end
+

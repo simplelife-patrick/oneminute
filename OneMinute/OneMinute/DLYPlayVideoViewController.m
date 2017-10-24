@@ -163,6 +163,7 @@
     self.titleField.textColor = RGBA(255, 255, 255, 0.7);
     self.titleField.returnKeyType = UIReturnKeyDone;
     [self.view addSubview:self.titleField];
+    [self.titleField becomeFirstResponder];
     [self.titleField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     
     //跳过button
@@ -296,7 +297,7 @@
         [self.waitIndicator startAnimating];
     }
     if (self.isAll && self.isSuccess == NO) {
-        [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"正在成片,请勿退出应用..."];
+        [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"处理中,请稍后"];
     }
     //滑块
     self.progressSlider = [[UISlider alloc] initWithFrame:CGRectMake(85, SCREEN_HEIGHT - 45, SCREEN_WIDTH - 170, 20)];

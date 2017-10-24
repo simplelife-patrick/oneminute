@@ -252,7 +252,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showFirstPopup"];
         NSArray *arr = @[self.chooseScene, self.flashButton, self.toggleCameraBtn, self.recordBtn];
         self.viewArr = [NSMutableArray arrayWithArray:arr];
-        NSArray *titleArr = @[@"选择场景", @"闪光灯", @"切换摄像头", @"录制视频"];
+        NSArray *titleArr = @[@"选择场景", @"补光灯", @"切换摄像头", @"录制视频"];
         self.bubbleTitleArr = [NSMutableArray arrayWithArray:titleArr];
         [self showPopupMenu];
     }
@@ -627,14 +627,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.view addSubview:self.backView];
     
     //版本页面
-    self.versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.backView.height - 20, 50, 20)];
+    self.versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(2, self.backView.height - 20, 50, 20)];
     self.versionLabel.textColor = [UIColor whiteColor];
     NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
     NSString *appVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];
     NSString *buildVersion = [infoDic objectForKey:@"CFBundleVersion"];
     NSString *labelText = [NSString stringWithFormat:@"%@(%@)", appVersion,buildVersion];
     self.versionLabel.text = labelText;
-    self.versionLabel.font =  FONT_SYSTEM(12);
+    self.versionLabel.font = FONT_SYSTEM(12);
     [self.backView addSubview:self.versionLabel];
 
     //拍摄按钮
@@ -1118,9 +1118,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     if (!self.versionLabel.isHidden && self.versionLabel) {
         if (num == 0) {
-            self.versionLabel.frame = CGRectMake(0, self.backView.height - 20, 50, 20);
+            self.versionLabel.frame = CGRectMake(2, self.backView.height - 20, 50, 20);
         }else {
-            self.versionLabel.frame = CGRectMake(0, 0, 50, 20);
+            self.versionLabel.frame = CGRectMake(2, 0, 50, 20);
         }
         self.versionLabel.transform = CGAffineTransformMakeRotation(num);
     }
