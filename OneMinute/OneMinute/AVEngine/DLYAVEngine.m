@@ -847,12 +847,14 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         [self.captureSession startRunning];
     }
 }
+
 #pragma mark - 重置录制 -
 - (void) restartRecording{
     if (!self.captureSession.isRunning) {
         [self.captureSession startRunning];
     }
 }
+
 #pragma mark - 暂停录制 -
 - (void) pauseRecording{
     if (self.captureSession.isRunning) {
@@ -861,7 +863,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 }
 
 #pragma mark - 视频速度处理 -
-// 处理速度视频
 - (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl soundType:(DLYMiniVlogAudioType)soundType recordTypeOfPart:(DLYMiniVlogRecordType)recordType completed:(void(^)())completed {
     
     DLYLog(@"调节视频速度...");
@@ -871,7 +872,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         return;
     }else{
         
-        // 适配视频速度比率
         Float64 scale = 0;
         if(recordType == DLYMiniVlogRecordTypeTimelapse){
             scale = 0.25f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(低帧率)
@@ -885,21 +885,16 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             videoAsset = [[AVURLAsset alloc]initWithURL:videoPartUrl options:nil];
         }
         
-        // 视频组合
         AVMutableComposition* mixComposition = [AVMutableComposition composition];
-        // 视频轨道
         AVMutableCompositionTrack *compositionVideoTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
         
         CMTimeRange videoTimeRange = CMTimeRangeMake(kCMTimeZero,CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale));
 
         if (soundType == DLYMiniVlogAudioTypeNarrate) {
 
-            // 音频轨道
             AVMutableCompositionTrack *compositionAudioTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
             
-            // 插入视频轨道
             [compositionVideoTrack insertTimeRange:videoTimeRange ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
-            // 插入音频轨道
             [compositionAudioTrack insertTimeRange:videoTimeRange ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeAudio] firstObject] atTime:kCMTimeZero error:nil];
             
             DLYLog(@"value_original -----------%lld",videoAsset.duration.value);
@@ -907,10 +902,8 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
         }else if (soundType == DLYMiniVlogAudioTypeMusic){//不录音的片段做丢弃原始音频处理
             
-            // 插入视频轨道
             [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
             
-            // 根据速度比率调节音频和视频
             CMTimeRange scaleRange = CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale));
             
             CMTime toDuration_before = CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale);
@@ -924,13 +917,11 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             
             [compositionVideoTrack scaleTimeRange:scaleRange toDuration:toDuration_after];
         }
-        // 配置导出
-        AVAssetExportSession *assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1280x720];
         
+        AVAssetExportSession *assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1280x720];
         assetExport.outputFileType = AVFileTypeMPEG4;
         assetExport.outputURL = outputUrl;
         assetExport.shouldOptimizeForNetworkUse = YES;
-        // 导出视频
         [assetExport exportAsynchronouslyWithCompletionHandler:^{
             completed();
         }];
@@ -1149,7 +1140,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 //    dispatch_resume(enliveTime2);
 //}
 #pragma mark - 视频取帧 -
-//获取视频某一帧图像
 -(UIImage*)getKeyImage:(NSURL *)assetUrl intervalTime:(Float32)intervalTime{
     
     CMTime keyTime = CMTimeMakeWithSeconds(intervalTime,30);
@@ -1303,12 +1293,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             assetAudioTrack = [[asset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
         }
         
-        DLYMiniVlogPart *part = parts[i];
-        
-        double startTime = [self getTimeWithString:part.dubStartTime];
-        double stopTime = [self getTimeWithString:part.dubStopTime];
-        double duration = (stopTime - startTime) / 1000;
-        
         CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero,asset.duration);
         
         NSError *videoError = nil;
@@ -1378,7 +1362,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
             
             NSArray *draftArray = [fileManager contentsOfDirectoryAtPath:draftPath error:nil];
-            
             for (NSInteger i = 0; i < [draftArray count]; i++) {
                 NSString *path = draftArray[i];
                 DLYLog(@"合并-->加载--> 第 %lu 个片段",i);
@@ -1435,18 +1418,20 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         
         CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero, assetVideoTrack.timeRange.duration);
         
+        NSError *videoInsertError = nil;
         BOOL isInsertVideoSuccess = [currentVideoTrack insertTimeRange:timeRange
                                                           ofTrack:assetVideoTrack
-                                                           atTime:videoCursorTime error:nil];
+                                                           atTime:videoCursorTime error:&videoInsertError];
         if (isInsertVideoSuccess == NO) {
-            DLYLog(@"合并时插入图像轨失败");
+            DLYLog(@"合并时插入图像轨失败 - %@",videoInsertError);
         }
         
+        NSError *audioInsertError = nil;
         BOOL isInsertAudioSuccess = [currentAudioTrack insertTimeRange:timeRange
                                                                    ofTrack:assetAudioTrack
-                                                                    atTime:videoCursorTime error:nil];
+                                                                    atTime:videoCursorTime error:&audioInsertError];
         if (isInsertAudioSuccess == NO) {
-            DLYLog(@"合并时插入音轨失败");
+            DLYLog(@"合并时插入音轨失败 - %@",audioInsertError);
         }
         
         videoCursorTime = CMTimeAdd(videoCursorTime, timeRange.duration);
@@ -1509,6 +1494,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         CGFloat videoWidth = videoComposition.renderSize.width;
         CGFloat videoHeight = videoComposition.renderSize.height;
         DLYLog(@"videoWidth: %f,videoHeight: %f",videoWidth,videoHeight);
+        
         //Transform
         CGAffineTransform fromDestTransform = CGAffineTransformMakeTranslation(-videoWidth, 0.0);
         CGAffineTransform toStartTransform = CGAffineTransformMakeTranslation(videoWidth, 0.0);
@@ -1520,7 +1506,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         CGAffineTransform fromDestTransformRotation = CGAffineTransformMakeRotation(-M_PI);
         CGAffineTransform toStartTransformRotation = CGAffineTransformMakeRotation(M_PI);
         
-        //缩放
+        //Scale
         CGAffineTransform fromTransformScale = CGAffineTransformMakeScale(2, 2);
         CGAffineTransform toTransformScale = CGAffineTransformMakeScale(2, 2);
         
@@ -1565,7 +1551,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
                 
                 [fromLayer setTransformRampFromStartTransform:identityTransform toEndTransform:fromTransformScale timeRange:timeRange];
                 [toLayer setTransformRampFromStartTransform:identityTransform toEndTransform:toTransformScale timeRange:timeRange];
-                
                 break;
                 
             default:
