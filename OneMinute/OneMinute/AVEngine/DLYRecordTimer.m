@@ -51,7 +51,6 @@
     }
     else
     {
-        NSLog(@"[#####DLYRecordTimer]定时器(%.3f秒) - 已在运行中，请勿重复启动！", self.duration);
     }
 }
 
@@ -69,8 +68,6 @@
     
     NSDate* now = [NSDate date];
     NSTimeInterval diff = now.timeIntervalSinceReferenceDate - self.startIntervalDiff - self.duration;
-    NSLog(@"[#####DLYRecordTimer]定时器(%.3f秒) - 业务停止 - Tick时间:%@", self.duration, [self _timeStringWithDate:now]);
-    NSLog(@"[#####DLYRecordTimer]定时器(%.3f秒) - 业务总结 - 与启动时间的误差:%.3f秒", self.duration, diff);
 }
 
 -(void) _tick
@@ -80,7 +77,6 @@
         NSDate* now = [NSDate date];
         self.startIntervalDiff = now.timeIntervalSinceReferenceDate;
         self.currentIntervalDiff = self.startIntervalDiff;
-        NSLog(@"[#####DLYRecordTimer]定时器(%.3f秒) - 启动 - Tick时间:%@", self.duration, [self _timeStringWithDate:now]);
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if(self.timerDelegate)
@@ -114,7 +110,6 @@
             NSDate* now = [NSDate date];
             NSTimeInterval diff = now.timeIntervalSinceReferenceDate - self.currentIntervalDiff - sleepInterval;
             self.currentIntervalDiff = now.timeIntervalSinceReferenceDate;
-            NSLog(@"[#####DLYRecordTimer]定时器(%.3f秒) - Tick - 当前剩余:%.3f秒 - Tick时间:%@ - 与上一次Tick的误差:%.3f秒", self.duration, self.tickRemain, [self _timeStringWithDate:now], diff);
         }
     }
     
@@ -123,8 +118,6 @@
     self.stopIntervalDiff = now.timeIntervalSinceReferenceDate;
     NSTimeInterval diff = self.stopIntervalDiff - self.currentIntervalDiff - sleepInterval;
     NSTimeInterval totalDiff = self.stopIntervalDiff - self.startIntervalDiff - self.duration;
-    NSLog(@"[#####DLYRecordTimer]定时器(%.3f秒) - 定时停止 - 当前剩余:%.3f秒 - Tick时间:%@ - 与上一次Tick的误差:%.3f秒", self.duration, self.tickRemain, [self _timeStringWithDate:now], diff);
-    NSLog(@"[#####DLYRecordTimer]定时器(%.3f秒) - 定时总结 - 与启动时间的误差:%.3f秒", self.duration, totalDiff);
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         if(self.timerDelegate)
         {

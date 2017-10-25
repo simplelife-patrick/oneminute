@@ -2208,7 +2208,7 @@
     
     double timeNum_M = [timeStr_M doubleValue] * 60 * 1000;
     double timeNum_S = [timeStr_S doubleValue] * 1000;
-    double timeNum_MS = [timeStr_MS doubleValue];
+    double timeNum_MS = [timeStr_MS doubleValue] * 10;
     double timeNum = timeNum_M + timeNum_S + timeNum_MS;
     return timeNum;
 }
