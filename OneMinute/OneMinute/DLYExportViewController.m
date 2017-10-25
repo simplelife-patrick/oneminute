@@ -8,7 +8,6 @@
 
 #import "DLYExportViewController.h"
 #import "DLYAnnularProgress.h"
-#import "ViewController.h"
 #import "DLYRecordViewController.h"
 #import "DLYResource.h"
 
