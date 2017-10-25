@@ -9,6 +9,7 @@
 #import "DLYModule.h"
 #import <CoreMedia/CoreMedia.h>
 #import "DLYMiniVlogPart.h"
+#import "DLYRecordTimer.h"
 
 typedef void(^SuccessBlock)(void);
 typedef void(^FailureBlock)(NSError *error);

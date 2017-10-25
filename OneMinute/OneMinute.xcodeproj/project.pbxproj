@@ -78,6 +78,7 @@
 		ADF072991F9F97B2003088AE /* YoungOutingBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF0728D1F9F97B2003088AE /* YoungOutingBGM.m4a */; };
 		ADF0729A1F9F97B2003088AE /* ColorfulLifeBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF0728E1F9F97B2003088AE /* ColorfulLifeBGM.m4a */; };
 		ADF0729B1F9F97B2003088AE /* BigMealBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF0728F1F9F97B2003088AE /* BigMealBGM.m4a */; };
+		ADF0729E1FA03C8D003088AE /* DLYRecordTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF0729D1FA03C8D003088AE /* DLYRecordTimer.m */; };
 		ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */; };
 		ADFFF19A1F18A33000FB5BF7 /* DLYVolumeAutomation.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1841F18A33000FB5BF7 /* DLYVolumeAutomation.m */; };
 		ADFFF19B1F18A33000FB5BF7 /* DLYMiniVlogDraft.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1881F18A33000FB5BF7 /* DLYMiniVlogDraft.m */; };
@@ -227,6 +228,8 @@
 		ADF0728D1F9F97B2003088AE /* YoungOutingBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = YoungOutingBGM.m4a; sourceTree = "<group>"; };
 		ADF0728E1F9F97B2003088AE /* ColorfulLifeBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorfulLifeBGM.m4a; sourceTree = "<group>"; };
 		ADF0728F1F9F97B2003088AE /* BigMealBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = BigMealBGM.m4a; sourceTree = "<group>"; };
+		ADF0729C1FA03C8D003088AE /* DLYRecordTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYRecordTimer.h; sourceTree = "<group>"; };
+		ADF0729D1FA03C8D003088AE /* DLYRecordTimer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DLYRecordTimer.m; sourceTree = "<group>"; };
 		ADFFF1811F18A33000FB5BF7 /* DLYMobileDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMobileDevice.h; sourceTree = "<group>"; };
 		ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMobileDevice.m; sourceTree = "<group>"; };
 		ADFFF1831F18A33000FB5BF7 /* DLYVolumeAutomation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYVolumeAutomation.h; sourceTree = "<group>"; };
@@ -605,6 +608,8 @@
 				6F806D6A1F7CEE7700B4EC51 /* DLYVideoFilter.m */,
 				6F7455111F7A3EDE00682FB8 /* DLYThemesData.h */,
 				6F7455121F7A3EDE00682FB8 /* DLYThemesData.m */,
+				ADF0729C1FA03C8D003088AE /* DLYRecordTimer.h */,
+				ADF0729D1FA03C8D003088AE /* DLYRecordTimer.m */,
 			);
 			path = AVEngine;
 			sourceTree = "<group>";
@@ -923,6 +928,7 @@
 				6F12AE6D1F3DB78300CE8CB6 /* DLYDownloadManager.m in Sources */,
 				6F7455131F7A3EDE00682FB8 /* DLYThemesData.m in Sources */,
 				ADFFF19E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m in Sources */,
+				ADF0729E1FA03C8D003088AE /* DLYRecordTimer.m in Sources */,
 				ADD0E7D41F2D9F3500996BD6 /* UIImage+Extension.m in Sources */,
 				ADFFF19A1F18A33000FB5BF7 /* DLYVolumeAutomation.m in Sources */,
 				ADA3709C1F2D11780082AEC6 /* DLYResource.m in Sources */,
