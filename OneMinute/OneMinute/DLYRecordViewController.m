@@ -90,6 +90,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIView *typeView;             //场景view
 @property (nonatomic, strong) DLYPopupMenu *partBubble;     //删除单个气泡
 @property (nonatomic, strong) DLYPopupMenu *allBubble;      //删除全部气泡
+@property (nonatomic, strong) DLYPopupMenu *normalBubble;   //普通气泡
 @property (nonatomic, strong) NSMutableArray *viewArr;      //视图数组
 @property (nonatomic, strong) NSMutableArray *bubbleTitleArr;//视图数组
 @property (nonatomic, assign) BOOL isAvalible;              //权限都已经许可
@@ -154,6 +155,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         [self initData];
         if (!self.deleteButton.isHidden && self.deleteButton) {
+            [self.allBubble dismiss];
             if (self.allBubble) {
                 [self.allBubble removeFromSuperview];
                 self.allBubble = nil;
@@ -169,6 +171,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.recordBtn.hidden = NO;
         }
         if (!self.playView.isHidden && self.playView) {
+            [self.partBubble dismiss];
             if (self.partBubble) {
                 [self.partBubble removeFromSuperview];
                 self.partBubble = nil;
@@ -198,7 +201,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     self.isAvalible = [self monitorPermission];
     
-//    [DLYThemesData sharedInstance];
+    //    [DLYThemesData sharedInstance];
     
     [DLYIndicatorView sharedIndicatorView].delegate = self;
     self.isAppear = YES;
@@ -224,8 +227,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.nextButton.hidden = NO;
         if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showNextButtonPopup"]){
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showNextButtonPopup"];
-            DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.nextButton titles:@[@"去合成视频"] icons:nil menuWidth:120 delegate:self];
-            normalBubble.showMaskAlpha = 1;
+            self.normalBubble = [DLYPopupMenu showRelyOnView:self.nextButton titles:@[@"去合成视频"] icons:nil menuWidth:120 withState:self.newState delegate:self];
+            self.normalBubble.showMaskAlpha = 1;
+            self.normalBubble.flipState = self.newState;
         }
         if (self.newState == 1) {
             self.deleteButton.transform = CGAffineTransformMakeRotation(0);
@@ -266,13 +270,26 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     UIButton *btn = self.viewArr[0];
     NSString *title = self.bubbleTitleArr[0];
     NSArray *titles = @[title];
-    DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:btn titles:titles icons:nil menuWidth:120 delegate:self];
-    normalBubble.showMaskAlpha = 1;
+    self.normalBubble = [DLYPopupMenu showRelyOnView:btn titles:titles icons:nil menuWidth:120 withState:self.newState delegate:self];
+    self.normalBubble.showMaskAlpha = 1;
+    self.normalBubble.flipState = self.newState;
     [self.viewArr removeObjectAtIndex:0];
     [self.bubbleTitleArr removeObjectAtIndex:0];
 }
 //气泡消失的代理方法
 - (void)ybPopupMenuDidDismiss {
+    if (self.normalBubble) {
+        [self.normalBubble removeFromSuperview];
+        self.normalBubble = nil;
+    }
+    if (self.allBubble) {
+        [self.allBubble removeFromSuperview];
+        self.allBubble = nil;
+    }
+    if (self.partBubble) {
+        [self.partBubble removeFromSuperview];
+        self.partBubble = nil;
+    }
     [self showPopupMenu];
 }
 
@@ -507,7 +524,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //模板数据
     typeModelArray = [[NSMutableArray alloc]init];
     NSArray *typeNameArray = [self.session loadAllTemplateFile];
-
+    
     for(int i = 0; i < typeNameArray.count; i ++)
     {
         DLYMiniVlogTemplate *template = [self.session loadTemplateWithTemplateName:typeNameArray[i]];
@@ -636,7 +653,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.versionLabel.text = labelText;
     self.versionLabel.font = FONT_SYSTEM(12);
     [self.backView addSubview:self.versionLabel];
-
+    
     //拍摄按钮
     self.recordBtn = [[UIButton alloc]initWithFrame:CGRectMake(43 * SCALE_WIDTH, 0, 60*SCALE_WIDTH, 60 * SCALE_WIDTH)];
     self.recordBtn.centerY = self.backView.centerY;
@@ -695,7 +712,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.playButton.layer.borderWidth = 1;
     [self.playView addSubview:self.playButton];
     //右侧：删除某个片段的button
-    self.deletePartButton = [[UIButton alloc]initWithFrame:CGRectMake(self.playView.width - 60* SCALE_WIDTH, self.playButton.bottom + 32, 60* SCALE_WIDTH, 60* SCALE_WIDTH)];
+    self.deletePartButton = [[UIButton alloc]initWithFrame:CGRectMake(self.playView.width - 60* SCALE_WIDTH, SCREEN_HEIGHT/2 + 76 - 60* SCALE_WIDTH, 60* SCALE_WIDTH, 60* SCALE_WIDTH)];
     [self.deletePartButton addTarget:self action:@selector(onClickDeletePartVideo:) forControlEvents:UIControlEventTouchUpInside];
     [self.deletePartButton setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
     self.deletePartButton.layer.cornerRadius = 30* SCALE_WIDTH;
@@ -914,7 +931,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             if(++frame >= count) {
                 [writerInput markAsFinished];
                 [videoWriter finishWritingWithCompletionHandler:^{
-
+                    
                 }];
                 DLYLog(@"comp completed !");
                 if (completedBlock) {
@@ -1111,6 +1128,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     if (!self.playView.isHidden && self.playView) {
+        if (num == 0) {
+            //右侧：播放某个片段的button
+            self.playButton.frame = CGRectMake(self.playView.width - 60 * SCALE_WIDTH, (SCREEN_HEIGHT - 152)/2, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
+            self.deletePartButton.frame = CGRectMake(self.playView.width - 60* SCALE_WIDTH, SCREEN_HEIGHT/2 + 76 - 60* SCALE_WIDTH, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
+        }else {
+            self.playButton.frame = CGRectMake(self.playView.width - 60 * SCALE_WIDTH, SCREEN_HEIGHT/2 + 76 - 60* SCALE_WIDTH, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
+            self.deletePartButton.frame = CGRectMake(self.playView.width - 60* SCALE_WIDTH,(SCREEN_HEIGHT - 152)/2 , 60* SCALE_WIDTH, 60* SCALE_WIDTH);
+        }
         [UIView animateWithDuration:0.5f animations:^{
             self.playButton.transform = CGAffineTransformMakeRotation(num);
             self.deletePartButton.transform = CGAffineTransformMakeRotation(num);
@@ -1245,6 +1270,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.alert.transform = CGAffineTransformMakeRotation(num);
         }];
     }
+    if (!self.normalBubble.isHidden && self.normalBubble) {
+        self.normalBubble.flipState = self.newState;
+    }
+    if (!self.allBubble.isHidden && self.allBubble) {
+        self.allBubble.flipState = self.newState;
+    }
+    if (!self.partBubble.isHidden && self.partBubble) {
+        self.partBubble.flipState = self.newState;
+    }
 }
 
 #pragma mark ==== button点击事件
@@ -1268,8 +1302,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (isSlomoCamera) {
         if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showSlomoCameraPopup"]){
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showSlomoCameraPopup"];
-            DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.toggleCameraBtn titles:@[@"慢镜头不能摄像头"] icons:nil menuWidth:120 delegate:self];
-            normalBubble.showMaskAlpha = 1;
+            self.normalBubble = [DLYPopupMenu showRelyOnView:self.toggleCameraBtn titles:@[@"慢镜头不能摄像头"] icons:nil menuWidth:120 withState:self.newState delegate:self];
+            self.normalBubble.showMaskAlpha = 1;
+            self.normalBubble.flipState = self.newState;
         }
         return;
     }
@@ -1308,6 +1343,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.flashButton.hidden = YES;
         self.chooseSceneLabel.hidden = YES;
         self.backView.hidden = YES;
+        [self.partBubble dismiss];
         if (self.partBubble) {
             [self.partBubble removeFromSuperview];
             self.partBubble = nil;
@@ -1347,36 +1383,48 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         //气泡
         if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showSeeRushPopup"]){
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showSeeRushPopup"];
-            DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.seeRush titles:@[@"观看样片"] icons:nil menuWidth:120 delegate:self];
-            normalBubble.showMaskAlpha = 1;
+            self.normalBubble = [DLYPopupMenu showRelyOnView:self.seeRush titles:@[@"观看样片"] icons:nil menuWidth:120 withState:self.newState delegate:self];
+            self.normalBubble.showMaskAlpha = 1;
+            self.normalBubble.flipState = self.newState;
         }
     }];
     
 }
 //拍摄视频按键
 - (void)startRecordBtnAction {
-
+    
     [DLYUserTrack recordAndEventKey:@"StartRecord"];
     // REC START
-//    if (!self.AVEngine.isRecording) {
+    //    if (!self.AVEngine.isRecording) {
     
-        NSInteger i = selectPartTag - 10000;
-        DLYMiniVlogPart *part = partModelArray[i - 1];
-        
-//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self.AVEngine startRecordingWithPart:part];
-//        });
-
-        DLYLog(@"计时器开始计时 :%@",[self getCurrentTime_MS]);
-        
-        // change UI
-        [self.shootView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-        [self createShootView];
-        for (DLYMiniVlogPart *part in partModelArray) {
-            if([part.prepareRecord isEqualToString:@"1"])
+    NSInteger i = selectPartTag - 10000;
+    DLYMiniVlogPart *part = partModelArray[i - 1];
+    
+    //        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    [self.AVEngine startRecordingWithPart:part];
+    //        });
+    
+    DLYLog(@"计时器开始计时 :%@",[self getCurrentTime_MS]);
+    
+    // change UI
+    [self.shootView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [self createShootView];
+    for (DLYMiniVlogPart *part in partModelArray) {
+        if([part.prepareRecord isEqualToString:@"1"])
+        {
+            if(part.recordType != DLYMiniVlogRecordTypeNormal)
             {
-                if(part.recordType != DLYMiniVlogRecordTypeNormal)
-                {
+                if (self.newState == 1) {
+                    self.warningIcon.frame = CGRectMake(28, SCREEN_HEIGHT - 54, 32, 32);
+                    self.warningIcon.transform = CGAffineTransformMakeRotation(0);
+                }else {
+                    self.warningIcon.frame = CGRectMake(28, 22, 32, 32);
+                    self.warningIcon.transform = CGAffineTransformMakeRotation(M_PI);
+                }
+                self.warningIcon.hidden = NO;
+            }else
+            {
+                if (part.BGMVolume == 100) {
                     if (self.newState == 1) {
                         self.warningIcon.frame = CGRectMake(28, SCREEN_HEIGHT - 54, 32, 32);
                         self.warningIcon.transform = CGAffineTransformMakeRotation(0);
@@ -1385,36 +1433,25 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         self.warningIcon.transform = CGAffineTransformMakeRotation(M_PI);
                     }
                     self.warningIcon.hidden = NO;
-                }else
-                {
-                    if (part.BGMVolume == 100) {
-                        if (self.newState == 1) {
-                            self.warningIcon.frame = CGRectMake(28, SCREEN_HEIGHT - 54, 32, 32);
-                            self.warningIcon.transform = CGAffineTransformMakeRotation(0);
-                        }else {
-                            self.warningIcon.frame = CGRectMake(28, 22, 32, 32);
-                            self.warningIcon.transform = CGAffineTransformMakeRotation(M_PI);
-                        }
-                        self.warningIcon.hidden = NO;
-                    }else {
-                        self.warningIcon.hidden = YES;
-                    }
+                }else {
+                    self.warningIcon.hidden = YES;
                 }
             }
         }
-        
-        [UIView animateWithDuration:0.5f animations:^{
-            self.chooseScene.hidden = YES;
-            self.chooseSceneLabel.hidden = YES;
-            self.toggleCameraBtn.hidden = YES;
-            self.flashButton.hidden = YES;
-            self.backView.transform = CGAffineTransformMakeTranslation(self.backView.width, 0);
-        } completion:^(BOOL finished) {
-            self.backView.hidden = YES;
-            self.shootView.hidden = NO;
-            self.shootView.alpha = 1;
-        }];
-//    }
+    }
+    
+    [UIView animateWithDuration:0.5f animations:^{
+        self.chooseScene.hidden = YES;
+        self.chooseSceneLabel.hidden = YES;
+        self.toggleCameraBtn.hidden = YES;
+        self.flashButton.hidden = YES;
+        self.backView.transform = CGAffineTransformMakeTranslation(self.backView.width, 0);
+    } completion:^(BOOL finished) {
+        self.backView.hidden = YES;
+        self.shootView.hidden = NO;
+        self.shootView.alpha = 1;
+    }];
+    //    }
 }
 
 - (void) statutUpdateWithClockTick:(float)count{
@@ -1431,7 +1468,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         double partDuration = [part.duration doubleValue];
         [_progressView drawProgress: count / partDuration];
     });
-
+    
 }
 
 - (void)finishedRecording {
@@ -1473,7 +1510,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
             self.completeButton.hidden = YES;
         });
-
+        
     });
 }
 
@@ -1494,14 +1531,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [DLYUserTrack recordAndEventKey:@"DeleteAll"];
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"deleteAllPopup"]){
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"deleteAllPopup"];
-        self.allBubble = [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除全部片段"] icons:nil menuWidth:120 delegate:self];
+        self.allBubble = [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除全部片段"] icons:nil menuWidth:120 withState:self.newState delegate:self];
         self.allBubble.showMaskAlpha = 0;
+        self.allBubble.flipState = self.newState;
         self.allBubble.dismissOnTouchOutside = NO;
         self.allBubble.dismissOnSelected = NO;
     }
     if (sender.selected == NO) {
         self.deleteButton.backgroundColor = RGBA(255, 0, 0, 1);
     }else {
+        [self.allBubble dismiss];
         if (self.allBubble) {
             [self.allBubble removeFromSuperview];
             self.allBubble = nil;
@@ -1511,6 +1550,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self.resource removeCurrentAllPartFromDocument];
         //数组初始化，view布局
         if (!self.playView.isHidden && self.playView) {
+            [self.partBubble dismiss];
             if (self.partBubble) {
                 [self.partBubble removeFromSuperview];
                 self.partBubble = nil;
@@ -1551,8 +1591,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"deletePartPopup"]){
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"deletePartPopup"];
-        self.partBubble = [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除该片段"] icons:nil menuWidth:120 delegate:self];
+        self.partBubble = [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除该片段"] icons:nil menuWidth:120 withState:self.newState delegate:self];
         self.partBubble.showMaskAlpha = 0;
+        self.partBubble.flipState = self.newState;
         self.partBubble.dismissOnTouchOutside = NO;
         self.partBubble.dismissOnSelected = NO;
     }
@@ -1560,6 +1601,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [sender setImage:[UIImage imageWithIcon:@"\U0000e669" inFont:ICONFONT size:24 color:RGB(255, 0, 0)] forState:UIControlStateNormal];
         sender.layer.borderColor = RGBA(255, 0, 0, 1).CGColor;
     }else {
+        [self.partBubble dismiss];
         if (self.partBubble) {
             [self.partBubble removeFromSuperview];
             self.partBubble = nil;
@@ -1575,11 +1617,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 - (void)hideBubbleWhenPush {
-    
+    [self.partBubble dismiss];
     if (self.partBubble) {
         [self.partBubble removeFromSuperview];
         self.partBubble = nil;
     }
+    [self.allBubble dismiss];
     if (self.allBubble) {
         [self.allBubble removeFromSuperview];
         self.allBubble = nil;
@@ -1839,6 +1882,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     for (DLYMiniVlogPart *part3 in partModelArray) {
         if ([part3.recordStatus isEqualToString:@"0"]) {
             self.nextButton.hidden = YES;
+            [self.allBubble dismiss];
             if (self.allBubble) {
                 [self.allBubble removeFromSuperview];
                 self.allBubble = nil;
@@ -2011,7 +2055,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         self.flashButton.hidden = NO;
                     }
                     [self.toggleCameraBtn setImage:[UIImage imageWithIcon:@"\U0000e685" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
-
+                    
                     isSlomoCamera = YES;
                 }else
                 {//延时
@@ -2216,7 +2260,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         self.flashButton.hidden = NO;
                     }
                     [self.toggleCameraBtn setImage:[UIImage imageWithIcon:@"\U0000e685" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
-
+                    
                     isSlomoCamera = YES;
                 }else
                 {//延时
@@ -2323,9 +2367,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         DLYLogInfo(@"点击了已拍摄片段");
         [UIView animateWithDuration:0.5f animations:^{
             if (self.newState == 1) {
+                self.playButton.frame = CGRectMake(self.playView.width - 60 * SCALE_WIDTH, (SCREEN_HEIGHT - 152)/2, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
+                self.deletePartButton.frame = CGRectMake(self.playView.width - 60* SCALE_WIDTH, SCREEN_HEIGHT/2 + 76 - 60* SCALE_WIDTH, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
                 self.playButton.transform = CGAffineTransformMakeRotation(0);
                 self.deletePartButton.transform = CGAffineTransformMakeRotation(0);
             }else {
+                self.playButton.frame = CGRectMake(self.playView.width - 60 * SCALE_WIDTH, SCREEN_HEIGHT/2 + 76 - 60* SCALE_WIDTH, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
+                self.deletePartButton.frame = CGRectMake(self.playView.width - 60* SCALE_WIDTH,(SCREEN_HEIGHT - 152)/2 , 60* SCALE_WIDTH, 60* SCALE_WIDTH);
                 self.playButton.transform = CGAffineTransformMakeRotation(M_PI);
                 self.deletePartButton.transform = CGAffineTransformMakeRotation(M_PI);
             }
@@ -2335,13 +2383,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         } completion:^(BOOL finished) {
             if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showPlayButtonPopup"]){
                 [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showPlayButtonPopup"];
-                DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.playButton titles:@[@"预览视频片段"] icons:nil menuWidth:120 delegate:self];
-                normalBubble.showMaskAlpha = 1;
+                self.normalBubble = [DLYPopupMenu showRelyOnView:self.playButton titles:@[@"预览视频片段"] icons:nil menuWidth:120 withState:self.newState delegate:self];
+                self.normalBubble.showMaskAlpha = 1;
+                self.normalBubble.flipState = self.newState;
             }
         }];
     }else
     {
         if (!self.playView.isHidden && self.playView) {
+            [self.partBubble dismiss];
             if (self.partBubble) {
                 [self.partBubble removeFromSuperview];
                 self.partBubble = nil;
@@ -2419,10 +2469,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         btn.centerX = view.width / 2;
         [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(changeTypeStatus:) forControlEvents:UIControlEventTouchUpInside];
-//        btn.layer.cornerRadius = 30.5;
-//        btn.clipsToBounds = YES;
-//        btn.layer.borderWidth = 1,0;
-//        btn.layer.borderColor = RGB(255, 255, 255).CGColor;
+        //        btn.layer.cornerRadius = 30.5;
+        //        btn.clipsToBounds = YES;
+        //        btn.layer.borderWidth = 1,0;
+        //        btn.layer.borderColor = RGB(255, 255, 255).CGColor;
         [view addSubview:btn];
         
         UILabel *typeName = [[UILabel alloc]initWithFrame:CGRectMake(0, btn.bottom, 70, 22)];
@@ -2436,7 +2486,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         if(i == selectType) {
             [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 122, 0, 1)] forState:UIControlStateNormal];
-//            btn.layer.borderColor = RGB(255, 122, 0).CGColor;
+            //            btn.layer.borderColor = RGB(255, 122, 0).CGColor;
             typeName.textColor = RGB(255, 122, 0);
         }
     }
@@ -2521,8 +2571,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         btn.backgroundColor = RGB(149, 145, 141);
         btn.layer.cornerRadius = 15;
         btn.clipsToBounds = YES;
-//        btn.layer.borderWidth = 1,0;
-//        btn.layer.borderColor = RGB(255, 255, 255).CGColor;
+        //        btn.layer.borderWidth = 1,0;
+        //        btn.layer.borderColor = RGB(255, 255, 255).CGColor;
         [view addSubview:btn];
         
         UILabel *typeName = [[UILabel alloc]initWithFrame:CGRectMake(0, btn.bottom + 7, 70, 22)];
@@ -2544,6 +2594,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     //数组初始化，view布局
     if (!self.deleteButton.isHidden && self.deleteButton) {
+        [self.allBubble dismiss];
         if (self.allBubble) {
             [self.allBubble removeFromSuperview];
             self.allBubble = nil;
@@ -2556,6 +2607,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.nextButton.hidden = YES;
     }
     if (!self.playView.isHidden && self.playView) {
+        [self.partBubble dismiss];
         if (self.partBubble) {
             [self.partBubble removeFromSuperview];
             self.partBubble = nil;
@@ -2657,14 +2709,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         if(num == i)
         {
             [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 122, 0, 1)] forState:UIControlStateNormal];
-//            btn.layer.borderColor = RGB(255, 122, 0).CGColor;
+            //            btn.layer.borderColor = RGB(255, 122, 0).CGColor;
             typeName.textColor = RGB(255, 122, 0);
             [self.chooseScene setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
             
         }else
         {
             [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
-//            btn.layer.borderColor = RGB(255, 255, 255).CGColor;
+            //            btn.layer.borderColor = RGB(255, 255, 255).CGColor;
             typeName.textColor = RGB(255, 255, 255);
         }
     }
@@ -2919,8 +2971,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.nextButton.hidden = NO;
             if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showNextButtonPopup"]){
                 [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showNextButtonPopup"];
-                DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.nextButton titles:@[@"去合成视频"] icons:nil menuWidth:120 delegate:self];
-                normalBubble.showMaskAlpha = 1;
+                self.normalBubble = [DLYPopupMenu showRelyOnView:self.nextButton titles:@[@"去合成视频"] icons:nil menuWidth:120 withState:self.newState delegate:self];
+                self.normalBubble.showMaskAlpha = 1;
+                self.normalBubble.flipState = self.newState;
             }
             if (self.newState == 1) {
                 self.deleteButton.transform = CGAffineTransformMakeRotation(0);
