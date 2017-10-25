@@ -712,7 +712,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.playButton.layer.borderWidth = 1;
     [self.playView addSubview:self.playButton];
     //右侧：删除某个片段的button
-    self.deletePartButton = [[UIButton alloc]initWithFrame:CGRectMake(self.playView.width - 60* SCALE_WIDTH, self.playButton.bottom + 32, 60* SCALE_WIDTH, 60* SCALE_WIDTH)];
+    self.deletePartButton = [[UIButton alloc]initWithFrame:CGRectMake(self.playView.width - 60* SCALE_WIDTH, SCREEN_HEIGHT/2 + 76 - 60* SCALE_WIDTH, 60* SCALE_WIDTH, 60* SCALE_WIDTH)];
     [self.deletePartButton addTarget:self action:@selector(onClickDeletePartVideo:) forControlEvents:UIControlEventTouchUpInside];
     [self.deletePartButton setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
     self.deletePartButton.layer.cornerRadius = 30* SCALE_WIDTH;
@@ -1128,6 +1128,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     if (!self.playView.isHidden && self.playView) {
+        if (num == 0) {
+            //右侧：播放某个片段的button
+            self.playButton.frame = CGRectMake(self.playView.width - 60 * SCALE_WIDTH, (SCREEN_HEIGHT - 152)/2, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
+            self.deletePartButton.frame = CGRectMake(self.playView.width - 60* SCALE_WIDTH, SCREEN_HEIGHT/2 + 76 - 60* SCALE_WIDTH, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
+        }else {
+            self.playButton.frame = CGRectMake(self.playView.width - 60 * SCALE_WIDTH, SCREEN_HEIGHT/2 + 76 - 60* SCALE_WIDTH, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
+            self.deletePartButton.frame = CGRectMake(self.playView.width - 60* SCALE_WIDTH,(SCREEN_HEIGHT - 152)/2 , 60* SCALE_WIDTH, 60* SCALE_WIDTH);
+        }
         [UIView animateWithDuration:0.5f animations:^{
             self.playButton.transform = CGAffineTransformMakeRotation(num);
             self.deletePartButton.transform = CGAffineTransformMakeRotation(num);
@@ -2359,9 +2367,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         DLYLogInfo(@"点击了已拍摄片段");
         [UIView animateWithDuration:0.5f animations:^{
             if (self.newState == 1) {
+                self.playButton.frame = CGRectMake(self.playView.width - 60 * SCALE_WIDTH, (SCREEN_HEIGHT - 152)/2, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
+                self.deletePartButton.frame = CGRectMake(self.playView.width - 60* SCALE_WIDTH, SCREEN_HEIGHT/2 + 76 - 60* SCALE_WIDTH, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
                 self.playButton.transform = CGAffineTransformMakeRotation(0);
                 self.deletePartButton.transform = CGAffineTransformMakeRotation(0);
             }else {
+                self.playButton.frame = CGRectMake(self.playView.width - 60 * SCALE_WIDTH, SCREEN_HEIGHT/2 + 76 - 60* SCALE_WIDTH, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
+                self.deletePartButton.frame = CGRectMake(self.playView.width - 60* SCALE_WIDTH,(SCREEN_HEIGHT - 152)/2 , 60* SCALE_WIDTH, 60* SCALE_WIDTH);
                 self.playButton.transform = CGAffineTransformMakeRotation(M_PI);
                 self.deletePartButton.transform = CGAffineTransformMakeRotation(M_PI);
             }
