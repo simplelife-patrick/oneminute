@@ -767,10 +767,6 @@
 #pragma mark - 停止录制 -
 - (void)stopRecording {
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
-        [self.delegate finishedRecording];
-    }
-    
     dispatch_async(_movieWritingQueue, ^{
     
         [self.assetWriter finishWritingWithCompletionHandler:^{
@@ -789,6 +785,7 @@
 #pragma mark - 取消录制 -
 - (void)cancelRecording{
     DLYLog(@"取消录制");
+    [_recordTimer cancelTick];
     _isRecording = NO;
     readyToRecordVideo = NO;
     readyToRecordAudio = NO;
@@ -802,7 +799,6 @@
             self.assetWriter = nil;
         }];
     });
-    [_recordTimer cancelTick];
 }
 
 #pragma mark - 重置录制 -
