@@ -95,6 +95,7 @@
 
 @property (nonatomic, strong) DLYResource                       *resource;
 @property (nonatomic, strong) DLYSession                        *session;
+@property (nonatomic, strong) DLYRecordTimer                    *recordTimer;
 
 @end
 
@@ -758,9 +759,9 @@
     double stopTime = [self getTimeWithString:part.stopTime];
     double duration = (stopTime - startTime) / 1000;
     
-    DLYRecordTimer* recordTimer = [[DLYRecordTimer alloc] initWithPeriod:1.0f duration:duration];
-    recordTimer.timerDelegate = self;
-    [recordTimer startTick];
+    _recordTimer = [[DLYRecordTimer alloc] initWithPeriod:1.0f duration:duration];
+    _recordTimer.timerDelegate = self;
+    [_recordTimer startTick];
 }
 
 #pragma mark - 停止录制 -
@@ -787,12 +788,16 @@
 
 #pragma mark - 取消录制 -
 - (void)cancelRecording{
-    
     DLYLog(@"取消录制");
-    
     _isRecording = NO;
     readyToRecordVideo = NO;
     readyToRecordAudio = NO;
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(canceledRecording)]) {
+        [self.delegate canceledRecording];
+    }
+    
+    [_recordTimer cancelTick];
     
     dispatch_async(_movieWritingQueue, ^{
     
@@ -803,9 +808,6 @@
             self.assetWriter = nil;
         }];
     });
-    if (![self.captureSession isRunning]) {
-        [self.captureSession startRunning];
-    }
 }
 
 #pragma mark - 重置录制 -
@@ -822,7 +824,7 @@
     }
 }
 
-#pragma mark - DLYRecordTimerDelegate
+#pragma mark - DLYRecordTimerDelegate -
 
 -(void)timerAndBusinessStarted:(NSTimeInterval) time
 {
@@ -855,6 +857,17 @@
         [self.delegate finishedRecording];
     }
 }
+
+-(void)timerCanceled:(NSTimeInterval) time
+{
+    NSLog(@"[#####AVEngine] - 收到回调 - 定时器取消 - 倒计时时间（传给UI）:%.3f", time);
+}
+
+-(void)businessCanceled:(NSTimeInterval) time
+{
+    NSLog(@"[#####AVEngine] - 收到回调 - 业务取消 - 停止业务（录制视频）- 倒计时时间（传给UI）:%.3f", time);
+}
+
 #pragma mark - 视频速度处理 -
 - (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl soundType:(DLYMiniVlogAudioType)soundType recordTypeOfPart:(DLYMiniVlogRecordType)recordType completed:(void(^)())completed {
     
@@ -867,9 +880,9 @@
         
         Float64 scale = 0;
         if(recordType == DLYMiniVlogRecordTypeTimelapse){
-            scale = 0.25f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(低帧率)
+            scale = 0.25f;  // 0.25对应  快速 x4   播放时间压缩帧率平均(低帧率)
         } else if (recordType == DLYMiniVlogRecordTypeSlomo) {
-            scale = 4.0f;  //  3.0对应  慢速 x3   播放时间拉长帧率平均(高帧率)
+            scale = 4.0f;  //  4.0对应  慢速 x4   播放时间拉长帧率平均(高帧率)
         }else{
             scale = 1.0f;
         }

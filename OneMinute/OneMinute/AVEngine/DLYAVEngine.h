@@ -21,8 +21,9 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
 - (void) displayRefrenceRect:(CGRect)faceRegion;
 - (void) statutUpdateWithClockTick:(double)count;
 - (void) finishedRecording;
+- (void) canceledRecording;
+
 //- (void) startedRecording;
-//- (void) canceledRecording;
 
 @end
 

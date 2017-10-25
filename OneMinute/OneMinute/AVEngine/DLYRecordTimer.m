@@ -132,6 +132,19 @@
         }
     });
 }
+-(void) cancelTick
+{
+    [[self class] cancelPreviousPerformRequestsWithTarget:self];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if(self.timerDelegate)
+        {
+            [self.timerDelegate businessCanceled:self.tickRemain];
+        }
+    });
+    
+    [_tickThread cancel];
+}
 
 -(BOOL) _checkTickCondition
 {

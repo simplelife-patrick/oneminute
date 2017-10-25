@@ -14,6 +14,8 @@
 -(void)timerTicked:(NSTimeInterval) time;
 -(void)timerStopped:(NSTimeInterval) time;
 -(void)businessFinished:(NSTimeInterval) time;
+-(void)timerCanceled:(NSTimeInterval) time;
+-(void)businessCanceled:(NSTimeInterval) time;
 
 @end
 
@@ -23,6 +25,6 @@
 
 -(instancetype) initWithPeriod:(NSTimeInterval) period duration:(NSTimeInterval) duration;
 -(void) startTick;
-
+-(void) cancelTick;
 
 @end
