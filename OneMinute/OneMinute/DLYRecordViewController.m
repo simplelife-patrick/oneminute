@@ -1417,7 +1417,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //    }
 }
 
-- (void) statutUpdateWithClockTick:(float)count{
+- (void) statutUpdateWithClockTick:(double)count{
     NSInteger partNumber = selectPartTag - 10000;
     DLYMiniVlogPart *part = partModelArray[partNumber - 1];
     
@@ -1425,11 +1425,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         if((int)(count * 100) % 100 == 0)
         {
             if (![self.timeNumber.text isEqualToString:@"1"]) {
-                self.timeNumber.text = [NSString stringWithFormat:@"%.0f",[part.duration intValue] - count];
+                self.timeNumber.text = [NSString stringWithFormat:@"%.0f",count];
             }
         }
         double partDuration = [part.duration doubleValue];
-        [_progressView drawProgress: count / partDuration];
+        [_progressView drawProgress:count / partDuration];
     });
 
 }

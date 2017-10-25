@@ -53,7 +53,6 @@
 		AD7608F71F70C08000556E20 /* UIView+Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608F21F70C07F00556E20 /* UIView+Utility.m */; };
 		AD849F441F72019900B1E08F /* DLYConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = AD849F431F72019900B1E08F /* DLYConstants.m */; };
 		ADA3709C1F2D11780082AEC6 /* DLYResource.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA3709B1F2D11780082AEC6 /* DLYResource.m */; };
-		ADC9AC081F9F0B4000467586 /* BigMeal.dly in Resources */ = {isa = PBXBuildFile; fileRef = ADC9ABFC1F9F0B3F00467586 /* BigMeal.dly */; };
 		ADC9AC091F9F0B4000467586 /* ColorfulLife.dly in Resources */ = {isa = PBXBuildFile; fileRef = ADC9ABFD1F9F0B3F00467586 /* ColorfulLife.dly */; };
 		ADC9AC0A1F9F0B4000467586 /* GoNorth.dly in Resources */ = {isa = PBXBuildFile; fileRef = ADC9ABFE1F9F0B4000467586 /* GoNorth.dly */; };
 		ADC9AC0B1F9F0B4000467586 /* AfternoonTea.dly in Resources */ = {isa = PBXBuildFile; fileRef = ADC9ABFF1F9F0B4000467586 /* AfternoonTea.dly */; };
@@ -79,6 +78,7 @@
 		ADF0729A1F9F97B2003088AE /* ColorfulLifeBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF0728E1F9F97B2003088AE /* ColorfulLifeBGM.m4a */; };
 		ADF0729B1F9F97B2003088AE /* BigMealBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF0728F1F9F97B2003088AE /* BigMealBGM.m4a */; };
 		ADF0729E1FA03C8D003088AE /* DLYRecordTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF0729D1FA03C8D003088AE /* DLYRecordTimer.m */; };
+		ADF072A01FA057C1003088AE /* BigMeal.dly in Resources */ = {isa = PBXBuildFile; fileRef = ADF0729F1FA057C1003088AE /* BigMeal.dly */; };
 		ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */; };
 		ADFFF19A1F18A33000FB5BF7 /* DLYVolumeAutomation.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1841F18A33000FB5BF7 /* DLYVolumeAutomation.m */; };
 		ADFFF19B1F18A33000FB5BF7 /* DLYMiniVlogDraft.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1881F18A33000FB5BF7 /* DLYMiniVlogDraft.m */; };
@@ -202,7 +202,6 @@
 		ADA370971F2D11500082AEC6 /* DLYRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRecordViewController.h; sourceTree = "<group>"; };
 		ADA3709A1F2D11780082AEC6 /* DLYResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYResource.h; sourceTree = "<group>"; };
 		ADA3709B1F2D11780082AEC6 /* DLYResource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYResource.m; sourceTree = "<group>"; };
-		ADC9ABFC1F9F0B3F00467586 /* BigMeal.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = BigMeal.dly; sourceTree = "<group>"; };
 		ADC9ABFD1F9F0B3F00467586 /* ColorfulLife.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorfulLife.dly; sourceTree = "<group>"; };
 		ADC9ABFE1F9F0B4000467586 /* GoNorth.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = GoNorth.dly; sourceTree = "<group>"; };
 		ADC9ABFF1F9F0B4000467586 /* AfternoonTea.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = AfternoonTea.dly; sourceTree = "<group>"; };
@@ -230,6 +229,7 @@
 		ADF0728F1F9F97B2003088AE /* BigMealBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = BigMealBGM.m4a; sourceTree = "<group>"; };
 		ADF0729C1FA03C8D003088AE /* DLYRecordTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYRecordTimer.h; sourceTree = "<group>"; };
 		ADF0729D1FA03C8D003088AE /* DLYRecordTimer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DLYRecordTimer.m; sourceTree = "<group>"; };
+		ADF0729F1FA057C1003088AE /* BigMeal.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = BigMeal.dly; sourceTree = "<group>"; };
 		ADFFF1811F18A33000FB5BF7 /* DLYMobileDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMobileDevice.h; sourceTree = "<group>"; };
 		ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMobileDevice.m; sourceTree = "<group>"; };
 		ADFFF1831F18A33000FB5BF7 /* DLYVolumeAutomation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYVolumeAutomation.h; sourceTree = "<group>"; };
@@ -525,9 +525,9 @@
 			children = (
 				ADC9AC041F9F0B4000467586 /* Advanced.dly */,
 				ADC9ABFF1F9F0B4000467586 /* AfternoonTea.dly */,
-				ADC9ABFC1F9F0B3F00467586 /* BigMeal.dly */,
 				ADC9ABFD1F9F0B3F00467586 /* ColorfulLife.dly */,
 				ADC9ABFE1F9F0B4000467586 /* GoNorth.dly */,
+				ADF0729F1FA057C1003088AE /* BigMeal.dly */,
 				ADC9AC001F9F0B4000467586 /* MyMaldives.dly */,
 				ADC9AC031F9F0B4000467586 /* Primary.dly */,
 				ADC9AC061F9F0B4000467586 /* Secondary.dly */,
@@ -779,6 +779,7 @@
 				ADF072921F9F97B2003088AE /* MyMaldivesBGM.m4a in Resources */,
 				ADF0729A1F9F97B2003088AE /* ColorfulLifeBGM.m4a in Resources */,
 				ADC9AC0A1F9F0B4000467586 /* GoNorth.dly in Resources */,
+				ADF072A01FA057C1003088AE /* BigMeal.dly in Resources */,
 				ADC9AC0D1F9F0B4000467586 /* SoDelicious.dly in Resources */,
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
 				ADF072991F9F97B2003088AE /* YoungOutingBGM.m4a in Resources */,
@@ -788,7 +789,6 @@
 				ADF072981F9F97B2003088AE /* SunSetBeachBGM.m4a in Resources */,
 				ADC9AC111F9F0B4000467586 /* SunSetBeach.dly in Resources */,
 				ADC9AC121F9F0B4000467586 /* Secondary.dly in Resources */,
-				ADC9AC081F9F0B4000467586 /* BigMeal.dly in Resources */,
 				ADC9AC0E1F9F0B4000467586 /* YoungOuting.dly in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				ADF072971F9F97B2003088AE /* SpiritTerritoryBGM.m4a in Resources */,

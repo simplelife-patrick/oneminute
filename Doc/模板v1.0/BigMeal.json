@@ -42,7 +42,7 @@
     {
       "partNum": 3,
       "startTime": "00:03:00",
-      "stopTime": "00:18:00",
+      "stopTime": "00:13:00",
       "dubStartTime": "00:09:00",
       "dubStopTime": "00:19:00",
       "recordType": 0,
@@ -53,8 +53,8 @@
     },
     {
       "partNum": 4,
-      "startTime": "00:18:00",
-      "stopTime": "00:56:00",
+      "startTime": "00:13:00",
+      "stopTime": "00:51:00",
       "dubStartTime": "00:19:00",
       "dubStopTime": "00:57:00",
       "recordType": 0,
@@ -65,8 +65,8 @@
     },
     {
       "partNum": 5,
-      "startTime": "00:56:00",
-      "stopTime": "00:59:00",
+      "startTime": "00:51:00",
+      "stopTime": "00:54:00",
       "dubStartTime": "00:57:00",
       "dubStopTime": "01:00:00",
       "recordType": 0,

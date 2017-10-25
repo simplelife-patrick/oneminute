@@ -19,15 +19,14 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
 
 - (void) didFinishEdititProductUrl:(NSURL *)productUrl;
 - (void) displayRefrenceRect:(CGRect)faceRegion;
+- (void) statutUpdateWithClockTick:(double)count;
 - (void) finishedRecording;
 //- (void) startedRecording;
 //- (void) canceledRecording;
 
-- (void) statutUpdateWithClockTick:(float)count;
-
 @end
 
-@interface DLYAVEngine : DLYModule
+@interface DLYAVEngine : DLYModule<DLYCaptureAVEngineDelegate>
 
 //统计耗时用
 @property (nonatomic, assign) long long                                               startOperation;

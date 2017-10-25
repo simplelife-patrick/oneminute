@@ -25,7 +25,7 @@
 #import "DLYVideoFilter.h"
 #import "UIImage+Extension.h"
 
-@interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate,AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate,DLYCaptureAVEngineDelegate,DLYRecordTimerDelegate>
+@interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate,AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate,DLYRecordTimerDelegate>
 {
     CMTime defaultVideoMaxFrameDuration;
     BOOL readyToRecordAudio;
@@ -761,24 +761,8 @@
     DLYRecordTimer* recordTimer = [[DLYRecordTimer alloc] initWithPeriod:1.0f duration:duration];
     recordTimer.timerDelegate = self;
     [recordTimer startTick];
-    
-//    [self timerClockBegin];
-//    [self performSelector:@selector(timerClockFinish) withObject:nil afterDelay:duration / 1000];
 }
-- (void) timerClockBegin
-{
-    DLYLog(@"AVEngine定时器启动 : %@",[self getCurrentTime_MS]);
-    _isRecording = YES;
-}
-- (void) timerClockFinish
-{
-    DLYLog(@"AVEngine定时器停止 : %@",[self getCurrentTime_MS]);
-    _isRecording = NO;
-    readyToRecordVideo = NO;
-    readyToRecordAudio = NO;
-    
-    [self stopRecording];
-}
+
 #pragma mark - 停止录制 -
 - (void)stopRecording {
     
@@ -850,26 +834,26 @@
 {
     NSLog(@"[#####AVEngine] - 收到回调 - 计时定时器Tick - 倒计时时间（传给UI）:%.3f", time);
     if (self.delegate && [self.delegate respondsToSelector:@selector(statutUpdateWithClockTick:)]) {
-        [self.delegate finishedRecording];
-    }
-    if (self.delegate && [self.delegate respondsToSelector:@selector(statutUpdateWithClockTick)]) {
-        [self.delegate finishedRecording];
+        [self.delegate statutUpdateWithClockTick:time];
     }
 }
 
 -(void)timerStopped:(NSTimeInterval) time
 {
     NSLog(@"[#####AVEngine] - 收到回调 - 计时定时器停止 - 倒计时时间（传给UI）:%.3f", time);
-}
-
--(void)businessFinished:(NSTimeInterval) time;
-{
-    NSLog(@"[#####AVEngine] - 收到回调 - 业务定时器停止 - 停止录制- 倒计时时间（传给UI）:%.3f", time);
     _isRecording = NO;
     readyToRecordVideo = NO;
     readyToRecordAudio = NO;
     
     [self stopRecording];
+}
+
+-(void)businessFinished:(NSTimeInterval) time;
+{
+    NSLog(@"[#####AVEngine] - 收到回调 - 业务定时器停止 - 停止录制- 倒计时时间（传给UI）:%.3f", time);
+    if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
+        [self.delegate finishedRecording];
+    }
 }
 #pragma mark - 视频速度处理 -
 - (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl soundType:(DLYMiniVlogAudioType)soundType recordTypeOfPart:(DLYMiniVlogRecordType)recordType completed:(void(^)())completed {
