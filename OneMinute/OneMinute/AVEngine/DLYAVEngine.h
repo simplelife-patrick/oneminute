@@ -12,20 +12,14 @@
 
 typedef void(^SuccessBlock)(void);
 typedef void(^FailureBlock)(NSError *error);
-typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个block返回
+typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
 
 @protocol DLYCaptureAVEngineDelegate <NSObject>
 
 - (void) didFinishEdititProductUrl:(NSURL *)productUrl;
-
-- (void) didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL error:(NSError *)error;
-
 - (void) displayRefrenceRect:(CGRect)faceRegion;
-
-//- (void) startedRecording;
-
 - (void) finishedRecording;
-
+//- (void) startedRecording;
 //- (void) canceledRecording;
 
 - (void) statutUpdateWithClockTick:(float)count;
@@ -52,7 +46,6 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath); //定义一个bl
 
 @property (nonatomic, strong) DLYMiniVlogPart                                         *currentPart;
 @property (nonatomic, strong) NSURL                                                   *currentProductUrl;
-@property (nonatomic, assign) BOOL                                                    isTime;
 @property (nonatomic, strong) NSMutableArray                                          *imageArray;
 
 - (void) restartRecording;

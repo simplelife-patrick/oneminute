@@ -1,0 +1,64 @@
+{
+  "id": "Secondary.dly",
+  "title":"进阶操作",
+  "version": 1.0,
+  "info": [
+    {
+      "partNum": 0,
+      "startTime": "00:00:00",
+      "stopTime": "00:01:33",
+      "dubStartTime": "00:00:00",
+      "dubStopTime": "00:04:00",
+      "recordType": 1,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "这一段将自动生成慢镜头画面，不录声音哦"
+    },
+    {
+      "partNum": 1,
+      "startTime": "00:01:33",
+      "stopTime": "00:09:33",
+      "dubStartTime": "00:04:00",
+      "dubStopTime": "00:12:00",
+      "recordType": 0,
+      "soundType": 1,
+      "BGMVolume": 20,
+      "transitionType": 1,
+      "shootGuide": "这一段会录音，可以说话哦"
+    },
+    {
+      "partNum": 2,
+      "startTime": "00:09:33",
+      "stopTime": "00:14:00",
+      "dubStartTime": "00:12:00",
+      "dubStopTime": "00:26:00",
+      "recordType": 1,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 1,
+      "shootGuide": "慢镜头，不录音"
+    },
+    {
+      "partNum": 3,
+      "startTime": "00:14:00",
+      "stopTime": "00:34:00",
+      "dubStartTime": "00:26:00",
+      "dubStopTime": "00:30:00",
+      "recordType": 2,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 0,
+      "shootGuide": "这一段将自动生成快镜头画面，不录音哦"
+    }
+  ],
+  "subTitle1": {
+    "startTime": "00:02:00",
+    "stopTime": "00:04:00"
+  },
+  "BGM": "SecondaryBGM",
+  "header": 0,
+  "tailer": 0,
+  "templateDescription": "这个模板成片长度为30s，你可以学会怎么用一分拍慢镜头和快镜头，以及看到转场的使用",
+  "sampleVideoName": "SecondarySample.mp4"
+}
