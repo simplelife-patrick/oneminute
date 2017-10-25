@@ -25,9 +25,7 @@
 #import "DLYVideoFilter.h"
 #import "UIImage+Extension.h"
 
-typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
-
-@interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate,AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate>
+@interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate,AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate,DLYRecordTimerDelegate>
 {
     CMTime defaultVideoMaxFrameDuration;
     BOOL readyToRecordAudio;
@@ -46,7 +44,7 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     CGRect faceRegion;
     CGRect lastFaceRegion;
     BOOL isDetectedMetadataObjectTarget;
-    BOOL isMicGranted;//麦克风权限是否被允许
+    BOOL isMicGranted;
     
     NSString *UUIDString;
     BOOL _isRecordingCancel;
@@ -86,9 +84,6 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 @property (nonatomic, strong) NSMutableArray                    *transitionTimeRanges;
 @property (nonatomic, strong) UIImagePickerController           *moviePicker;
 
-@property (nonatomic, strong) DLYResource                       *resource;
-@property (nonatomic, strong) DLYSession                        *session;
-
 @property (nonatomic, strong) AVMutableVideoComposition         *videoComposition;
 @property (nonatomic, strong) AVAssetExportSession              *assetExporter;
 
@@ -97,6 +92,10 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
 @property (nonatomic, strong) NSTimer                           *recorderTimer; //录制计时器
 
 @property (nonatomic, strong) NSString                          *currentDeviceType;
+
+@property (nonatomic, strong) DLYResource                       *resource;
+@property (nonatomic, strong) DLYSession                        *session;
+@property (nonatomic, strong) DLYRecordTimer                    *recordTimer;
 
 @end
 
@@ -448,29 +447,8 @@ typedef void ((^MixcompletionBlock) (NSURL *outputUrl));
     changeAnimation.subtype = kCATransitionFromTop;
     [self.captureVideoPreviewLayer addAnimation:changeAnimation forKey:@"changeAnimation"];
 }
-- (void)animationDidStart:(CAAnimation *)anim {
-    [self.captureSession startRunning];
-}
 
-- (void)updateOrientationWithPreviewView:(UIView *)previewView {
-    
-    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-    // Don't update the reference orientation when the device orientation is face up/down or unknown.
-    if (UIDeviceOrientationIsLandscape(orientation)) {
-        referenceOrientation = (AVCaptureVideoOrientation)orientation;
-    }
-    
-    [[self.captureVideoPreviewLayer connection] setVideoOrientation:(AVCaptureVideoOrientation)orientation];
-    
-    readyToRecordVideo = NO;
-}
 #pragma mark - 点触设置曝光 -
-
-CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
-    CGFloat deltaX = second.x - first.x;
-    CGFloat deltaY = second.y - first.y;
-    return sqrt(deltaX*deltaX + deltaY*deltaY);
-};
 
 - (void)focusOnceWithPoint:(CGPoint)point{
     
@@ -779,27 +757,13 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
 
     double startTime = [self getTimeWithString:part.starTime];
     double stopTime = [self getTimeWithString:part.stopTime];
-    double duration = stopTime - startTime;
+    double duration = (stopTime - startTime) / 1000;
     
-    [self timerClockBegin];
-    DLYLog(@"AVEngine定时器启动 : %@",[self getCurrentTime_MS]);
-    _isRecording = YES;
-    [self performSelector:@selector(timerClockFinish) withObject:nil afterDelay:duration / 1000];
+    _recordTimer = [[DLYRecordTimer alloc] initWithPeriod:1.0f duration:duration];
+    _recordTimer.timerDelegate = self;
+    [_recordTimer startTick];
 }
-- (void) timerClockBegin
-{
-//    DLYLog(@"AVEngine定时器启动 : %@",[self getCurrentTime_MS]);
-    _isRecording = YES;
-}
-- (void) timerClockFinish
-{
-//    DLYLog(@"AVEngine定时器停止 : %@",[self getCurrentTime_MS]);
-    _isRecording = NO;
-    readyToRecordVideo = NO;
-    readyToRecordAudio = NO;
-    
-    [self stopRecording];
-}
+
 #pragma mark - 停止录制 -
 - (void)stopRecording {
     
@@ -820,16 +784,11 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             });
         }];
     });
-//    if (![self.captureSession isRunning]) {
-//        [self.captureSession startRunning];
-//    }
 }
 
 #pragma mark - 取消录制 -
 - (void)cancelRecording{
-    
     DLYLog(@"取消录制");
-    
     _isRecording = NO;
     readyToRecordVideo = NO;
     readyToRecordAudio = NO;
@@ -843,9 +802,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
             self.assetWriter = nil;
         }];
     });
-    if (![self.captureSession isRunning]) {
-        [self.captureSession startRunning];
-    }
+    [_recordTimer cancelTick];
 }
 
 #pragma mark - 重置录制 -
@@ -862,6 +819,53 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     }
 }
 
+#pragma mark - DLYRecordTimerDelegate -
+
+-(void)timerAndBusinessStarted:(NSTimeInterval) time
+{
+    NSLog(@"[#####AVEngine] - 收到回调 - 计时和业务定时器同时启动，开始录制 - 倒计时时间（传给UI）:%.3f", time);
+    _isRecording = YES;
+}
+
+-(void)timerTicked:(NSTimeInterval) time
+{
+    NSLog(@"[#####AVEngine] - 收到回调 - 计时定时器Tick - 倒计时时间（传给UI）:%.3f", time);
+    if (self.delegate && [self.delegate respondsToSelector:@selector(statutUpdateWithClockTick:)]) {
+        [self.delegate statutUpdateWithClockTick:time];
+    }
+}
+
+-(void)timerStopped:(NSTimeInterval) time
+{
+    NSLog(@"[#####AVEngine] - 收到回调 - 计时定时器停止 - 倒计时时间（传给UI）:%.3f", time);
+    _isRecording = NO;
+    readyToRecordVideo = NO;
+    readyToRecordAudio = NO;
+    
+    [self stopRecording];
+}
+
+-(void)businessFinished:(NSTimeInterval) time;
+{
+    NSLog(@"[#####AVEngine] - 收到回调 - 业务定时器停止 - 停止录制- 倒计时时间（传给UI）:%.3f", time);
+    if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
+        [self.delegate finishedRecording];
+    }
+}
+
+-(void)timerCanceled:(NSTimeInterval) time
+{
+    NSLog(@"[#####AVEngine] - 收到回调 - 定时器取消 - 倒计时时间（传给UI）:%.3f", time);
+    if (self.delegate && [self.delegate respondsToSelector:@selector(canceledRecording:)]) {
+        [self.delegate canceledRecording:time];
+    }
+}
+
+-(void)businessCanceled:(NSTimeInterval) time
+{
+    NSLog(@"[#####AVEngine] - 收到回调 - 业务取消 - 停止业务（录制视频）- 倒计时时间（传给UI）:%.3f", time);
+}
+
 #pragma mark - 视频速度处理 -
 - (void)setSpeedWithVideo:(NSURL *)videoPartUrl outputUrl:(NSURL *)outputUrl soundType:(DLYMiniVlogAudioType)soundType recordTypeOfPart:(DLYMiniVlogRecordType)recordType completed:(void(^)())completed {
     
@@ -874,9 +878,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
         
         Float64 scale = 0;
         if(recordType == DLYMiniVlogRecordTypeTimelapse){
-            scale = 0.25f;  // 0.2对应  快速 x5   播放时间压缩帧率平均(低帧率)
+            scale = 0.25f;  // 0.25对应  快速 x4   播放时间压缩帧率平均(低帧率)
         } else if (recordType == DLYMiniVlogRecordTypeSlomo) {
-            scale = 4.0f;  //  3.0对应  慢速 x3   播放时间拉长帧率平均(高帧率)
+            scale = 4.0f;  //  4.0对应  慢速 x4   播放时间拉长帧率平均(高帧率)
         }else{
             scale = 1.0f;
         }
@@ -2067,7 +2071,7 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     // 6. Export to mp4 （Attention: iOS 5.0不支持导出MP4，会crash）
     //    NSString *mp4Quality = AVAssetExportPresetMediumQuality; //AVAssetExportPresetPassthrough
     NSString *exportPath = exportVideoFile;
-    NSURL *exportUrl = [NSURL fileURLWithPath:[self returnFormatString:exportPath]];
+    NSURL *exportUrl = [NSURL fileURLWithPath:[exportPath stringByReplacingOccurrencesOfString:@" " withString:@" "]];
     
     _exportSession = [[AVAssetExportSession alloc] initWithAsset:composition presetName:AVAssetExportPreset1280x720];
     _exportSession.outputURL = exportUrl;
@@ -2204,12 +2208,9 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     
     double timeNum_M = [timeStr_M doubleValue] * 60 * 1000;
     double timeNum_S = [timeStr_S doubleValue] * 1000;
-    double timeNum_MS = [timeStr_MS doubleValue];
+    double timeNum_MS = [timeStr_MS doubleValue] * 10;
     double timeNum = timeNum_M + timeNum_S + timeNum_MS;
     return timeNum;
-}
-- (NSString *)returnFormatString:(NSString *)str {
-    return [str stringByReplacingOccurrencesOfString:@" " withString:@" "];
 }
 
 - (long long)getDateTimeTOMilliSeconds:(NSDate *)datetime {
@@ -2231,5 +2232,11 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     NSString *dateTime = [formatter stringFromDate:[NSDate date]];
     return dateTime;
 }
+//计算两点间距离
+CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
+    CGFloat deltaX = second.x - first.x;
+    CGFloat deltaY = second.y - first.y;
+    return sqrt(deltaX*deltaX + deltaY*deltaY);
+};
 @end
 

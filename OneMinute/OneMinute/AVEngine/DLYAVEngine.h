@@ -9,6 +9,7 @@
 #import "DLYModule.h"
 #import <CoreMedia/CoreMedia.h>
 #import "DLYMiniVlogPart.h"
+#import "DLYRecordTimer.h"
 
 typedef void(^SuccessBlock)(void);
 typedef void(^FailureBlock)(NSError *error);
@@ -18,15 +19,15 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
 
 - (void) didFinishEdititProductUrl:(NSURL *)productUrl;
 - (void) displayRefrenceRect:(CGRect)faceRegion;
+- (void) statutUpdateWithClockTick:(double)count;
 - (void) finishedRecording;
-//- (void) startedRecording;
-//- (void) canceledRecording;
+- (void) canceledRecording:(NSTimeInterval) time;
 
-- (void) statutUpdateWithClockTick:(float)count;
+//- (void) startedRecording;
 
 @end
 
-@interface DLYAVEngine : DLYModule
+@interface DLYAVEngine : DLYModule<DLYCaptureAVEngineDelegate>
 
 //统计耗时用
 @property (nonatomic, assign) long long                                               startOperation;
