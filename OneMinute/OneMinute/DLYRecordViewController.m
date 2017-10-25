@@ -155,6 +155,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         [self initData];
         if (!self.deleteButton.isHidden && self.deleteButton) {
+            [self.allBubble dismiss];
             if (self.allBubble) {
                 [self.allBubble removeFromSuperview];
                 self.allBubble = nil;
@@ -170,6 +171,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.recordBtn.hidden = NO;
         }
         if (!self.playView.isHidden && self.playView) {
+            [self.partBubble dismiss];
             if (self.partBubble) {
                 [self.partBubble removeFromSuperview];
                 self.partBubble = nil;
@@ -1333,6 +1335,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.flashButton.hidden = YES;
         self.chooseSceneLabel.hidden = YES;
         self.backView.hidden = YES;
+        [self.partBubble dismiss];
         if (self.partBubble) {
             [self.partBubble removeFromSuperview];
             self.partBubble = nil;
@@ -1529,6 +1532,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (sender.selected == NO) {
         self.deleteButton.backgroundColor = RGBA(255, 0, 0, 1);
     }else {
+        [self.allBubble dismiss];
         if (self.allBubble) {
             [self.allBubble removeFromSuperview];
             self.allBubble = nil;
@@ -1538,6 +1542,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self.resource removeCurrentAllPartFromDocument];
         //数组初始化，view布局
         if (!self.playView.isHidden && self.playView) {
+            [self.partBubble dismiss];
             if (self.partBubble) {
                 [self.partBubble removeFromSuperview];
                 self.partBubble = nil;
@@ -1588,6 +1593,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [sender setImage:[UIImage imageWithIcon:@"\U0000e669" inFont:ICONFONT size:24 color:RGB(255, 0, 0)] forState:UIControlStateNormal];
         sender.layer.borderColor = RGBA(255, 0, 0, 1).CGColor;
     }else {
+        [self.partBubble dismiss];
         if (self.partBubble) {
             [self.partBubble removeFromSuperview];
             self.partBubble = nil;
@@ -1603,11 +1609,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 - (void)hideBubbleWhenPush {
-    
+    [self.partBubble dismiss];
     if (self.partBubble) {
         [self.partBubble removeFromSuperview];
         self.partBubble = nil;
     }
+    [self.allBubble dismiss];
     if (self.allBubble) {
         [self.allBubble removeFromSuperview];
         self.allBubble = nil;
@@ -1867,6 +1874,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     for (DLYMiniVlogPart *part3 in partModelArray) {
         if ([part3.recordStatus isEqualToString:@"0"]) {
             self.nextButton.hidden = YES;
+            [self.allBubble dismiss];
             if (self.allBubble) {
                 [self.allBubble removeFromSuperview];
                 self.allBubble = nil;
@@ -2371,6 +2379,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }else
     {
         if (!self.playView.isHidden && self.playView) {
+            [self.partBubble dismiss];
             if (self.partBubble) {
                 [self.partBubble removeFromSuperview];
                 self.partBubble = nil;
@@ -2573,6 +2582,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     //数组初始化，view布局
     if (!self.deleteButton.isHidden && self.deleteButton) {
+        [self.allBubble dismiss];
         if (self.allBubble) {
             [self.allBubble removeFromSuperview];
             self.allBubble = nil;
@@ -2585,6 +2595,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.nextButton.hidden = YES;
     }
     if (!self.playView.isHidden && self.playView) {
+        [self.partBubble dismiss];
         if (self.partBubble) {
             [self.partBubble removeFromSuperview];
             self.partBubble = nil;

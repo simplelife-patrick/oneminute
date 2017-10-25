@@ -190,6 +190,7 @@ UITableViewDataSource
         self.alpha = 0;
         _menuBackView.alpha = 1;
         [self removeFromSuperview];
+        [_backView removeFromSuperview];
         [_menuBackView removeFromSuperview];
     } completion:^(BOOL finished) {
         if (self.delegate && [self.delegate respondsToSelector:@selector(ybPopupMenuDidDismiss)]) {
