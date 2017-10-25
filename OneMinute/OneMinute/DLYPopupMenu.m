@@ -18,6 +18,7 @@
 @interface YBPopupMenuCell : UITableViewCell
 @property (nonatomic, assign) BOOL isShowSeparator;
 @property (nonatomic, strong) UIColor * separatorColor;
+@property (nonatomic, strong) UILabel *titleLabel;
 @end
 
 @implementation YBPopupMenuCell
@@ -28,11 +29,16 @@
     if (self) {
         _isShowSeparator = YES;
         _separatorColor = [UIColor lightGrayColor];
+        [self createCellView];
         [self setNeedsDisplay];
     }
     return self;
 }
 
+- (void)createCellView {
+    self.titleLabel = [[UILabel alloc] init];
+    [self addSubview:self.titleLabel];
+}
 - (void)setIsShowSeparator:(BOOL)isShowSeparator
 {
     _isShowSeparator = isShowSeparator;
@@ -75,6 +81,8 @@ UITableViewDataSource
 @property (nonatomic, assign) BOOL          isCornerChanged;
 @property (nonatomic, strong) UIColor     * separatorColor;
 @property (nonatomic, assign) BOOL          isChangeDirection;
+@property (nonatomic, strong) UIView        *backView;
+@property (nonatomic, assign) CGFloat       backY;
 @end
 
 
@@ -105,6 +113,35 @@ UITableViewDataSource
 {
     CGRect absoluteRect = [view convertRect:view.bounds toView:YBMainWindow];
     CGPoint relyPoint = CGPointMake(absoluteRect.origin.x + absoluteRect.size.width / 2, absoluteRect.origin.y + absoluteRect.size.height);
+    DLYPopupMenu *popupMenu = [[DLYPopupMenu alloc] init];
+    popupMenu.point = relyPoint;
+    popupMenu.relyRect = absoluteRect;
+    popupMenu.titles = titles;
+    popupMenu.images = icons;
+    popupMenu.itemWidth = itemWidth;
+    popupMenu.delegate = delegate;
+    [popupMenu show];
+    return popupMenu;
+}
+
++ (DLYPopupMenu *)showRelyOnView:(UIView *)view titles:(NSArray *)titles icons:(NSArray *)icons menuWidth:(CGFloat)itemWidth withState:(NSUInteger)stateNum delegate:(id<YBPopupMenuDelegate>)delegate
+{
+    CGRect absoluteRect;
+    if (stateNum == 2) {
+        CGRect newRect = [view convertRect:view.bounds toView:YBMainWindow];
+        CGFloat x = newRect.origin.x;
+        CGFloat y = SCREEN_HEIGHT - newRect.origin.y - newRect.size.height;
+        CGFloat width = newRect.size.width;
+        CGFloat height = newRect.size.height;
+        
+        absoluteRect = CGRectMake(x, y, width, height);
+        
+    }else {
+        absoluteRect = [view convertRect:view.bounds toView:YBMainWindow];
+    }
+    
+    CGPoint relyPoint = CGPointMake(absoluteRect.origin.x + absoluteRect.size.width / 2, absoluteRect.origin.y + absoluteRect.size.height);
+    
     DLYPopupMenu *popupMenu = [[DLYPopupMenu alloc] init];
     popupMenu.point = relyPoint;
     popupMenu.relyRect = absoluteRect;
@@ -175,31 +212,22 @@ UITableViewDataSource
     YBPopupMenuCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (!cell) {
         cell = [[YBPopupMenuCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:identifier];
-        cell.textLabel.numberOfLines = 0;
+        cell.titleLabel.numberOfLines = 0;
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundColor = [UIColor clearColor];
-    cell.textLabel.textColor = _textColor;
-    cell.textLabel.font = [UIFont systemFontOfSize:_fontSize];
+    cell.titleLabel.textColor = _textColor;
+    cell.titleLabel.font = [UIFont systemFontOfSize:_fontSize];
     if ([_titles[indexPath.row] isKindOfClass:[NSAttributedString class]]) {
-        cell.textLabel.attributedText = _titles[indexPath.row];
+        cell.titleLabel.attributedText = _titles[indexPath.row];
     }else if ([_titles[indexPath.row] isKindOfClass:[NSString class]]) {
-        cell.textLabel.text = _titles[indexPath.row];
+        cell.titleLabel.text = _titles[indexPath.row];
     }else {
-        cell.textLabel.text = nil;
+        cell.titleLabel.text = nil;
     }
+    cell.titleLabel.frame = CGRectMake(0, 0, _itemWidth, _itemHeight);
+    cell.titleLabel.textAlignment = NSTextAlignmentCenter;
     cell.separatorColor = _separatorColor;
-    if (_images.count >= indexPath.row + 1) {
-        if ([_images[indexPath.row] isKindOfClass:[NSString class]]) {
-            cell.imageView.image = [UIImage imageNamed:_images[indexPath.row]];
-        }else if ([_images[indexPath.row] isKindOfClass:[UIImage class]]){
-            cell.imageView.image = _images[indexPath.row];
-        }else {
-            cell.imageView.image = nil;
-        }
-    }else {
-        cell.imageView.image = nil;
-    }
     return cell;
 }
 
@@ -241,7 +269,14 @@ UITableViewDataSource
 - (void)show
 {
     [YBMainWindow addSubview:_menuBackView];
-    [YBMainWindow addSubview:self];
+    CGFloat width = self.width;
+    CGFloat height = self.height;
+    _backView = [[UIView alloc] initWithFrame:self.frame];
+    [YBMainWindow addSubview:_backView];
+    self.frame = CGRectMake(0, 0, width, height);
+    [_backView addSubview:self];
+    _backY = self.backView.y;
+    
     YBPopupMenuCell *cell = [self getLastVisibleCell];
     cell.isShowSeparator = NO;
     if (self.delegate && [self.delegate respondsToSelector:@selector(ybPopupMenuBeganShow)]) {
@@ -254,6 +289,7 @@ UITableViewDataSource
         //蒙版的透明度，暂时不显示蒙版
         _menuBackView.alpha = 0;
     } completion:^(BOOL finished) {
+        //        self.flipState = self.flipState;
         if (self.delegate && [self.delegate respondsToSelector:@selector(ybPopupMenuDidShow)]) {
             [self.delegate ybPopupMenuDidShow];
         }
@@ -720,13 +756,6 @@ UITableViewDataSource
         }
         
     }else if (_arrowDirection == YBPopupMenuArrowDirectionLeft || _arrowDirection == YBPopupMenuArrowDirectionRight) {
-        //        if (_point.y + _itemHeight / 2 > YBScreenHeight - _minSpace) {
-        //            _arrowPosition = _itemHeight - (YBScreenHeight - _minSpace - _point.y);
-        //        }else if (_point.y < _itemHeight / 2 + _minSpace) {
-        //            _arrowPosition = _point.y - _minSpace;
-        //        }else {
-        //            _arrowPosition = _itemHeight / 2;
-        //        }
     }
 }
 
@@ -737,4 +766,24 @@ UITableViewDataSource
     [bezierPath stroke];
 }
 
+- (void)setFlipState:(NSInteger)flipState
+{
+    _flipState = flipState;
+    CGFloat flipNum;
+    if (flipState == 2) {
+        //home在左
+        flipNum = -1.0;
+        self.backView.y = SCREEN_HEIGHT - _backY - self.backView.height;
+    }else {
+        //默认，home在右
+        flipNum = 1.0;
+        self.backView.y = _backY;
+    }
+    
+    self.backView.transform = CGAffineTransformMakeScale(1.0, flipNum);
+    YBPopupMenuCell *cell = [self getLastVisibleCell];
+    cell.titleLabel.transform = CGAffineTransformMakeScale(flipNum, 1.0);
+}
+
 @end
+

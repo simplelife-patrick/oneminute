@@ -163,6 +163,11 @@ typedef NS_ENUM(NSInteger , YBPopupMenuPriorityDirection) {
 @property (nonatomic, assign) YBPopupMenuType type;
 
 /**
+ 翻转气泡
+ */
+@property (nonatomic, assign) NSInteger flipState;
+
+/**
  代理
  */
 @property (nonatomic, weak) id <YBPopupMenuDelegate> delegate;
@@ -211,6 +216,22 @@ typedef NS_ENUM(NSInteger , YBPopupMenuPriorityDirection) {
                         delegate:(id<YBPopupMenuDelegate>)delegate;
 
 /**
+ 依赖指定view弹出 左右手
+ 
+ @param titles    标题数组  数组里是NSString/NSAttributedString
+ @param icons     图标数组  数组里是NSString/UIImage
+ @param itemWidth 菜单宽度
+ @param stateNum 设备状态
+ @param delegate  代理
+ */
++ (DLYPopupMenu *)showRelyOnView:(UIView *)view
+                          titles:(NSArray *)titles
+                           icons:(NSArray *)icons
+                       menuWidth:(CGFloat)itemWidth
+                       withState:(NSUInteger)stateNum
+                        delegate:(id<YBPopupMenuDelegate>)delegate;
+
+/**
  依赖指定view弹出(推荐方法)
  
  @param titles         标题数组  数组里是NSString/NSAttributedString
@@ -230,3 +251,4 @@ typedef NS_ENUM(NSInteger , YBPopupMenuPriorityDirection) {
 - (void)dismiss;
 
 @end
+
