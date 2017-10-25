@@ -41,6 +41,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     BOOL isFront;
     BOOL isSlomoCamera;
     CGFloat _initialPinchZoom;
+    CGFloat shootNum;
+    CGFloat durationTime;
 }
 @property (nonatomic,assign) CGFloat                            beginGestureScale;//记录开始的缩放比例
 @property (nonatomic,assign) CGFloat                            effectiveScale;//最后的缩放比例
@@ -698,6 +700,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     _prepareShootTimer = [NSTimer scheduledTimerWithTimeInterval:0.6 target:self selector:@selector(prepareShootAction) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:_prepareShootTimer forMode:NSRunLoopCommonModes];
     [_prepareShootTimer setFireDate:[NSDate distantFuture]];
+    
+    _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
+    [[NSRunLoop currentRunLoop] addTimer:_shootTimer forMode:NSRunLoopCommonModes];
+    [_shootTimer setFireDate:[NSDate distantFuture]];
     
     //右侧编辑页面
     self.playView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.recordBtn.x + self.recordBtn.width, SCREEN_HEIGHT)];
@@ -1465,16 +1471,22 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.timeNumber.text = [NSString stringWithFormat:@"%.0f",count];
             }
         }
-        double partDuration = [part.duration doubleValue];
-        [_progressView drawProgress:count / partDuration];
     });
-    
+    double partDuration = [part.duration doubleValue];
+    durationTime = partDuration;
+    shootNum = [part.duration intValue] - count;
+    [_shootTimer setFireDate:[NSDate distantPast]];
+}
+
+- (void)shootAction {
+    shootNum = shootNum + 0.1;
+    [_progressView drawProgress:shootNum / durationTime];
 }
 
 - (void)finishedRecording {
     NSInteger partNumber = selectPartTag - 10000;
     DLYMiniVlogPart *part = partModelArray[partNumber - 1];
-    
+    [_shootTimer setFireDate:[NSDate distantFuture]];
     dispatch_async(dispatch_get_main_queue(), ^{
         self.cancelButton.hidden = YES;
         for(int i = 0; i < partModelArray.count; i++)
@@ -1780,7 +1792,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)onClickCancelClick:(UIButton *)sender {
     [DLYUserTrack recordAndEventKey:@"CancelRecord"];
     [self.AVEngine cancelRecording];
-    
+    [_shootTimer setFireDate:[NSDate distantFuture]];
     NSInteger partNum = selectPartTag - 10000 - 1;
     [self.resource removePartWithPartNumFormTemp:partNum];
     
@@ -2412,7 +2424,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self createPartViewLayout];
         
     }
-    
 }
 #pragma mark ==== 创建选择场景view
 - (void)createSceneView {
