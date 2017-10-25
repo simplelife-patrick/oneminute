@@ -793,12 +793,6 @@
     readyToRecordVideo = NO;
     readyToRecordAudio = NO;
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(canceledRecording)]) {
-        [self.delegate canceledRecording];
-    }
-    
-    [_recordTimer cancelTick];
-    
     dispatch_async(_movieWritingQueue, ^{
     
         [self.assetWriter finishWritingWithCompletionHandler:^{
@@ -808,6 +802,7 @@
             self.assetWriter = nil;
         }];
     });
+    [_recordTimer cancelTick];
 }
 
 #pragma mark - 重置录制 -
@@ -861,6 +856,9 @@
 -(void)timerCanceled:(NSTimeInterval) time
 {
     NSLog(@"[#####AVEngine] - 收到回调 - 定时器取消 - 倒计时时间（传给UI）:%.3f", time);
+    if (self.delegate && [self.delegate respondsToSelector:@selector(canceledRecording:)]) {
+        [self.delegate canceledRecording:time];
+    }
 }
 
 -(void)businessCanceled:(NSTimeInterval) time
