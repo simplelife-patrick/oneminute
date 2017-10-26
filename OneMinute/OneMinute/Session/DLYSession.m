@@ -39,7 +39,7 @@
     [defaults setObject:currentTemplateId forKey:kCURRENTTEMPLATEKEY];
     
     if ([defaults synchronize]) {
-
+        DLYLog(@"当前模板保存成功!");
     }else{
         DLYLog(@"保存当前模板失败!");
     };
@@ -53,7 +53,6 @@
     NSString *jsonFile = nil;
     
     if (localVersion <= 1.0) {
-//        jsonFile = [[NSBundle mainBundle] pathForResource:@"templateList_v1.plist" ofType:nil];
         jsonFile = [[NSBundle mainBundle] pathForResource:@"templateList_v1.plist" ofType:nil];
     }else {
         jsonFile = [[NSBundle mainBundle] pathForResource:@"templateList_v1.plist" ofType:nil];
@@ -70,12 +69,13 @@
     }
     return templateListArrray;
 }
-- (DLYMiniVlogTemplate *)getCurrentTemplate{
+- (DLYMiniVlogTemplate *) getCurrentTemplate {
+    
     NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY];
     DLYMiniVlogTemplate *currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
     return currentTemplate;
 }
-- (BOOL) isExistDraftAtFile{
+- (BOOL) isExistDraftAtFile {
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
