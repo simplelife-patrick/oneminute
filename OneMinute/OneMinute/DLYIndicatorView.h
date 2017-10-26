@@ -10,12 +10,14 @@
 
 @protocol DLYIndicatorViewDelegate <NSObject>
 
-- (void)indicatorViewstopFlashAnimating;
+- (void)indicatorViewStartFlashAnimating;
+- (void)indicatorViewStopFlashAnimating;
 
 @end
 
 @interface DLYIndicatorView : UIView
 
+@property (nonatomic, strong) UIView *mainView;
 @property (nonatomic, assign) BOOL isFlashAnimating;
 
 + (instancetype)sharedIndicatorView;

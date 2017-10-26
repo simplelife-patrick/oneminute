@@ -1276,6 +1276,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.alert.transform = CGAffineTransformMakeRotation(num);
         }];
     }
+    if (![DLYIndicatorView sharedIndicatorView].isHidden && [DLYIndicatorView sharedIndicatorView]) {
+        [DLYIndicatorView sharedIndicatorView].mainView.transform = CGAffineTransformMakeRotation(num);
+    }
     if (!self.normalBubble.isHidden && self.normalBubble) {
         self.normalBubble.flipState = self.newState;
     }
@@ -1463,13 +1466,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void) statutUpdateWithClockTick:(double)count{
     NSInteger partNumber = selectPartTag - 10000;
     DLYMiniVlogPart *part = partModelArray[partNumber - 1];
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
-        if((int)(count * 100) % 100 == 0)
-        {
-            if (![self.timeNumber.text isEqualToString:@"1"]) {
-                self.timeNumber.text = [NSString stringWithFormat:@"%.0f",count];
-            }
+        if (![self.timeNumber.text isEqualToString:@"1"]) {
+            self.timeNumber.text = [NSString stringWithFormat:@"%d",(int)count];
         }
     });
     double partDuration = [part.duration doubleValue];
@@ -2942,8 +2942,18 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     } completion:^(BOOL finished) {
     }];
 }
-
-- (void)indicatorViewstopFlashAnimating {
+#pragma mark - 提示控件代理
+- (void)indicatorViewStartFlashAnimating {
+    NSArray *viewArr = self.navigationController.viewControllers;
+    if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
+        if (self.newState == 1) {
+            [DLYIndicatorView sharedIndicatorView].mainView.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            [DLYIndicatorView sharedIndicatorView].mainView.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+    }
+}
+- (void)indicatorViewStopFlashAnimating {
     NSArray *viewArr = self.navigationController.viewControllers;
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
         
