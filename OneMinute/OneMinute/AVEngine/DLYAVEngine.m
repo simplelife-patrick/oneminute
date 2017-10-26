@@ -1328,6 +1328,7 @@
     assetExportSession.shouldOptimizeForNetworkUse = YES;
     
     [assetExportSession exportAsynchronouslyWithCompletionHandler:^{
+        UISaveVideoAtPathToSavedPhotosAlbum([productOutputUrl path], self, nil, nil);
         DLYLog(@"全部片段merge成功");
         DLYMiniVlogTemplate *template = self.session.currentTemplate;
         
