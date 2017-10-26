@@ -38,7 +38,7 @@
                 self.videoHeaderType = [[dic objectForKey:@"header"] integerValue];
                 self.videoTailerType = [[dic objectForKey:@"tailer"] integerValue];
                 self.templateDescription = [dic objectForKey:@"templateDescription"];
-                self.sampleVideoName = [KTEMPLATE_SAMPLE_API stringByAppendingFormat:@"%@",[dic objectForKey:@"sampleVideoName"]];
+                self.sampleVideoName = [kTEMPLATE_SAMPLE_API stringByAppendingFormat:@"%@",[dic objectForKey:@"sampleVideoName"]];
             }else{
                 DLYLog(@"模板脚本文件解析出错");
             }
@@ -73,6 +73,6 @@
     return [mArray copy];
 }
 - (NSString*)description{
-    return [NSString stringWithFormat:@"<%@: %p> {templateId: %@ ,version: %f ,templateTitle: %@,templateDescription:%@,sampleVideoName: %@ ,parts: %@ ,BGM: %@,subTitle1:%@,videoHeaderType: %@ ,videoTailerType: %@}",[self class],self,self.templateId,self.version,self.templateTitle,self,self.templateDescription,self.sampleVideoName,self.parts,self.BGM,self.subTitle1,self.videoHeaderType,self.videoTailerType];
+    return [NSString stringWithFormat:@"<%@: %p> {templateId: %@ ,version: %f ,templateTitle: %@,templateDescription:%@,sampleVideoName: %@ ,parts: %@ ,BGM: %@,subTitle1:%@,videoHeaderType: %@ ,videoTailerType: %ld}",[self class],self,self.templateId,self.version,self.templateTitle,self,self.templateDescription,self.sampleVideoName,self.parts,self.BGM,self.subTitle1,(long)self.videoHeaderType,self.videoTailerType];
 }
 @end
