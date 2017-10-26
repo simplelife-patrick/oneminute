@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		1C7E61841EE7DF4F0088F33F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61831EE7DF4F0088F33F /* main.m */; };
 		1C7E61871EE7DF4F0088F33F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61861EE7DF4F0088F33F /* AppDelegate.m */; };
-		1C7E618A1EE7DF4F0088F33F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61891EE7DF4F0088F33F /* ViewController.m */; };
 		1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C7E618B1EE7DF4F0088F33F /* Main.storyboard */; };
 		1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C7E618E1EE7DF4F0088F33F /* Assets.xcassets */; };
 		1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C7E61901EE7DF4F0088F33F /* LaunchScreen.storyboard */; };
@@ -113,8 +112,6 @@
 		1C7E61831EE7DF4F0088F33F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1C7E61851EE7DF4F0088F33F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		1C7E61861EE7DF4F0088F33F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		1C7E61881EE7DF4F0088F33F /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		1C7E61891EE7DF4F0088F33F /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		1C7E618C1EE7DF4F0088F33F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1C7E618E1EE7DF4F0088F33F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1C7E61911EE7DF4F0088F33F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -339,8 +336,6 @@
 				1C7E61C01EE7E6640088F33F /* Log */,
 				1C7E61851EE7DF4F0088F33F /* AppDelegate.h */,
 				1C7E61861EE7DF4F0088F33F /* AppDelegate.m */,
-				1C7E61881EE7DF4F0088F33F /* ViewController.h */,
-				1C7E61891EE7DF4F0088F33F /* ViewController.m */,
 				1C7E618B1EE7DF4F0088F33F /* Main.storyboard */,
 				1C7E618E1EE7DF4F0088F33F /* Assets.xcassets */,
 				1C7E61901EE7DF4F0088F33F /* LaunchScreen.storyboard */,
@@ -898,7 +893,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -913,7 +908,6 @@
 				AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */,
 				AD7608F51F70C07F00556E20 /* UIImage+iconfont.m in Sources */,
 				6FD13AC41F60EC02000B72FC /* DLYIndicatorView.m in Sources */,
-				1C7E618A1EE7DF4F0088F33F /* ViewController.m in Sources */,
 				6F81E7BD1F985564008A2FC9 /* DLYUserTrack.m in Sources */,
 				1C7E61C31EE7E6730088F33F /* DLYLogModule.m in Sources */,
 				ADFFF1AB1F18C00200FB5BF7 /* DLYTransitionInstructions.m in Sources */,
