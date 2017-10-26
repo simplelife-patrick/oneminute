@@ -834,11 +834,7 @@
 -(void)timerStopped:(NSTimeInterval) time
 {
     NSLog(@"[#####AVEngine] - 收到回调 - 计时定时器停止 - 倒计时时间（传给UI）:%.3f", time);
-    _isRecording = NO;
-    readyToRecordVideo = NO;
-    readyToRecordAudio = NO;
-    
-    [self stopRecording];
+
 }
 
 -(void)businessFinished:(NSTimeInterval) time;
@@ -847,14 +843,17 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
         [self.delegate finishedRecording];
     }
+    
+    _isRecording = NO;
+    readyToRecordVideo = NO;
+    readyToRecordAudio = NO;
+    
+    [self stopRecording];
 }
 
 -(void)timerCanceled:(NSTimeInterval) time
 {
     NSLog(@"[#####AVEngine] - 收到回调 - 定时器取消 - 倒计时时间（传给UI）:%.3f", time);
-    if (self.delegate && [self.delegate respondsToSelector:@selector(canceledRecording:)]) {
-        [self.delegate canceledRecording:time];
-    }
 }
 
 -(void)businessCanceled:(NSTimeInterval) time

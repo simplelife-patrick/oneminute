@@ -45,24 +45,24 @@
 		AD26F1A81F53E6DE00565E27 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */; };
 		AD26F1AA1F53E70A00565E27 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */; };
 		AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5B80B11F3443080094922B /* UIColor+Hex.m */; };
+		AD66B52C1FA1C582000606DD /* Advanced.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD66B5201FA1C582000606DD /* Advanced.dly */; };
+		AD66B52D1FA1C582000606DD /* AfternoonTea.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD66B5211FA1C582000606DD /* AfternoonTea.dly */; };
+		AD66B52E1FA1C582000606DD /* BigMeal.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD66B5221FA1C582000606DD /* BigMeal.dly */; };
+		AD66B52F1FA1C582000606DD /* ColorfulLife.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD66B5231FA1C582000606DD /* ColorfulLife.dly */; };
+		AD66B5301FA1C582000606DD /* GoNorth.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD66B5241FA1C582000606DD /* GoNorth.dly */; };
+		AD66B5311FA1C582000606DD /* MyMaldives.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD66B5251FA1C582000606DD /* MyMaldives.dly */; };
+		AD66B5321FA1C582000606DD /* Primary.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD66B5261FA1C582000606DD /* Primary.dly */; };
+		AD66B5331FA1C582000606DD /* Secondary.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD66B5271FA1C582000606DD /* Secondary.dly */; };
+		AD66B5341FA1C582000606DD /* SoDelicious.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD66B5281FA1C582000606DD /* SoDelicious.dly */; };
+		AD66B5351FA1C582000606DD /* SpiritTerritory.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD66B5291FA1C582000606DD /* SpiritTerritory.dly */; };
+		AD66B5361FA1C582000606DD /* SunSetBeach.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD66B52A1FA1C582000606DD /* SunSetBeach.dly */; };
+		AD66B5371FA1C582000606DD /* YoungOuting.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD66B52B1FA1C582000606DD /* YoungOuting.dly */; };
 		AD7608F31F70C07F00556E20 /* NSObject+JSONCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608EA1F70C07F00556E20 /* NSObject+JSONCategories.m */; };
 		AD7608F41F70C07F00556E20 /* UIButton+LargerHitArea.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608EC1F70C07F00556E20 /* UIButton+LargerHitArea.m */; };
 		AD7608F51F70C07F00556E20 /* UIImage+iconfont.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608EE1F70C07F00556E20 /* UIImage+iconfont.m */; };
 		AD7608F61F70C08000556E20 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608F01F70C07F00556E20 /* UIView+Extension.m */; };
 		AD7608F71F70C08000556E20 /* UIView+Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608F21F70C07F00556E20 /* UIView+Utility.m */; };
 		AD849F441F72019900B1E08F /* DLYConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = AD849F431F72019900B1E08F /* DLYConstants.m */; };
-		AD88BFDD1FA18D420034DEE9 /* BigMeal.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD88BFD11FA18D3F0034DEE9 /* BigMeal.dly */; };
-		AD88BFDE1FA18D420034DEE9 /* ColorfulLife.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD88BFD21FA18D3F0034DEE9 /* ColorfulLife.dly */; };
-		AD88BFDF1FA18D420034DEE9 /* GoNorth.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD88BFD31FA18D400034DEE9 /* GoNorth.dly */; };
-		AD88BFE01FA18D420034DEE9 /* AfternoonTea.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD88BFD41FA18D400034DEE9 /* AfternoonTea.dly */; };
-		AD88BFE11FA18D420034DEE9 /* MyMaldives.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD88BFD51FA18D400034DEE9 /* MyMaldives.dly */; };
-		AD88BFE21FA18D420034DEE9 /* SoDelicious.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD88BFD61FA18D400034DEE9 /* SoDelicious.dly */; };
-		AD88BFE31FA18D420034DEE9 /* YoungOuting.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD88BFD71FA18D400034DEE9 /* YoungOuting.dly */; };
-		AD88BFE41FA18D420034DEE9 /* Primary.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD88BFD81FA18D400034DEE9 /* Primary.dly */; };
-		AD88BFE51FA18D420034DEE9 /* Advanced.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD88BFD91FA18D410034DEE9 /* Advanced.dly */; };
-		AD88BFE61FA18D420034DEE9 /* SunSetBeach.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD88BFDA1FA18D410034DEE9 /* SunSetBeach.dly */; };
-		AD88BFE71FA18D420034DEE9 /* Secondary.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD88BFDB1FA18D410034DEE9 /* Secondary.dly */; };
-		AD88BFE81FA18D420034DEE9 /* SpiritTerritory.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD88BFDC1FA18D410034DEE9 /* SpiritTerritory.dly */; };
 		ADA3709C1F2D11780082AEC6 /* DLYResource.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA3709B1F2D11780082AEC6 /* DLYResource.m */; };
 		ADD0E7D41F2D9F3500996BD6 /* UIImage+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD0E7D31F2D9F3500996BD6 /* UIImage+Extension.m */; };
 		ADF072901F9F97B2003088AE /* AfternoonTeaBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF072841F9F97B0003088AE /* AfternoonTeaBGM.m4a */; };
@@ -183,6 +183,18 @@
 		AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRecordViewController.m; sourceTree = "<group>"; };
 		AD5B80B01F3443080094922B /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		AD5B80B11F3443080094922B /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
+		AD66B5201FA1C582000606DD /* Advanced.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Advanced.dly; sourceTree = "<group>"; };
+		AD66B5211FA1C582000606DD /* AfternoonTea.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = AfternoonTea.dly; sourceTree = "<group>"; };
+		AD66B5221FA1C582000606DD /* BigMeal.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = BigMeal.dly; sourceTree = "<group>"; };
+		AD66B5231FA1C582000606DD /* ColorfulLife.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorfulLife.dly; sourceTree = "<group>"; };
+		AD66B5241FA1C582000606DD /* GoNorth.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = GoNorth.dly; sourceTree = "<group>"; };
+		AD66B5251FA1C582000606DD /* MyMaldives.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyMaldives.dly; sourceTree = "<group>"; };
+		AD66B5261FA1C582000606DD /* Primary.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Primary.dly; sourceTree = "<group>"; };
+		AD66B5271FA1C582000606DD /* Secondary.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Secondary.dly; sourceTree = "<group>"; };
+		AD66B5281FA1C582000606DD /* SoDelicious.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = SoDelicious.dly; sourceTree = "<group>"; };
+		AD66B5291FA1C582000606DD /* SpiritTerritory.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = SpiritTerritory.dly; sourceTree = "<group>"; };
+		AD66B52A1FA1C582000606DD /* SunSetBeach.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = SunSetBeach.dly; sourceTree = "<group>"; };
+		AD66B52B1FA1C582000606DD /* YoungOuting.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = YoungOuting.dly; sourceTree = "<group>"; };
 		AD7608E91F70C07F00556E20 /* NSObject+JSONCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+JSONCategories.h"; sourceTree = "<group>"; };
 		AD7608EA1F70C07F00556E20 /* NSObject+JSONCategories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+JSONCategories.m"; sourceTree = "<group>"; };
 		AD7608EB1F70C07F00556E20 /* UIButton+LargerHitArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+LargerHitArea.h"; sourceTree = "<group>"; };
@@ -196,18 +208,6 @@
 		AD849F421F72019900B1E08F /* DLYConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYConstants.h; sourceTree = "<group>"; };
 		AD849F431F72019900B1E08F /* DLYConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYConstants.m; sourceTree = "<group>"; };
 		AD849F451F72021200B1E08F /* DLYPublicMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYPublicMacros.h; sourceTree = "<group>"; };
-		AD88BFD11FA18D3F0034DEE9 /* BigMeal.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = BigMeal.dly; sourceTree = "<group>"; };
-		AD88BFD21FA18D3F0034DEE9 /* ColorfulLife.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorfulLife.dly; sourceTree = "<group>"; };
-		AD88BFD31FA18D400034DEE9 /* GoNorth.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = GoNorth.dly; sourceTree = "<group>"; };
-		AD88BFD41FA18D400034DEE9 /* AfternoonTea.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = AfternoonTea.dly; sourceTree = "<group>"; };
-		AD88BFD51FA18D400034DEE9 /* MyMaldives.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyMaldives.dly; sourceTree = "<group>"; };
-		AD88BFD61FA18D400034DEE9 /* SoDelicious.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = SoDelicious.dly; sourceTree = "<group>"; };
-		AD88BFD71FA18D400034DEE9 /* YoungOuting.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = YoungOuting.dly; sourceTree = "<group>"; };
-		AD88BFD81FA18D400034DEE9 /* Primary.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Primary.dly; sourceTree = "<group>"; };
-		AD88BFD91FA18D410034DEE9 /* Advanced.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Advanced.dly; sourceTree = "<group>"; };
-		AD88BFDA1FA18D410034DEE9 /* SunSetBeach.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = SunSetBeach.dly; sourceTree = "<group>"; };
-		AD88BFDB1FA18D410034DEE9 /* Secondary.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Secondary.dly; sourceTree = "<group>"; };
-		AD88BFDC1FA18D410034DEE9 /* SpiritTerritory.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = SpiritTerritory.dly; sourceTree = "<group>"; };
 		ADA370971F2D11500082AEC6 /* DLYRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRecordViewController.h; sourceTree = "<group>"; };
 		ADA3709A1F2D11780082AEC6 /* DLYResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYResource.h; sourceTree = "<group>"; };
 		ADA3709B1F2D11780082AEC6 /* DLYResource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYResource.m; sourceTree = "<group>"; };
@@ -518,20 +518,28 @@
 		AD14EC881F9DF0E9000DB796 /* templates */ = {
 			isa = PBXGroup;
 			children = (
-				AD88BFD91FA18D410034DEE9 /* Advanced.dly */,
-				AD88BFD41FA18D400034DEE9 /* AfternoonTea.dly */,
-				AD88BFD11FA18D3F0034DEE9 /* BigMeal.dly */,
-				AD88BFD21FA18D3F0034DEE9 /* ColorfulLife.dly */,
-				AD88BFD31FA18D400034DEE9 /* GoNorth.dly */,
-				AD88BFD51FA18D400034DEE9 /* MyMaldives.dly */,
-				AD88BFD81FA18D400034DEE9 /* Primary.dly */,
-				AD88BFDB1FA18D410034DEE9 /* Secondary.dly */,
-				AD88BFD61FA18D400034DEE9 /* SoDelicious.dly */,
-				AD88BFDC1FA18D410034DEE9 /* SpiritTerritory.dly */,
-				AD88BFDA1FA18D410034DEE9 /* SunSetBeach.dly */,
-				AD88BFD71FA18D400034DEE9 /* YoungOuting.dly */,
+				AD66B51F1FA1C582000606DD /* v1.0 */,
 			);
 			path = templates;
+			sourceTree = "<group>";
+		};
+		AD66B51F1FA1C582000606DD /* v1.0 */ = {
+			isa = PBXGroup;
+			children = (
+				AD66B5201FA1C582000606DD /* Advanced.dly */,
+				AD66B5211FA1C582000606DD /* AfternoonTea.dly */,
+				AD66B5221FA1C582000606DD /* BigMeal.dly */,
+				AD66B5231FA1C582000606DD /* ColorfulLife.dly */,
+				AD66B5241FA1C582000606DD /* GoNorth.dly */,
+				AD66B5251FA1C582000606DD /* MyMaldives.dly */,
+				AD66B5261FA1C582000606DD /* Primary.dly */,
+				AD66B5271FA1C582000606DD /* Secondary.dly */,
+				AD66B5281FA1C582000606DD /* SoDelicious.dly */,
+				AD66B5291FA1C582000606DD /* SpiritTerritory.dly */,
+				AD66B52A1FA1C582000606DD /* SunSetBeach.dly */,
+				AD66B52B1FA1C582000606DD /* YoungOuting.dly */,
+			);
+			path = v1.0;
 			sourceTree = "<group>";
 		};
 		AD887A661F7661FB00A85881 /* BGM */ = {
@@ -765,33 +773,33 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADF0729B1F9F97B2003088AE /* BigMealBGM.m4a in Resources */,
-				AD88BFE01FA18D420034DEE9 /* AfternoonTea.dly in Resources */,
 				ADF072951F9F97B2003088AE /* SoDeliciousBGM.m4a in Resources */,
 				ADF072941F9F97B2003088AE /* PrimaryBGM.m4a in Resources */,
-				AD88BFE41FA18D420034DEE9 /* Primary.dly in Resources */,
-				AD88BFDF1FA18D420034DEE9 /* GoNorth.dly in Resources */,
-				AD88BFE21FA18D420034DEE9 /* SoDelicious.dly in Resources */,
 				ADF072911F9F97B2003088AE /* GoNorthBGM.m4a in Resources */,
 				6F643AF41F97583E001FDA76 /* PromoteVideo.mp4 in Resources */,
-				AD88BFE51FA18D420034DEE9 /* Advanced.dly in Resources */,
+				AD66B5361FA1C582000606DD /* SunSetBeach.dly in Resources */,
+				AD66B5341FA1C582000606DD /* SoDelicious.dly in Resources */,
 				ADF072921F9F97B2003088AE /* MyMaldivesBGM.m4a in Resources */,
-				AD88BFE11FA18D420034DEE9 /* MyMaldives.dly in Resources */,
-				AD88BFE61FA18D420034DEE9 /* SunSetBeach.dly in Resources */,
 				ADF0729A1F9F97B2003088AE /* ColorfulLifeBGM.m4a in Resources */,
-				AD88BFE71FA18D420034DEE9 /* Secondary.dly in Resources */,
-				AD88BFDD1FA18D420034DEE9 /* BigMeal.dly in Resources */,
+				AD66B5371FA1C582000606DD /* YoungOuting.dly in Resources */,
+				AD66B52E1FA1C582000606DD /* BigMeal.dly in Resources */,
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
 				ADF072991F9F97B2003088AE /* YoungOutingBGM.m4a in Resources */,
-				AD88BFE31FA18D420034DEE9 /* YoungOuting.dly in Resources */,
+				AD66B5351FA1C582000606DD /* SpiritTerritory.dly in Resources */,
+				AD66B52C1FA1C582000606DD /* Advanced.dly in Resources */,
+				AD66B5301FA1C582000606DD /* GoNorth.dly in Resources */,
 				AD038C9A1F7293F10002C092 /* InfoPlist.strings in Resources */,
 				ADF072981F9F97B2003088AE /* SunSetBeachBGM.m4a in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
-				AD88BFE81FA18D420034DEE9 /* SpiritTerritory.dly in Resources */,
-				AD88BFDE1FA18D420034DEE9 /* ColorfulLife.dly in Resources */,
+				AD66B5311FA1C582000606DD /* MyMaldives.dly in Resources */,
+				AD66B52F1FA1C582000606DD /* ColorfulLife.dly in Resources */,
 				ADF072971F9F97B2003088AE /* SpiritTerritoryBGM.m4a in Resources */,
+				AD66B52D1FA1C582000606DD /* AfternoonTea.dly in Resources */,
 				ADF072931F9F97B2003088AE /* SecondaryBGM.m4a in Resources */,
+				AD66B5321FA1C582000606DD /* Primary.dly in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
 				AD14ED461F9E0ABD000DB796 /* templateList_v1.plist in Resources */,
+				AD66B5331FA1C582000606DD /* Secondary.dly in Resources */,
 				6F32F7A71F99A57D004C4553 /* iconfont.ttf in Resources */,
 				ADF072901F9F97B2003088AE /* AfternoonTeaBGM.m4a in Resources */,
 				ADF072961F9F97B2003088AE /* AdvancedBGM.m4a in Resources */,
