@@ -15,6 +15,8 @@
 #define SCREEN_RECT     [[UIScreen mainScreen] bounds]
 #define SCREEN_WIDTH    [UIScreen mainScreen].bounds.size.width
 #define SCREEN_HEIGHT   [UIScreen mainScreen].bounds.size.height
+#define SCALE_WIDTH SCREEN_WIDTH/667
+#define SCALE_HEIGHT SCREEN_HEIGHT/375
 
 //沙盒文件目录文件夹
 #define kPathDocument [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]
@@ -26,9 +28,6 @@
 #define kDraftFolder @"Draft"
 #define kTempFolder @"Temp"
 #define kBGMFolder @"BGM"
-#define kVideoHeaderFolder @"VideoHeader"
-#define kVideoTailerFolder @"VideoTailer"
-#define kSoundEffectFolder @"SoundEffect"
 
 #define kPartNum @"kPartNum"
 #define kMoviePath @"kMoviePath"
@@ -38,21 +37,18 @@
 #define kMovieSpeed_Normal @"kMovieSpeed_Normal"
 #define kMovieSpeed_Fast @"kMovieSpeed_Fast"
 #define kMovieSpeed_Slow @"kMovieSpeed_Slow"
-// 合成视频本地存储路径
-#define kVideoPath NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).lastObject
 
 //默认模板
 #define kDEFAULTTEMPLATENAME  @"Primary.dly"
 //全局当前模板
 #define kCURRENTTEMPLATEKEY  @"CURRENTTEMPLATEKEY"
-#define KTEMPLATE_SAMPLE_API  @"http://dly.oss-cn-shanghai.aliyuncs.com/"
+#define kTEMPLATE_SAMPLE_API  @"http://dly.oss-cn-shanghai.aliyuncs.com/"
 
+#define kVideoHeaderFolder @"VideoHeader"
+#define kVideoTailerFolder @"VideoTailer"
+#define kSoundEffectFolder @"SoundEffect"
 
 #define DLog(format, ...) DDLogError((@"[文件名:%s]" "[函数名:%s]" "[行号:%d]" format), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__);
-
-#define SCALE_WIDTH SCREEN_WIDTH/667
-#define SCALE_HEIGHT SCREEN_HEIGHT/375
-
 
 //图片字体库
 #define ICONFONT @"iconfont"
