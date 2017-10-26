@@ -1734,20 +1734,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //url放在这里
     DLYMiniVlogTemplate *template = typeModelArray[num];
     [DLYUserTrack recordAndEventKey:@"ChoosePlayVideo" andDescribeStr:template.templateTitle];
-    NSString *videoName = [template.sampleVideoName stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
-    NSArray *urlArr = @[@"http://dly.oss-cn-shanghai.aliyuncs.com/Primary.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/Secondary.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/Advanced.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/BigMeal.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/AfternoonTea.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/SoDelicious.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/YoungOuting.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/GoNorth.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/MyMaldives.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/ColorLifeTemplateSample.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/ColorfulLife.mp4",
-                        @"http://dly.oss-cn-shanghai.aliyuncs.com/SunSetBeach.mp4"];
-    NSString *videoUrl = urlArr[num];
+
+    NSArray *urlNameArr = [template.sampleVideoName componentsSeparatedByString:@"/"];
+    NSString *nameStr = [urlNameArr lastObject];
+    NSString *videoName = [nameStr stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
+    NSString *videoUrl = template.sampleVideoName;
+
     //路径
     NSString *finishPath = [kPathDocument stringByAppendingFormat:@"/FinishVideo/%@.mp4", videoName];
     NSString *tempPath = [kCachePath stringByAppendingFormat:@"/%@.mp4", videoName];
