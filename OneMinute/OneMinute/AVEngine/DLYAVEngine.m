@@ -658,28 +658,16 @@
 #pragma mark - 改变录制帧率 -
 - (void)switchFormatWithDesiredFPS:(CGFloat)desiredFPS
 {
-    DLYLog(@"最终设定的最佳帧率: %f",desiredFPS);
-    [self.captureSession beginConfiguration];
+    BOOL isRunning = self.captureSession.isRunning;
     
-    AVCaptureDevice *device = self.defaultVideoDevice;
-    if (isUsedFlash){
-        isUsedFlash = NO;
-        if (flashMode) {
-            [device lockForConfiguration:nil];
-            [device setTorchMode:AVCaptureTorchModeOn];
-            [device unlockForConfiguration];
-        }else{
-            [device lockForConfiguration:nil];
-            [device setTorchMode:AVCaptureTorchModeOff];
-            [device unlockForConfiguration];
-        }
-    }
+    if (isRunning)  [self.captureSession stopRunning];
     
+    AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     AVCaptureDeviceFormat *selectedFormat = nil;
     int32_t maxWidth = 0;
     AVFrameRateRange *frameRateRange = nil;
     
-    for (AVCaptureDeviceFormat *format in [device formats]) {
+    for (AVCaptureDeviceFormat *format in [videoDevice formats]) {
         
         for (AVFrameRateRange *range in format.videoSupportedFrameRateRanges) {
             
@@ -688,6 +676,7 @@
             int32_t width = dimensions.width;
             
             if (range.minFrameRate <= desiredFPS && desiredFPS <= range.maxFrameRate && width >= maxWidth) {
+                
                 selectedFormat = format;
                 frameRateRange = range;
                 maxWidth = width;
@@ -695,44 +684,43 @@
         }
     }
     
-    if (selectedFormat)
-    {
-        DLYLog(@"selected format:%@", selectedFormat);
-        if ([device lockForConfiguration:nil]) {
+    if (selectedFormat) {
+        
+        if ([videoDevice lockForConfiguration:nil]) {
             
-            device.activeFormat = selectedFormat;
-            device.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);//设置帧率
-            device.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
-            [device unlockForConfiguration];
+            NSLog(@"selected format:%@", selectedFormat);
+            videoDevice.activeFormat = selectedFormat;
+            videoDevice.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+            videoDevice.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+            [videoDevice unlockForConfiguration];
         }
     }
     
-    self.captureSession.sessionPreset = AVCaptureSessionPresetiFrame1280x720;
-    
-    [self.captureSession commitConfiguration];
-
+    if (isRunning) [self.captureSession startRunning];
 }
 #pragma mark - 开始录制 -
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
     
     _currentPart = part;
-    
-    int desiredFPS = 0;
     if (_currentPart.recordType == DLYMiniVlogRecordTypeSlomo) {
         DLYLog(@"慢镜头片段");
-        desiredFPS = 120;
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_async(queue, ^{
+            [self switchFormatWithDesiredFPS:120.0f];
+        });
     }else if (_currentPart.recordType == DLYMiniVlogRecordTypeTimelapse){
         DLYLog(@"快镜头片段");
-        desiredFPS = 30;
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_async(queue, ^{
+            [self switchFormatWithDesiredFPS:30.0f];
+        });
     }else {
         DLYLog(@"正常拍摄片段");
-        desiredFPS = 30;
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_async(queue, ^{
+            [self switchFormatWithDesiredFPS:30.0f];
+        });
     }
-    
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(queue, ^{
-        [self switchFormatWithDesiredFPS:desiredFPS];
-    });
     
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
     
