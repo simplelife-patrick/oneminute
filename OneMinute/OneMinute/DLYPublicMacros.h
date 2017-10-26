@@ -45,6 +45,7 @@
 #define kDEFAULTTEMPLATENAME  @"Primary.dly"
 //全局当前模板
 #define kCURRENTTEMPLATEKEY  @"CURRENTTEMPLATEKEY"
+#define KTEMPLATE_SAMPLE_API  @"http://dly.oss-cn-shanghai.aliyuncs.com/"
 
 
 #define DLog(format, ...) DDLogError((@"[文件名:%s]" "[函数名:%s]" "[行号:%d]" format), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__);

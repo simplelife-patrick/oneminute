@@ -38,7 +38,7 @@
                 self.videoHeaderType = [[dic objectForKey:@"header"] integerValue];
                 self.videoTailerType = [[dic objectForKey:@"tailer"] integerValue];
                 self.templateDescription = [dic objectForKey:@"templateDescription"];
-                self.sampleVideoName = [dic objectForKey:@"sampleVideoName"];
+                self.sampleVideoName = [KTEMPLATE_SAMPLE_API stringByAppendingFormat:@"%@",[dic objectForKey:@"sampleVideoName"]];
             }else{
                 DLYLog(@"模板脚本文件解析出错");
             }
