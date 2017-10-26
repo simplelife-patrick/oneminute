@@ -1643,6 +1643,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 //取消选择场景
 - (void)onClickCancelSelect:(UIButton *)sender {
+    [self cancelChooseSceneView];
+}
+
+- (void)cancelChooseSceneView {
     [DLYUserTrack recordAndEventKey:@"CancelSelect"];
     [UIView animateWithDuration:0.5f animations:^{
         if (self.newState == 1) {
@@ -2369,7 +2373,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         [self updateShootGuide];
         DLYLogInfo(@"点击了已拍摄片段");
-        [UIView animateWithDuration:0.5f animations:^{
+        [UIView animateWithDuration:0.1f animations:^{
             if (self.newState == 1) {
                 self.playButton.frame = CGRectMake(self.playView.width - 60 * SCALE_WIDTH, (SCREEN_HEIGHT - 152)/2, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
                 self.deletePartButton.frame = CGRectMake(self.playView.width - 60* SCALE_WIDTH, SCREEN_HEIGHT/2 + 76 - 60* SCALE_WIDTH, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
@@ -2382,9 +2386,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.deletePartButton.transform = CGAffineTransformMakeRotation(M_PI);
             }
             cursorTag = selectPartTag;
+        } completion:^(BOOL finished) {
             self.playView.hidden = NO;
             self.recordBtn.hidden = YES;
-        } completion:^(BOOL finished) {
             if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showPlayButtonPopup"]){
                 [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showPlayButtonPopup"];
                 self.normalBubble = [DLYPopupMenu showRelyOnView:self.playButton titles:@[@"预览视频片段"] icons:nil menuWidth:120 withState:self.newState delegate:self];
@@ -2651,6 +2655,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSInteger num = sender.tag - 1002;
     
     if(num == selectType) {
+        [self cancelChooseSceneView];
         return;
     }
     
