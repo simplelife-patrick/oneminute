@@ -22,6 +22,7 @@
 @property (nonatomic, assign) NSTimeInterval startIntervalDiff;
 @property (nonatomic, assign) NSTimeInterval currentIntervalDiff;
 @property (nonatomic, assign) NSTimeInterval stopIntervalDiff;
+@property (nonatomic, assign) NSTimeInterval cancelIntervalDiff;
 
 @end
 
@@ -51,6 +52,7 @@
     }
     else
     {
+
     }
 }
 
@@ -59,15 +61,16 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         if(self.timerDelegate)
         {
-            self.tickRemain = 0;
-            [self.timerDelegate businessFinished:self.tickRemain];
+            [self.timerDelegate businessFinished:0];
         }
     });
     
-    [self.tickThread cancel];
+//    [self.tickThread cancel];
     
     NSDate* now = [NSDate date];
     NSTimeInterval diff = now.timeIntervalSinceReferenceDate - self.startIntervalDiff - self.duration;
+    DLYLog(@"[DLYRecordTimer]定时器(%.3f秒) - 业务停止 - Tick时间:%@", self.duration, [self _timeStringWithDate:now]);
+    DLYLog(@"[DLYRecordTimer]定时器(%.3f秒) - 业务总结 - 与启动时间的误差:%.3f秒", self.duration, diff);
 }
 
 -(void) _tick
@@ -77,6 +80,7 @@
         NSDate* now = [NSDate date];
         self.startIntervalDiff = now.timeIntervalSinceReferenceDate;
         self.currentIntervalDiff = self.startIntervalDiff;
+        DLYLog(@"[DLYRecordTimer]定时器(%.3f秒) - 启动 - Tick时间:%@", self.duration, [self _timeStringWithDate:now]);
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if(self.timerDelegate)
@@ -91,11 +95,23 @@
     BOOL tickCondition = [self _checkTickCondition];
     BOOL loopCondition = tickCondition;
     NSTimeInterval sleepInterval = self.period;
-    while (loopCondition && ![self.tickThread isCancelled])
+    while (loopCondition)
     {
-        sleepInterval = (self.tickRemain >= self.period) ? self.period : self.tickRemain;
+        if([self.tickThread isCancelled])
+        {
+            break;
+        }
+        
+        if(self.period > self.duration)
+        {
+            sleepInterval = self.duration;
+        }
+        else
+        {
+            sleepInterval = (self.tickRemain >= self.period) ? self.period : self.tickRemain;
+        }
         [NSThread sleepForTimeInterval:sleepInterval];
-        self.tickRemain = self.tickRemain - self.period;
+        self.tickRemain = self.tickRemain - sleepInterval;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if(self.timerDelegate)
             {
@@ -110,20 +126,40 @@
             NSDate* now = [NSDate date];
             NSTimeInterval diff = now.timeIntervalSinceReferenceDate - self.currentIntervalDiff - sleepInterval;
             self.currentIntervalDiff = now.timeIntervalSinceReferenceDate;
+            DLYLog(@"[DLYRecordTimer]定时器(%.3f秒) - Tick - 当前剩余:%.3f秒 - Tick时间:%@ - 与上一次Tick的误差:%.3f秒", self.duration, self.tickRemain, [self _timeStringWithDate:now], diff);
+        }
+        else
+        {
+            break;
         }
     }
     
-    self.tickRemain = 0;
     NSDate* now = [NSDate date];
-    self.stopIntervalDiff = now.timeIntervalSinceReferenceDate;
-    NSTimeInterval diff = self.stopIntervalDiff - self.currentIntervalDiff - sleepInterval;
-    NSTimeInterval totalDiff = self.stopIntervalDiff - self.startIntervalDiff - self.duration;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if(self.timerDelegate)
-        {
-            [self.timerDelegate timerStopped:self.tickRemain];
-        }
-    });
+    if([self.tickThread isCancelled])
+    {
+        DLYLog(@"[DLYRecordTimer]定时器(%.3f秒) - 定时取消 - 当前剩余:%.3f秒", self.duration, self.tickRemain);
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            if(self.timerDelegate)
+            {
+                [self.timerDelegate timerCanceled:self.tickRemain];
+            }
+        });
+    }
+    else
+    {
+        self.tickRemain = 0;
+        self.stopIntervalDiff = now.timeIntervalSinceReferenceDate;
+        NSTimeInterval diff = self.stopIntervalDiff - self.currentIntervalDiff - sleepInterval;
+        NSTimeInterval totalDiff = self.stopIntervalDiff - self.startIntervalDiff - self.duration;
+        DLYLog(@"[DLYRecordTimer]定时器(%.3f秒) - 定时停止 - 当前剩余:%.3f秒 - Tick时间:%@ - 与上一次Tick的误差:%.3f秒", self.duration, self.tickRemain, [self _timeStringWithDate:now], diff);
+        DLYLog(@"[DLYRecordTimer]定时器(%.3f秒) - 定时总结 - 与启动时间的误差:%.3f秒", self.duration, totalDiff);
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            if(self.timerDelegate)
+            {
+                [self.timerDelegate timerStopped:self.tickRemain];
+            }
+        });
+    }
 }
 -(void) cancelTick
 {
@@ -143,7 +179,7 @@
 {
     BOOL flag = NO;
     
-    flag = (0 < self.period && 0 < self.duration && self.period <= self.duration) ? YES : NO;
+    flag = (0 < self.period && 0 < self.duration) ? YES : NO;
     
     return flag;
 }
@@ -156,6 +192,5 @@
     
     return dateTime;
 }
-
 
 @end

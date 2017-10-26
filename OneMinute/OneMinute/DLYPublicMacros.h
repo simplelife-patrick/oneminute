@@ -29,15 +29,6 @@
 #define kTempFolder @"Temp"
 #define kBGMFolder @"BGM"
 
-#define kPartNum @"kPartNum"
-#define kMoviePath @"kMoviePath"
-#define kMovieTime @"kMovieTime"
-#define kMovieSpeed @"kMovieSpeed"
-#define kMovieIndex @"kMovieIndex"
-#define kMovieSpeed_Normal @"kMovieSpeed_Normal"
-#define kMovieSpeed_Fast @"kMovieSpeed_Fast"
-#define kMovieSpeed_Slow @"kMovieSpeed_Slow"
-
 //默认模板
 #define kDEFAULTTEMPLATENAME  @"Primary.dly"
 //全局当前模板
