@@ -8,7 +8,6 @@
 
 #import "DLYSession.h"
 #import "DLYMiniVlogTemplate.h"
-#import "DLYResource.h"
 
 @implementation DLYSession
 
@@ -16,27 +15,95 @@
     if (!_currentTemplate) {
         
         DLYMiniVlogTemplate *template = nil;
-        if ([[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY]) {
+        _resource = [[DLYResource alloc] init];
+        
+        NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENT_TEMPLATE_ID];
+
+        if (savedCurrentTemplateName) {//有保存模板
             
-            NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY];
-            DLYLog(@"当前保存到模板名称 :%@",savedCurrentTemplateName);
-            template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
-            
-        }else{
+            BOOL isExitDraft = [self isExistDraftAtFile];
+            if (isExitDraft) {//有草稿
+                
+                double saveVersion = [[[NSUserDefaults standardUserDefaults] objectForKey:kCURRENT_TEMPLATE_VERSION] doubleValue];
+                template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:kDEFAULTTEMPLATENAME];
+                double version = [template.version doubleValue];
+                
+                if (saveVersion != version) {//模板已升级
+                    DLYLog(@"模板已升级!");
+                    //清空草稿
+                    BOOL isSuccess = [_resource removeCurrentAllPartFromDocument];
+                    DLYLog(@"%@",isSuccess ? @"成功删除旧模板的草稿片段!":@"删除旧模板的草稿片段失败!");
+                    template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
+
+                }else{//存在草稿.模板未升级
+                    template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
+                    
+                    NSArray *arr = [self.resource loadDraftPartsFromDocument];
+                    
+                    NSMutableArray *draftArr = [NSMutableArray array];
+                    for (NSURL *url in arr) {
+                        NSString *partPath = url.path;
+                        NSString *newPath = [partPath stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
+                        NSArray *arr = [newPath componentsSeparatedByString:@"part"];
+                        NSString *partNum = arr.lastObject;
+                        [draftArr addObject:partNum];
+                    }
+                    template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
+                    NSArray *parts = template.parts;
+                    
+                    //设置片段预处理状态
+                    for (int i = 0; i < [parts count]; i++) {
+                        
+                        DLYMiniVlogPart *part = parts[i];
+                        if (i == 0) {
+                            part.prepareRecord = @"1";
+                        }else {
+                            part.prepareRecord = @"0";
+                        }
+                        part.recordStatus = @"0";
+                        part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
+                        part.partTime = [self getDurationwithStartTime:part.dubStartTime andStopTime:part.dubStopTime];
+                        
+                    }
+                    //设置片段完成状态
+                    for (NSString *str in draftArr) {
+                        NSInteger num = [str integerValue];
+                        DLYMiniVlogPart *part = parts[num];
+                        part.recordStatus = @"1";
+                    }
+                    
+                    for (DLYMiniVlogPart *part1 in parts) {
+                        part1.prepareRecord = @"0";
+                    }
+                    
+                    for(int i = 0; i < [parts count]; i++)
+                    {
+                        DLYMiniVlogPart *part2 = parts[i];
+                        if([part2.recordStatus isEqualToString:@"0"])
+                        {
+                            part2.prepareRecord = @"1";
+                            break;
+                        }
+                    }
+                }
+            }else{//无草稿
+                template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
+            }
+        }else{//无保存模板
             DLYLog(@"当前保存的模板名称键值为空,加载默认模板");
             template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:kDEFAULTTEMPLATENAME];
         }
         DLYLog(@"当前加载的模板是 :%@",template.templateId);
-        
         return template;
     }else{
         return _currentTemplate;
     }
 }
-- (void)saveCurrentTemplateWithId:(NSString *)currentTemplateId{
+- (void) saveCurrentTemplateWithId:(NSString *)currentTemplateId version:(NSString *)version{
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:currentTemplateId forKey:kCURRENTTEMPLATEKEY];
+    [defaults setObject:currentTemplateId forKey:kCURRENT_TEMPLATE_ID];
+    [defaults setObject:version forKey:kCURRENT_TEMPLATE_VERSION];
     
     if ([defaults synchronize]) {
         DLYLog(@"当前模板保存成功!");
@@ -71,7 +138,7 @@
 }
 - (DLYMiniVlogTemplate *) getCurrentTemplate {
     
-    NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENTTEMPLATEKEY];
+    NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENT_TEMPLATE_ID];
     DLYMiniVlogTemplate *currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
     return currentTemplate;
 }
@@ -114,6 +181,40 @@
     }else{
         _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:@"Primary.dly"];
     }
+}
+- (NSString *)getDurationwithStartTime:(NSString *)startTime andStopTime:(NSString *)stopTime {
+    
+    int startDuration = 0;
+    int stopDuation = 0;
+    NSArray *startArr = [startTime componentsSeparatedByString:@":"];
+    for (int i = 0; i < 3; i ++) {
+        NSString *timeStr = startArr[i];
+        int time = [timeStr intValue];
+        if (i == 0) {
+            startDuration = startDuration + time * 60 * 1000;
+        }if (i == 1) {
+            startDuration = startDuration + time * 1000;
+        }else {
+            startDuration = startDuration + time;
+        }
+    }
+    
+    NSArray *stopArr = [stopTime componentsSeparatedByString:@":"];
+    for (int i = 0; i < 3; i ++) {
+        NSString *timeStr = stopArr[i];
+        int time = [timeStr intValue];
+        if (i == 0) {
+            stopDuation = stopDuation + time * 60 * 1000;
+        }if (i == 1) {
+            stopDuation = stopDuation + time * 1000;
+        }else {
+            stopDuation = stopDuation + time;
+        }
+    }
+    
+    float duration = (stopDuation - startDuration) * 0.001;
+    NSString *duraStr = [NSString stringWithFormat:@"%.3f", duration];
+    return duraStr;
 }
 
 @end

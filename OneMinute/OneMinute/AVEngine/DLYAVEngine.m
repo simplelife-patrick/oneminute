@@ -419,7 +419,7 @@
 //用来返回是前置摄像头还是后置摄像头
 - (AVCaptureDevice *)cameraWithPosition:(AVCaptureDevicePosition) position {
     
-    NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+    NSArray *devices = [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInWideAngleCamera] mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionUnspecified].devices;
     
     for (AVCaptureDevice *device in devices) {
         if ([device position] == position) {

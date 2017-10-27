@@ -69,8 +69,6 @@
     
     NSDate* now = [NSDate date];
     NSTimeInterval diff = now.timeIntervalSinceReferenceDate - self.startIntervalDiff - self.duration;
-    DLYLog(@"[DLYRecordTimer]定时器(%.3f秒) - 业务停止 - Tick时间:%@", self.duration, [self _timeStringWithDate:now]);
-    DLYLog(@"[DLYRecordTimer]定时器(%.3f秒) - 业务总结 - 与启动时间的误差:%.3f秒", self.duration, diff);
 }
 
 -(void) _tick
@@ -80,7 +78,6 @@
         NSDate* now = [NSDate date];
         self.startIntervalDiff = now.timeIntervalSinceReferenceDate;
         self.currentIntervalDiff = self.startIntervalDiff;
-        DLYLog(@"[DLYRecordTimer]定时器(%.3f秒) - 启动 - Tick时间:%@", self.duration, [self _timeStringWithDate:now]);
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if(self.timerDelegate)
@@ -126,7 +123,6 @@
             NSDate* now = [NSDate date];
             NSTimeInterval diff = now.timeIntervalSinceReferenceDate - self.currentIntervalDiff - sleepInterval;
             self.currentIntervalDiff = now.timeIntervalSinceReferenceDate;
-            DLYLog(@"[DLYRecordTimer]定时器(%.3f秒) - Tick - 当前剩余:%.3f秒 - Tick时间:%@ - 与上一次Tick的误差:%.3f秒", self.duration, self.tickRemain, [self _timeStringWithDate:now], diff);
         }
         else
         {
@@ -137,7 +133,6 @@
     NSDate* now = [NSDate date];
     if([self.tickThread isCancelled])
     {
-        DLYLog(@"[DLYRecordTimer]定时器(%.3f秒) - 定时取消 - 当前剩余:%.3f秒", self.duration, self.tickRemain);
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if(self.timerDelegate)
             {
@@ -151,8 +146,6 @@
         self.stopIntervalDiff = now.timeIntervalSinceReferenceDate;
         NSTimeInterval diff = self.stopIntervalDiff - self.currentIntervalDiff - sleepInterval;
         NSTimeInterval totalDiff = self.stopIntervalDiff - self.startIntervalDiff - self.duration;
-        DLYLog(@"[DLYRecordTimer]定时器(%.3f秒) - 定时停止 - 当前剩余:%.3f秒 - Tick时间:%@ - 与上一次Tick的误差:%.3f秒", self.duration, self.tickRemain, [self _timeStringWithDate:now], diff);
-        DLYLog(@"[DLYRecordTimer]定时器(%.3f秒) - 定时总结 - 与启动时间的误差:%.3f秒", self.duration, totalDiff);
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if(self.timerDelegate)
             {

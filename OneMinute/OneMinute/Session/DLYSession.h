@@ -8,6 +8,8 @@
 
 #import "DLYModule.h"
 #import "DLYMiniVlogTemplate.h"
+#import "DLYResource.h"
+
 
 @interface DLYSession : DLYModule
 
@@ -15,14 +17,14 @@
   当前模板
  */
 @property (nonatomic, strong) DLYMiniVlogTemplate                *currentTemplate;
-
+@property (nonatomic, strong) DLYResource                        *resource;
 
 /**
  保存当前拍摄模板
 
  @param currentTemplateId 当前模板名称
  */
-- (void) saveCurrentTemplateWithId:(NSString *)currentTemplateId;
+- (void) saveCurrentTemplateWithId:(NSString *)currentTemplateId version:(NSString *)version;
 
 /**
  获取当前模板
