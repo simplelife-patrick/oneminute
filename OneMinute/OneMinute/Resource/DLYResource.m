@@ -276,7 +276,7 @@
     }
 
 }
-- (void) removeCurrentAllPartFromDocument{
+- (BOOL) removeCurrentAllPartFromDocument{
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
     NSString *draftPath = [NSString stringWithFormat:@"%@/%@/%@",kPathDocument,kDataFolder,kDraftFolder];
@@ -290,6 +290,7 @@
                 if ([path hasSuffix:@"mp4"]) {
                     NSString *targetPath = [draftPath stringByAppendingFormat:@"/%@",path];
                     isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
+                    return isSuccess;
                 }
             }
             DLYLog(@"%@",isSuccess?@"成功删除Document全部草稿片段":@"删除Document全部草稿片段失败");
@@ -297,6 +298,7 @@
             DLYLog(@"现在Document中无视频片段");
         }
     }
+    return NO;
 }
 
 - (NSString *) saveDraftPartWithPartNum:(NSInteger)partNum{
