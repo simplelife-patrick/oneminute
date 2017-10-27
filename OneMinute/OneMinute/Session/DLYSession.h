@@ -16,7 +16,7 @@
 /**
   当前模板
  */
-@property (nonatomic, strong) DLYMiniVlogTemplate                *currentTemplate;
+@property (nonatomic, strong) NSString                           *currentTemplateName;
 @property (nonatomic, strong) DLYResource                        *resource;
 
 /**
