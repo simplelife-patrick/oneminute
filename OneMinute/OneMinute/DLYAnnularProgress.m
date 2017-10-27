@@ -29,9 +29,12 @@
 
 - (void)drawCycleProgress
 {
+    if (_animationTime > 0.0) {
+        [_progressLayer removeFromSuperlayer];
+    }
     CGPoint center = self.center;
     CGFloat radius = _circleRadius;
-    CGFloat startA = -M_PI_2 + M_PI * 2 * _progress;  //设置进度条起点位置
+    CGFloat startA = -M_PI_2 + M_PI * 2 * 0.01;  //设置进度条起点位置
     CGFloat endA = -M_PI_2;  //设置进度条终点位置
     
     //获取环形路径（画一个圆形，填充色透明，设置线框宽度为10，这样就获得了一个环形）
@@ -39,6 +42,7 @@
     _progressLayer.frame = self.bounds;
     _progressLayer.fillColor = _fillColor ? _fillColor.CGColor : [UIColor clearColor].CGColor;//填充色为无色
     _progressLayer.strokeColor = _lineColor ? _lineColor.CGColor : RGB(255, 0, 0).CGColor;//指定path的渲染颜色,这里可以设置任意不透明颜色
+    _keyPath = _keyPath ? _keyPath : @"strokeStart";
     _progressLayer.opacity = 1; //背景颜色的透明度
     _progressLayer.lineCap = kCALineCapRound;//指定线的边缘是圆的
     _progressLayer.lineWidth =  _lineWidth ? _lineWidth : 2.0;//线的宽度
@@ -46,7 +50,23 @@
     _progressLayer.path =[path CGPath]; //把path传递給layer，然后layer会处理相应的渲染，整个逻辑和CoreGraph是一致的。
     [self.layer addSublayer:_progressLayer];
     
-    
+    if (_animationTime > 0.0) {
+        NSString *animationKey = [NSString stringWithFormat:@"%@%@", _keyPath, @"Animation"];
+        CABasicAnimation *pathAnima = [CABasicAnimation animationWithKeyPath:_keyPath];
+        pathAnima.duration = _animationTime;
+        pathAnima.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+        pathAnima.fromValue = [NSNumber numberWithFloat:0.0f];
+        pathAnima.toValue = [NSNumber numberWithFloat:1.0f];
+        pathAnima.fillMode = kCAFillModeForwards;
+        pathAnima.removedOnCompletion = NO;
+        [_progressLayer addAnimation:pathAnima forKey:animationKey];
+    }
+}
+
+- (void)setAnimationTime:(CGFloat)animationTime
+{
+    _animationTime = animationTime;
+    [self setNeedsDisplay];
 }
 
 - (void)drawProgress:(CGFloat )progress
@@ -55,9 +75,7 @@
         _progress =progress;
         
     } completion:^(BOOL finished) {
-        
     }];
-    
     
     _progressLayer.opacity = 0;
     [self setNeedsDisplay];
@@ -69,7 +87,6 @@
         _progress =progress;
         
     } completion:^(BOOL finished) {
-        
     }];
     
     _progressLayer.strokeColor = color.CGColor;
@@ -80,9 +97,9 @@
 - (void)drawRect:(CGRect)rect {
     
     [self drawCycleProgress];
-    
 }
 
 
 
 @end
+

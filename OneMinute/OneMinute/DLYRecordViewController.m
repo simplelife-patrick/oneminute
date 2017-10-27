@@ -41,8 +41,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     BOOL isFront;
     BOOL isSlomoCamera;
     CGFloat _initialPinchZoom;
-    CGFloat shootNum;
     CGFloat durationTime;
+    double shootNum;
 }
 @property (nonatomic,assign) CGFloat                            beginGestureScale;//记录开始的缩放比例
 @property (nonatomic,assign) CGFloat                            effectiveScale;//最后的缩放比例
@@ -55,7 +55,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIView * videoView; //选择样片的view
 @property (nonatomic, strong) UIView * shootView; //拍摄界面
 @property (nonatomic, strong) UIView * timeView;
-@property (nonatomic, strong) NSTimer *shootTimer;          //拍摄读秒计时器
 @property (nonatomic, strong) NSTimer * prepareShootTimer; //准备拍摄片段闪烁的计时器
 @property (nonatomic, strong) DLYAnnularProgress * progressView;    //环形进度条
 @property (nonatomic, strong) UIImageView *imageView;
@@ -702,10 +701,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [[NSRunLoop currentRunLoop] addTimer:_prepareShootTimer forMode:NSRunLoopCommonModes];
     [_prepareShootTimer setFireDate:[NSDate distantFuture]];
     
-    _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
-    [[NSRunLoop currentRunLoop] addTimer:_shootTimer forMode:NSRunLoopCommonModes];
-    [_shootTimer setFireDate:[NSDate distantFuture]];
-    
     //右侧编辑页面
     self.playView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.recordBtn.x + self.recordBtn.width, SCREEN_HEIGHT)];
     self.playView.hidden = YES;
@@ -1277,6 +1272,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.alert.transform = CGAffineTransformMakeRotation(num);
         }];
     }
+    if (![DLYIndicatorView sharedIndicatorView].isHidden && [DLYIndicatorView sharedIndicatorView]) {
+        [DLYIndicatorView sharedIndicatorView].mainView.transform = CGAffineTransformMakeRotation(num);
+    }
     if (!self.normalBubble.isHidden && self.normalBubble) {
         self.normalBubble.flipState = self.newState;
     }
@@ -1406,7 +1404,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     NSInteger i = selectPartTag - 10000;
     DLYMiniVlogPart *part = partModelArray[i - 1];
-    
+    shootNum = 0.0;
     //        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     [self.AVEngine startRecordingWithPart:part];
     //        });
@@ -1458,36 +1456,24 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.shootView.hidden = NO;
         self.shootView.alpha = 1;
     }];
-    //    }
 }
 
 - (void) statutUpdateWithClockTick:(double)count{
-    NSInteger partNumber = selectPartTag - 10000;
-    DLYMiniVlogPart *part = partModelArray[partNumber - 1];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        if((int)(count * 100) % 100 == 0)
-        {
-            if (![self.timeNumber.text isEqualToString:@"1"]) {
-                self.timeNumber.text = [NSString stringWithFormat:@"%.0f",count];
+        if (![self.timeNumber.text isEqualToString:@"1"]) {
+            self.timeNumber.text = [NSString stringWithFormat:@"%d",(int)count];
+            if (shootNum < count) {
+                _progressView.animationTime = count;
+                shootNum = count;
             }
         }
     });
-    double partDuration = [part.duration doubleValue];
-    durationTime = partDuration;
-    shootNum = [part.duration intValue] - count;
-    [_shootTimer setFireDate:[NSDate distantPast]];
-}
-
-- (void)shootAction {
-    shootNum = shootNum + 0.1;
-    [_progressView drawProgress:shootNum / durationTime];
 }
 
 - (void)finishedRecording {
     NSInteger partNumber = selectPartTag - 10000;
     DLYMiniVlogPart *part = partModelArray[partNumber - 1];
-    [_shootTimer setFireDate:[NSDate distantFuture]];
     dispatch_async(dispatch_get_main_queue(), ^{
         self.cancelButton.hidden = YES;
         for(int i = 0; i < partModelArray.count; i++)
@@ -1644,6 +1630,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 //取消选择场景
 - (void)onClickCancelSelect:(UIButton *)sender {
+    [self cancelChooseSceneView];
+}
+
+- (void)cancelChooseSceneView {
     [DLYUserTrack recordAndEventKey:@"CancelSelect"];
     [UIView animateWithDuration:0.5f animations:^{
         if (self.newState == 1) {
@@ -1735,12 +1725,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //url放在这里
     DLYMiniVlogTemplate *template = typeModelArray[num];
     [DLYUserTrack recordAndEventKey:@"ChoosePlayVideo" andDescribeStr:template.templateTitle];
-
+    
     NSArray *urlNameArr = [template.sampleVideoName componentsSeparatedByString:@"/"];
     NSString *nameStr = [urlNameArr lastObject];
     NSString *videoName = [nameStr stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
     NSString *videoUrl = template.sampleVideoName;
-
+    
     //路径
     NSString *finishPath = [kPathDocument stringByAppendingFormat:@"/FinishVideo/%@.mp4", videoName];
     NSString *tempPath = [kCachePath stringByAppendingFormat:@"/%@.mp4", videoName];
@@ -1785,7 +1775,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)onClickCancelClick:(UIButton *)sender {
     [DLYUserTrack recordAndEventKey:@"CancelRecord"];
     [self.AVEngine cancelRecording];
-    [_shootTimer setFireDate:[NSDate distantFuture]];
     NSInteger partNum = selectPartTag - 10000 - 1;
     [self.resource removePartWithPartNumFormTemp:partNum];
     
@@ -2370,7 +2359,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         [self updateShootGuide];
         DLYLogInfo(@"点击了已拍摄片段");
-        [UIView animateWithDuration:0.5f animations:^{
+        [UIView animateWithDuration:0.1f animations:^{
             if (self.newState == 1) {
                 self.playButton.frame = CGRectMake(self.playView.width - 60 * SCALE_WIDTH, (SCREEN_HEIGHT - 152)/2, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
                 self.deletePartButton.frame = CGRectMake(self.playView.width - 60* SCALE_WIDTH, SCREEN_HEIGHT/2 + 76 - 60* SCALE_WIDTH, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
@@ -2383,9 +2372,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.deletePartButton.transform = CGAffineTransformMakeRotation(M_PI);
             }
             cursorTag = selectPartTag;
+        } completion:^(BOOL finished) {
             self.playView.hidden = NO;
             self.recordBtn.hidden = YES;
-        } completion:^(BOOL finished) {
             if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showPlayButtonPopup"]){
                 [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showPlayButtonPopup"];
                 self.normalBubble = [DLYPopupMenu showRelyOnView:self.playButton titles:@[@"预览视频片段"] icons:nil menuWidth:120 withState:self.newState delegate:self];
@@ -2652,6 +2641,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSInteger num = sender.tag - 1002;
     
     if(num == selectType) {
+        [self cancelChooseSceneView];
         return;
     }
     
@@ -2820,7 +2810,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }else {
         self.progressView.transform = CGAffineTransformMakeRotation(M_PI);
     }
-    _progressView.progress = 0.01;
     _progressView.circleRadius = 28;
     [_timeView addSubview:_progressView];
     
@@ -2943,8 +2932,18 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     } completion:^(BOOL finished) {
     }];
 }
-
-- (void)indicatorViewstopFlashAnimating {
+#pragma mark - 提示控件代理
+- (void)indicatorViewStartFlashAnimating {
+    NSArray *viewArr = self.navigationController.viewControllers;
+    if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
+        if (self.newState == 1) {
+            [DLYIndicatorView sharedIndicatorView].mainView.transform = CGAffineTransformMakeRotation(0);
+        }else {
+            [DLYIndicatorView sharedIndicatorView].mainView.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+    }
+}
+- (void)indicatorViewStopFlashAnimating {
     NSArray *viewArr = self.navigationController.viewControllers;
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
         
