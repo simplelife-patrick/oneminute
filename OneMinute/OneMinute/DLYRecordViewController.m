@@ -42,6 +42,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     BOOL isSlomoCamera;
     CGFloat _initialPinchZoom;
     CGFloat durationTime;
+    double shootNum;
 }
 @property (nonatomic,assign) CGFloat                            beginGestureScale;//记录开始的缩放比例
 @property (nonatomic,assign) CGFloat                            effectiveScale;//最后的缩放比例
@@ -1402,7 +1403,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     NSInteger i = selectPartTag - 10000;
     DLYMiniVlogPart *part = partModelArray[i - 1];
-    
+    shootNum = 0.0;
     //        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     [self.AVEngine startRecordingWithPart:part];
     //        });
@@ -1412,7 +1413,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     // change UI
     [self.shootView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [self createShootView];
-    float partDuration = [part.duration floatValue];
     for (DLYMiniVlogPart *part in partModelArray) {
         if([part.prepareRecord isEqualToString:@"1"])
         {
@@ -1454,14 +1454,18 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.backView.hidden = YES;
         self.shootView.hidden = NO;
         self.shootView.alpha = 1;
-        _progressView.animationTime = partDuration;
     }];
 }
 
 - (void) statutUpdateWithClockTick:(double)count{
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![self.timeNumber.text isEqualToString:@"1"]) {
             self.timeNumber.text = [NSString stringWithFormat:@"%d",(int)count];
+            if (shootNum < count) {
+                _progressView.animationTime = count;
+                shootNum = count;
+            }
         }
     });
 }
