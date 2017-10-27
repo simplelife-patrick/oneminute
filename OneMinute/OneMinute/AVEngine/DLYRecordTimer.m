@@ -22,6 +22,7 @@
 @property (nonatomic, assign) NSTimeInterval startIntervalDiff;
 @property (nonatomic, assign) NSTimeInterval currentIntervalDiff;
 @property (nonatomic, assign) NSTimeInterval stopIntervalDiff;
+@property (nonatomic, assign) NSTimeInterval cancelIntervalDiff;
 
 @end
 
@@ -51,6 +52,7 @@
     }
     else
     {
+
     }
 }
 
@@ -59,12 +61,11 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         if(self.timerDelegate)
         {
-            self.tickRemain = 0;
-            [self.timerDelegate businessFinished:self.tickRemain];
+            [self.timerDelegate businessFinished:0];
         }
     });
     
-    [self.tickThread cancel];
+//    [self.tickThread cancel];
     
     NSDate* now = [NSDate date];
     NSTimeInterval diff = now.timeIntervalSinceReferenceDate - self.startIntervalDiff - self.duration;
@@ -91,11 +92,23 @@
     BOOL tickCondition = [self _checkTickCondition];
     BOOL loopCondition = tickCondition;
     NSTimeInterval sleepInterval = self.period;
-    while (loopCondition && ![self.tickThread isCancelled])
+    while (loopCondition)
     {
-        sleepInterval = (self.tickRemain >= self.period) ? self.period : self.tickRemain;
+        if([self.tickThread isCancelled])
+        {
+            break;
+        }
+        
+        if(self.period > self.duration)
+        {
+            sleepInterval = self.duration;
+        }
+        else
+        {
+            sleepInterval = (self.tickRemain >= self.period) ? self.period : self.tickRemain;
+        }
         [NSThread sleepForTimeInterval:sleepInterval];
-        self.tickRemain = self.tickRemain - self.period;
+        self.tickRemain = self.tickRemain - sleepInterval;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if(self.timerDelegate)
             {
@@ -111,19 +124,35 @@
             NSTimeInterval diff = now.timeIntervalSinceReferenceDate - self.currentIntervalDiff - sleepInterval;
             self.currentIntervalDiff = now.timeIntervalSinceReferenceDate;
         }
+        else
+        {
+            break;
+        }
     }
     
-    self.tickRemain = 0;
     NSDate* now = [NSDate date];
-    self.stopIntervalDiff = now.timeIntervalSinceReferenceDate;
-    NSTimeInterval diff = self.stopIntervalDiff - self.currentIntervalDiff - sleepInterval;
-    NSTimeInterval totalDiff = self.stopIntervalDiff - self.startIntervalDiff - self.duration;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if(self.timerDelegate)
-        {
-            [self.timerDelegate timerStopped:self.tickRemain];
-        }
-    });
+    if([self.tickThread isCancelled])
+    {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            if(self.timerDelegate)
+            {
+                [self.timerDelegate timerCanceled:self.tickRemain];
+            }
+        });
+    }
+    else
+    {
+        self.tickRemain = 0;
+        self.stopIntervalDiff = now.timeIntervalSinceReferenceDate;
+        NSTimeInterval diff = self.stopIntervalDiff - self.currentIntervalDiff - sleepInterval;
+        NSTimeInterval totalDiff = self.stopIntervalDiff - self.startIntervalDiff - self.duration;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            if(self.timerDelegate)
+            {
+                [self.timerDelegate timerStopped:self.tickRemain];
+            }
+        });
+    }
 }
 -(void) cancelTick
 {
@@ -143,7 +172,7 @@
 {
     BOOL flag = NO;
     
-    flag = (0 < self.period && 0 < self.duration && self.period <= self.duration) ? YES : NO;
+    flag = (0 < self.period && 0 < self.duration) ? YES : NO;
     
     return flag;
 }
@@ -156,6 +185,5 @@
     
     return dateTime;
 }
-
 
 @end

@@ -99,9 +99,11 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
 - (void) removeCurrentAllPartFromTemp;
 
 /**
-  删除Document中全部草稿片段
+ 删除Document中全部草稿片段
+
+ @return 返回值
  */
-- (void) removeCurrentAllPartFromDocument;
+- (BOOL) removeCurrentAllPartFromDocument;
 
 /**
  删除Document中成片视频
