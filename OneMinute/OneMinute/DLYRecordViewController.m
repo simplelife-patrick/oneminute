@@ -41,7 +41,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     BOOL isFront;
     BOOL isSlomoCamera;
     CGFloat _initialPinchZoom;
-    CGFloat shootNum;
     CGFloat durationTime;
 }
 @property (nonatomic,assign) CGFloat                            beginGestureScale;//记录开始的缩放比例
@@ -55,7 +54,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIView * videoView; //选择样片的view
 @property (nonatomic, strong) UIView * shootView; //拍摄界面
 @property (nonatomic, strong) UIView * timeView;
-@property (nonatomic, strong) NSTimer *shootTimer;          //拍摄读秒计时器
 @property (nonatomic, strong) NSTimer * prepareShootTimer; //准备拍摄片段闪烁的计时器
 @property (nonatomic, strong) DLYAnnularProgress * progressView;    //环形进度条
 @property (nonatomic, strong) UIImageView *imageView;
@@ -700,10 +698,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     _prepareShootTimer = [NSTimer scheduledTimerWithTimeInterval:0.6 target:self selector:@selector(prepareShootAction) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:_prepareShootTimer forMode:NSRunLoopCommonModes];
     [_prepareShootTimer setFireDate:[NSDate distantFuture]];
-    
-    _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(shootAction) userInfo:nil repeats:YES];
-    [[NSRunLoop currentRunLoop] addTimer:_shootTimer forMode:NSRunLoopCommonModes];
-    [_shootTimer setFireDate:[NSDate distantFuture]];
     
     //右侧编辑页面
     self.playView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.recordBtn.x + self.recordBtn.width, SCREEN_HEIGHT)];
@@ -1418,6 +1412,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     // change UI
     [self.shootView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [self createShootView];
+    float partDuration = [part.duration floatValue];
     for (DLYMiniVlogPart *part in partModelArray) {
         if([part.prepareRecord isEqualToString:@"1"])
         {
@@ -1459,34 +1454,21 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.backView.hidden = YES;
         self.shootView.hidden = NO;
         self.shootView.alpha = 1;
+        _progressView.animationTime = partDuration;
     }];
-    //    }
 }
 
 - (void) statutUpdateWithClockTick:(double)count{
-    NSInteger partNumber = selectPartTag - 10000;
-    DLYMiniVlogPart *part = partModelArray[partNumber - 1];
-
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![self.timeNumber.text isEqualToString:@"1"]) {
             self.timeNumber.text = [NSString stringWithFormat:@"%d",(int)count];
         }
     });
-    double partDuration = [part.duration doubleValue];
-    durationTime = partDuration;
-    shootNum = [part.duration intValue] - count;
-    [_shootTimer setFireDate:[NSDate distantPast]];
-}
-
-- (void)shootAction {
-    shootNum = shootNum + 0.1;
-    [_progressView drawProgress:shootNum / durationTime];
 }
 
 - (void)finishedRecording {
     NSInteger partNumber = selectPartTag - 10000;
     DLYMiniVlogPart *part = partModelArray[partNumber - 1];
-    [_shootTimer setFireDate:[NSDate distantFuture]];
     dispatch_async(dispatch_get_main_queue(), ^{
         self.cancelButton.hidden = YES;
         for(int i = 0; i < partModelArray.count; i++)
@@ -1738,12 +1720,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //url放在这里
     DLYMiniVlogTemplate *template = typeModelArray[num];
     [DLYUserTrack recordAndEventKey:@"ChoosePlayVideo" andDescribeStr:template.templateTitle];
-
+    
     NSArray *urlNameArr = [template.sampleVideoName componentsSeparatedByString:@"/"];
     NSString *nameStr = [urlNameArr lastObject];
     NSString *videoName = [nameStr stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
     NSString *videoUrl = template.sampleVideoName;
-
+    
     //路径
     NSString *finishPath = [kPathDocument stringByAppendingFormat:@"/FinishVideo/%@.mp4", videoName];
     NSString *tempPath = [kCachePath stringByAppendingFormat:@"/%@.mp4", videoName];
@@ -1788,7 +1770,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)onClickCancelClick:(UIButton *)sender {
     [DLYUserTrack recordAndEventKey:@"CancelRecord"];
     [self.AVEngine cancelRecording];
-    [_shootTimer setFireDate:[NSDate distantFuture]];
     NSInteger partNum = selectPartTag - 10000 - 1;
     [self.resource removePartWithPartNumFormTemp:partNum];
     
@@ -2824,7 +2805,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }else {
         self.progressView.transform = CGAffineTransformMakeRotation(M_PI);
     }
-    _progressView.progress = 0.01;
     _progressView.circleRadius = 28;
     [_timeView addSubview:_progressView];
     

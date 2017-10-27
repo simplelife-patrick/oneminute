@@ -29,9 +29,12 @@
 
 - (void)drawCycleProgress
 {
+    if (_animationTime > 0.0) {
+        [_progressLayer removeFromSuperlayer];
+    }
     CGPoint center = self.center;
     CGFloat radius = _circleRadius;
-    CGFloat startA = -M_PI_2 + M_PI * 2 * _progress;  //设置进度条起点位置
+    CGFloat startA = -M_PI_2 + M_PI * 2 * 0.01;  //设置进度条起点位置
     CGFloat endA = -M_PI_2;  //设置进度条终点位置
     
     //获取环形路径（画一个圆形，填充色透明，设置线框宽度为10，这样就获得了一个环形）
@@ -46,7 +49,22 @@
     _progressLayer.path =[path CGPath]; //把path传递給layer，然后layer会处理相应的渲染，整个逻辑和CoreGraph是一致的。
     [self.layer addSublayer:_progressLayer];
     
-    
+    if (_animationTime > 0.0) {
+        CABasicAnimation *pathAnima = [CABasicAnimation animationWithKeyPath:@"strokeStart"];
+        pathAnima.duration = _animationTime;
+        pathAnima.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+        pathAnima.fromValue = [NSNumber numberWithFloat:0.0f];
+        pathAnima.toValue = [NSNumber numberWithFloat:1.0f];
+        pathAnima.fillMode = kCAFillModeForwards;
+        pathAnima.removedOnCompletion = NO;
+        [_progressLayer addAnimation:pathAnima forKey:@"strokeStartAnimation"];
+    }
+}
+
+- (void)setAnimationTime:(CGFloat)animationTime
+{
+    _animationTime = animationTime;
+    [self setNeedsDisplay];
 }
 
 - (void)drawProgress:(CGFloat )progress
@@ -55,9 +73,7 @@
         _progress =progress;
         
     } completion:^(BOOL finished) {
-        
     }];
-    
     
     _progressLayer.opacity = 0;
     [self setNeedsDisplay];
@@ -69,7 +85,6 @@
         _progress =progress;
         
     } completion:^(BOOL finished) {
-        
     }];
     
     _progressLayer.strokeColor = color.CGColor;
@@ -80,9 +95,9 @@
 - (void)drawRect:(CGRect)rect {
     
     [self drawCycleProgress];
-    
 }
 
 
 
 @end
+

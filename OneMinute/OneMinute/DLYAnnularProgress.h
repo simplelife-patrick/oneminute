@@ -17,6 +17,7 @@
 - (void)drawProgress:(CGFloat )progress withColor:(UIColor *)color;
 
 @property (nonatomic, assign) CGFloat progress;
+@property (nonatomic, assign) CGFloat animationTime;
 @property (nonatomic, strong) CAShapeLayer *progressLayer;
 @property (nonatomic, assign) CGFloat circleRadius;
 
@@ -30,3 +31,4 @@
 @property (nonatomic, strong) UIColor *fillColor;
 
 @end
+
