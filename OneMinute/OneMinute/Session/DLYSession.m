@@ -36,6 +36,7 @@
                     template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
                     return template;
                 }else{//存在草稿.模板未升级
+                    DLYLog(@"模板版本校验OK!");
                     template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
                     return template;
                 }

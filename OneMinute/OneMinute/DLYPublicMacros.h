@@ -30,7 +30,7 @@
 #define kBGMFolder @"BGM"
 
 //默认模板
-#define kDEFAULTTEMPLATENAME  @"Primary.dly"
+#define kDEFAULTTEMPLATENAME  @"Default.dly"
 //全局当前模板
 #define kCURRENT_TEMPLATE_ID  @"CURRENTTEMPLATEID"
 #define kCURRENT_TEMPLATE_VERSION  @"CURRENTTEMPLATEVERSION"
