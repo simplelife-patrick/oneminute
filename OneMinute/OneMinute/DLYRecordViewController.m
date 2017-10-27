@@ -89,6 +89,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIButton *sureBtn;            //确定切换场景
 @property (nonatomic, strong) UIButton *giveUpBtn;          //放弃切换场景
 @property (nonatomic, strong) UIView *typeView;             //场景view
+@property (nonatomic, strong) UIView *filmView;             //样片view
 @property (nonatomic, strong) DLYPopupMenu *partBubble;     //删除单个气泡
 @property (nonatomic, strong) DLYPopupMenu *allBubble;      //删除全部气泡
 @property (nonatomic, strong) DLYPopupMenu *normalBubble;   //普通气泡
@@ -1228,13 +1229,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.giveUpBtn.transform = CGAffineTransformMakeRotation(num);
             }];
         }
-        for(int i = 0; i < typeModelArray.count; i++)
-        {
-            UIView *view = (UIView *)[self.view viewWithTag:101 + i];
-            [UIView animateWithDuration:0.5f animations:^{
-                view.transform = CGAffineTransformMakeRotation(num);
-            }];
-        }
+        self.typeView.transform = CGAffineTransformMakeRotation(num);
+        
     }
     if (!self.videoView.isHidden) {
         if (!self.videoDisapper.isHidden && self.videoDisapper) {
@@ -1259,13 +1255,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.videoTitleLabel.transform = CGAffineTransformMakeRotation(num);
             }];
         }
-        for(int i = 0; i < typeModelArray.count; i++)
-        {
-            UIView *view = (UIView *)[self.view viewWithTag:500 + i];
-            [UIView animateWithDuration:0.5f animations:^{
-                view.transform = CGAffineTransformMakeRotation(num);
-            }];
-        }
+        self.filmView.transform = CGAffineTransformMakeRotation(num);
     }
     if (!self.alert.isHidden && self.alert) {
         [UIView animateWithDuration:0.5f animations:^{
@@ -1361,11 +1351,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.chooseTitleLabel.transform = CGAffineTransformMakeRotation(0);
             self.seeRush.frame = CGRectMake(SCREEN_WIDTH - 70, 21, 50, 17);
             self.seeRush.transform = CGAffineTransformMakeRotation(0);
-            for(int i = 0; i < typeModelArray.count; i++)
-            {
-                UIView *view = (UIView *)[self.view viewWithTag:101 + i];
-                view.transform = CGAffineTransformMakeRotation(0);
-            }
+            self.typeView.transform = CGAffineTransformMakeRotation(0);
         }else {
             self.scenceDisapper.frame = CGRectMake(20, SCREEN_HEIGHT - 34, 14, 14);
             self.scenceDisapper.transform = CGAffineTransformMakeRotation(M_PI);
@@ -1374,11 +1360,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.chooseTitleLabel.transform = CGAffineTransformMakeRotation(M_PI);
             self.seeRush.frame = CGRectMake(SCREEN_WIDTH - 70, SCREEN_HEIGHT - 38, 50, 17);
             self.seeRush.transform = CGAffineTransformMakeRotation(M_PI);
-            for(int i = 0; i < typeModelArray.count; i++)
-            {
-                UIView *view = (UIView *)[self.view viewWithTag:101 + i];
-                view.transform = CGAffineTransformMakeRotation(M_PI);
-            }
+            self.typeView.transform = CGAffineTransformMakeRotation(M_PI);
         }
     } completion:^(BOOL finished) {
         [DLYUserTrack recordAndEventKey:@"ChooseSceneViewStart"];
@@ -1689,22 +1671,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.videoTitleLabel.frame = CGRectMake(0, 19, 130, 20);
         self.videoTitleLabel.centerX = self.videoView.centerX;
         self.videoTitleLabel.transform = CGAffineTransformMakeRotation(0);
-        for(int i = 0; i < typeModelArray.count; i++)
-        {
-            UIView *view = (UIView *)[self.view viewWithTag:500 + i];
-            view.transform = CGAffineTransformMakeRotation(0);
-        }
+        self.filmView.transform = CGAffineTransformMakeRotation(0);
+        
     }else {
         self.videoDisapper.frame = CGRectMake(20, SCREEN_HEIGHT - 34, 14, 14);
         self.videoDisapper.transform = CGAffineTransformMakeRotation(M_PI);
         self.videoTitleLabel.frame = CGRectMake(0, SCREEN_HEIGHT - 39, 130, 20);
         self.videoTitleLabel.centerX = self.videoView.centerX;
         self.videoTitleLabel.transform = CGAffineTransformMakeRotation(M_PI);
-        for(int i = 0; i < typeModelArray.count; i++)
-        {
-            UIView *view = (UIView *)[self.view viewWithTag:500 + i];
-            view.transform = CGAffineTransformMakeRotation(M_PI);
-        }
+        self.filmView.transform = CGAffineTransformMakeRotation(M_PI);
     }
     
     self.videoView.hidden = NO;
@@ -2462,10 +2437,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         btn.centerX = view.width / 2;
         [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(changeTypeStatus:) forControlEvents:UIControlEventTouchUpInside];
-        //        btn.layer.cornerRadius = 30.5;
-        //        btn.clipsToBounds = YES;
-        //        btn.layer.borderWidth = 1,0;
-        //        btn.layer.borderColor = RGB(255, 255, 255).CGColor;
         [view addSubview:btn];
         
         UILabel *typeName = [[UILabel alloc]initWithFrame:CGRectMake(0, btn.bottom, 70, 22)];
@@ -2534,16 +2505,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.videoTitleLabel.text = @"观看样片";
     [self.videoView addSubview:self.videoTitleLabel];
     
-    UIView *typeView = [[UIView alloc]initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH - 80, 190)];
-    typeView.centerY = self.videoView.centerY;
-    [self.videoView addSubview:typeView];
-    UIScrollView * videoScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, typeView.width, typeView.height)];
+    self.filmView = [[UIView alloc]initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH - 80, 190)];
+    self.filmView.centerY = self.videoView.centerY;
+    [self.videoView addSubview:self.filmView];
+    UIScrollView * videoScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.filmView.width, self.filmView.height)];
     videoScrollView.showsVerticalScrollIndicator = NO;
     videoScrollView.showsHorizontalScrollIndicator = NO;
     videoScrollView.bounces = NO;
-    [typeView addSubview:videoScrollView];
+    [self.filmView addSubview:videoScrollView];
     
-    float width = (typeView.width - 50)/6;
+    float width = (self.filmView.width - 50)/6;
     videoScrollView.contentSize = CGSizeMake(width * 6 + 10 * 5, videoScrollView.height);
     for(int i = 0; i < typeModelArray.count; i ++)
     {
