@@ -34,64 +34,19 @@
                     BOOL isSuccess = [_resource removeCurrentAllPartFromDocument];
                     DLYLog(@"%@",isSuccess ? @"成功删除旧模板的草稿片段!":@"删除旧模板的草稿片段失败!");
                     template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
-
+                    return template;
                 }else{//存在草稿.模板未升级
                     template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
-                    
-                    NSArray *arr = [self.resource loadDraftPartsFromDocument];
-                    
-                    NSMutableArray *draftArr = [NSMutableArray array];
-                    for (NSURL *url in arr) {
-                        NSString *partPath = url.path;
-                        NSString *newPath = [partPath stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
-                        NSArray *arr = [newPath componentsSeparatedByString:@"part"];
-                        NSString *partNum = arr.lastObject;
-                        [draftArr addObject:partNum];
-                    }
-                    template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
-                    NSArray *parts = template.parts;
-                    
-                    //设置片段预处理状态
-                    for (int i = 0; i < [parts count]; i++) {
-                        
-                        DLYMiniVlogPart *part = parts[i];
-                        if (i == 0) {
-                            part.prepareRecord = @"1";
-                        }else {
-                            part.prepareRecord = @"0";
-                        }
-                        part.recordStatus = @"0";
-                        part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
-                        part.partTime = [self getDurationwithStartTime:part.dubStartTime andStopTime:part.dubStopTime];
-                        
-                    }
-                    //设置片段完成状态
-                    for (NSString *str in draftArr) {
-                        NSInteger num = [str integerValue];
-                        DLYMiniVlogPart *part = parts[num];
-                        part.recordStatus = @"1";
-                    }
-                    
-                    for (DLYMiniVlogPart *part1 in parts) {
-                        part1.prepareRecord = @"0";
-                    }
-                    
-                    for(int i = 0; i < [parts count]; i++)
-                    {
-                        DLYMiniVlogPart *part2 = parts[i];
-                        if([part2.recordStatus isEqualToString:@"0"])
-                        {
-                            part2.prepareRecord = @"1";
-                            break;
-                        }
-                    }
+                    return template;
                 }
             }else{//无草稿
                 template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
+                return template;
             }
         }else{//无保存模板
             DLYLog(@"当前保存的模板名称键值为空,加载默认模板");
             template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:kDEFAULTTEMPLATENAME];
+            return template;
         }
         DLYLog(@"当前加载的模板是 :%@",template.templateId);
         return template;
