@@ -42,6 +42,7 @@
     _progressLayer.frame = self.bounds;
     _progressLayer.fillColor = _fillColor ? _fillColor.CGColor : [UIColor clearColor].CGColor;//填充色为无色
     _progressLayer.strokeColor = _lineColor ? _lineColor.CGColor : RGB(255, 0, 0).CGColor;//指定path的渲染颜色,这里可以设置任意不透明颜色
+    _keyPath = _keyPath ? _keyPath : @"strokeStart";
     _progressLayer.opacity = 1; //背景颜色的透明度
     _progressLayer.lineCap = kCALineCapRound;//指定线的边缘是圆的
     _progressLayer.lineWidth =  _lineWidth ? _lineWidth : 2.0;//线的宽度
@@ -50,14 +51,15 @@
     [self.layer addSublayer:_progressLayer];
     
     if (_animationTime > 0.0) {
-        CABasicAnimation *pathAnima = [CABasicAnimation animationWithKeyPath:@"strokeStart"];
+        NSString *animationKey = [NSString stringWithFormat:@"%@%@", _keyPath, @"Animation"];
+        CABasicAnimation *pathAnima = [CABasicAnimation animationWithKeyPath:_keyPath];
         pathAnima.duration = _animationTime;
         pathAnima.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
         pathAnima.fromValue = [NSNumber numberWithFloat:0.0f];
         pathAnima.toValue = [NSNumber numberWithFloat:1.0f];
         pathAnima.fillMode = kCAFillModeForwards;
         pathAnima.removedOnCompletion = NO;
-        [_progressLayer addAnimation:pathAnima forKey:@"strokeStartAnimation"];
+        [_progressLayer addAnimation:pathAnima forKey:animationKey];
     }
 }
 
