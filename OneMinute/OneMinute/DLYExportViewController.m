@@ -26,6 +26,7 @@
 @property (nonatomic, strong) NSTimer *shootTimer;//定时器
 @property (nonatomic, strong) UIButton *successButton;
 @property (nonatomic, strong) UIButton *completeButton;
+@property (nonatomic, strong) UIView *backView;
 
 @end
 
@@ -52,13 +53,20 @@
     self.centerView.centerX = self.view.centerX;
     [self.syntheticView addSubview:self.centerView];
     
+    self.backView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 58, 58)];
+    self.backView.centerX = self.centerView.width / 2;
+    self.backView.centerY = self.centerView.height / 2;
+    self.backView.layer.cornerRadius = 29;
+    self.backView.clipsToBounds = YES;
+    self.backView.layer.borderWidth = 2.0;
+    self.backView.layer.borderColor = [UIColor whiteColor].CGColor;
+    [self.centerView addSubview:self.backView];
     //圆形进度条
     self.progressView = [[DLYAnnularProgress alloc]initWithFrame:CGRectMake(0, 0, self.centerView.width, self.centerView.height)];
-    self.progressView.progress = 0.01;
     self.progressView.circleRadius = 28;
-    self.progressView.fillColor = [UIColor clearColor];
-    self.progressView.lineColor = [UIColor whiteColor];
+    self.progressView.keyPath = @"strokeEnd";
     [self.centerView addSubview:self.progressView];
+    self.progressView.animationTime = 3.0;
     
     //完成图片
     self.successButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.centerView.width, self.centerView.height)];
@@ -116,7 +124,6 @@
 - (void)exportAction {
     _shootTime += 0.01;
     
-    [_progressView drawProgress: _shootTime / 3.0 withColor:RGB(255, 0, 0)];
     if(_shootTime >= 3.0)
     {
         [_shootTimer invalidate];
@@ -126,6 +133,7 @@
 //完成之后（带延时操作）
 - (void)finishExportVideo {
     
+    self.backView.hidden = YES;
     self.progressView.hidden = YES;
     self.successButton.hidden = NO;
     self.remindLabel.text = @"影片已合成\n保存在本地相册";
@@ -172,7 +180,6 @@
         [UIView animateWithDuration:0.5 animations:^{
             NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeRight];
             [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-//            DLYLog(@"导出页面左转");
         }];
     }
 }
@@ -183,7 +190,6 @@
         [UIView animateWithDuration:0.5 animations:^{
             NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
             [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-//            DLYLog(@"导出页面右转");
         }];
     }
 }

@@ -17,8 +17,10 @@
 - (void)drawProgress:(CGFloat )progress withColor:(UIColor *)color;
 
 @property (nonatomic, assign) CGFloat progress;
+@property (nonatomic, assign) CGFloat animationTime;
 @property (nonatomic, strong) CAShapeLayer *progressLayer;
 @property (nonatomic, assign) CGFloat circleRadius;
+@property (nonatomic, copy) NSString *keyPath;
 
 // 线条宽度，默认为3.0；
 @property (nonatomic, assign) CGFloat lineWidth;
@@ -30,3 +32,4 @@
 @property (nonatomic, strong) UIColor *fillColor;
 
 @end
+
