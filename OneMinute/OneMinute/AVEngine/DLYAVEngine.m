@@ -1714,26 +1714,26 @@
         float rampOffsetValue = 1;
         
         _prePoint = CMTimeMake(stopTime - rampOffsetValue, 1);
-        CMTime duration = CMTimeSubtract(_stopTime, _prePoint);
+        CMTime duration = CMTimeSubtract(_stopTime, _startTime);
         
         CMTimeRange timeRange = CMTimeRangeMake(_startTime, duration);
         CMTimeRange preTimeRange = CMTimeRangeMake(_prePoint, CMTimeMake(2, 1));
         
         if (part.soundType == DLYMiniVlogAudioTypeMusic) {//空镜
-            [BGMParameters setVolume:part.BGMVolume / 100 atTime:_startTime];
-            [videoParameters setVolume:0 atTime:_startTime];
+            //            [BGMParameters setVolume:part.BGMVolume / 100 atTime:_startTime];
+            //            [videoParameters setVolume:0 atTime:_startTime];
             
-//            [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
-//            [BGMParameters setVolumeRampFromStartVolume:5.0 toEndVolume:0.4 timeRange:preTimeRange];
+            [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
+            //            [BGMParameters setVolumeRampFromStartVolume:5.0 toEndVolume:0.4 timeRange:preTimeRange];
             
-//            [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:timeRange];
+            [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:timeRange];
         }else if(part.soundType == DLYMiniVlogAudioTypeNarrate){//人声
-            [videoParameters setVolume:2.0 atTime:_startTime];
-            [BGMParameters setVolume:part.BGMVolume / 100 atTime:_startTime];
+            //            [videoParameters setVolume:2.0 atTime:_startTime];
+            //            [BGMParameters setVolume:part.BGMVolume / 100 atTime:_startTime];
             
-//            [videoParameters setVolumeRampFromStartVolume:2.0 toEndVolume:2.0 timeRange:timeRange];
-//            [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
-//            [BGMParameters setVolumeRampFromStartVolume:0.4 toEndVolume:5.0 timeRange:preTimeRange];
+            [videoParameters setVolumeRampFromStartVolume:2.0 toEndVolume:2.0 timeRange:timeRange];
+            [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
+            //            [BGMParameters setVolumeRampFromStartVolume:0.4 toEndVolume:5.0 timeRange:preTimeRange];
         }
     }
     audioMix.inputParameters = @[videoParameters,BGMParameters];
