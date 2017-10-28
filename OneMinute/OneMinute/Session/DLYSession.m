@@ -30,7 +30,7 @@
     }
     return template;
 }
-- (void) detectionTemplateForLaunch
+- (void) detectionTemplateForLaunchComplated:(ComplatedBlock)complated
 {
     NSString *_templateName = nil;
     NSString *_version;
@@ -55,6 +55,8 @@
                 DLYLog(@"模板版本已升级");
                 //删除草稿
                 [self.resource removeCurrentAllPartFromDocument];
+                complated(YES);
+                DLYLog(@"保存的模板版本已升级,此模板旧版本拍摄的草稿片段被清空");
             }
             _templateName = _savedCurrentTemplateName;
             _version = template.version;
@@ -63,6 +65,7 @@
             
             //删除草稿
             [self.resource removeCurrentAllPartFromDocument];
+            complated(YES);
             //加载默认模板
             _templateName = kDEFAULT_TEMPLATE_NAME;
         }
@@ -125,12 +128,7 @@
     }
     return templateListArrray;
 }
-- (DLYMiniVlogTemplate *) getCurrentTemplate {
-    
-    _savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENT_TEMPLATE_ID];
-    DLYMiniVlogTemplate *currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:_savedCurrentTemplateName];
-    return currentTemplate;
-}
+
 - (BOOL) isExistDraftAtFile {
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -147,6 +145,8 @@
             DLYLog(@"当前模板已经有 %lu 个完成的片段",[draftArray count]);
             if ([draftArray count]) {
                 return YES;
+            }else{
+                return NO;
             }
         }
     }

@@ -10,6 +10,7 @@
 #import "DLYMiniVlogTemplate.h"
 #import "DLYResource.h"
 
+typedef void(^ComplatedBlock)(BOOL isChangeAndCleared);
 
 @interface DLYSession : DLYModule
 
@@ -21,21 +22,16 @@
 
 /**
  启动前检测草稿
+ 
+ @param complated 模板版本升级,存在旧模板且被清空时返回YES
  */
-- (void) detectionTemplateForLaunch;
+- (void) detectionTemplateForLaunchComplated:(ComplatedBlock)complated;
 /**
  保存当前拍摄模板
 
  @param currentTemplateId 当前模板名称
  */
 - (void) saveCurrentTemplateWithId:(NSString *)currentTemplateId version:(NSString *)version;
-
-/**
- 获取当前模板
-
- @return 返回模板
- */
-- (DLYMiniVlogTemplate *)getCurrentTemplate;
 
 /**
  加载模板文件名称列表
