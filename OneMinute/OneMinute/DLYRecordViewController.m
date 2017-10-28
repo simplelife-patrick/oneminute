@@ -424,12 +424,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     @"\U0000e678", @"\U0000e680", @"\U0000e679", @"\U0000e683",
                     @"\U0000e67b", @"\U0000e681", @"\U0000e684", @"\U0000e67c"];
     
+    DLYMiniVlogTemplate *template = self.session.currentTemplate;
+  
     BOOL isExitDraft = [self.session isExistDraftAtFile];
     NSMutableArray *draftArr = [NSMutableArray array];
-    
     if (isExitDraft) {
         NSArray *arr = [self.resource loadDraftPartsFromDocument];
-        
         for (NSURL *url in arr) {
             NSString *partPath = url.path;
             NSString *newPath = [partPath stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
@@ -438,8 +438,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             [draftArr addObject:partNum];
         }
     }
-    ////////////////////////////////////////////////////////////
-    DLYMiniVlogTemplate *template = self.session.currentTemplate;
     [self.session saveCurrentTemplateWithId:template.templateId version:template.version];
     partModelArray = [NSMutableArray arrayWithArray:template.parts];
     
@@ -455,7 +453,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         part.partTime = [self getDurationwithStartTime:part.dubStartTime andStopTime:part.dubStopTime];
         
     }
-    /////////////////////////////////
+
     if (isExitDraft) {
         for (NSString *str in draftArr) {
             NSInteger num = [str integerValue];
@@ -478,7 +476,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         
     }
-    /////////////////////////////////
+
     typeModelArray = [[NSMutableArray alloc]init];
     //通用,美食,旅行,生活
     NSArray *typeNameArray = [self.session loadAllTemplateFile];
