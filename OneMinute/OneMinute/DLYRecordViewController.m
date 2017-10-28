@@ -93,6 +93,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) DLYPopupMenu *partBubble;     //删除单个气泡
 @property (nonatomic, strong) DLYPopupMenu *allBubble;      //删除全部气泡
 @property (nonatomic, strong) DLYPopupMenu *normalBubble;   //普通气泡
+@property (nonatomic, strong) DLYPopupMenu *videoBubble;   //样片气泡
 @property (nonatomic, strong) NSMutableArray *viewArr;      //视图数组
 @property (nonatomic, strong) NSMutableArray *bubbleTitleArr;//视图数组
 @property (nonatomic, assign) BOOL isAvalible;              //权限都已经许可
@@ -283,6 +284,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (self.normalBubble) {
         [self.normalBubble removeFromSuperview];
         self.normalBubble = nil;
+    }
+    if (self.videoBubble) {
+        [self.videoBubble removeFromSuperview];
+        self.videoBubble = nil;
     }
     if (self.allBubble) {
         [self.allBubble removeFromSuperview];
@@ -1274,6 +1279,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (!self.partBubble.isHidden && self.partBubble) {
         self.partBubble.flipState = self.newState;
     }
+    if (!self.videoBubble.isHidden && self.videoBubble) {
+        self.videoBubble.rotateState = self.newState;
+    }
 }
 
 #pragma mark ==== button点击事件
@@ -1370,9 +1378,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         //气泡
         if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showSeeRushPopup"]){
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showSeeRushPopup"];
-            self.normalBubble = [DLYPopupMenu showRelyOnView:self.seeRush titles:@[@"观看样片"] icons:nil menuWidth:120 withState:self.newState delegate:self];
-            self.normalBubble.showMaskAlpha = 1;
-            self.normalBubble.flipState = self.newState;
+            self.videoBubble = [DLYPopupMenu showRotateRelyOnView:self.seeRush titles:@[@"观看样片"] icons:nil menuWidth:120 withState:self.newState delegate:self];
+            self.videoBubble.showMaskAlpha = 1;
+            self.videoBubble.rotateState = self.newState;
         }
     }];
     
