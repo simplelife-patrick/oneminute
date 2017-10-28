@@ -73,7 +73,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIView *playView;             //单个片段编辑页面
 @property (nonatomic, strong) UIButton *playButton;         //播放单个视频
 @property (nonatomic, strong) UIButton *deletePartButton;   //删除单个视频
-@property (nonatomic, strong) UIButton *scenceDisapper;     //取消选择模板
+@property (nonatomic, strong) UIButton *sceneDisapper;      //取消选择模板
 @property (nonatomic, strong) UIButton *videoDisapper;      //取消观看样片
 @property (nonatomic, strong) UIImageView *warningIcon;     //拍摄指导
 @property (nonatomic, strong) UILabel *shootGuide;          //拍摄指导
@@ -1175,14 +1175,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     if (!self.sceneView.isHidden) {
         
-        if (!self.scenceDisapper.isHidden && self.scenceDisapper) {
+        if (!self.sceneDisapper.isHidden && self.sceneDisapper) {
             if (num == 0) {
-                self.scenceDisapper.frame = CGRectMake(20, 20, 14, 14);
+                self.sceneDisapper.frame = CGRectMake(20, 20, 14, 14);
             }else {
-                self.scenceDisapper.frame = CGRectMake(20, SCREEN_HEIGHT - 34, 14, 14);
+                self.sceneDisapper.frame = CGRectMake(SCREEN_WIDTH - 34, SCREEN_HEIGHT - 34, 14, 14);
             }
             [UIView animateWithDuration:0.5f animations:^{
-                self.scenceDisapper.transform = CGAffineTransformMakeRotation(num);
+                self.sceneDisapper.transform = CGAffineTransformMakeRotation(num);
             }];
         }
         if (!self.chooseTitleLabel.isHidden && self.chooseTitleLabel) {
@@ -1201,7 +1201,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             if (num == 0) {
                 self.seeRush.frame = CGRectMake(SCREEN_WIDTH - 70, 21, 50, 17);
             }else {
-                self.seeRush.frame = CGRectMake(SCREEN_WIDTH - 70, SCREEN_HEIGHT - 38, 50, 17);
+                self.seeRush.frame = CGRectMake(20, SCREEN_HEIGHT - 38, 50, 17);
             }
             [UIView animateWithDuration:0.5f animations:^{
                 self.seeRush.transform = CGAffineTransformMakeRotation(num);
@@ -1237,7 +1237,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             if (num == 0) {
                 self.videoDisapper.frame = CGRectMake(20, 20, 14, 14);
             }else {
-                self.videoDisapper.frame = CGRectMake(20, SCREEN_HEIGHT - 34, 14, 14);
+                self.videoDisapper.frame = CGRectMake(SCREEN_WIDTH - 34, SCREEN_HEIGHT - 34, 14, 14);
             }
             [UIView animateWithDuration:0.5f animations:^{
                 self.videoDisapper.transform = CGAffineTransformMakeRotation(num);
@@ -1344,8 +1344,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.partBubble = nil;
         }
         if (self.newState == 1) {
-            self.scenceDisapper.frame = CGRectMake(20, 20, 14, 14);
-            self.scenceDisapper.transform = CGAffineTransformMakeRotation(0);
+            self.sceneDisapper.frame = CGRectMake(20, 20, 14, 14);
+            self.sceneDisapper.transform = CGAffineTransformMakeRotation(0);
             self.chooseTitleLabel.frame = CGRectMake(0, 19, 130, 20);
             self.chooseTitleLabel.centerX = self.sceneView.centerX;
             self.chooseTitleLabel.transform = CGAffineTransformMakeRotation(0);
@@ -1353,12 +1353,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.seeRush.transform = CGAffineTransformMakeRotation(0);
             self.typeView.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.scenceDisapper.frame = CGRectMake(20, SCREEN_HEIGHT - 34, 14, 14);
-            self.scenceDisapper.transform = CGAffineTransformMakeRotation(M_PI);
+            self.sceneDisapper.frame = CGRectMake(SCREEN_WIDTH - 34, SCREEN_HEIGHT - 34, 14, 14);
+            self.sceneDisapper.transform = CGAffineTransformMakeRotation(M_PI);
             self.chooseTitleLabel.frame = CGRectMake(0, SCREEN_HEIGHT - 39, 130, 20);
             self.chooseTitleLabel.centerX = self.sceneView.centerX;
             self.chooseTitleLabel.transform = CGAffineTransformMakeRotation(M_PI);
-            self.seeRush.frame = CGRectMake(SCREEN_WIDTH - 70, SCREEN_HEIGHT - 38, 50, 17);
+            self.seeRush.frame = CGRectMake(20, SCREEN_HEIGHT - 38, 50, 17);
             self.seeRush.transform = CGAffineTransformMakeRotation(M_PI);
             self.typeView.transform = CGAffineTransformMakeRotation(M_PI);
         }
@@ -1674,7 +1674,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.filmView.transform = CGAffineTransformMakeRotation(0);
         
     }else {
-        self.videoDisapper.frame = CGRectMake(20, SCREEN_HEIGHT - 34, 14, 14);
+        self.videoDisapper.frame = CGRectMake(SCREEN_WIDTH - 34, SCREEN_HEIGHT - 34, 14, 14);
         self.videoDisapper.transform = CGAffineTransformMakeRotation(M_PI);
         self.videoTitleLabel.frame = CGRectMake(0, SCREEN_HEIGHT - 39, 130, 20);
         self.videoTitleLabel.centerX = self.videoView.centerX;
@@ -2385,12 +2385,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark ==== 创建选择场景view
 - (void)createSceneView {
     [self.view addSubview:[self sceneView]];
-    self.scenceDisapper = [[UIButton alloc]initWithFrame:CGRectMake(20, 20, 14, 14)];
+    self.sceneDisapper = [[UIButton alloc]initWithFrame:CGRectMake(20, 20, 14, 14)];
     UIEdgeInsets edgeInsets = {-20, -20, -20, -20};
-    [self.scenceDisapper setHitEdgeInsets:edgeInsets];
-    [self.scenceDisapper setImage:[UIImage imageWithIcon:@"\U0000e666" inFont:ICONFONT size:14 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
-    [self.scenceDisapper addTarget:self action:@selector(onClickCancelSelect:) forControlEvents:UIControlEventTouchUpInside];
-    [self.sceneView addSubview:self.scenceDisapper];
+    [self.sceneDisapper setHitEdgeInsets:edgeInsets];
+    [self.sceneDisapper setImage:[UIImage imageWithIcon:@"\U0000e666" inFont:ICONFONT size:14 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.sceneDisapper addTarget:self action:@selector(onClickCancelSelect:) forControlEvents:UIControlEventTouchUpInside];
+    [self.sceneView addSubview:self.sceneDisapper];
     
     self.chooseTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 19, 130, 28)];
     self.chooseTitleLabel.centerX = self.sceneView.centerX;
