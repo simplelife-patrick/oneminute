@@ -73,7 +73,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIView *playView;             //单个片段编辑页面
 @property (nonatomic, strong) UIButton *playButton;         //播放单个视频
 @property (nonatomic, strong) UIButton *deletePartButton;   //删除单个视频
-@property (nonatomic, strong) UIButton *scenceDisapper;     //取消选择模板
+@property (nonatomic, strong) UIButton *sceneDisapper;      //取消选择模板
 @property (nonatomic, strong) UIButton *videoDisapper;      //取消观看样片
 @property (nonatomic, strong) UIImageView *warningIcon;     //拍摄指导
 @property (nonatomic, strong) UILabel *shootGuide;          //拍摄指导
@@ -89,9 +89,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIButton *sureBtn;            //确定切换场景
 @property (nonatomic, strong) UIButton *giveUpBtn;          //放弃切换场景
 @property (nonatomic, strong) UIView *typeView;             //场景view
+@property (nonatomic, strong) UIView *filmView;             //样片view
 @property (nonatomic, strong) DLYPopupMenu *partBubble;     //删除单个气泡
 @property (nonatomic, strong) DLYPopupMenu *allBubble;      //删除全部气泡
 @property (nonatomic, strong) DLYPopupMenu *normalBubble;   //普通气泡
+@property (nonatomic, strong) DLYPopupMenu *videoBubble;    //样片气泡
 @property (nonatomic, strong) NSMutableArray *viewArr;      //视图数组
 @property (nonatomic, strong) NSMutableArray *bubbleTitleArr;//视图数组
 @property (nonatomic, assign) BOOL isAvalible;              //权限都已经许可
@@ -282,6 +284,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (self.normalBubble) {
         [self.normalBubble removeFromSuperview];
         self.normalBubble = nil;
+    }
+    if (self.videoBubble) {
+        [self.videoBubble removeFromSuperview];
+        self.videoBubble = nil;
     }
     if (self.allBubble) {
         [self.allBubble removeFromSuperview];
@@ -1174,14 +1180,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     if (!self.sceneView.isHidden) {
         
-        if (!self.scenceDisapper.isHidden && self.scenceDisapper) {
+        if (!self.sceneDisapper.isHidden && self.sceneDisapper) {
             if (num == 0) {
-                self.scenceDisapper.frame = CGRectMake(20, 20, 14, 14);
+                self.sceneDisapper.frame = CGRectMake(20, 20, 14, 14);
             }else {
-                self.scenceDisapper.frame = CGRectMake(20, SCREEN_HEIGHT - 34, 14, 14);
+                self.sceneDisapper.frame = CGRectMake(SCREEN_WIDTH - 34, SCREEN_HEIGHT - 34, 14, 14);
             }
             [UIView animateWithDuration:0.5f animations:^{
-                self.scenceDisapper.transform = CGAffineTransformMakeRotation(num);
+                self.sceneDisapper.transform = CGAffineTransformMakeRotation(num);
             }];
         }
         if (!self.chooseTitleLabel.isHidden && self.chooseTitleLabel) {
@@ -1200,7 +1206,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             if (num == 0) {
                 self.seeRush.frame = CGRectMake(SCREEN_WIDTH - 70, 21, 50, 17);
             }else {
-                self.seeRush.frame = CGRectMake(SCREEN_WIDTH - 70, SCREEN_HEIGHT - 38, 50, 17);
+                self.seeRush.frame = CGRectMake(20, SCREEN_HEIGHT - 38, 50, 17);
             }
             [UIView animateWithDuration:0.5f animations:^{
                 self.seeRush.transform = CGAffineTransformMakeRotation(num);
@@ -1228,20 +1234,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.giveUpBtn.transform = CGAffineTransformMakeRotation(num);
             }];
         }
-        for(int i = 0; i < typeModelArray.count; i++)
-        {
-            UIView *view = (UIView *)[self.view viewWithTag:101 + i];
-            [UIView animateWithDuration:0.5f animations:^{
-                view.transform = CGAffineTransformMakeRotation(num);
-            }];
-        }
+        self.typeView.transform = CGAffineTransformMakeRotation(num);
+        
     }
     if (!self.videoView.isHidden) {
         if (!self.videoDisapper.isHidden && self.videoDisapper) {
             if (num == 0) {
                 self.videoDisapper.frame = CGRectMake(20, 20, 14, 14);
             }else {
-                self.videoDisapper.frame = CGRectMake(20, SCREEN_HEIGHT - 34, 14, 14);
+                self.videoDisapper.frame = CGRectMake(SCREEN_WIDTH - 34, SCREEN_HEIGHT - 34, 14, 14);
             }
             [UIView animateWithDuration:0.5f animations:^{
                 self.videoDisapper.transform = CGAffineTransformMakeRotation(num);
@@ -1259,13 +1260,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.videoTitleLabel.transform = CGAffineTransformMakeRotation(num);
             }];
         }
-        for(int i = 0; i < typeModelArray.count; i++)
-        {
-            UIView *view = (UIView *)[self.view viewWithTag:500 + i];
-            [UIView animateWithDuration:0.5f animations:^{
-                view.transform = CGAffineTransformMakeRotation(num);
-            }];
-        }
+        self.filmView.transform = CGAffineTransformMakeRotation(num);
     }
     if (!self.alert.isHidden && self.alert) {
         [UIView animateWithDuration:0.5f animations:^{
@@ -1283,6 +1278,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     if (!self.partBubble.isHidden && self.partBubble) {
         self.partBubble.flipState = self.newState;
+    }
+    if (!self.videoBubble.isHidden && self.videoBubble) {
+        self.videoBubble.rotateState = self.newState;
     }
 }
 
@@ -1354,31 +1352,23 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.partBubble = nil;
         }
         if (self.newState == 1) {
-            self.scenceDisapper.frame = CGRectMake(20, 20, 14, 14);
-            self.scenceDisapper.transform = CGAffineTransformMakeRotation(0);
+            self.sceneDisapper.frame = CGRectMake(20, 20, 14, 14);
+            self.sceneDisapper.transform = CGAffineTransformMakeRotation(0);
             self.chooseTitleLabel.frame = CGRectMake(0, 19, 130, 20);
             self.chooseTitleLabel.centerX = self.sceneView.centerX;
             self.chooseTitleLabel.transform = CGAffineTransformMakeRotation(0);
             self.seeRush.frame = CGRectMake(SCREEN_WIDTH - 70, 21, 50, 17);
             self.seeRush.transform = CGAffineTransformMakeRotation(0);
-            for(int i = 0; i < typeModelArray.count; i++)
-            {
-                UIView *view = (UIView *)[self.view viewWithTag:101 + i];
-                view.transform = CGAffineTransformMakeRotation(0);
-            }
+            self.typeView.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.scenceDisapper.frame = CGRectMake(20, SCREEN_HEIGHT - 34, 14, 14);
-            self.scenceDisapper.transform = CGAffineTransformMakeRotation(M_PI);
+            self.sceneDisapper.frame = CGRectMake(SCREEN_WIDTH - 34, SCREEN_HEIGHT - 34, 14, 14);
+            self.sceneDisapper.transform = CGAffineTransformMakeRotation(M_PI);
             self.chooseTitleLabel.frame = CGRectMake(0, SCREEN_HEIGHT - 39, 130, 20);
             self.chooseTitleLabel.centerX = self.sceneView.centerX;
             self.chooseTitleLabel.transform = CGAffineTransformMakeRotation(M_PI);
-            self.seeRush.frame = CGRectMake(SCREEN_WIDTH - 70, SCREEN_HEIGHT - 38, 50, 17);
+            self.seeRush.frame = CGRectMake(20, SCREEN_HEIGHT - 38, 50, 17);
             self.seeRush.transform = CGAffineTransformMakeRotation(M_PI);
-            for(int i = 0; i < typeModelArray.count; i++)
-            {
-                UIView *view = (UIView *)[self.view viewWithTag:101 + i];
-                view.transform = CGAffineTransformMakeRotation(M_PI);
-            }
+            self.typeView.transform = CGAffineTransformMakeRotation(M_PI);
         }
     } completion:^(BOOL finished) {
         [DLYUserTrack recordAndEventKey:@"ChooseSceneViewStart"];
@@ -1388,9 +1378,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         //气泡
         if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showSeeRushPopup"]){
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showSeeRushPopup"];
-            self.normalBubble = [DLYPopupMenu showRelyOnView:self.seeRush titles:@[@"观看样片"] icons:nil menuWidth:120 withState:self.newState delegate:self];
-            self.normalBubble.showMaskAlpha = 1;
-            self.normalBubble.flipState = self.newState;
+            self.videoBubble = [DLYPopupMenu showRotateRelyOnView:self.seeRush titles:@[@"观看样片"] icons:nil menuWidth:120 withState:self.newState delegate:self];
+            self.videoBubble.showMaskAlpha = 1;
+            self.videoBubble.rotateState = self.newState;
         }
     }];
     
@@ -1688,22 +1678,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.videoTitleLabel.frame = CGRectMake(0, 19, 130, 20);
         self.videoTitleLabel.centerX = self.videoView.centerX;
         self.videoTitleLabel.transform = CGAffineTransformMakeRotation(0);
-        for(int i = 0; i < typeModelArray.count; i++)
-        {
-            UIView *view = (UIView *)[self.view viewWithTag:500 + i];
-            view.transform = CGAffineTransformMakeRotation(0);
-        }
+        self.filmView.transform = CGAffineTransformMakeRotation(0);
+        
     }else {
-        self.videoDisapper.frame = CGRectMake(20, SCREEN_HEIGHT - 34, 14, 14);
+        self.videoDisapper.frame = CGRectMake(SCREEN_WIDTH - 34, SCREEN_HEIGHT - 34, 14, 14);
         self.videoDisapper.transform = CGAffineTransformMakeRotation(M_PI);
         self.videoTitleLabel.frame = CGRectMake(0, SCREEN_HEIGHT - 39, 130, 20);
         self.videoTitleLabel.centerX = self.videoView.centerX;
         self.videoTitleLabel.transform = CGAffineTransformMakeRotation(M_PI);
-        for(int i = 0; i < typeModelArray.count; i++)
-        {
-            UIView *view = (UIView *)[self.view viewWithTag:500 + i];
-            view.transform = CGAffineTransformMakeRotation(M_PI);
-        }
+        self.filmView.transform = CGAffineTransformMakeRotation(M_PI);
     }
     
     self.videoView.hidden = NO;
@@ -2409,12 +2392,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark ==== 创建选择场景view
 - (void)createSceneView {
     [self.view addSubview:[self sceneView]];
-    self.scenceDisapper = [[UIButton alloc]initWithFrame:CGRectMake(20, 20, 14, 14)];
+    self.sceneDisapper = [[UIButton alloc]initWithFrame:CGRectMake(20, 20, 14, 14)];
     UIEdgeInsets edgeInsets = {-20, -20, -20, -20};
-    [self.scenceDisapper setHitEdgeInsets:edgeInsets];
-    [self.scenceDisapper setImage:[UIImage imageWithIcon:@"\U0000e666" inFont:ICONFONT size:14 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
-    [self.scenceDisapper addTarget:self action:@selector(onClickCancelSelect:) forControlEvents:UIControlEventTouchUpInside];
-    [self.sceneView addSubview:self.scenceDisapper];
+    [self.sceneDisapper setHitEdgeInsets:edgeInsets];
+    [self.sceneDisapper setImage:[UIImage imageWithIcon:@"\U0000e666" inFont:ICONFONT size:14 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.sceneDisapper addTarget:self action:@selector(onClickCancelSelect:) forControlEvents:UIControlEventTouchUpInside];
+    [self.sceneView addSubview:self.sceneDisapper];
     
     self.chooseTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 19, 130, 28)];
     self.chooseTitleLabel.centerX = self.sceneView.centerX;
@@ -2461,10 +2444,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         btn.centerX = view.width / 2;
         [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(changeTypeStatus:) forControlEvents:UIControlEventTouchUpInside];
-        //        btn.layer.cornerRadius = 30.5;
-        //        btn.clipsToBounds = YES;
-        //        btn.layer.borderWidth = 1,0;
-        //        btn.layer.borderColor = RGB(255, 255, 255).CGColor;
         [view addSubview:btn];
         
         UILabel *typeName = [[UILabel alloc]initWithFrame:CGRectMake(0, btn.bottom, 70, 22)];
@@ -2533,16 +2512,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.videoTitleLabel.text = @"观看样片";
     [self.videoView addSubview:self.videoTitleLabel];
     
-    UIView *typeView = [[UIView alloc]initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH - 80, 190)];
-    typeView.centerY = self.videoView.centerY;
-    [self.videoView addSubview:typeView];
-    UIScrollView * videoScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, typeView.width, typeView.height)];
+    self.filmView = [[UIView alloc]initWithFrame:CGRectMake(40, 0, SCREEN_WIDTH - 80, 190)];
+    self.filmView.centerY = self.videoView.centerY;
+    [self.videoView addSubview:self.filmView];
+    UIScrollView * videoScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.filmView.width, self.filmView.height)];
     videoScrollView.showsVerticalScrollIndicator = NO;
     videoScrollView.showsHorizontalScrollIndicator = NO;
     videoScrollView.bounces = NO;
-    [typeView addSubview:videoScrollView];
+    [self.filmView addSubview:videoScrollView];
     
-    float width = (typeView.width - 50)/6;
+    float width = (self.filmView.width - 50)/6;
     videoScrollView.contentSize = CGSizeMake(width * 6 + 10 * 5, videoScrollView.height);
     for(int i = 0; i < typeModelArray.count; i ++)
     {
