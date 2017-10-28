@@ -93,7 +93,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) DLYPopupMenu *partBubble;     //删除单个气泡
 @property (nonatomic, strong) DLYPopupMenu *allBubble;      //删除全部气泡
 @property (nonatomic, strong) DLYPopupMenu *normalBubble;   //普通气泡
-@property (nonatomic, strong) DLYPopupMenu *videoBubble;   //样片气泡
+@property (nonatomic, strong) DLYPopupMenu *videoBubble;    //样片气泡
 @property (nonatomic, strong) NSMutableArray *viewArr;      //视图数组
 @property (nonatomic, strong) NSMutableArray *bubbleTitleArr;//视图数组
 @property (nonatomic, assign) BOOL isAvalible;              //权限都已经许可
