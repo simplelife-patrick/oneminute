@@ -202,7 +202,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     self.isAvalible = [self monitorPermission];
     
-    [self.session detectionTemplateForLaunch];
+    [self.session detectionTemplateForLaunchComplated:^(BOOL isChangeAndCleared) {
+        DLYLog(@"%d",isChangeAndCleared ? @"此模板版本已升级,且存在旧模板拍摄的草稿,已被清空!":@"模板未升级");
+    }];
     
     [DLYIndicatorView sharedIndicatorView].delegate = self;
     self.isAppear = YES;

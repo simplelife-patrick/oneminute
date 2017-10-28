@@ -30,7 +30,7 @@
     }
     return template;
 }
-- (void) detectionTemplateForLaunch
+- (void) detectionTemplateForLaunchComplated:(ComplatedBlock)complated
 {
     NSString *_templateName = nil;
     NSString *_version;
@@ -63,6 +63,7 @@
             
             //删除草稿
             [self.resource removeCurrentAllPartFromDocument];
+            complated(YES);
             //加载默认模板
             _templateName = kDEFAULT_TEMPLATE_NAME;
         }
@@ -125,12 +126,7 @@
     }
     return templateListArrray;
 }
-- (DLYMiniVlogTemplate *) getCurrentTemplate {
-    
-    _savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENT_TEMPLATE_ID];
-    DLYMiniVlogTemplate *currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:_savedCurrentTemplateName];
-    return currentTemplate;
-}
+
 - (BOOL) isExistDraftAtFile {
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
