@@ -147,6 +147,8 @@
             DLYLog(@"当前模板已经有 %lu 个完成的片段",[draftArray count]);
             if ([draftArray count]) {
                 return YES;
+            }else{
+                return NO;
             }
         }
     }
