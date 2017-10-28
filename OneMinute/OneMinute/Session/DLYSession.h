@@ -20,6 +20,10 @@
 @property (nonatomic, strong) DLYResource                        *resource;
 
 /**
+ 启动前检测草稿
+ */
+- (void) detectionTemplateForLaunch;
+/**
  保存当前拍摄模板
 
  @param currentTemplateId 当前模板名称

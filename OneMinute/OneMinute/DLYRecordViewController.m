@@ -204,7 +204,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     self.isAvalible = [self monitorPermission];
     
-    //    [DLYThemesData sharedInstance];
+    [self.session detectionTemplateForLaunch];
     
     [DLYIndicatorView sharedIndicatorView].delegate = self;
     self.isAppear = YES;
@@ -1535,7 +1535,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.allBubble = nil;
         }
         sender.backgroundColor = RGBA(0, 0, 0, 0.4);
-        [self.resource removeCurrentAllPartFromTemp];
         [self.resource removeCurrentAllPartFromDocument];
         //数组初始化，view布局
         if (!self.playView.isHidden && self.playView) {
@@ -2561,7 +2560,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //确定切换模板
 - (void)onSureClickChangeTypeStatus {
     
-    [self.resource removeCurrentAllPartFromTemp];
     [self.resource removeCurrentAllPartFromDocument];
     
     //数组初始化，view布局
@@ -2633,7 +2631,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     if (isEmpty) {
         //数组初始化，view布局 弹出选择
-        [self.resource removeCurrentAllPartFromTemp];
+        [self.resource removeCurrentAllPartFromDocument];
         [self changeSceneWithSelectNum:num];
         [self initData];
         [self createPartViewLayout];

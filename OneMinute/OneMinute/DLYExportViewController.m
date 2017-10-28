@@ -112,7 +112,6 @@
 - (void)onClickComplete {
     [DLYUserTrack recordAndEventKey:@"ExportFinish"];
     DLYResource *resource = [[DLYResource alloc] init];
-    [resource removeCurrentAllPartFromTemp];
     [resource removeCurrentAllPartFromDocument];
     [resource removeProductFromDocument];
     NSArray *arr = self.navigationController.viewControllers;

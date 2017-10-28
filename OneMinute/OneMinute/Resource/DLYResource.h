@@ -103,7 +103,7 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
 
  @return 返回值
  */
-- (BOOL) removeCurrentAllPartFromDocument;
+- (void) removeCurrentAllPartFromDocument;
 
 /**
  删除Document中成片视频
