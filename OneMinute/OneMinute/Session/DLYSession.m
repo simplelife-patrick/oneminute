@@ -9,52 +9,84 @@
 #import "DLYSession.h"
 #import "DLYMiniVlogTemplate.h"
 
+@interface DLYSession ()
+
+@property (nonatomic, strong) NSString                *savedCurrentTemplateName;
+
+@end
+
 @implementation DLYSession
 
-- (NSString *) detectionForLaunch
-{
+
+-(DLYMiniVlogTemplate *)currentTemplate{
+    
     DLYMiniVlogTemplate *template = nil;
-    _resource = [[DLYResource alloc] init];
     
     NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENT_TEMPLATE_ID];
+    if (savedCurrentTemplateName) {
+        template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
+    }else{
+        template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:kDEFAULT_TEMPLATE_NAME];
+    }
+    return template;
+}
+- (void) detectionTemplateForLaunch
+{
+    NSString *_templateName = nil;
+    NSString *_version;
+    _resource = [[DLYResource alloc] init];
+    
+    _savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENT_TEMPLATE_ID];
+    NSString *saveVersion = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENT_TEMPLATE_VERSION];
     //1. 是否有保存的模板
-    if (savedCurrentTemplateName) {//有保存的模板
+    if (_savedCurrentTemplateName) {//有保存的模板
         
-        NSArray *templateArray = [self loadAllTemplateFile];
-        for (NSString *templateId in templateArray) {
-            //2. 保存的模板是否存在
-            if([templateId isEqualToString:savedCurrentTemplateName]){//保存的模板存在
-                DLYLog(@"保存的模板存在");
-                
-                //获取模板保存的版本号
-                double saveVersion = [[[NSUserDefaults standardUserDefaults] objectForKey:kCURRENT_TEMPLATE_VERSION] doubleValue];
-                //获取模板当前最新的版本号
-                template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
-                double version = [template.version doubleValue];
-                
-                //3. 此模板保存的版本号和最新的版本号是否一致
-                if (saveVersion == version) {//版本号一致
-                    DLYLog(@"模板版本校验OK!");
-                }else{//版本号不一样,模板已升级
-                    DLYLog(@"模板版本已升级");
-                    //删除草稿
-                    [self.resource removeCurrentAllPartFromDocument];
-                }
-                return savedCurrentTemplateName;
-            }else{
-                //保存的模板不存在
-                DLYLog(@"保存的模板不存在");
+        if([self isExistTemplate]){//保存的模板存在
+            //获取模板保存的版本号
+            double oldVersion = [saveVersion doubleValue];
+            //获取模板当前最新的版本号
+            DLYMiniVlogTemplate *template = [[DLYMiniVlogTemplate alloc] initWithTemplateId:_savedCurrentTemplateName];
+            double newVersion = [template.version doubleValue];
+            
+            //3. 此模板保存的版本号和最新的版本号是否一致
+            if (oldVersion == newVersion) {//版本号一致
+                DLYLog(@"模板版本校验OK!");
+            }else{//版本号不一样,模板已升级
+                DLYLog(@"模板版本已升级");
                 //删除草稿
                 [self.resource removeCurrentAllPartFromDocument];
-                //加载默认模板
-                return kDEFAULT_TEMPLATE_NAME;
             }
+            _templateName = _savedCurrentTemplateName;
+            _version = template.version;
+            
+        }else{//保存的模板不存在
+            
+            //删除草稿
+            [self.resource removeCurrentAllPartFromDocument];
+            //加载默认模板
+            _templateName = kDEFAULT_TEMPLATE_NAME;
         }
     }else{//无保存的模板
         DLYLog(@"当前保存的模板名称键值为空,重置当前模板为默认模板");
-        return kDEFAULT_TEMPLATE_NAME;
+        _templateName = _savedCurrentTemplateName;
     }
-    return nil;
+    [self saveCurrentTemplateWithId:_templateName version:_version];
+}
+- (BOOL) isExistTemplate
+{
+    BOOL isExist = NO;
+    NSArray *templateArray = [self loadAllTemplateFile];
+    for (NSString *templateId in templateArray) {
+        //2. 保存的模板是否存在
+        if([templateId isEqualToString:_savedCurrentTemplateName]){
+            DLYLog(@"保存的模板存在");
+            return YES;
+        }else{
+            isExist = NO;
+            DLYLog(@"保存的模板不存在");
+        }
+    }
+    return isExist;
 }
 - (void) saveCurrentTemplateWithId:(NSString *)currentTemplateId version:(NSString *)version{
     
@@ -95,8 +127,8 @@
 }
 - (DLYMiniVlogTemplate *) getCurrentTemplate {
     
-    NSString *savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENT_TEMPLATE_ID];
-    DLYMiniVlogTemplate *currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:savedCurrentTemplateName];
+    _savedCurrentTemplateName = [[NSUserDefaults standardUserDefaults] objectForKey:kCURRENT_TEMPLATE_ID];
+    DLYMiniVlogTemplate *currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:_savedCurrentTemplateName];
     return currentTemplate;
 }
 - (BOOL) isExistDraftAtFile {

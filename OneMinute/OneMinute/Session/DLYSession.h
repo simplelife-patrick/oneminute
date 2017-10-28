@@ -16,9 +16,13 @@
 /**
   当前模板
  */
-@property (nonatomic, strong) NSString                           *currentTemplateName;
+@property (nonatomic, strong) DLYMiniVlogTemplate                *currentTemplate;
 @property (nonatomic, strong) DLYResource                        *resource;
 
+/**
+ 启动前检测草稿
+ */
+- (void) detectionTemplateForLaunch;
 /**
  保存当前拍摄模板
 

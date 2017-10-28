@@ -32,8 +32,8 @@
 //默认模板
 #define kDEFAULT_TEMPLATE_NAME  @"Default.dly"
 //全局当前模板
-#define kCURRENT_TEMPLATE_ID  @"CURRENTTEMPLATEID"
-#define kCURRENT_TEMPLATE_VERSION  @"CURRENTTEMPLATEVERSION"
+#define kCURRENT_TEMPLATE_ID  @"CURRENT_TEMPLATE_ID"
+#define kCURRENT_TEMPLATE_VERSION  @"CURRENT_TEMPLATE_VERSION"
 #define kTEMPLATE_SAMPLE_API  @"http://dly.oss-cn-shanghai.aliyuncs.com/"
 
 #define kVideoHeaderFolder @"VideoHeader"
