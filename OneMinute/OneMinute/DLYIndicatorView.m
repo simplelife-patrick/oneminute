@@ -14,7 +14,6 @@
     BOOL isStop;
 }
 
-@property (nonatomic, strong) UIView *mainView;
 @property (nonatomic, strong) UILabel *titlelabel;
 @property (nonatomic, strong) NSTimer *flashTimer;
 @property (nonatomic, assign) NSInteger num;
@@ -105,6 +104,10 @@
 }
 
 - (void)startFlashAnimatingWithTitle:(NSString *)title {
+    self.mainView.transform = CGAffineTransformMakeRotation(0);
+    if (self.delegate && [self.delegate respondsToSelector:@selector(indicatorViewStartFlashAnimating)]) {
+        [self.delegate indicatorViewStartFlashAnimating];
+    }
     NSString *newStr = [title stringByReplacingOccurrencesOfString:@" " withString:@""];
     if (newStr.length <= 0) {
         self.titlelabel.text = @"处理中,请稍后";
@@ -131,8 +134,8 @@
     self.num = 0;
     [self.flashTimer setFireDate:[NSDate distantFuture]];
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(indicatorViewstopFlashAnimating)]) {
-        [self.delegate indicatorViewstopFlashAnimating];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(indicatorViewStopFlashAnimating)]) {
+        [self.delegate indicatorViewStopFlashAnimating];
     }
 }
 

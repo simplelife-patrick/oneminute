@@ -21,6 +21,7 @@
 @property (nonatomic, strong) NSTimer *flashTimer;
 @property (nonatomic, assign) NSInteger num;
 @property (nonatomic, strong) UIView *flashView;
+@property (nonatomic, strong) UILabel *versionLabel;
 
 @end
 
@@ -58,6 +59,16 @@
     self.flashTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(flashAnimation) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.flashTimer forMode:NSRunLoopCommonModes];
     self.num = 0;
+    
+    self.versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH - 60, SCREEN_HEIGHT - 25, 60, 25)];
+    self.versionLabel.textColor = RGB(134, 134, 134);
+    NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
+    NSString *appVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];
+    NSString *buildVersion = [infoDic objectForKey:@"CFBundleVersion"];
+    NSString *labelText = [NSString stringWithFormat:@"%@(%@)", appVersion,buildVersion];
+    self.versionLabel.text = labelText;
+    self.versionLabel.font = FONT_SYSTEM(14);
+    [self.view addSubview:self.versionLabel];
 }
 
 - (void)flashAnimation {

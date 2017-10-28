@@ -819,13 +819,11 @@
 
 -(void)timerAndBusinessStarted:(NSTimeInterval) time
 {
-    NSLog(@"[#####AVEngine] - 收到回调 - 计时和业务定时器同时启动，开始录制 - 倒计时时间（传给UI）:%.3f", time);
     _isRecording = YES;
 }
 
 -(void)timerTicked:(NSTimeInterval) time
 {
-    NSLog(@"[#####AVEngine] - 收到回调 - 计时定时器Tick - 倒计时时间（传给UI）:%.3f", time);
     if (self.delegate && [self.delegate respondsToSelector:@selector(statutUpdateWithClockTick:)]) {
         [self.delegate statutUpdateWithClockTick:time];
     }
@@ -833,13 +831,11 @@
 
 -(void)timerStopped:(NSTimeInterval) time
 {
-    NSLog(@"[#####AVEngine] - 收到回调 - 计时定时器停止 - 倒计时时间（传给UI）:%.3f", time);
 
 }
 
 -(void)businessFinished:(NSTimeInterval) time;
 {
-    NSLog(@"[#####AVEngine] - 收到回调 - 业务定时器停止 - 停止录制- 倒计时时间（传给UI）:%.3f", time);
     if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
         [self.delegate finishedRecording];
     }
@@ -853,12 +849,12 @@
 
 -(void)timerCanceled:(NSTimeInterval) time
 {
-    NSLog(@"[#####AVEngine] - 收到回调 - 定时器取消 - 倒计时时间（传给UI）:%.3f", time);
+
 }
 
 -(void)businessCanceled:(NSTimeInterval) time
 {
-    NSLog(@"[#####AVEngine] - 收到回调 - 业务取消 - 停止业务（录制视频）- 倒计时时间（传给UI）:%.3f", time);
+
 }
 
 #pragma mark - 视频速度处理 -

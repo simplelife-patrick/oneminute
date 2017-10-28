@@ -228,28 +228,7 @@
         [fileManager removeItemAtPath:targetPath error:nil];
     }
 }
-- (void) removeCurrentAllPartFromTemp
-{
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSString *tempPath = [NSString stringWithFormat:@"%@/%@/%@",kPathDocument,kDataFolder,kTempFolder];
 
-    if ([[NSFileManager defaultManager] fileExistsAtPath:tempPath]) {
-        
-        NSArray *draftArray = [self.fileManager contentsOfDirectoryAtPath:tempPath error:nil];
-        BOOL isSuccess = NO;
-        if ([draftArray count] != 0) {
-            for (NSString *path in draftArray) {
-                if ([path hasSuffix:@"mp4"]) {
-                    NSString *targetPath = [tempPath stringByAppendingFormat:@"/%@",path];
-                    isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
-                }
-            }
-            DLYLog(@"%@",isSuccess?@"成功删除Cache中全部草稿片段":@"删除Cache中全部草稿片段失败");
-        }else{
-            DLYLog(@"现在Cache中无视频片段");
-        }
-    }
-}
 - (void) removeProductFromDocument
 {
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -260,23 +239,21 @@
     if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
         
         NSArray *draftArray = [self.fileManager contentsOfDirectoryAtPath:productPath error:nil];
-        BOOL isSuccess = NO;
-        
         if ([draftArray count] != 0) {
             for (NSString *path in draftArray) {
                 if ([path hasSuffix:@"mp4"]) {
+                    BOOL isSuccess = NO;
                     NSString *targetPath = [productPath stringByAppendingFormat:@"/%@",path];
                     isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
                 }
             }
-            DLYLog(@"%@",isSuccess?@"成功删除Document中的成片视频":@"删除Document成片视频失败");
+            DLYLog(@"成功删除Document中的成片视频");
         }else{
             DLYLog(@"Document中无成片视频");
         }
     }
-
 }
-- (BOOL) removeCurrentAllPartFromDocument{
+- (void) removeCurrentAllPartFromDocument{
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
     NSString *draftPath = [NSString stringWithFormat:@"%@/%@/%@",kPathDocument,kDataFolder,kDraftFolder];
@@ -290,15 +267,13 @@
                 if ([path hasSuffix:@"mp4"]) {
                     NSString *targetPath = [draftPath stringByAppendingFormat:@"/%@",path];
                     isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
-                    return isSuccess;
                 }
             }
-            DLYLog(@"%@",isSuccess?@"成功删除Document全部草稿片段":@"删除Document全部草稿片段失败");
+            DLYLog(@"成功删除Document全部草稿片段");
         }else{
             DLYLog(@"现在Document中无视频片段");
         }
     }
-    return NO;
 }
 
 - (NSString *) saveDraftPartWithPartNum:(NSInteger)partNum{

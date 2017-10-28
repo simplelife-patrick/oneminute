@@ -43,7 +43,7 @@
                 DLYLog(@"模板脚本文件解析出错");
             }
         }else{
-            templateId = kDEFAULTTEMPLATENAME;
+            templateId = kDEFAULT_TEMPLATE_NAME;
             DLYLog(@"模板名称为空");
         }
     }
