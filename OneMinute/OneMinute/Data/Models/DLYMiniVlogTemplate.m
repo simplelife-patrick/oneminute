@@ -24,7 +24,7 @@
             NSData *decryptedData = [RNDecryptor decryptData:encryptedData withPassword:@"dlyvlog2016" error:&error];
             
             if (!error) {
-                DLYLog(@"JSON Data Dencrypt Success!");
+//                DLYLog(@"JSON Data Dencrypt Success!");
             }
             
             if (decryptedData) {

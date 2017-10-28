@@ -55,6 +55,8 @@
                 DLYLog(@"模板版本已升级");
                 //删除草稿
                 [self.resource removeCurrentAllPartFromDocument];
+                complated(YES);
+                DLYLog(@"保存的模板版本已升级,此模板旧版本拍摄的草稿片段被清空");
             }
             _templateName = _savedCurrentTemplateName;
             _version = template.version;
