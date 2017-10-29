@@ -83,6 +83,7 @@ UITableViewDataSource
 @property (nonatomic, assign) BOOL          isChangeDirection;
 @property (nonatomic, strong) UIView        *backView;
 @property (nonatomic, assign) CGFloat       backY;
+@property (nonatomic, assign) CGFloat       backX;
 @end
 
 
@@ -136,6 +137,34 @@ UITableViewDataSource
         
         absoluteRect = CGRectMake(x, y, width, height);
         
+    }else {
+        absoluteRect = [view convertRect:view.bounds toView:YBMainWindow];
+    }
+    
+    CGPoint relyPoint = CGPointMake(absoluteRect.origin.x + absoluteRect.size.width / 2, absoluteRect.origin.y + absoluteRect.size.height);
+    
+    DLYPopupMenu *popupMenu = [[DLYPopupMenu alloc] init];
+    popupMenu.point = relyPoint;
+    popupMenu.relyRect = absoluteRect;
+    popupMenu.titles = titles;
+    popupMenu.images = icons;
+    popupMenu.itemWidth = itemWidth;
+    popupMenu.delegate = delegate;
+    [popupMenu show];
+    return popupMenu;
+}
+
++ (DLYPopupMenu *)showRotateRelyOnView:(UIView *)view titles:(NSArray *)titles icons:(NSArray *)icons menuWidth:(CGFloat)itemWidth withState:(NSUInteger)stateNum delegate:(id<YBPopupMenuDelegate>)delegate
+{
+    CGRect absoluteRect;
+    if (stateNum == 2) {
+        CGRect newRect = [view convertRect:view.bounds toView:YBMainWindow];
+        CGFloat x = SCREEN_WIDTH - newRect.origin.x - newRect.size.width;
+        CGFloat y = SCREEN_HEIGHT - newRect.origin.y - newRect.size.height;
+        CGFloat width = newRect.size.width;
+        CGFloat height = newRect.size.height;
+        
+        absoluteRect = CGRectMake(x, y, width, height);
     }else {
         absoluteRect = [view convertRect:view.bounds toView:YBMainWindow];
     }
@@ -277,6 +306,7 @@ UITableViewDataSource
     self.frame = CGRectMake(0, 0, width, height);
     [_backView addSubview:self];
     _backY = self.backView.y;
+    _backX = self.backView.x;
     
     YBPopupMenuCell *cell = [self getLastVisibleCell];
     cell.isShowSeparator = NO;
@@ -784,6 +814,24 @@ UITableViewDataSource
     self.backView.transform = CGAffineTransformMakeScale(1.0, flipNum);
     YBPopupMenuCell *cell = [self getLastVisibleCell];
     cell.titleLabel.transform = CGAffineTransformMakeScale(flipNum, 1.0);
+}
+
+- (void)setRotateState:(NSInteger)rotateState
+{
+    _rotateState = rotateState;
+    CGFloat rotateNum;
+    if (rotateState == 2) {
+        //home在左
+        rotateNum = M_PI;
+        CGFloat x = SCREEN_WIDTH - _backX - self.backView.width;
+        CGFloat y = SCREEN_HEIGHT - _backY - self.backView.height;
+        self.backView.frame = CGRectMake(x, y, self.backView.width, self.backView.height);
+    }else {
+        //默认，home在右
+        rotateNum = 0;
+        self.backView.frame = CGRectMake(_backX, _backY, self.backView.width, self.backView.height);
+    }
+    self.backView.transform = CGAffineTransformMakeRotation(rotateNum);
 }
 
 @end
