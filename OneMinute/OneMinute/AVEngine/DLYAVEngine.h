@@ -36,7 +36,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
 @property (nonatomic, assign) CGFloat                                                 effectiveScale;
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *backCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *currentVideoDeviceInput;
-@property (nonatomic, strong) AVCaptureDevice                                         *videoDevice;
+@property (nonatomic, strong) AVCaptureDevice                                         *defaultVideoDevice;
 
 @property (nonatomic, assign) BOOL                                                    isRecording;
 
