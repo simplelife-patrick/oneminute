@@ -331,7 +331,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 #pragma mark - 数码变焦 1-3倍
 - (void)cameraBackgroundDidChangeZoom:(CGFloat)zoom {
-    AVCaptureDevice *captureDevice = self.AVEngine.videoDevice;
+    AVCaptureDevice *captureDevice = self.AVEngine.defaultVideoDevice;
     NSError *error;
     if ([captureDevice lockForConfiguration:&error]) {
         [captureDevice rampToVideoZoomFactor:zoom withRate:50];
@@ -386,24 +386,24 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     // 2
     if (recogniser.state == UIGestureRecognizerStateBegan)
     {
-        _initialPinchZoom = self.AVEngine.videoDevice.videoZoomFactor;
+        _initialPinchZoom = self.AVEngine.defaultVideoDevice.videoZoomFactor;
     }
     
     // 3
     NSError *error = nil;
-    [self.AVEngine.videoDevice lockForConfiguration:&error];
+    [self.AVEngine.defaultVideoDevice lockForConfiguration:&error];
     
     if (!error) {
         CGFloat zoomFactor;
         CGFloat scale = recogniser.scale;
         if (scale < 1.0f) {
             // 4
-            zoomFactor = _initialPinchZoom - pow(self.AVEngine.videoDevice.activeFormat.videoMaxZoomFactor, 1.0f - recogniser.scale);
+            zoomFactor = _initialPinchZoom - pow(self.AVEngine.defaultVideoDevice.activeFormat.videoMaxZoomFactor, 1.0f - recogniser.scale);
         }
         else
         {
             // 5
-            zoomFactor = _initialPinchZoom + pow(self.AVEngine.videoDevice.activeFormat.videoMaxZoomFactor, (recogniser.scale - 1.0f) / 2.0f);
+            zoomFactor = _initialPinchZoom + pow(self.AVEngine.defaultVideoDevice.activeFormat.videoMaxZoomFactor, (recogniser.scale - 1.0f) / 2.0f);
         }
         
         // 6
@@ -411,10 +411,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         zoomFactor = MAX(1.0f, zoomFactor);
         
         // 7
-        [self.AVEngine.videoDevice setVideoZoomFactor:zoomFactor];
+        [self.AVEngine.defaultVideoDevice setVideoZoomFactor:zoomFactor];
         
         // 8
-        [self.AVEngine.videoDevice unlockForConfiguration];
+        [self.AVEngine.defaultVideoDevice unlockForConfiguration];
     }
 }
 #pragma mark ==== 初始化数据

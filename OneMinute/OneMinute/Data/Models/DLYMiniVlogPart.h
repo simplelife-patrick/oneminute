@@ -63,16 +63,6 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
  */
 @property (nonatomic, copy)   NSString                      *prepareRecord;
 
-/**
- 滤镜类型名称
- */
-@property (nonatomic, strong) NSString                      *filter;
-
-/**
- 是否完成拍摄
- */
-@property (nonatomic, assign) BOOL                          *isRecordFinished;
-
 #pragma mark - 需要在模板脚本中读取的属性 -
 /**
  片段序号

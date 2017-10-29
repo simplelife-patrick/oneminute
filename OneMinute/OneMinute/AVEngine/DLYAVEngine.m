@@ -28,11 +28,11 @@
 @interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate,AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate,DLYRecordTimerDelegate>
 {
     CMTime defaultVideoMaxFrameDuration;
+    CMTime defaultVideoMinFrameDuration;
     BOOL readyToRecordAudio;
     BOOL readyToRecordVideo;
     
     AVCaptureVideoOrientation videoOrientation;
-    AVCaptureVideoOrientation referenceOrientation;
     CMBufferQueueRef previewBufferQueue;
     
     CMTime _startTime;
@@ -63,7 +63,6 @@
 @property (nonatomic, strong) AVCaptureDeviceInput              *audioMicInput;
 @property (nonatomic, strong) AVCaptureDeviceFormat             *defaultFormat;
 @property (nonatomic, strong) AVCaptureConnection               *audioConnection;
-@property (nonatomic, strong) AVCaptureDevice                   *defaultVideoDevice;
 
 @property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;
 @property (nonatomic, strong) AVCaptureAudioDataOutput          *audioOutput;
@@ -192,13 +191,7 @@
 
 //        [self createFaceRecognitionTimer];
         
-        referenceOrientation = (AVCaptureVideoOrientation)UIDeviceOrientationPortrait;
-        
         NSError *error;
-
-        [self.captureSession beginConfiguration];
-        self.captureSession.sessionPreset = AVCaptureSessionPresetiFrame1280x720;
-        [self.captureSession commitConfiguration];
 
         //添加后置摄像头的输入
         if ([self.captureSession canAddInput:self.backCameraInput]) {
@@ -219,12 +212,16 @@
             DLYLog(@"Video input creation failed");
             return nil;
         }
+        [self.captureSession beginConfiguration];
+        if([self.captureSession canSetSessionPreset:AVCaptureSessionPresetiFrame1280x720]){
+            self.captureSession.sessionPreset = AVCaptureSessionPresetiFrame1280x720;
+        }
+        [self.captureSession commitConfiguration];
         
         // save the default format
-//        self.defaultFormat = self.currentVideoDeviceInput.device.activeFormat;
-        self.defaultFormat = self.videoDevice.activeFormat;
-        defaultVideoMaxFrameDuration = self.videoDevice.activeVideoMaxFrameDuration;
-        
+        self.defaultFormat = self.defaultVideoDevice.activeFormat;
+        defaultVideoMaxFrameDuration = self.defaultVideoDevice.activeVideoMaxFrameDuration;
+        defaultVideoMinFrameDuration = self.defaultVideoDevice.activeVideoMinFrameDuration;
         
         if (previewView) {
             self.captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.captureSession];
@@ -425,9 +422,10 @@
         if ([device position] == position) {
             
             // save the default format
+            DLYLog(@"device.activeFormat:%@", device.activeFormat);
             self.defaultFormat = device.activeFormat;
             defaultVideoMaxFrameDuration = device.activeVideoMaxFrameDuration;
-            DLYLog(@"device.activeFormat:%@", device.activeFormat);
+            defaultVideoMinFrameDuration = device.activeVideoMinFrameDuration;
             
 //            if([device isSmoothAutoFocusSupported]){
 ////                [device setSmoothAutoFocusEnabled:YES];
@@ -659,9 +657,13 @@
 - (void)switchFormatWithDesiredFPS:(CGFloat)desiredFPS
 {
     DLYLog(@"最终设定的最佳帧率: %f",desiredFPS);
-    [self.captureSession beginConfiguration];
     
-    AVCaptureDevice *device = self.defaultVideoDevice;
+    BOOL isRunning = self.captureSession.isRunning;
+
+    if (isRunning)  [self.captureSession stopRunning];
+
+    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    
     if (isUsedFlash){
         isUsedFlash = NO;
         if (flashMode) {
@@ -674,44 +676,98 @@
             [device unlockForConfiguration];
         }
     }
-    
+
     AVCaptureDeviceFormat *selectedFormat = nil;
-    int32_t maxWidth = 0;
-    AVFrameRateRange *frameRateRange = nil;
-    
+    int32_t maxWidth = 1280;
+
     for (AVCaptureDeviceFormat *format in [device formats]) {
-        
+
+//        DLYLog(@"######### - 遍历出的设备格式 :format:%@", format);
+
         for (AVFrameRateRange *range in format.videoSupportedFrameRateRanges) {
-            
+
             CMFormatDescriptionRef desc = format.formatDescription;
             CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(desc);
             int32_t width = dimensions.width;
             
-            if (range.minFrameRate <= desiredFPS && desiredFPS <= range.maxFrameRate && width >= maxWidth) {
+            if (range.minFrameRate <= desiredFPS && desiredFPS <= range.maxFrameRate && width == maxWidth) {
                 selectedFormat = format;
-                frameRateRange = range;
-                maxWidth = width;
+                DLYLog(@"######### - 最终选定的设备格式 :format:%@", format);
+                break;
             }
         }
+
+        if(selectedFormat)
+        {
+            break;
+        }
     }
-    
+
     if (selectedFormat)
     {
-        DLYLog(@"selected format:%@", selectedFormat);
         if ([device lockForConfiguration:nil]) {
-            
+
             device.activeFormat = selectedFormat;
             device.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);//设置帧率
             device.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
             [device unlockForConfiguration];
         }
+    }else{
+        //TODO: AVEngine - 找不到format如何处理?
+        DLYLog(@"用默认的format self.defaultFormat :%@", self.defaultFormat);
+        if ([device lockForConfiguration:nil]) {
+            
+            device.activeFormat = self.defaultFormat;
+            device.activeVideoMinFrameDuration = defaultVideoMinFrameDuration;//设置默认帧率
+            device.activeVideoMaxFrameDuration = defaultVideoMaxFrameDuration;
+            [device unlockForConfiguration];
+        }
     }
-    
-    self.captureSession.sessionPreset = AVCaptureSessionPresetiFrame1280x720;
-    
-    [self.captureSession commitConfiguration];
 
+    if (isRunning) [self.captureSession startRunning];
 }
+//- (void)switchFormatWithDesiredFPS:(CGFloat)desiredFPS
+//{
+//    BOOL isRunning = self.captureSession.isRunning;
+//
+//    if (isRunning)  [self.captureSession stopRunning];
+//
+//    AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+//    AVCaptureDeviceFormat *selectedFormat = nil;
+//    int32_t maxWidth = 0;
+//    AVFrameRateRange *frameRateRange = nil;
+//
+//    for (AVCaptureDeviceFormat *format in [videoDevice formats]) {
+//
+//        for (AVFrameRateRange *range in format.videoSupportedFrameRateRanges) {
+//
+//            CMFormatDescriptionRef desc = format.formatDescription;
+//            CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(desc);
+//            int32_t width = dimensions.width;
+//
+//            if (range.minFrameRate <= desiredFPS && desiredFPS <= range.maxFrameRate && width >= maxWidth) {
+//
+//                selectedFormat = format;
+//                frameRateRange = range;
+//                maxWidth = width;
+//            }
+//        }
+//    }
+//
+//    if (selectedFormat) {
+//
+//        if ([videoDevice lockForConfiguration:nil]) {
+//
+//            NSLog(@"selected format:%@", selectedFormat);
+//            videoDevice.activeFormat = selectedFormat;
+//            videoDevice.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+//            videoDevice.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+//            [videoDevice unlockForConfiguration];
+//        }
+//    }
+//
+//    if (isRunning) [self.captureSession startRunning];
+//}
 #pragma mark - 开始录制 -
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
     
@@ -729,17 +785,7 @@
         desiredFPS = 30;
     }
     
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(queue, ^{
-        [self switchFormatWithDesiredFPS:desiredFPS];
-    });
-    
-    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-    
-    // Don't update the reference orientation when the device orientation is face up/down or unknown.
-    if (UIDeviceOrientationIsLandscape(orientation)) {
-        referenceOrientation = (AVCaptureVideoOrientation)orientation;
-    }
+    [self switchFormatWithDesiredFPS:desiredFPS];
     
     NSString *_outputPath =  [self.resource saveDraftPartWithPartNum:_currentPart.partNum];
     if (_outputPath) {
@@ -747,6 +793,7 @@
         DLYLog(@"第 %lu 个片段的地址 :%@",_currentPart.partNum + 1,_currentPart.partUrl);
     }else{
         DLYLog(@"片段地址获取为空");
+        //TODO: AVEngine - 如果_outputPath为空怎么办?
     }
     
     NSError *error;
@@ -1016,14 +1063,14 @@
 
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
-
+    
     CMFormatDescriptionRef formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer);
     
     CFRetain(sampleBuffer);
     
     dispatch_async(_movieWritingQueue, ^{
         
-        if (self.assetWriter && (self.isRecording)) {
+        if (self.assetWriter && self.isRecording) {
             
             BOOL wasReadyToRecord = (readyToRecordAudio && readyToRecordVideo);
             
@@ -1034,6 +1081,7 @@
                 }
                 
                 if (readyToRecordVideo && readyToRecordAudio) {
+
                     [self writeSampleBuffer:sampleBuffer ofType:AVMediaTypeVideo];
                 }
             }
