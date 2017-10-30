@@ -1680,7 +1680,7 @@
         if (APPTEST) {
             CALayer *watermarkLayer = [CALayer layer];
             watermarkLayer = [self addWatermarkWithSize:renderSize];
-            watermarkLayer.position = CGPointMake(videoComposition.renderSize.width - 358, 8);
+            watermarkLayer.position = CGPointMake(videoComposition.renderSize.width - 366, 8);
             [parentLayer addSublayer:watermarkLayer];
         }
         
