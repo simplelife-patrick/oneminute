@@ -80,7 +80,6 @@
 		ADF0729E1FA03C8D003088AE /* DLYRecordTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF0729D1FA03C8D003088AE /* DLYRecordTimer.m */; };
 		ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */; };
 		ADFFF19A1F18A33000FB5BF7 /* DLYVolumeAutomation.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1841F18A33000FB5BF7 /* DLYVolumeAutomation.m */; };
-		ADFFF19B1F18A33000FB5BF7 /* DLYMiniVlogDraft.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1881F18A33000FB5BF7 /* DLYMiniVlogDraft.m */; };
 		ADFFF19C1F18A33000FB5BF7 /* DLYMiniVlogPart.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF18A1F18A33000FB5BF7 /* DLYMiniVlogPart.m */; };
 		ADFFF19D1F18A33000FB5BF7 /* DLYMiniVlogProduct.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF18C1F18A33000FB5BF7 /* DLYMiniVlogProduct.m */; };
 		ADFFF19E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF18E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m */; };
@@ -231,8 +230,6 @@
 		ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMobileDevice.m; sourceTree = "<group>"; };
 		ADFFF1831F18A33000FB5BF7 /* DLYVolumeAutomation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYVolumeAutomation.h; sourceTree = "<group>"; };
 		ADFFF1841F18A33000FB5BF7 /* DLYVolumeAutomation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYVolumeAutomation.m; sourceTree = "<group>"; };
-		ADFFF1871F18A33000FB5BF7 /* DLYMiniVlogDraft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMiniVlogDraft.h; sourceTree = "<group>"; };
-		ADFFF1881F18A33000FB5BF7 /* DLYMiniVlogDraft.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMiniVlogDraft.m; sourceTree = "<group>"; };
 		ADFFF1891F18A33000FB5BF7 /* DLYMiniVlogPart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMiniVlogPart.h; sourceTree = "<group>"; };
 		ADFFF18A1F18A33000FB5BF7 /* DLYMiniVlogPart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMiniVlogPart.m; sourceTree = "<group>"; };
 		ADFFF18B1F18A33000FB5BF7 /* DLYMiniVlogProduct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMiniVlogProduct.h; sourceTree = "<group>"; };
@@ -630,8 +627,6 @@
 		ADFFF1861F18A33000FB5BF7 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				ADFFF1871F18A33000FB5BF7 /* DLYMiniVlogDraft.h */,
-				ADFFF1881F18A33000FB5BF7 /* DLYMiniVlogDraft.m */,
 				ADFFF1891F18A33000FB5BF7 /* DLYMiniVlogPart.h */,
 				ADFFF18A1F18A33000FB5BF7 /* DLYMiniVlogPart.m */,
 				ADFFF18B1F18A33000FB5BF7 /* DLYMiniVlogProduct.h */,
@@ -949,7 +944,6 @@
 				6F8925D61F1B13FF00256093 /* DLYAlertView.m in Sources */,
 				ADFFF19C1F18A33000FB5BF7 /* DLYMiniVlogPart.m in Sources */,
 				6F8925D51F1B13FF00256093 /* DLYAnnularProgress.m in Sources */,
-				ADFFF19B1F18A33000FB5BF7 /* DLYMiniVlogDraft.m in Sources */,
 				6F806D6B1F7CEE7700B4EC51 /* DLYVideoFilter.m in Sources */,
 				6F12AE6C1F3DB78300CE8CB6 /* DLYDownloader.m in Sources */,
 				ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */,

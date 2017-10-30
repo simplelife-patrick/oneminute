@@ -658,9 +658,7 @@
 {
     DLYLog(@"最终设定的最佳帧率: %f",desiredFPS);
     
-    BOOL isRunning = self.captureSession.isRunning;
-
-    if (isRunning)  [self.captureSession stopRunning];
+    [self.captureSession beginConfiguration];
 
     AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     
@@ -681,8 +679,6 @@
     int32_t maxWidth = 1280;
 
     for (AVCaptureDeviceFormat *format in [device formats]) {
-
-//        DLYLog(@"######### - 遍历出的设备格式 :format:%@", format);
 
         for (AVFrameRateRange *range in format.videoSupportedFrameRateRanges) {
 
@@ -713,7 +709,6 @@
             [device unlockForConfiguration];
         }
     }else{
-        //TODO: AVEngine - 找不到format如何处理?
         DLYLog(@"用默认的format self.defaultFormat :%@", self.defaultFormat);
         if ([device lockForConfiguration:nil]) {
             
@@ -724,50 +719,9 @@
         }
     }
 
-    if (isRunning) [self.captureSession startRunning];
+    [self.captureSession commitConfiguration];
 }
-//- (void)switchFormatWithDesiredFPS:(CGFloat)desiredFPS
-//{
-//    BOOL isRunning = self.captureSession.isRunning;
-//
-//    if (isRunning)  [self.captureSession stopRunning];
-//
-//    AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-//    AVCaptureDeviceFormat *selectedFormat = nil;
-//    int32_t maxWidth = 0;
-//    AVFrameRateRange *frameRateRange = nil;
-//
-//    for (AVCaptureDeviceFormat *format in [videoDevice formats]) {
-//
-//        for (AVFrameRateRange *range in format.videoSupportedFrameRateRanges) {
-//
-//            CMFormatDescriptionRef desc = format.formatDescription;
-//            CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(desc);
-//            int32_t width = dimensions.width;
-//
-//            if (range.minFrameRate <= desiredFPS && desiredFPS <= range.maxFrameRate && width >= maxWidth) {
-//
-//                selectedFormat = format;
-//                frameRateRange = range;
-//                maxWidth = width;
-//            }
-//        }
-//    }
-//
-//    if (selectedFormat) {
-//
-//        if ([videoDevice lockForConfiguration:nil]) {
-//
-//            NSLog(@"selected format:%@", selectedFormat);
-//            videoDevice.activeFormat = selectedFormat;
-//            videoDevice.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
-//            videoDevice.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
-//            [videoDevice unlockForConfiguration];
-//        }
-//    }
-//
-//    if (isRunning) [self.captureSession startRunning];
-//}
+
 #pragma mark - 开始录制 -
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
     
@@ -792,8 +746,11 @@
         _currentPart.partUrl = [NSURL fileURLWithPath:_outputPath];
         DLYLog(@"第 %lu 个片段的地址 :%@",_currentPart.partNum + 1,_currentPart.partUrl);
     }else{
-        DLYLog(@"片段地址获取为空");
-        //TODO: AVEngine - 如果_outputPath为空怎么办?
+        DLYLog(@"片段地址获取为空,直接拼出全路径");
+        NSString *path = [NSString stringWithFormat:@"%@/%@/%@/part%lu%@",kPathDocument,kDataFolder,kTempFolder,(long)part.partNum,@".mp4"];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+            _currentPart.partUrl = [NSURL fileURLWithPath:path];
+        }
     }
     
     NSError *error;
@@ -941,12 +898,17 @@
             
             DLYLog(@"value_original -----------%lld",videoAsset.duration.value);
             DLYLog(@"timescale_original -----------%d",videoAsset.duration.timescale);
+            
+            DLYLog(@">>>>>>> - 单片段的time range");
+            CMTimeRangeShow(videoTimeRange);
 
         }else if (soundType == DLYMiniVlogAudioTypeMusic){//不录音的片段做丢弃原始音频处理
             
             [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
             
             CMTimeRange scaleRange = CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale));
+            DLYLog(@">>>>>>> - 单片段的time range");
+            CMTimeRangeShow(scaleRange);
             
             CMTime toDuration_before = CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale);
             CMTime toDuration_after = CMTimeMake(videoAsset.duration.value * scale , videoAsset.duration.timescale);
@@ -971,7 +933,7 @@
 }
 
 #pragma mark -添加片头片尾-
-- (void)addVideoHeaderWithTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
+- (void)addVideoHeaderWithTitle:(NSString *)videoTitle successed:(SuccessBlock)successBlock failured:(FailureBlock)failureBlcok{
     
     NSURL *headerUrl;
     NSURL *footerUrl;
@@ -1050,9 +1012,9 @@
                 }
                 [weakSelf buildVideoEffectsToMP4:footerPath inputVideoURL:footerUrl andImageArray:footArray andBeginTime:beginTime isAudio:isAudio callback:^(NSURL *finalUrl, NSString *filePath) {
 //                    DLYLog(@"片尾完成");
-                    [weakSelf mergeVideoWithVideoTitle:title SuccessBlock:^{
+                    [weakSelf mergeVideoWithVideoTitle:title successed:^{
                         //成功
-                    } failure:^(NSError *error) {
+                    } failured:^(NSError *error) {
                         //
                     }];
                 }];
@@ -1257,6 +1219,7 @@
         [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"处理中,请稍后"];
         typeof(self) weakSelf = self;
         [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl soundType:_currentPart.soundType recordTypeOfPart:_currentPart.recordType completed:^{
+            UISaveVideoAtPathToSavedPhotosAlbum([exportUrl path], self, nil, nil);
             DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
             [self.resource removePartWithPartNumFormTemp:self.currentPart.partNum];
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -1267,7 +1230,7 @@
 }
 
 #pragma mark - 合并 -
-- (void) mergeVideoWithVideoTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
+- (void) mergeVideoWithVideoTitle:(NSString *)videoTitle successed:(SuccessBlock)successBlock failured:(FailureBlock)failureBlcok{
     
     AVMutableComposition *composition = [AVMutableComposition composition];
     
@@ -1298,9 +1261,6 @@
         }
     }
     DLYLog(@"待合成的视频片段: %@",videoArray);
-    
-    DLYMiniVlogTemplate *template = self.session.currentTemplate;
-    NSArray *parts = template.parts;
     
     CMTime cursorTime = kCMTimeZero;
     for (NSUInteger i = 0; i < videoArray.count; i++) {
@@ -1373,16 +1333,17 @@
     [assetExportSession exportAsynchronouslyWithCompletionHandler:^{
         UISaveVideoAtPathToSavedPhotosAlbum([productOutputUrl path], self, nil, nil);
         DLYLog(@"全部片段merge成功");
+        
         DLYMiniVlogTemplate *template = self.session.currentTemplate;
         
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@"m4a"];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
-        [self addMusicToVideo:productOutputUrl audioUrl:BGMUrl videoTitle:videoTitle successBlock:successBlock failure:failureBlcok];
+        [self addMusicToVideo:productOutputUrl audioUrl:BGMUrl videoTitle:videoTitle successed:successBlock failured:failureBlcok];
     }];
 }
 
 #pragma mark - 转场 -
-- (void) addTransitionEffectWithTitle:(NSString *)videoTitle  successBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
+- (void) addTransitionEffectWithTitle:(NSString *)videoTitle  successed:(SuccessBlock)successBlock failured:(FailureBlock)failureBlcok{
     
     self.composition = [AVMutableComposition composition];
     
@@ -1516,7 +1477,7 @@
         
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@"m4a"];
         NSURL *BGMUrl = [NSURL fileURLWithPath:BGMPath];
-        [self addMusicToVideo:productOutputUrl audioUrl:BGMUrl videoTitle:videoTitle successBlock:successBlock failure:failureBlcok];
+        [self addMusicToVideo:productOutputUrl audioUrl:BGMUrl videoTitle:videoTitle successed:successBlock failured:failureBlcok];
     }];
 }
 - (AVVideoComposition *)buildVideoComposition {
@@ -1605,13 +1566,13 @@
     }
     return videoComposition;
 }
-- (NSArray *)transitionInstructionsInVideoComposition:(AVVideoComposition *)vc {
+- (NSArray *)transitionInstructionsInVideoComposition:(AVVideoComposition *)videoComposition {
     
     NSMutableArray *transitionInstructions = [NSMutableArray array];
     
     int layerInstructionIndex = 1;
     
-    NSArray *compositionInstructions = vc.instructions;
+    NSArray *compositionInstructions = videoComposition.instructions;
     
     for (AVMutableVideoCompositionInstruction *vci in compositionInstructions) {
         
@@ -1653,7 +1614,7 @@
     return transitionInstructions;
 }
 #pragma mark - 双音轨合成控制 -
-- (void) addMusicToVideo:(NSURL *)videoUrl audioUrl:(NSURL *)audioUrl videoTitle:(NSString *)videoTitle successBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok{
+- (void) addMusicToVideo:(NSURL *)videoUrl audioUrl:(NSURL *)audioUrl videoTitle:(NSString *)videoTitle successed:(SuccessBlock)success failured:(FailureBlock)failureBlcok{
     
     AVURLAsset *videoAsset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
     AVURLAsset *audioAsset = [AVURLAsset URLAssetWithURL:audioUrl options:nil];
@@ -1673,54 +1634,57 @@
     AVMutableCompositionTrack *videoCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
     AVMutableCompositionTrack *audioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:trackID];
     
-    CMTime cursorTime = kCMTimeZero;
     NSError *error = nil;
+    CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero,videoAsset.duration);
+    DLYLog(@">>>>>>> - 配音时的time range");
+    CMTimeRangeShow(timeRange);
+    
     if (videoAssetTrack) {
-        [videoCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssetTrack.timeRange.duration) ofTrack:videoAssetTrack atTime:cursorTime error:&error];
+        [videoCompositionTrack insertTimeRange:timeRange ofTrack:videoAssetTrack atTime:kCMTimeZero error:&error];
     }
     if (audioAssetTrack) {
-        [audioCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, audioAssetTrack.timeRange.duration) ofTrack:audioAssetTrack atTime:cursorTime error:&error];
+        [audioCompositionTrack insertTimeRange:timeRange ofTrack:audioAssetTrack atTime:kCMTimeZero error:&error];
     }
     
     [videoCompositionTrack setPreferredTransform:videoAssetTrack.preferredTransform];
     
     //添加标题
-    AVMutableVideoComposition *mutableVideoComposition = [AVMutableVideoComposition videoComposition];
+    AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
     
     if ([[mixComposition tracksWithMediaType:AVMediaTypeVideo] count] != 0) {
-        // build a pass through video composition
-        mutableVideoComposition.frameDuration = CMTimeMake(1, 30);
-        mutableVideoComposition.renderSize = videoAssetTrack.naturalSize;
+
+        videoComposition.frameDuration = CMTimeMake(1, 30);
+        videoComposition.renderSize = videoAssetTrack.naturalSize;
         
         AVMutableVideoCompositionInstruction *passThroughInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
         passThroughInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, [mixComposition duration]);
         
-        AVAssetTrack *videoTrack = [mixComposition tracksWithMediaType:AVMediaTypeVideo][0];
+        AVAssetTrack *videoTrack = [mixComposition tracksWithMediaType:AVMediaTypeVideo].firstObject;
         AVMutableVideoCompositionLayerInstruction *passThroughLayer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
         
         passThroughInstruction.layerInstructions = @[passThroughLayer];
-        mutableVideoComposition.instructions = @[passThroughInstruction];
+        videoComposition.instructions = @[passThroughInstruction];
         
-        CGSize renderSize = mutableVideoComposition.renderSize;
+        CGSize renderSize = videoComposition.renderSize;
         CALayer *videoTitleLayer = [self addTitleForVideoWith:videoTitle size:renderSize];
         
         CALayer *parentLayer = [CALayer layer];
         CALayer *videoLayer = [CALayer layer];
-        parentLayer.frame = CGRectMake(0, 0, mutableVideoComposition.renderSize.width, mutableVideoComposition.renderSize.height);
-        videoLayer.frame = CGRectMake(0, 0, mutableVideoComposition.renderSize.width, mutableVideoComposition.renderSize.height);
+        parentLayer.frame = CGRectMake(0, 0, videoComposition.renderSize.width, videoComposition.renderSize.height);
+        videoLayer.frame = CGRectMake(0, 0, videoComposition.renderSize.width, videoComposition.renderSize.height);
         [parentLayer addSublayer:videoLayer];
         
-        videoTitleLayer.position = CGPointMake(mutableVideoComposition.renderSize.width / 2, mutableVideoComposition.renderSize.height / 2);
+        videoTitleLayer.position = CGPointMake(videoComposition.renderSize.width / 2, videoComposition.renderSize.height / 2);
         [parentLayer addSublayer:videoTitleLayer];
         
         if (APPTEST) {
             CALayer *watermarkLayer = [CALayer layer];
             watermarkLayer = [self addWatermarkWithSize:renderSize];
-            watermarkLayer.position = CGPointMake(mutableVideoComposition.renderSize.width - 358, 8);
+            watermarkLayer.position = CGPointMake(videoComposition.renderSize.width - 358, 8);
             [parentLayer addSublayer:watermarkLayer];
         }
         
-        mutableVideoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
+        videoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
     }
     
     //处理视频原声
@@ -1744,40 +1708,24 @@
         
         DLYMiniVlogPart *part = partArray[i];
         
-        NSArray *startArr = [part.dubStartTime componentsSeparatedByString:@":"];
-        NSString *startTimeStr = startArr[1];
-        float startTime = [startTimeStr floatValue];
-        _startTime = CMTimeMake(startTime, 1);
+        double startTime = [self getTimeWithString:part.dubStartTime]  / 1000;
+        double stopTime = [self getTimeWithString:part.dubStopTime] / 1000;
         
-        NSArray *stopArr = [part.dubStopTime componentsSeparatedByString:@":"];
-        NSString *stopTimeStr = stopArr[1];
-        float stopTime = [stopTimeStr floatValue];
-        _stopTime = CMTimeMake(stopTime, 1);
-        
-        //时长小于1s的片段音轨切换平滑特殊处理
-        float rampOffsetValue = 1;
-        
-        _prePoint = CMTimeMake(stopTime - rampOffsetValue, 1);
+        _startTime = CMTimeMakeWithSeconds(startTime, videoAsset.duration.timescale);
+        _stopTime = CMTimeMakeWithSeconds(stopTime, videoAsset.duration.timescale);
+
         CMTime duration = CMTimeSubtract(_stopTime, _startTime);
-        
         CMTimeRange timeRange = CMTimeRangeMake(_startTime, duration);
-        CMTimeRange preTimeRange = CMTimeRangeMake(_prePoint, CMTimeMake(2, 1));
         
         if (part.soundType == DLYMiniVlogAudioTypeMusic) {//空镜
-            //            [BGMParameters setVolume:part.BGMVolume / 100 atTime:_startTime];
-            //            [videoParameters setVolume:0 atTime:_startTime];
             
             [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
-            //            [BGMParameters setVolumeRampFromStartVolume:5.0 toEndVolume:0.4 timeRange:preTimeRange];
-            
             [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:timeRange];
+            
         }else if(part.soundType == DLYMiniVlogAudioTypeNarrate){//人声
-            //            [videoParameters setVolume:2.0 atTime:_startTime];
-            //            [BGMParameters setVolume:part.BGMVolume / 100 atTime:_startTime];
             
             [videoParameters setVolumeRampFromStartVolume:2.0 toEndVolume:2.0 timeRange:timeRange];
             [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
-            //            [BGMParameters setVolumeRampFromStartVolume:0.4 toEndVolume:5.0 timeRange:preTimeRange];
         }
     }
     audioMix.inputParameters = @[videoParameters,BGMParameters];
@@ -1793,7 +1741,7 @@
     AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1280x720];
     assetExportSession.outputURL = outPutUrl;
     assetExportSession.audioMix = audioMix;
-    assetExportSession.videoComposition = mutableVideoComposition;
+    assetExportSession.videoComposition = videoComposition;
     assetExportSession.outputFileType = AVFileTypeMPEG4;
     assetExportSession.shouldOptimizeForNetworkUse = YES;
     
@@ -1831,7 +1779,7 @@
                         isSuccess = [fileManager removeItemAtPath:footerPath error:nil];
                         DLYLog(@"删除片尾");
                     }
-                    successBlock();
+                    success();
 
                 } failureBlock:^(NSError *error) {
                     failureBlcok(error);
@@ -2278,5 +2226,6 @@ CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     CGFloat deltaY = second.y - first.y;
     return sqrt(deltaX*deltaX + deltaY*deltaY);
 };
+
 @end
 
