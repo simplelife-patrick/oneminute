@@ -10,7 +10,6 @@
 
 @protocol DLYIndicatorViewDelegate <NSObject>
 
-- (void)indicatorViewStartFlashAnimating;
 - (void)indicatorViewStopFlashAnimating;
 
 @end

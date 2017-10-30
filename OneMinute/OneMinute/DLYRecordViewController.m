@@ -1126,14 +1126,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     //从这里开始
-    if (!self.alert.isHidden && self.alert) {
-        //        [UIView animateWithDuration:0.5f animations:^{
-        //            self.alert.transform = CGAffineTransformMakeRotation(num);
-        //        }];
-    }
-    if (![DLYIndicatorView sharedIndicatorView].isHidden && [DLYIndicatorView sharedIndicatorView]) {
-        //        [DLYIndicatorView sharedIndicatorView].mainView.transform = CGAffineTransformMakeRotation(num);
-    }
     if (!self.normalBubble.isHidden && self.normalBubble) {
         self.normalBubble.flipState = self.newState;
     }
@@ -2632,17 +2624,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     } completion:^(BOOL finished) {
     }];
 }
+
 #pragma mark - 提示控件代理
-- (void)indicatorViewStartFlashAnimating {
-    NSArray *viewArr = self.navigationController.viewControllers;
-    if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
-        if (self.newState == 1) {
-            [DLYIndicatorView sharedIndicatorView].mainView.transform = CGAffineTransformMakeRotation(0);
-        }else {
-            [DLYIndicatorView sharedIndicatorView].mainView.transform = CGAffineTransformMakeRotation(M_PI);
-        }
-    }
-}
 - (void)indicatorViewStopFlashAnimating {
     NSArray *viewArr = self.navigationController.viewControllers;
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
@@ -2825,12 +2808,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     NSString *str = [NSString stringWithFormat:@"请到设置页面允许使用%@", message];
     self.alert = [[DLYAlertView alloc] initWithMessage:str withSureButton:@"确定"];
-    
-    if (self.newState == 1) {
-        self.alert.transform = CGAffineTransformMakeRotation(0);
-    }else {
-        self.alert.transform = CGAffineTransformMakeRotation(M_PI);
-    }
+
     __weak typeof(self) weakSelf = self;
     self.alert.sureButtonAction = ^{
         [weakSelf gotoSetting];
