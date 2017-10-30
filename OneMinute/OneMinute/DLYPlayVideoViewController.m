@@ -149,13 +149,13 @@
     self.titleField.center = self.view.center;
     self.titleField.delegate = self;
     
-//    NSString *text = [[NSUserDefaults standardUserDefaults] objectForKey:@"videoTitle"];
-//    NSString *newStr = [text stringByReplacingOccurrencesOfString:@" " withString:@""];
-//    if (newStr.length == 0) {
-//        self.titleField.placeholder = @"请输入标题";
-//    }else {
-//        self.titleField.text = text;
-//    }
+    //    NSString *text = [[NSUserDefaults standardUserDefaults] objectForKey:@"videoTitle"];
+    //    NSString *newStr = [text stringByReplacingOccurrencesOfString:@" " withString:@""];
+    //    if (newStr.length == 0) {
+    //        self.titleField.placeholder = @"请输入标题";
+    //    }else {
+    //        self.titleField.text = text;
+    //    }
     self.titleField.placeholder = @"请输入标题";
     self.titleField.textAlignment = NSTextAlignmentCenter;
     [self.titleField setValue:RGBA(255, 255, 255, 0.7) forKeyPath:@"_placeholderLabel.textColor"];
@@ -207,7 +207,7 @@
     }else {
         [DLYUserTrack recordAndEventKey:@"Skip" andDescribeStr:self.titleField.text];
     }
-
+    
     //隐藏所有控件
     self.backView.hidden = YES;
     self.titleField.hidden = YES;
@@ -659,17 +659,6 @@
     [super viewWillAppear:animated];
     [DLYUserTrack recordAndEventKey:@"PlayVideoViewStart"];
     [DLYUserTrack beginRecordPageViewWith:@"PlayVideoView"];
-    if([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight) {
-        NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
-        [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-    }
-    if (self.beforeState == 1) {
-        NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
-        [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-    }else {
-        NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeRight];
-        [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-    }
 }
 #pragma mark ==== 播放进度监控
 
@@ -985,7 +974,7 @@
         //do nothing
     }
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CANPLAY" object:nil];
-//    [[NSUserDefaults standardUserDefaults] setObject:self.titleField.text forKey:@"videoTitle"];
+    //    [[NSUserDefaults standardUserDefaults] setObject:self.titleField.text forKey:@"videoTitle"];
 }
 
 - (void)dealloc {
@@ -1003,3 +992,4 @@
 }
 
 @end
+
