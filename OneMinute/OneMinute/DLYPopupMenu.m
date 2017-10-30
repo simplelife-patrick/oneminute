@@ -130,8 +130,8 @@ UITableViewDataSource
     CGRect absoluteRect;
     if (stateNum == 2) {
         CGRect newRect = [view convertRect:view.bounds toView:YBMainWindow];
-        CGFloat x = newRect.origin.x;
-        CGFloat y = SCREEN_HEIGHT - newRect.origin.y - newRect.size.height;
+        CGFloat x = SCREEN_WIDTH - newRect.origin.x - newRect.size.width;
+        CGFloat y = newRect.origin.y;
         CGFloat width = newRect.size.width;
         CGFloat height = newRect.size.height;
         
@@ -161,6 +161,63 @@ UITableViewDataSource
         CGRect newRect = [view convertRect:view.bounds toView:YBMainWindow];
         CGFloat x = SCREEN_WIDTH - newRect.origin.x - newRect.size.width;
         CGFloat y = SCREEN_HEIGHT - newRect.origin.y - newRect.size.height;
+        CGFloat width = newRect.size.width;
+        CGFloat height = newRect.size.height;
+        
+        absoluteRect = CGRectMake(x, y, width, height);
+    }else {
+        absoluteRect = [view convertRect:view.bounds toView:YBMainWindow];
+    }
+    
+    CGPoint relyPoint = CGPointMake(absoluteRect.origin.x + absoluteRect.size.width / 2, absoluteRect.origin.y + absoluteRect.size.height);
+    
+    DLYPopupMenu *popupMenu = [[DLYPopupMenu alloc] init];
+    popupMenu.point = relyPoint;
+    popupMenu.relyRect = absoluteRect;
+    popupMenu.titles = titles;
+    popupMenu.images = icons;
+    popupMenu.itemWidth = itemWidth;
+    popupMenu.delegate = delegate;
+    [popupMenu show];
+    return popupMenu;
+}
+
++ (DLYPopupMenu *)showDeleteOnView:(UIView *)view titles:(NSArray *)titles icons:(NSArray *)icons menuWidth:(CGFloat)itemWidth withState:(NSUInteger)stateNum delegate:(id<YBPopupMenuDelegate>)delegate
+{
+    CGRect absoluteRect;
+    if (stateNum == 2) {
+        CGRect newRect = [view convertRect:view.bounds toView:YBMainWindow];
+        CGFloat x = newRect.origin.x - 91;
+        CGFloat y = newRect.origin.y;
+        CGFloat width = newRect.size.width;
+        CGFloat height = newRect.size.height;
+        
+        absoluteRect = CGRectMake(x, y, width, height);
+    }else {
+        absoluteRect = [view convertRect:view.bounds toView:YBMainWindow];
+    }
+    
+    CGPoint relyPoint = CGPointMake(absoluteRect.origin.x + absoluteRect.size.width / 2, absoluteRect.origin.y + absoluteRect.size.height);
+    
+    DLYPopupMenu *popupMenu = [[DLYPopupMenu alloc] init];
+    popupMenu.point = relyPoint;
+    popupMenu.relyRect = absoluteRect;
+    popupMenu.titles = titles;
+    popupMenu.images = icons;
+    popupMenu.itemWidth = itemWidth;
+    popupMenu.delegate = delegate;
+    [popupMenu show];
+    return popupMenu;
+}
+
+
++ (DLYPopupMenu *)showNextStepOnView:(UIView *)view titles:(NSArray *)titles icons:(NSArray *)icons menuWidth:(CGFloat)itemWidth withState:(NSUInteger)stateNum delegate:(id<YBPopupMenuDelegate>)delegate
+{
+    CGRect absoluteRect;
+    if (stateNum == 2) {
+        CGRect newRect = [view convertRect:view.bounds toView:YBMainWindow];
+        CGFloat x = newRect.origin.x + 91;
+        CGFloat y = newRect.origin.y;
         CGFloat width = newRect.size.width;
         CGFloat height = newRect.size.height;
         
@@ -804,16 +861,41 @@ UITableViewDataSource
     if (flipState == 2) {
         //home在左
         flipNum = -1.0;
-        self.backView.y = SCREEN_HEIGHT - _backY - self.backView.height;
+        self.backView.x = SCREEN_WIDTH - _backX - self.backView.width;
     }else {
         //默认，home在右
         flipNum = 1.0;
-        self.backView.y = _backY;
+        self.backView.x = _backX;
     }
     
-    self.backView.transform = CGAffineTransformMakeScale(1.0, flipNum);
+    self.backView.transform = CGAffineTransformMakeScale(flipNum, 1.0);
     YBPopupMenuCell *cell = [self getLastVisibleCell];
     cell.titleLabel.transform = CGAffineTransformMakeScale(flipNum, 1.0);
+}
+
+
+- (void)setDeleteState:(NSInteger)deleteState
+{
+    _deleteState = deleteState;
+    if (deleteState == 2) {
+        //home在左
+        self.backView.x = _backX + 91;
+    }else {
+        //默认，home在右
+        self.backView.x = _backX;
+    }
+}
+
+- (void)setNextStepState:(NSInteger)nextStepState
+{
+    _nextStepState = nextStepState;
+    if (nextStepState == 2) {
+        //home在左
+        self.backView.x = _backX + 91;
+    }else {
+        //默认，home在右
+        self.backView.x = _backX;
+    }
 }
 
 - (void)setRotateState:(NSInteger)rotateState
