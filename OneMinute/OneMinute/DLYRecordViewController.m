@@ -68,7 +68,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIButton *recordBtn;          //拍摄按钮
 @property (nonatomic, strong) UIButton *nextButton;         //下一步按钮
 @property (nonatomic, strong) UIButton *deleteButton;       //删除全部按钮
-@property (nonatomic, strong) UIView *vedioEpisode;         //片段展示底部
 @property (nonatomic, strong) UIScrollView *backScrollView; //片段展示滚图
 @property (nonatomic, strong) UIView *playView;             //单个片段编辑页面
 @property (nonatomic, strong) UIButton *playButton;         //播放单个视频
@@ -143,11 +142,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.AVEngine restartRecording];
     [DLYUserTrack recordAndEventKey:@"RecordViewStart"];
     [DLYUserTrack beginRecordPageViewWith:@"RecordView"];
-    self.isAppear = YES;
-    NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
-    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-    self.isAppear = NO;
-    
     if (self.newState == 1) {
         [self deviceChangeAndHomeOnTheRightNewLayout];
     }else {
@@ -209,10 +203,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }];
     
     [DLYIndicatorView sharedIndicatorView].delegate = self;
-    self.isAppear = YES;
-    NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
-    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-    self.isAppear = NO;
     //    [self initData];
     NSInteger draftNum = [self initDataReadDraft];
     [self setupUI];
@@ -225,23 +215,20 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.recordBtn.hidden = YES;
         self.isSuccess = YES;
         if (self.newState == 1) {
-            self.nextButton.transform = CGAffineTransformMakeRotation(0);
+            self.nextButton.center = self.view.center;
+            self.deleteButton.frame = CGRectMake(self.view.centerX - 121, self.view.centerY - 30, 60, 60);
         }else {
-            self.nextButton.transform = CGAffineTransformMakeRotation(M_PI);
+            self.deleteButton.center = self.view.center;
+            self.nextButton.frame = CGRectMake(self.view.centerX + 61, self.view.centerY - 30, 60, 60);
         }
         self.nextButton.hidden = NO;
+        self.deleteButton.hidden = NO;
         if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showNextButtonPopup"]){
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showNextButtonPopup"];
             self.normalBubble = [DLYPopupMenu showRelyOnView:self.nextButton titles:@[@"去合成视频"] icons:nil menuWidth:120 withState:self.newState delegate:self];
             self.normalBubble.showMaskAlpha = 1;
             self.normalBubble.flipState = self.newState;
         }
-        if (self.newState == 1) {
-            self.deleteButton.transform = CGAffineTransformMakeRotation(0);
-        }else {
-            self.deleteButton.transform = CGAffineTransformMakeRotation(M_PI);
-        }
-        self.deleteButton.hidden = NO;
     }
 }
 #pragma mark ==== 气泡
@@ -425,7 +412,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     @"\U0000e67b", @"\U0000e681", @"\U0000e684", @"\U0000e67c"];
     
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
-  
+    
     BOOL isExitDraft = [self.session isExistDraftAtFile];
     NSMutableArray *draftArr = [NSMutableArray array];
     if (isExitDraft) {
@@ -474,9 +461,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 break;
             }
         }
-        
     }
-
+    
     typeModelArray = [[NSMutableArray alloc]init];
     //通用,美食,旅行,生活
     NSArray *typeNameArray = [self.session loadAllTemplateFile];
@@ -526,7 +512,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         part.partTime = [self getDurationwithStartTime:part.dubStartTime andStopTime:part.dubStopTime];
     }
     //contentSize更新
-    float episodeHeight = (self.vedioEpisode.height - (partModelArray.count - 1) * 2) / partModelArray.count;
+    float episodeHeight = (self.backScrollView.height - (partModelArray.count - 1) * 2) / partModelArray.count;
     self.backScrollView.contentSize = CGSizeMake(15, episodeHeight * partModelArray.count + (partModelArray.count - 1) * 2);
     
     //模板数据
@@ -663,7 +649,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.backView addSubview:self.versionLabel];
     
     //拍摄按钮
-    self.recordBtn = [[UIButton alloc]initWithFrame:CGRectMake(43 * SCALE_WIDTH, 0, 60*SCALE_WIDTH, 60 * SCALE_WIDTH)];
+    self.recordBtn = [[UIButton alloc]initWithFrame:CGRectMake(43 * SCALE_WIDTH, 0, 60 * SCALE_WIDTH, 60 * SCALE_WIDTH)];
     self.recordBtn.centerY = self.backView.centerY;
     [self.recordBtn setImage:[UIImage imageWithIcon:@"\U0000e664" inFont:ICONFONT size:20 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
     self.recordBtn.backgroundColor = RGB(255, 0, 0);
@@ -694,21 +680,19 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.view addSubview:self.deleteButton];
     
     //片段view
-    self.vedioEpisode = [[UIView alloc]initWithFrame:CGRectMake(self.recordBtn.right, 15 * SCALE_HEIGHT, 53, SCREEN_HEIGHT - 30  * SCALE_HEIGHT)];
-    [self.backView addSubview:self.vedioEpisode];
-    self.backScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, 53, self.vedioEpisode.height)];
+    self.backScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(103 * SCALE_WIDTH, 15 * SCALE_HEIGHT, 53, SCREEN_HEIGHT - 30  * SCALE_HEIGHT)];
     self.backScrollView.showsVerticalScrollIndicator = NO;
     self.backScrollView.showsHorizontalScrollIndicator = NO;
     self.backScrollView.bounces = NO;
-    [self.vedioEpisode addSubview:self.backScrollView];
-    float episodeHeight = (self.vedioEpisode.height - (partModelArray.count - 1) * 2) / partModelArray.count;
+    [self.backView addSubview:self.backScrollView];
+    float episodeHeight = (self.backScrollView.height - (partModelArray.count - 1) * 2) / partModelArray.count;
     self.backScrollView.contentSize = CGSizeMake(15, episodeHeight * partModelArray.count + (partModelArray.count - 1) * 2);
     _prepareShootTimer = [NSTimer scheduledTimerWithTimeInterval:0.6 target:self selector:@selector(prepareShootAction) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:_prepareShootTimer forMode:NSRunLoopCommonModes];
     [_prepareShootTimer setFireDate:[NSDate distantFuture]];
     
     //右侧编辑页面
-    self.playView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.recordBtn.x + self.recordBtn.width, SCREEN_HEIGHT)];
+    self.playView = [[UIView alloc]initWithFrame:CGRectMake(43 * SCALE_WIDTH, 0, 60 * SCALE_WIDTH, SCREEN_HEIGHT)];
     self.playView.hidden = YES;
     [self.backView addSubview:self.playView];
     //右侧：播放某个片段的button
@@ -728,15 +712,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.deletePartButton.layer.borderWidth = 1;
     [self.playView addSubview:self.deletePartButton];
     
-    self.shootGuide = [[UILabel alloc] init];
+    self.shootGuide = [[UILabel alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30)];
     if (self.newState == 1) {
-        self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
         self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 51;
-        self.shootGuide.transform = CGAffineTransformMakeRotation(0);
     }else {
-        self.shootGuide.frame = CGRectMake(0, 19, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
-        self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 51;
-        self.shootGuide.transform = CGAffineTransformMakeRotation(M_PI);
+        self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 180 * SCALE_WIDTH;
     }
     self.shootGuide.backgroundColor = RGBA(0, 0, 0, 0.7);
     self.shootGuide.textColor = RGB(255, 255, 255);
@@ -987,6 +967,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
         [self deviceChangeAndHomeOnTheLeftNewLayout];
         DLYLog(@"首页左转");
+        [UIView animateWithDuration:0.5 animations:^{
+            NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeRight];
+            [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+        }];
     }
 }
 //home在右 初始状态
@@ -1005,6 +989,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
         [self deviceChangeAndHomeOnTheRightNewLayout];
         DLYLog(@"首页右转");
+        [UIView animateWithDuration:0.5 animations:^{
+            NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
+            [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+        }];
     }
 }
 
@@ -1053,222 +1041,98 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         if (num == 0) {
             self.warningIcon.frame = CGRectMake(28, SCREEN_HEIGHT - 54, 32, 32);
         }else {
-            self.warningIcon.frame = CGRectMake(28, 22, 32, 32);
+            self.warningIcon.frame = CGRectMake(SCREEN_WIDTH - 60, SCREEN_HEIGHT - 54, 32, 32);
         }
-        self.warningIcon.transform = CGAffineTransformMakeRotation(num);
     }
     if (!self.shootGuide.isHidden && self.shootGuide) {
         if (num == 0) {
-            self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
+            self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 51;
         }else {
-            self.shootGuide.frame = CGRectMake(0, 19, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
+            self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 180 * SCALE_WIDTH;
         }
         if (!self.shootView.isHidden && self.shootView) {
             self.shootGuide.centerX = _shootView.centerX;
-        }else {
-            self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 51;
         }
-        self.shootGuide.transform = CGAffineTransformMakeRotation(num);
     }
     if (!self.titleView.isHidden && self.titleView) {
         if (num == 0) {
             self.titleView.frame = CGRectMake(SCREEN_WIDTH - 190, 20, 180, 30);
         }else {
-            self.titleView.frame = CGRectMake(SCREEN_WIDTH - 190, SCREEN_HEIGHT - 50, 180, 30);
+            self.titleView.frame = CGRectMake(10, 20, 180, 30);
         }
-        self.titleView.transform = CGAffineTransformMakeRotation(num);
     }
     
-    if (!self.progressView.isHidden && self.progressView) {
-        [UIView animateWithDuration:0.5f animations:^{
-            self.progressView.transform = CGAffineTransformMakeRotation(num);
-        }];
+    if (!self.timeView.isHidden && self.timeView) {
+        if (num == 0) {
+            self.timeView.frame = CGRectMake(SCREEN_WIDTH - 70, 0, 60, 60);
+            self.timeView.centerY = self.shootView.centerY;
+            self.cancelButton.centerX = self.timeView.centerX;
+        }else {
+            self.timeView.frame = CGRectMake(10, 0, 60, 60);
+            self.timeView.centerY = self.shootView.centerY;
+            self.cancelButton.centerX = self.timeView.centerX;
+        }
     }
-    if (!self.timeNumber.isHidden && self.timeNumber) {
-        [UIView animateWithDuration:0.5f animations:^{
-            self.timeNumber.transform = CGAffineTransformMakeRotation(num);
-        }];
-    }
-    if (!self.completeButton.isHidden && self.completeButton) {
-        [UIView animateWithDuration:0.5f animations:^{
-            self.completeButton.transform = CGAffineTransformMakeRotation(num);
-        }];
-    }
+    
     if (!self.chooseScene.isHidden && self.chooseScene) {
         if (num == 0) {
             self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
         }else {
-            self.chooseScene.frame = CGRectMake(11, SCREEN_HEIGHT - 56, 40, 40);
+            self.chooseScene.frame = CGRectMake(SCREEN_WIDTH - 51, 16, 40, 40);
         }
-        [UIView animateWithDuration:0.5f animations:^{
-            self.chooseScene.transform = CGAffineTransformMakeRotation(num);
-        }];
     }
     if (!self.chooseSceneLabel.isHidden && self.chooseSceneLabel) {
         if (num == 0) {
             self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.bottom + 2, 50, 13);
         }else {
-            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.top - 15, 50, 13);
+            self.chooseSceneLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseScene.bottom + 2, 50, 13);
         }
-        [UIView animateWithDuration:0.5f animations:^{
-            self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(num);
-        }];
     }
     if (!self.toggleCameraBtn.isHidden && self.toggleCameraBtn) {
         if (num == 0) {
             self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
         }else {
-            self.toggleCameraBtn.frame = CGRectMake(11, 11, 40, 40);
+            self.toggleCameraBtn.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 51, 40, 40);
         }
-        [UIView animateWithDuration:0.5f animations:^{
-            self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(num);
-        }];
     }
     if (!self.flashButton.isHidden && self.flashButton) {
         if (num == 0) {
             self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
         }else {
-            self.flashButton.frame = CGRectMake(11, 61, 40, 40);
+            self.flashButton.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 101, 40, 40);
         }
-        [UIView animateWithDuration:0.5f animations:^{
-            self.flashButton.transform = CGAffineTransformMakeRotation(num);
-        }];
     }
     
-    if (!self.playView.isHidden && self.playView) {
+    if (!self.deleteButton.isHidden && self.deleteButton) {
         if (num == 0) {
-            //右侧：播放某个片段的button
-            self.playButton.frame = CGRectMake(self.playView.width - 60 * SCALE_WIDTH, (SCREEN_HEIGHT - 152)/2, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
-            self.deletePartButton.frame = CGRectMake(self.playView.width - 60* SCALE_WIDTH, SCREEN_HEIGHT/2 + 76 - 60* SCALE_WIDTH, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
+            self.deleteButton.frame = CGRectMake(self.view.centerX - 121, self.view.centerY - 30, 60, 60);
         }else {
-            self.playButton.frame = CGRectMake(self.playView.width - 60 * SCALE_WIDTH, SCREEN_HEIGHT/2 + 76 - 60* SCALE_WIDTH, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
-            self.deletePartButton.frame = CGRectMake(self.playView.width - 60* SCALE_WIDTH,(SCREEN_HEIGHT - 152)/2 , 60* SCALE_WIDTH, 60* SCALE_WIDTH);
+            self.deleteButton.center = self.view.center;
         }
-        [UIView animateWithDuration:0.5f animations:^{
-            self.playButton.transform = CGAffineTransformMakeRotation(num);
-            self.deletePartButton.transform = CGAffineTransformMakeRotation(num);
-        }];
+    }
+    if (!self.nextButton.isHidden && self.nextButton) {
+        if (num == 0) {
+            self.nextButton.center = self.view.center;
+        }else {
+            self.nextButton.frame = CGRectMake(self.view.centerX + 61, self.view.centerY - 30, 60, 60);
+        }
     }
     if (!self.versionLabel.isHidden && self.versionLabel) {
         if (num == 0) {
             self.versionLabel.frame = CGRectMake(2, self.backView.height - 20, 50, 20);
         }else {
-            self.versionLabel.frame = CGRectMake(2, 0, 50, 20);
+            self.versionLabel.frame = CGRectMake(self.backView.width - 52, self.backView.height - 20, 50, 20);
         }
-        self.versionLabel.transform = CGAffineTransformMakeRotation(num);
     }
     
-    if (!self.deleteButton.isHidden && self.deleteButton) {
-        [UIView animateWithDuration:0.5f animations:^{
-            self.deleteButton.transform = CGAffineTransformMakeRotation(num);
-        }];
-    }
-    if (!self.nextButton.isHidden && self.nextButton) {
-        [UIView animateWithDuration:0.5f animations:^{
-            self.nextButton.transform = CGAffineTransformMakeRotation(num);
-        }];
-    }
-    if (!self.cancelButton.isHidden && self.cancelButton) {
-        if (num == 0) {
-            self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 40, 44, 44);
-        }else {
-            self.cancelButton.frame = CGRectMake(0, _timeView.top - 84, 44, 44);
-        }
-        self.cancelButton.centerX = _timeView.centerX;
-        self.cancelButton.transform = CGAffineTransformMakeRotation(num);
-    }
-    
-    if (!self.sceneView.isHidden) {
-        
-        if (!self.sceneDisapper.isHidden && self.sceneDisapper) {
-            if (num == 0) {
-                self.sceneDisapper.frame = CGRectMake(20, 20, 14, 14);
-            }else {
-                self.sceneDisapper.frame = CGRectMake(SCREEN_WIDTH - 34, SCREEN_HEIGHT - 34, 14, 14);
-            }
-            [UIView animateWithDuration:0.5f animations:^{
-                self.sceneDisapper.transform = CGAffineTransformMakeRotation(num);
-            }];
-        }
-        if (!self.chooseTitleLabel.isHidden && self.chooseTitleLabel) {
-            if (num == 0) {
-                self.chooseTitleLabel.frame = CGRectMake(0, 19, 130, 20);
-                self.chooseTitleLabel.centerX = self.sceneView.centerX;
-            }else {
-                self.chooseTitleLabel.frame = CGRectMake(0, SCREEN_HEIGHT - 39, 130, 20);
-                self.chooseTitleLabel.centerX = self.sceneView.centerX;
-            }
-            [UIView animateWithDuration:0.5f animations:^{
-                self.chooseTitleLabel.transform = CGAffineTransformMakeRotation(num);
-            }];
-        }
-        if (!self.seeRush.isHidden && self.seeRush) {
-            if (num == 0) {
-                self.seeRush.frame = CGRectMake(SCREEN_WIDTH - 70, 21, 50, 17);
-            }else {
-                self.seeRush.frame = CGRectMake(20, SCREEN_HEIGHT - 38, 50, 17);
-            }
-            [UIView animateWithDuration:0.5f animations:^{
-                self.seeRush.transform = CGAffineTransformMakeRotation(num);
-            }];
-        }
-        if (!self.alertLabel.isHidden && self.alertLabel) {
-            if (num == 0) {
-                self.alertLabel.frame = CGRectMake(0, 210, 368, 22);
-                self.alertLabel.centerX = self.sceneView.centerX;
-                self.sureBtn.frame = CGRectMake(0, self.alertLabel.bottom + 20, 61, 61);
-                self.sureBtn.centerX = self.sceneView.centerX - 46;
-                self.giveUpBtn.frame = CGRectMake(0, self.alertLabel.bottom + 20, 61, 61);
-                self.giveUpBtn.centerX = self.sceneView.centerX  + 46;
-            }else {
-                self.alertLabel.frame = CGRectMake(0, SCREEN_HEIGHT - 232, 368, 22);
-                self.alertLabel.centerX = self.sceneView.centerX;
-                self.sureBtn.frame = CGRectMake(0, self.alertLabel.top - 81, 61, 61);
-                self.sureBtn.centerX = self.sceneView.centerX + 46;
-                self.giveUpBtn.frame = CGRectMake(0, self.alertLabel.top - 81, 61, 61);
-                self.giveUpBtn.centerX = self.sceneView.centerX - 46;
-            }
-            [UIView animateWithDuration:0.5f animations:^{
-                self.alertLabel.transform = CGAffineTransformMakeRotation(num);
-                self.sureBtn.transform = CGAffineTransformMakeRotation(num);
-                self.giveUpBtn.transform = CGAffineTransformMakeRotation(num);
-            }];
-        }
-        self.typeView.transform = CGAffineTransformMakeRotation(num);
-        
-    }
-    if (!self.videoView.isHidden) {
-        if (!self.videoDisapper.isHidden && self.videoDisapper) {
-            if (num == 0) {
-                self.videoDisapper.frame = CGRectMake(20, 20, 14, 14);
-            }else {
-                self.videoDisapper.frame = CGRectMake(SCREEN_WIDTH - 34, SCREEN_HEIGHT - 34, 14, 14);
-            }
-            [UIView animateWithDuration:0.5f animations:^{
-                self.videoDisapper.transform = CGAffineTransformMakeRotation(num);
-            }];
-        }
-        if (!self.videoTitleLabel.isHidden && self.videoTitleLabel) {
-            if (num == 0) {
-                self.videoTitleLabel.frame = CGRectMake(0, 19, 130, 20);
-                self.videoTitleLabel.centerX = self.videoView.centerX;
-            }else {
-                self.videoTitleLabel.frame = CGRectMake(0, SCREEN_HEIGHT - 39, 130, 20);
-                self.videoTitleLabel.centerX = self.videoView.centerX;
-            }
-            [UIView animateWithDuration:0.5f animations:^{
-                self.videoTitleLabel.transform = CGAffineTransformMakeRotation(num);
-            }];
-        }
-        self.filmView.transform = CGAffineTransformMakeRotation(num);
-    }
+    //从这里开始
     if (!self.alert.isHidden && self.alert) {
-        [UIView animateWithDuration:0.5f animations:^{
-            self.alert.transform = CGAffineTransformMakeRotation(num);
-        }];
+        //        [UIView animateWithDuration:0.5f animations:^{
+        //            self.alert.transform = CGAffineTransformMakeRotation(num);
+        //        }];
     }
     if (![DLYIndicatorView sharedIndicatorView].isHidden && [DLYIndicatorView sharedIndicatorView]) {
-        [DLYIndicatorView sharedIndicatorView].mainView.transform = CGAffineTransformMakeRotation(num);
+        //        [DLYIndicatorView sharedIndicatorView].mainView.transform = CGAffineTransformMakeRotation(num);
     }
     if (!self.normalBubble.isHidden && self.normalBubble) {
         self.normalBubble.flipState = self.newState;
@@ -1323,10 +1187,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self.AVEngine changeCameraInputDeviceisFront:NO];
         if (self.newState == 1) {
             self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
-            self.flashButton.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.flashButton.frame = CGRectMake(11, 61, 40, 40);
-            self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+            self.flashButton.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 101, 40, 40);
         }
         self.flashButton.hidden = NO;
         isFront = NO;
@@ -1350,25 +1212,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         if (self.partBubble) {
             [self.partBubble removeFromSuperview];
             self.partBubble = nil;
-        }
-        if (self.newState == 1) {
-            self.sceneDisapper.frame = CGRectMake(20, 20, 14, 14);
-            self.sceneDisapper.transform = CGAffineTransformMakeRotation(0);
-            self.chooseTitleLabel.frame = CGRectMake(0, 19, 130, 20);
-            self.chooseTitleLabel.centerX = self.sceneView.centerX;
-            self.chooseTitleLabel.transform = CGAffineTransformMakeRotation(0);
-            self.seeRush.frame = CGRectMake(SCREEN_WIDTH - 70, 21, 50, 17);
-            self.seeRush.transform = CGAffineTransformMakeRotation(0);
-            self.typeView.transform = CGAffineTransformMakeRotation(0);
-        }else {
-            self.sceneDisapper.frame = CGRectMake(SCREEN_WIDTH - 34, SCREEN_HEIGHT - 34, 14, 14);
-            self.sceneDisapper.transform = CGAffineTransformMakeRotation(M_PI);
-            self.chooseTitleLabel.frame = CGRectMake(0, SCREEN_HEIGHT - 39, 130, 20);
-            self.chooseTitleLabel.centerX = self.sceneView.centerX;
-            self.chooseTitleLabel.transform = CGAffineTransformMakeRotation(M_PI);
-            self.seeRush.frame = CGRectMake(20, SCREEN_HEIGHT - 38, 50, 17);
-            self.seeRush.transform = CGAffineTransformMakeRotation(M_PI);
-            self.typeView.transform = CGAffineTransformMakeRotation(M_PI);
         }
     } completion:^(BOOL finished) {
         [DLYUserTrack recordAndEventKey:@"ChooseSceneViewStart"];
@@ -1411,10 +1254,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             {
                 if (self.newState == 1) {
                     self.warningIcon.frame = CGRectMake(28, SCREEN_HEIGHT - 54, 32, 32);
-                    self.warningIcon.transform = CGAffineTransformMakeRotation(0);
                 }else {
-                    self.warningIcon.frame = CGRectMake(28, 22, 32, 32);
-                    self.warningIcon.transform = CGAffineTransformMakeRotation(M_PI);
+                    self.warningIcon.frame = CGRectMake(SCREEN_WIDTH - 60, SCREEN_HEIGHT - 54, 32, 32);
                 }
                 self.warningIcon.hidden = NO;
             }else
@@ -1422,10 +1263,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 if (part.BGMVolume == 100) {
                     if (self.newState == 1) {
                         self.warningIcon.frame = CGRectMake(28, SCREEN_HEIGHT - 54, 32, 32);
-                        self.warningIcon.transform = CGAffineTransformMakeRotation(0);
                     }else {
-                        self.warningIcon.frame = CGRectMake(28, 22, 32, 32);
-                        self.warningIcon.transform = CGAffineTransformMakeRotation(M_PI);
+                        self.warningIcon.frame = CGRectMake(SCREEN_WIDTH - 60, SCREEN_HEIGHT - 54, 32, 32);
                     }
                     self.warningIcon.hidden = NO;
                 }else {
@@ -1440,7 +1279,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.chooseSceneLabel.hidden = YES;
         self.toggleCameraBtn.hidden = YES;
         self.flashButton.hidden = YES;
-        self.backView.transform = CGAffineTransformMakeTranslation(self.backView.width, 0);
+        if (self.newState == 1) {
+            self.backView.frame = CGRectMake(SCREEN_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
+        }else {
+            self.backView.frame = CGRectMake(-180 * SCALE_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
+        }
     } completion:^(BOOL finished) {
         self.backView.hidden = YES;
         self.shootView.hidden = NO;
@@ -1490,16 +1333,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         //在这里添加完成页面
         self.progressView.hidden = YES;
         self.timeNumber.hidden = YES;
-        if (self.newState == 1) {
-            self.completeButton.transform = CGAffineTransformMakeRotation(0);
-        }else {
-            self.completeButton.transform = CGAffineTransformMakeRotation(M_PI);
-        }
         self.completeButton.hidden = NO;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
             self.completeButton.hidden = YES;
         });
-        
     });
 }
 
@@ -1627,36 +1464,28 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [UIView animateWithDuration:0.5f animations:^{
         if (self.newState == 1) {
             self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
-            self.chooseScene.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.chooseScene.frame = CGRectMake(11, SCREEN_HEIGHT - 56, 40, 40);
-            self.chooseScene.transform = CGAffineTransformMakeRotation(M_PI);
+            self.chooseScene.frame = CGRectMake(SCREEN_WIDTH - 51, 16, 40, 40);
         }
         self.chooseScene.hidden = NO;
         if (self.newState == 1) {
             self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
-            self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.toggleCameraBtn.frame = CGRectMake(11, 11, 40, 40);
-            self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(M_PI);
+            self.toggleCameraBtn.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 51, 40, 40);
         }
         self.toggleCameraBtn.hidden = NO;
         if (!isFront) {
             if (self.newState == 1) {
                 self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
-                self.flashButton.transform = CGAffineTransformMakeRotation(0);
             }else {
-                self.flashButton.frame = CGRectMake(11, 61, 40, 40);
-                self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+                self.flashButton.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 101, 40, 40);
             }
             self.flashButton.hidden = NO;
         }
         if (self.newState == 1) {
             self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.bottom + 2, 50, 13);
-            self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.top - 15, 50, 13);
-            self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(M_PI);
+            self.chooseSceneLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseScene.bottom + 2, 50, 13);
         }
         self.chooseSceneLabel.hidden = NO;
         self.backView.hidden = NO;
@@ -1672,23 +1501,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 - (void)showVideoView {
-    if (self.newState == 1) {
-        self.videoDisapper.frame = CGRectMake(20, 20, 14, 14);
-        self.videoDisapper.transform = CGAffineTransformMakeRotation(0);
-        self.videoTitleLabel.frame = CGRectMake(0, 19, 130, 20);
-        self.videoTitleLabel.centerX = self.videoView.centerX;
-        self.videoTitleLabel.transform = CGAffineTransformMakeRotation(0);
-        self.filmView.transform = CGAffineTransformMakeRotation(0);
-        
-    }else {
-        self.videoDisapper.frame = CGRectMake(SCREEN_WIDTH - 34, SCREEN_HEIGHT - 34, 14, 14);
-        self.videoDisapper.transform = CGAffineTransformMakeRotation(M_PI);
-        self.videoTitleLabel.frame = CGRectMake(0, SCREEN_HEIGHT - 39, 130, 20);
-        self.videoTitleLabel.centerX = self.videoView.centerX;
-        self.videoTitleLabel.transform = CGAffineTransformMakeRotation(M_PI);
-        self.filmView.transform = CGAffineTransformMakeRotation(M_PI);
-    }
-    
     self.videoView.hidden = NO;
     [DLYUserTrack recordAndEventKey:@"ChooseVideoViewStart"];
     [DLYUserTrack beginRecordPageViewWith:@"ChooseVideoView"];
@@ -1761,58 +1573,53 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.resource removePartWithPartNumFormTemp:partNum];
     
     if (self.newState == 1) {
-        self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
         self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 51;
-        self.shootGuide.transform = CGAffineTransformMakeRotation(0);
     }else {
-        self.shootGuide.frame = CGRectMake(0, 19, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
-        self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 51;
-        self.shootGuide.transform = CGAffineTransformMakeRotation(M_PI);
+        self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 180 * SCALE_WIDTH;
     }
-    
+    if (self.newState == 1) {
+        self.backView.frame = CGRectMake(SCREEN_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
+    }else {
+        self.backView.frame = CGRectMake(-180 * SCALE_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
+    }
     [UIView animateWithDuration:0.5f animations:^{
         self.progressView.hidden = YES;
         self.timeNumber.hidden = YES;
         if (self.newState == 1) {
             self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
-            self.chooseScene.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.chooseScene.frame = CGRectMake(11, SCREEN_HEIGHT - 56, 40, 40);
-            self.chooseScene.transform = CGAffineTransformMakeRotation(M_PI);
+            self.chooseScene.frame = CGRectMake(SCREEN_WIDTH - 51, 16, 40, 40);
         }
         self.chooseScene.hidden = NO;
         if (self.newState == 1) {
             self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
-            self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.toggleCameraBtn.frame = CGRectMake(11, 11, 40, 40);
-            self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(M_PI);
+            self.toggleCameraBtn.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 51, 40, 40);
         }
         self.toggleCameraBtn.hidden = NO;
         if (!isFront) {
             if (self.newState == 1) {
                 self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
-                self.flashButton.transform = CGAffineTransformMakeRotation(0);
             }else {
-                self.flashButton.frame = CGRectMake(11, 61, 40, 40);
-                self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+                self.flashButton.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 101, 40, 40);
             }
             self.flashButton.hidden = NO;
         }
         if (self.newState == 1) {
             self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.bottom + 2, 50, 13);
-            self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.top - 15, 50, 13);
-            self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(M_PI);
+            self.chooseSceneLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseScene.bottom + 2, 50, 13);
         }
         self.chooseSceneLabel.hidden = NO;
         self.backView.hidden = NO;
-        self.backView.transform = CGAffineTransformMakeTranslation(0, 0);
+        if (self.newState == 1) {
+            self.backView.frame = CGRectMake(SCREEN_WIDTH - 180 * SCALE_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
+        }else {
+            self.backView.frame = CGRectMake(0, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
+        }
         self.shootView.alpha = 0;
-    } completion:^(BOOL finished) {
         self.shootView.hidden = YES;
-        
+    } completion:^(BOOL finished) {
     }];
     
 }
@@ -1883,6 +1690,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 #pragma mark ==== 拍摄片段的view 暂定6个item
 - (void)createPartView {
+    
+    self.recordBtn.frame = CGRectMake(43 * SCALE_WIDTH, 0, 60*SCALE_WIDTH, 60 * SCALE_WIDTH);
+    self.recordBtn.centerY = self.backView.centerY;
+    self.playView.frame = CGRectMake(43 * SCALE_WIDTH, 0, 60 * SCALE_WIDTH, SCREEN_HEIGHT);
+    self.backScrollView.frame = CGRectMake(103 * SCALE_WIDTH, 15 * SCALE_HEIGHT, 53, SCREEN_HEIGHT - 30  * SCALE_HEIGHT);
+    self.backView.frame = CGRectMake(SCREEN_WIDTH - 180 * SCALE_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
     
     [self.backScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     float episodeHeight = (SCREEN_HEIGHT - 30  * SCALE_HEIGHT - (partModelArray.count - 1) * 2)/ partModelArray.count;
@@ -2023,10 +1836,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         isFront = NO;
                         if (self.newState == 1) {
                             self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
-                            self.flashButton.transform = CGAffineTransformMakeRotation(0);
                         }else {
-                            self.flashButton.frame = CGRectMake(11, 61, 40, 40);
-                            self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+                            self.flashButton.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 101, 40, 40);
                         }
                         self.flashButton.hidden = NO;
                     }
@@ -2080,6 +1891,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 
 - (void)createLeftPartView {
+    
+    CGFloat backWidth = self.backView.width;
+    self.recordBtn.frame = CGRectMake(backWidth - 103 * SCALE_WIDTH, 0, 60*SCALE_WIDTH, 60 * SCALE_WIDTH);
+    self.recordBtn.centerY = self.backView.centerY;
+    self.playView.frame = CGRectMake(backWidth - 103 * SCALE_WIDTH, 0, 60 * SCALE_WIDTH, SCREEN_HEIGHT);
+    self.backScrollView.frame = CGRectMake(backWidth - 103 * SCALE_WIDTH - 53, 15 * SCALE_HEIGHT, 53, SCREEN_HEIGHT - 30  * SCALE_HEIGHT);
+    self.backView.frame = CGRectMake(0, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
+    
+    
     [self.backScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     float episodeHeight = (SCREEN_HEIGHT - 30  * SCALE_HEIGHT - (partModelArray.count - 1) * 2)/ partModelArray.count;
     
@@ -2087,18 +1907,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     {
         episodeHeight = (SCREEN_WIDTH - 30  * SCREEN_WIDTH/375 - (partModelArray.count - 1) * 2) / partModelArray.count;
     }
-    
-    NSMutableArray *leftModelArray = [NSMutableArray arrayWithArray:partModelArray];
-    leftModelArray = (NSMutableArray *)[[leftModelArray reverseObjectEnumerator] allObjects];
     [self.toggleCameraBtn setImage:[UIImage imageWithIcon:@"\U0000e668" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
     isSlomoCamera = NO;
     BOOL isAllPart = YES;
-    for(int i = 1; i <= leftModelArray.count; i ++)
+    for(int i = 1; i <= partModelArray.count; i ++)
     {
-        DLYMiniVlogPart *part = leftModelArray[i - 1];
-        UIButton * button = [[UIButton alloc]initWithFrame:CGRectMake(43, (episodeHeight + 2) * (i - 1), 10, episodeHeight)];
-        button.tag = 10000 + (partModelArray.count + 1 - i);
-        UIEdgeInsets edgeInsets = {0, -43, 0, -20};
+        DLYMiniVlogPart *part = partModelArray[i - 1];
+        UIButton * button = [[UIButton alloc]initWithFrame:CGRectMake(0, (episodeHeight + 2) * (i - 1), 10, episodeHeight)];
+        button.tag = 10000 + i;
+        UIEdgeInsets edgeInsets = {0, -5, 0, -43};
         [button setHitEdgeInsets:edgeInsets];
         //辨别改变段是否已经拍摄
         if([part.recordStatus isEqualToString:@"1"])
@@ -2113,21 +1930,18 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 NSArray *timeArr = [part.partTime componentsSeparatedByString:@"."];
                 timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                 [timeLabel sizeToFit];
-                timeLabel.frame = CGRectMake(button.left - 4 - timeLabel.width, 0, timeLabel.width, timeLabel.height);
+                timeLabel.frame = CGRectMake(button.right + 4, 0, timeLabel.width, timeLabel.height);
                 timeLabel.centerY = button.centerY;
-                timeLabel.transform = CGAffineTransformMakeRotation(M_PI);
                 [self.backScrollView addSubview:timeLabel];
                 
             }else if(part.recordType == DLYMiniVlogRecordTypeSlomo)
-            {//快进
-                
-                UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
+            {//慢动作
+                UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(button.right + 4, 0, 39, 28)];
                 itemView.centerY = button.centerY;
-                itemView.transform = CGAffineTransformMakeRotation(M_PI);
                 [self.backScrollView addSubview:itemView];
                 
                 UILabel * timeLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 39, 12)];
-                timeLabel.textAlignment = NSTextAlignmentRight;
+                timeLabel.textAlignment = NSTextAlignmentLeft;
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
                 NSArray *timeArr = [part.partTime componentsSeparatedByString:@"."];
@@ -2143,16 +1957,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
                 icon.image = [UIImage imageWithIcon:@"\U0000e670" inFont:ICONFONT size:19 color:[UIColor whiteColor]];
                 [itemView addSubview:icon];
-                
             }else
             {//延时
-                UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
+                UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(button.right + 4, 0, 39, 28)];
                 itemView.centerY = button.centerY;
-                itemView.transform = CGAffineTransformMakeRotation(M_PI);
                 [self.backScrollView addSubview:itemView];
                 
                 UILabel * timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 39, 12)];
-                timeLabel.textAlignment = NSTextAlignmentRight;
+                timeLabel.textAlignment = NSTextAlignmentLeft;
                 timeLabel.textColor = [UIColor whiteColor];
                 timeLabel.font = FONT_SYSTEM(11);
                 NSArray *timeArr = [part.partTime componentsSeparatedByString:@"."];
@@ -2173,8 +1985,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         {
             button.backgroundColor = RGBA_HEX(0xc9c9c9, 0.1);
             // 辨别该片段是否是默认准备拍摄片段
-            if([part.prepareRecord isEqualToString:@"1"])
-            {
+            if([part.prepareRecord isEqualToString:@"1"]){
                 isAllPart = NO;
                 selectPartTag = button.tag;
                 //光标
@@ -2183,11 +1994,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 oldPrepareTag = prepareTag;
                 prepareAlpha = 1;
                 [_prepareShootTimer setFireDate:[NSDate distantPast]];
+                
                 //拍摄说明视图
-                UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 39, 28)];
+                UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(button.right + 4, 0, 39, 28)];
                 itemView.centerY = button.centerY;
-                itemView.transform = CGAffineTransformMakeRotation(M_PI);
-                itemView.tag = 30000 + (partModelArray.count + 1 - i);
+                itemView.tag = 30000 + i;
                 [self.backScrollView addSubview:itemView];
                 //判断拍摄状态
                 if(part.recordType == DLYMiniVlogRecordTypeNormal)
@@ -2198,13 +2009,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     NSArray *timeArr = [part.partTime componentsSeparatedByString:@"."];
                     timeLabel.text = [NSString stringWithFormat:@"%@%@", timeArr[0], @"''"];
                     [timeLabel sizeToFit];
-                    timeLabel.frame = CGRectMake(4, (itemView.height - timeLabel.height) / 2, timeLabel.width, timeLabel.height);
+                    timeLabel.frame = CGRectMake(0, (itemView.height - timeLabel.height) / 2, timeLabel.width, timeLabel.height);
                     [itemView addSubview:timeLabel];
                     
                 }else if(part.recordType == DLYMiniVlogRecordTypeSlomo)
-                {//慢镜
+                {//慢进
                     UILabel * timeLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 39, 12)];
-                    timeLabel.textAlignment = NSTextAlignmentRight;
+                    timeLabel.textAlignment = NSTextAlignmentLeft;
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
                     NSArray *timeArr = [part.partTime componentsSeparatedByString:@"."];
@@ -2228,10 +2039,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         isFront = NO;
                         if (self.newState == 1) {
                             self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
-                            self.flashButton.transform = CGAffineTransformMakeRotation(0);
                         }else {
-                            self.flashButton.frame = CGRectMake(11, 61, 40, 40);
-                            self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+                            self.flashButton.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 101, 40, 40);
                         }
                         self.flashButton.hidden = NO;
                     }
@@ -2241,7 +2050,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 }else
                 {//延时
                     UILabel * timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 39, 12)];
-                    timeLabel.textAlignment = NSTextAlignmentRight;
+                    timeLabel.textAlignment = NSTextAlignmentLeft;
                     timeLabel.textColor = [UIColor whiteColor];
                     timeLabel.font = FONT_SYSTEM(11);
                     NSArray *timeArr = [part.partTime componentsSeparatedByString:@"."];
@@ -2260,13 +2069,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 }
             }
         }
+        
         [button addTarget:self action:@selector(vedioEpisodeClick:) forControlEvents:UIControlEventTouchUpInside];
         
         button.clipsToBounds = YES;
         [self.backScrollView addSubview:button];
         
     }
-    
     if (isAllPart) {
         //光标
         prepareTag = 10001;
@@ -2299,7 +2108,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         if(prepareAlpha == 1)
         {
             UIButton *button = (UIButton *)[self.view viewWithTag:prepareTag];
-            button.alpha = 0;
+            button.alpha = 0.01;
         }else
         {
             UIButton *button = (UIButton *)[self.view viewWithTag:prepareTag];
@@ -2341,29 +2150,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         [self updateShootGuide];
         DLYLogInfo(@"点击了已拍摄片段");
-        [UIView animateWithDuration:0.1f animations:^{
-            if (self.newState == 1) {
-                self.playButton.frame = CGRectMake(self.playView.width - 60 * SCALE_WIDTH, (SCREEN_HEIGHT - 152)/2, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
-                self.deletePartButton.frame = CGRectMake(self.playView.width - 60* SCALE_WIDTH, SCREEN_HEIGHT/2 + 76 - 60* SCALE_WIDTH, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
-                self.playButton.transform = CGAffineTransformMakeRotation(0);
-                self.deletePartButton.transform = CGAffineTransformMakeRotation(0);
-            }else {
-                self.playButton.frame = CGRectMake(self.playView.width - 60 * SCALE_WIDTH, SCREEN_HEIGHT/2 + 76 - 60* SCALE_WIDTH, 60* SCALE_WIDTH, 60* SCALE_WIDTH);
-                self.deletePartButton.frame = CGRectMake(self.playView.width - 60* SCALE_WIDTH,(SCREEN_HEIGHT - 152)/2 , 60* SCALE_WIDTH, 60* SCALE_WIDTH);
-                self.playButton.transform = CGAffineTransformMakeRotation(M_PI);
-                self.deletePartButton.transform = CGAffineTransformMakeRotation(M_PI);
-            }
-            cursorTag = selectPartTag;
-        } completion:^(BOOL finished) {
-            self.playView.hidden = NO;
-            self.recordBtn.hidden = YES;
-            if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showPlayButtonPopup"]){
-                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showPlayButtonPopup"];
-                self.normalBubble = [DLYPopupMenu showRelyOnView:self.playButton titles:@[@"预览视频片段"] icons:nil menuWidth:120 withState:self.newState delegate:self];
-                self.normalBubble.showMaskAlpha = 1;
-                self.normalBubble.flipState = self.newState;
-            }
-        }];
+        cursorTag = selectPartTag;
+        self.recordBtn.hidden = YES;
+        self.playView.hidden = NO;
+        if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showPlayButtonPopup"]){
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showPlayButtonPopup"];
+            self.normalBubble = [DLYPopupMenu showRelyOnView:self.playButton titles:@[@"预览视频片段"] icons:nil menuWidth:120 withState:self.newState delegate:self];
+            self.normalBubble.showMaskAlpha = 1;
+            self.normalBubble.flipState = self.newState;
+        }
     }else
     {
         if (!self.playView.isHidden && self.playView) {
@@ -2640,27 +2435,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         selectNewPartTag = num;
         self.typeView.hidden = YES;
         self.seeRush.hidden = YES;
-        if (self.newState == 1) {
-            self.alertLabel.frame = CGRectMake(0, 210, 368, 22);
-            self.alertLabel.centerX = self.sceneView.centerX;
-            self.alertLabel.transform = CGAffineTransformMakeRotation(0);
-            self.sureBtn.frame = CGRectMake(0, self.alertLabel.bottom + 20, 61, 61);
-            self.sureBtn.centerX = self.sceneView.centerX - 46;
-            self.sureBtn.transform = CGAffineTransformMakeRotation(0);
-            self.giveUpBtn.frame = CGRectMake(0, self.alertLabel.bottom + 20, 61, 61);
-            self.giveUpBtn.centerX = self.sceneView.centerX  + 46;
-            self.giveUpBtn.transform = CGAffineTransformMakeRotation(0);
-        }else {
-            self.alertLabel.frame = CGRectMake(0, SCREEN_HEIGHT - 232, 368, 22);
-            self.alertLabel.centerX = self.sceneView.centerX;
-            self.alertLabel.transform = CGAffineTransformMakeRotation(M_PI);
-            self.sureBtn.frame = CGRectMake(0, self.alertLabel.top - 81, 61, 61);
-            self.sureBtn.centerX = self.sceneView.centerX + 46;
-            self.sureBtn.transform = CGAffineTransformMakeRotation(M_PI);
-            self.giveUpBtn.frame = CGRectMake(0, self.alertLabel.top - 81, 61, 61);
-            self.giveUpBtn.centerX = self.sceneView.centerX - 46;
-            self.giveUpBtn.transform = CGAffineTransformMakeRotation(M_PI);
-        }
         self.alertLabel.hidden = NO;
         self.sureBtn.hidden = NO;
         self.giveUpBtn.hidden = NO;
@@ -2695,41 +2469,32 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.sceneView.alpha = 0;
         if (self.newState == 1) {
             self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
-            self.chooseScene.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.chooseScene.frame = CGRectMake(11, SCREEN_HEIGHT - 56, 40, 40);
-            self.chooseScene.transform = CGAffineTransformMakeRotation(M_PI);
+            self.chooseScene.frame = CGRectMake(SCREEN_WIDTH - 51, 16, 40, 40);
         }
         
         self.chooseScene.hidden = NO;
         if (self.newState == 1) {
             self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
-            self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.toggleCameraBtn.frame = CGRectMake(11, 11, 40, 40);
-            self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(M_PI);
+            self.toggleCameraBtn.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 51, 40, 40);
         }
         self.toggleCameraBtn.hidden = NO;
         if (!isFront) {
             if (self.newState == 1) {
                 self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
-                self.flashButton.transform = CGAffineTransformMakeRotation(0);
             }else {
-                self.flashButton.frame = CGRectMake(11, 61, 40, 40);
-                self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+                self.flashButton.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 101, 40, 40);
             }
             self.flashButton.hidden = NO;
         }
         if (self.newState == 1) {
             self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.bottom + 2, 50, 13);
-            self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.top - 15, 50, 13);
-            self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(M_PI);
+            self.chooseSceneLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseScene.bottom + 2, 50, 13);
         }
         self.chooseSceneLabel.hidden = NO;
         self.backView.hidden = NO;
-        
     } completion:^(BOOL finished) {
         self.sceneView.hidden = YES;
         [DLYUserTrack recordAndEventKey:@"ChooseSceneViewEnd"];
@@ -2745,30 +2510,19 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.warningIcon.image = [UIImage imageWithIcon:@"\U0000e663" inFont:ICONFONT size:32 color:[UIColor redColor]];
     [self.shootView addSubview:self.warningIcon];
     
-    if (self.newState == 1) {
-        self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
-        self.shootGuide.centerX = _shootView.centerX;
-        self.shootGuide.transform = CGAffineTransformMakeRotation(0);
-    }else {
-        self.shootGuide.frame = CGRectMake(0, 19, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
-        self.shootGuide.centerX = _shootView.centerX;
-        self.shootGuide.transform = CGAffineTransformMakeRotation(M_PI);
-    }
+    self.shootGuide.centerX = _shootView.centerX;
     
-    _timeView = [[UIView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH - 70, 0, 60, 60)];
+    _timeView = [[UIView alloc] init];
+    if (self.newState == 1) {
+        self.timeView.frame = CGRectMake(SCREEN_WIDTH - 70, 0, 60, 60);
+    }else {
+        self.timeView.frame = CGRectMake(10, 0, 60, 60);
+    }
     _timeView.centerY = self.shootView.centerY;
     [self.shootView addSubview:_timeView];
     
-    self.cancelButton = [[UIButton alloc] init];
-    if (self.newState == 1) {
-        self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 40, 44, 44);
-        self.cancelButton.centerX = _timeView.centerX;
-        self.cancelButton.transform = CGAffineTransformMakeRotation(0);
-    }else {
-        self.cancelButton.frame = CGRectMake(0, _timeView.top - 84, 44, 44);
-        self.cancelButton.centerX = _timeView.centerX;
-        self.cancelButton.transform = CGAffineTransformMakeRotation(M_PI);
-    }
+    self.cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(0, _timeView.bottom + 40, 44, 44)];
+    self.cancelButton.centerX = _timeView.centerX;
     self.cancelButton.backgroundColor = RGBA(0, 0, 0, 0.3);
     self.cancelButton.layer.cornerRadius = 22;
     self.cancelButton.clipsToBounds = YES;
@@ -2776,17 +2530,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.cancelButton setTitle:@"取消" forState:UIControlStateNormal];
     [self.cancelButton setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
     self.cancelButton.titleLabel.font = FONT_SYSTEM(14);
-    self.cancelButton.hidden = YES;
     UIEdgeInsets edgeInsets = {-20, -20, -20, -20};
     [self.cancelButton setHitEdgeInsets:edgeInsets];
     [_shootView addSubview:self.cancelButton];
     
     _progressView = [[DLYAnnularProgress alloc]initWithFrame:CGRectMake(0, 0, _timeView.width, _timeView.height)];
-    if (self.newState == 1) {
-        self.progressView.transform = CGAffineTransformMakeRotation(0);
-    }else {
-        self.progressView.transform = CGAffineTransformMakeRotation(M_PI);
-    }
     _progressView.circleRadius = 28;
     [_timeView addSubview:_progressView];
     
@@ -2801,13 +2549,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [_timeView addSubview:self.completeButton];
     
     self.timeNumber = [[UILabel alloc]initWithFrame:CGRectMake(3, 3, 54, 54)];
-    if (self.newState == 1) {
-        self.timeNumber.transform = CGAffineTransformMakeRotation(0);
-    }else {
-        self.timeNumber.transform = CGAffineTransformMakeRotation(M_PI);
-    }
     self.timeNumber.textColor = RGB(255, 255, 255);
-    
     NSInteger partNumber = selectPartTag - 10000;
     DLYMiniVlogPart *part = partModelArray[partNumber - 1];
     NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
@@ -2832,25 +2574,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.titleView = [[DLYTitleView alloc] initWithPartTitle:partTitle timeTitle:timeTitle typeTitle:typeTitle];
     if (self.newState == 1) {
         self.titleView.frame = CGRectMake(SCREEN_WIDTH - 190, 20, 180, 30);
-        self.titleView.transform = CGAffineTransformMakeRotation(0);
     }else {
-        self.titleView.frame = CGRectMake(SCREEN_WIDTH - 190, SCREEN_HEIGHT - 50, 180, 30);
-        self.titleView.transform = CGAffineTransformMakeRotation(M_PI);
+        self.titleView.frame = CGRectMake(10, 20, 180, 30);
     }
     [self.shootView addSubview:self.titleView];
-    
-    if (self.newState == 1) {
-        self.cancelButton.frame = CGRectMake(0, _timeView.bottom + 40, 44, 44);
-        self.cancelButton.centerX = _timeView.centerX;
-        self.cancelButton.transform = CGAffineTransformMakeRotation(0);
-        
-    }else {
-        self.cancelButton.frame = CGRectMake(0, _timeView.top - 84, 44, 44);
-        self.cancelButton.centerX = _timeView.centerX;
-        self.cancelButton.transform = CGAffineTransformMakeRotation(M_PI);
-    }
-    self.cancelButton.hidden = NO;
-    
 }
 
 - (void)showControlView {
@@ -2858,52 +2585,48 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self createPartViewLayout];
     
     if (self.newState == 1) {
-        self.shootGuide.frame = CGRectMake(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
         self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 51;
-        self.shootGuide.transform = CGAffineTransformMakeRotation(0);
     }else {
-        self.shootGuide.frame = CGRectMake(0, 19, SCREEN_WIDTH - 91 - 180 * SCALE_WIDTH, 30);
-        self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 51;
-        self.shootGuide.transform = CGAffineTransformMakeRotation(M_PI);
+        self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 180 * SCALE_WIDTH;
+    }
+    if (self.newState == 1) {
+        self.backView.frame = CGRectMake(SCREEN_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
+    }else {
+        self.backView.frame = CGRectMake(-180 * SCALE_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
     }
     [UIView animateWithDuration:0.5f animations:^{
         if (self.newState == 1) {
             self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
-            self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.toggleCameraBtn.frame = CGRectMake(11, 11, 40, 40);
-            self.toggleCameraBtn.transform = CGAffineTransformMakeRotation(M_PI);
+            self.toggleCameraBtn.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 51, 40, 40);
         }
         self.toggleCameraBtn.hidden = NO;
         if (!isFront) {
             if (self.newState == 1) {
                 self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
-                self.flashButton.transform = CGAffineTransformMakeRotation(0);
             }else {
-                self.flashButton.frame = CGRectMake(11, 61, 40, 40);
-                self.flashButton.transform = CGAffineTransformMakeRotation(M_PI);
+                self.flashButton.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 101, 40, 40);
             }
             self.flashButton.hidden = NO;
         }
-        
         if (self.newState == 1) {
             self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
-            self.chooseScene.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.chooseScene.frame = CGRectMake(11, SCREEN_HEIGHT - 56, 40, 40);
-            self.chooseScene.transform = CGAffineTransformMakeRotation(M_PI);
+            self.chooseScene.frame = CGRectMake(SCREEN_WIDTH - 51, 16, 40, 40);
         }
         self.chooseScene.hidden = NO;
         if (self.newState == 1) {
             self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.bottom + 2, 50, 13);
-            self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(0);
         }else {
-            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.top - 15, 50, 13);
-            self.chooseSceneLabel.transform = CGAffineTransformMakeRotation(M_PI);
+            self.chooseSceneLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseScene.bottom + 2, 50, 13);
         }
         self.chooseSceneLabel.hidden = NO;
         self.backView.hidden = NO;
-        self.backView.transform = CGAffineTransformMakeTranslation(0, 0);
+        if (self.newState == 1) {
+            self.backView.frame = CGRectMake(SCREEN_WIDTH - 180 * SCALE_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
+        }else {
+            self.backView.frame = CGRectMake(0, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
+        }
         self.shootView.alpha = 0;
         self.shootView.hidden = YES;
     } completion:^(BOOL finished) {
@@ -2944,23 +2667,20 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.isPlayer = YES;
         fvc.DismissBlock = ^{
             if (self.newState == 1) {
-                self.nextButton.transform = CGAffineTransformMakeRotation(0);
+                self.nextButton.center = self.view.center;
+                self.deleteButton.frame = CGRectMake(self.view.centerX - 121, self.view.centerY - 30, 60, 60);
             }else {
-                self.nextButton.transform = CGAffineTransformMakeRotation(M_PI);
+                self.deleteButton.center = self.view.center;
+                self.nextButton.frame = CGRectMake(self.view.centerX + 61, self.view.centerY - 30, 60, 60);
             }
             self.nextButton.hidden = NO;
+            self.deleteButton.hidden = NO;
             if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showNextButtonPopup"]){
                 [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showNextButtonPopup"];
                 self.normalBubble = [DLYPopupMenu showRelyOnView:self.nextButton titles:@[@"去合成视频"] icons:nil menuWidth:120 withState:self.newState delegate:self];
                 self.normalBubble.showMaskAlpha = 1;
                 self.normalBubble.flipState = self.newState;
             }
-            if (self.newState == 1) {
-                self.deleteButton.transform = CGAffineTransformMakeRotation(0);
-            }else {
-                self.deleteButton.transform = CGAffineTransformMakeRotation(M_PI);
-            }
-            self.deleteButton.hidden = NO;
             self.isSuccess = YES;
         };
         [self hideBubbleWhenPush];
@@ -3120,7 +2840,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)gotoSetting {
     NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
     if ([[UIApplication sharedApplication]canOpenURL:url]) {
-        [[UIApplication sharedApplication]openURL:url];
+        [[UIApplication sharedApplication] openURL:url];
     }
 }
 

@@ -26,26 +26,15 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (BOOL)shouldAutorotate {
-    
-    NSArray *viewArr = self.viewControllers;
-    DLYRecordViewController *vc = viewArr[viewArr.count - 1];
-    if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]] && vc.isAppear == NO) {
-        return NO;
-    }else {
-        return YES;
-    }
-
-}
-
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end
+

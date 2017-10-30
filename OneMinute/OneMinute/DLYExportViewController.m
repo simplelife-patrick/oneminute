@@ -143,13 +143,13 @@
         DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:self.completeButton titles:@[@"完成制作视频的过程"] icons:nil menuWidth:120 delegate:self];
         normalBubble.showMaskAlpha = 1;
     }
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-//        
-//        NSArray *arr = self.navigationController.viewControllers;
-//        DLYRecordViewController *recoedVC = arr[0];
-//        recoedVC.isExport = YES;
-//        [self.navigationController popToViewController:recoedVC animated:YES];
-//    });
+    //    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+    //
+    //        NSArray *arr = self.navigationController.viewControllers;
+    //        DLYRecordViewController *recoedVC = arr[0];
+    //        recoedVC.isExport = YES;
+    //        [self.navigationController popToViewController:recoedVC animated:YES];
+    //    });
     
 }
 
@@ -158,13 +158,6 @@
     [super viewWillAppear:animated];
     [DLYUserTrack recordAndEventKey:@"ExportViewStart"];
     [DLYUserTrack beginRecordPageViewWith:@"ExportView"];
-    if (self.beforeState == 1) {
-        NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
-        [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-    }else {
-        NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeRight];
-        [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
-    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -194,3 +187,4 @@
 }
 
 @end
+
