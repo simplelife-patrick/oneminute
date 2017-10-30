@@ -29,8 +29,6 @@
     }];
 }
 
-#pragma mark - Private Method
-
 -(void)addAssetURL:(NSURL *)assetURL toAlbum:(NSString *)albumName failureBlock:(ALAssetsLibraryAccessFailureBlock)failureBlock {
     
     __block BOOL albumWasFound = NO;
@@ -51,9 +49,8 @@
         if (group == nil && albumWasFound == NO) {
 
             __weak typeof(self) weakSelf = self;
-            
             if (! [self respondsToSelector:@selector(addAssetsGroupAlbumWithName:resultBlock:failureBlock:)])
-                DLYLog(@"![WARNING][LIB:ALAssetsLibrary+CustomPhotoAlbum]: \
+                DLYLog(@"![WARNING][LIB :ALAssetsLibrary+CustomPhotoAlbum]: \
                       |-addAssetsGroupAlbumWithName:resultBlock:failureBlock:| \
                       only available on iOS 5.0 or later. \
                       ASSET cannot be saved to album!");
