@@ -7,7 +7,6 @@
 //
 
 #import "DLYResource.h"
-#import "DLYMiniVlogDraft.h"
 
 @interface DLYResource ()
 
