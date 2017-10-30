@@ -956,7 +956,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     if (![self.AVEngine isRecording]) {
         
-        self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+        self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeRight;
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
         });
