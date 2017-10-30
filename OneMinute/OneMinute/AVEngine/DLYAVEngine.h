@@ -58,7 +58,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
  初始化录制组件
 
  @param previewView 预览视图
- @return 返回加载好的Recorder component
+ @return 返回AVEngine
  */
 - (instancetype)initWithPreviewView:(UIView *)previewView;
 
@@ -94,17 +94,16 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
  @param successBlock 成功回
  @param failureBlcok 失败回调
  */
-- (void) mergeVideoWithVideoTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
+- (void) mergeVideoWithVideoTitle:(NSString *)videoTitle successed:(SuccessBlock)successBlock failured:(FailureBlock)failureBlcok;
 
 /**
  合并并添加转场效果
  
  @param videoTitle 视频标题
- @param newUrl  片头要添加上去的片段地址(需要传入单独处理)
  @param successBlock 成功回调
  @param failureBlcok 失败回调
  */
-- (void) addTransitionEffectWithTitle:(NSString *)videoTitle andURL:(NSURL*)newUrl SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
+- (void) addTransitionEffectWithTitle:(NSString *)videoTitle  successed:(SuccessBlock)successBlock failured:(FailureBlock)failureBlcok;
 
 /**
  片头
@@ -112,7 +111,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
  @param successBlock 成功回调
  @param failureBlcok 失败回调
  */
-- (void)addVideoHeaderWithTitle:(NSString *)videoTitle SuccessBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
+- (void)addVideoHeaderWithTitle:(NSString *)videoTitle successed:(SuccessBlock)successBlock failured:(FailureBlock)failureBlcok;
 /**
  配音
  
@@ -122,7 +121,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
  @param successBlock 成功回调
  @param failureBlcok 失败回调
  */
-- (void) addMusicToVideo:(NSURL *)videoUrl audioUrl:(NSURL *)audioUrl videoTitle:(NSString *)videoTitle successBlock:(SuccessBlock)successBlock failure:(FailureBlock)failureBlcok;
+- (void) addMusicToVideo:(NSURL *)videoUrl audioUrl:(NSURL *)audioUrl videoTitle:(NSString *)videoTitle successed:(SuccessBlock)successBlock failured:(FailureBlock)failureBlcok;
 /**
  获取视频某一帧图片
  
@@ -138,4 +137,5 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
 - (void) focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point;
 //时间格式转化
 - (long long)getDateTimeTOMilliSeconds:(NSDate *)datetime;
+
 @end

@@ -219,11 +219,11 @@
     self.AVEngine.startOperation = [self.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
     
     typeof(self) weakSelf = self;
-    [self.AVEngine addVideoHeaderWithTitle:self.titleField.text SuccessBlock:^{
+    [self.AVEngine addVideoHeaderWithTitle:self.titleField.text successed:^{
         
         weakSelf.AVEngine.finishOperation = [weakSelf.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
         DLYLog(@"成片耗时: %lld s",(weakSelf.AVEngine.finishOperation - weakSelf.AVEngine.startOperation)/1000);
-    } failure:^(NSError *error) {
+    } failured:^(NSError *error) {
         
     }];
 }
