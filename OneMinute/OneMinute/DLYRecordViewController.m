@@ -974,9 +974,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     if (![self.AVEngine isRecording]) {
         
-        // Device oriented horizontally, home button on the left
         self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeRight;
-        // Indicates that video should be oriented horizontally, home button on the left.
         self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
     }else{
         DLYLog(@"录制过程中不再重设录制正方向");
@@ -995,9 +993,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }];
     }
     if (![self.AVEngine isRecording]) {
-        // Device oriented horizontally, home button on the right
         self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
-        // Indicates that video should be oriented horizontally, home button on the right.
         self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
     }else{
         DLYLog(@"录制过程中不再重设录制正方向");
