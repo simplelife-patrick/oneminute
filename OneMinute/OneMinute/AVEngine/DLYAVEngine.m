@@ -19,11 +19,11 @@
 #import "DLYVideoTransition.h"
 #import "DLYResource.h"
 #import "DLYSession.h"
-#import "ALAssetsLibrary+CustomPhotoAlbum.h"
 #import <math.h>
 #import <CoreMotion/CoreMotion.h>
 #import "DLYVideoFilter.h"
 #import "UIImage+Extension.h"
+#import "DLYPhotoAlbum.h"
 
 @interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate,AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate,DLYRecordTimerDelegate>
 {
@@ -1680,7 +1680,7 @@
         if (APPTEST) {
             CALayer *watermarkLayer = [CALayer layer];
             watermarkLayer = [self addWatermarkWithSize:renderSize];
-            watermarkLayer.position = CGPointMake(videoComposition.renderSize.width - 358, 8);
+            watermarkLayer.position = CGPointMake(videoComposition.renderSize.width - 366, 8);
             [parentLayer addSublayer:watermarkLayer];
         }
         
@@ -1754,9 +1754,11 @@
                 if ([self.delegate  respondsToSelector:@selector(didFinishEdititProductUrl:)]) {
                     [self.delegate didFinishEdititProductUrl:outPutUrl];
                 }
-                ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
-                [assetLibrary saveVideo:outPutUrl toAlbum:@"一分" completionBlock:^(NSURL *assetURL, NSError *error) {
-                    DLYLog(@"配音完成后保存在手机相册");
+                
+                DLYPhotoAlbum *phoneAlbum = [[DLYPhotoAlbum alloc] init];
+
+                [phoneAlbum saveVideoToAlbumWithUrl:outPutUrl allbumName:@"一分" successed:^{
+                    DLYLog(@"保存成功");
                     BOOL isSuccess = NO;
                     NSFileManager *fileManager = [NSFileManager defaultManager];
                     
@@ -1769,19 +1771,21 @@
                         isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
                         DLYLog(@"%@",isSuccess ? @"成功删除未配音的成片视频 !" : @"删除未配音视频失败");
                     }
+                    
                     NSString *headerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"headerVideo.mp4"];
                     if ([[NSFileManager defaultManager] fileExistsAtPath:headerPath]) {
                         isSuccess = [fileManager removeItemAtPath:headerPath error:nil];
                         DLYLog(@"删除片头");
                     }
+                    
                     NSString *footerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"footerVideo.mp4"];
                     if ([[NSFileManager defaultManager] fileExistsAtPath:footerPath]) {
                         isSuccess = [fileManager removeItemAtPath:footerPath error:nil];
                         DLYLog(@"删除片尾");
                     }
                     success();
-
-                } failureBlock:^(NSError *error) {
+                } failured:^(NSError *error) {
+                    DLYLog(@"保存失败");
                     failureBlcok(error);
                 }];
             }break;
