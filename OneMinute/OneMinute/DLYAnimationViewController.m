@@ -67,7 +67,7 @@
     NSString *buildVersion = [infoDic objectForKey:@"CFBundleVersion"];
     NSString *labelText = [NSString stringWithFormat:@"%@(%@)", appVersion,buildVersion];
     self.versionLabel.text = labelText;
-    self.versionLabel.font = FONT_SYSTEM(14);
+    self.versionLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size: 14];
     [self.view addSubview:self.versionLabel];
 }
 

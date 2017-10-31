@@ -2649,7 +2649,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)indicatorViewStopFlashAnimating {
     NSArray *viewArr = self.navigationController.viewControllers;
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
-        
+        [DLYUserTrack recordAndEventKey:@"PartFinishTime"];
         [self showControlView];
         
         if (self.newState == 1) {

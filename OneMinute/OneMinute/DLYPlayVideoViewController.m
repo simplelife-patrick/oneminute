@@ -131,6 +131,11 @@
     
     NSDictionary *dict = @{@"playUrl":self.AVEngine.currentProductUrl};
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CANPLAY" object:nil userInfo:dict];
+
+    [DLYUserTrack recordAndEventKey:@"MergeVideoFinish"];
+    self.AVEngine.finishOperation = [self.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
+    NSString *str = [NSString stringWithFormat:@"成片耗时%lld秒", (self.AVEngine.finishOperation - self.AVEngine.startOperation)/1000];
+    [DLYUserTrack recordAndEventKey:@"MergeConsumeTime" andDescribeStr:str];
 }
 - (void)createMainView {
     NSURL *url = [self.resource getPartUrlWithPartNum:0];

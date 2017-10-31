@@ -277,6 +277,11 @@ UITableViewDataSource
         _menuBackView.alpha = 1;
         [self removeFromSuperview];
         [_backView removeFromSuperview];
+        for (UIView *view in YBMainWindow.subviews) {
+            if (view.tag == 905) {
+                [view removeFromSuperview];
+            }
+        }
         [_menuBackView removeFromSuperview];
         for (UIView *view in YBMainWindow.subviews) {
             if (view.tag == 901) {
@@ -364,7 +369,8 @@ UITableViewDataSource
     CGFloat width = self.width;
     CGFloat height = self.height;
     _backView = [[UIView alloc] initWithFrame:self.frame];
-    [_menuBackView addSubview:_backView];
+    _backView.tag = 905;
+    [YBMainWindow addSubview:_backView];
     self.frame = CGRectMake(0, 0, width, height);
     [_backView addSubview:self];
     _backY = self.backView.y;
