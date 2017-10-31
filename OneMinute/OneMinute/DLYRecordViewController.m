@@ -96,7 +96,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) NSMutableArray *viewArr;      //视图数组
 @property (nonatomic, strong) NSMutableArray *bubbleTitleArr;//视图数组
 @property (nonatomic, assign) BOOL isAvalible;              //权限都已经许可
-@property (nonatomic, strong) UILabel *versionLabel;        //版本显示
+//@property (nonatomic, strong) UILabel *versionLabel;        //版本显示
 
 @end
 
@@ -647,15 +647,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.view addSubview:self.backView];
     
     //版本页面
-    self.versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(2, self.backView.height - 20, 50, 20)];
-    self.versionLabel.textColor = [UIColor whiteColor];
-    NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
-    NSString *appVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];
-    NSString *buildVersion = [infoDic objectForKey:@"CFBundleVersion"];
-    NSString *labelText = [NSString stringWithFormat:@"%@(%@)", appVersion,buildVersion];
-    self.versionLabel.text = labelText;
-    self.versionLabel.font = FONT_SYSTEM(12);
-    [self.backView addSubview:self.versionLabel];
+//    self.versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(2, self.backView.height - 20, 50, 20)];
+//    self.versionLabel.textColor = [UIColor whiteColor];
+//    NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
+//    NSString *appVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];
+//    NSString *buildVersion = [infoDic objectForKey:@"CFBundleVersion"];
+//    NSString *labelText = [NSString stringWithFormat:@"%@(%@)", appVersion,buildVersion];
+//    self.versionLabel.text = labelText;
+//    self.versionLabel.font = FONT_SYSTEM(12);
+//    [self.backView addSubview:self.versionLabel];
     
     //拍摄按钮
     self.recordBtn = [[UIButton alloc]initWithFrame:CGRectMake(43 * SCALE_WIDTH, 0, 60 * SCALE_WIDTH, 60 * SCALE_WIDTH)];
@@ -1126,13 +1126,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.nextButton.frame = CGRectMake(self.view.centerX + 61, self.view.centerY - 30, 60, 60);
         }
     }
-    if (!self.versionLabel.isHidden && self.versionLabel) {
-        if (num == 0) {
-            self.versionLabel.frame = CGRectMake(2, self.backView.height - 20, 50, 20);
-        }else {
-            self.versionLabel.frame = CGRectMake(self.backView.width - 52, self.backView.height - 20, 50, 20);
-        }
-    }
+//    if (!self.versionLabel.isHidden && self.versionLabel) {
+//        if (num == 0) {
+//            self.versionLabel.frame = CGRectMake(2, self.backView.height - 20, 50, 20);
+//        }else {
+//            self.versionLabel.frame = CGRectMake(self.backView.width - 52, self.backView.height - 20, 50, 20);
+//        }
+//    }
     
     if (!self.normalBubble.isHidden && self.normalBubble) {
         self.normalBubble.flipState = self.newState;
