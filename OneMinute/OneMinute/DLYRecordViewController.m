@@ -92,11 +92,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) DLYPopupMenu *partBubble;     //删除单个气泡
 @property (nonatomic, strong) DLYPopupMenu *allBubble;      //删除全部气泡
 @property (nonatomic, strong) DLYPopupMenu *normalBubble;   //普通气泡
-@property (nonatomic, strong) DLYPopupMenu *videoBubble;    //样片气泡
+@property (nonatomic, strong) DLYPopupMenu *nextStepBubble; //去合成视频气泡
 @property (nonatomic, strong) NSMutableArray *viewArr;      //视图数组
 @property (nonatomic, strong) NSMutableArray *bubbleTitleArr;//视图数组
 @property (nonatomic, assign) BOOL isAvalible;              //权限都已经许可
-@property (nonatomic, strong) UILabel *versionLabel;        //版本显示
+//@property (nonatomic, strong) UILabel *versionLabel;        //版本显示
 
 @end
 
@@ -186,6 +186,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self createPartViewLayout];
     }
     self.isPlayer = NO;
+    
+    if (!self.playView.isHidden && self.playView) {
+        if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showPlayButtonPopup"]){
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showPlayButtonPopup"];
+            self.normalBubble = [DLYPopupMenu showRelyOnView:self.playButton titles:@[@"预览视频片段"] icons:nil menuWidth:120 withState:self.newState delegate:self];
+            self.normalBubble.showMaskAlpha = 1;
+            self.normalBubble.flipState = self.newState;
+        }
+    }
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
@@ -225,9 +234,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.deleteButton.hidden = NO;
         if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showNextButtonPopup"]){
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showNextButtonPopup"];
-            self.normalBubble = [DLYPopupMenu showRelyOnView:self.nextButton titles:@[@"去合成视频"] icons:nil menuWidth:120 withState:self.newState delegate:self];
-            self.normalBubble.showMaskAlpha = 1;
-            self.normalBubble.flipState = self.newState;
+            self.nextStepBubble = [DLYPopupMenu showNextStepOnView:self.nextButton titles:@[@"去合成视频"] icons:nil menuWidth:120 withState:self.newState delegate:self];
+            self.nextStepBubble.showMaskAlpha = 1;
+            self.nextStepBubble.nextStepState = self.newState;
         }
     }
 }
@@ -274,9 +283,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self.normalBubble removeFromSuperview];
         self.normalBubble = nil;
     }
-    if (self.videoBubble) {
-        [self.videoBubble removeFromSuperview];
-        self.videoBubble = nil;
+    if (self.nextStepBubble) {
+        [self.nextStepBubble removeFromSuperview];
+        self.nextStepBubble = nil;
     }
     if (self.allBubble) {
         [self.allBubble removeFromSuperview];
@@ -440,7 +449,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         part.partTime = [self getDurationwithStartTime:part.dubStartTime andStopTime:part.dubStopTime];
         
     }
-
+    
     if (isExitDraft) {
         for (NSString *str in draftArr) {
             NSInteger num = [str integerValue];
@@ -638,15 +647,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.view addSubview:self.backView];
     
     //版本页面
-    self.versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(2, self.backView.height - 20, 50, 20)];
-    self.versionLabel.textColor = [UIColor whiteColor];
-    NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
-    NSString *appVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];
-    NSString *buildVersion = [infoDic objectForKey:@"CFBundleVersion"];
-    NSString *labelText = [NSString stringWithFormat:@"%@(%@)", appVersion,buildVersion];
-    self.versionLabel.text = labelText;
-    self.versionLabel.font = FONT_SYSTEM(12);
-    [self.backView addSubview:self.versionLabel];
+//    self.versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(2, self.backView.height - 20, 50, 20)];
+//    self.versionLabel.textColor = [UIColor whiteColor];
+//    NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
+//    NSString *appVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];
+//    NSString *buildVersion = [infoDic objectForKey:@"CFBundleVersion"];
+//    NSString *labelText = [NSString stringWithFormat:@"%@(%@)", appVersion,buildVersion];
+//    self.versionLabel.text = labelText;
+//    self.versionLabel.font = FONT_SYSTEM(12);
+//    [self.backView addSubview:self.versionLabel];
     
     //拍摄按钮
     self.recordBtn = [[UIButton alloc]initWithFrame:CGRectMake(43 * SCALE_WIDTH, 0, 60 * SCALE_WIDTH, 60 * SCALE_WIDTH)];
@@ -1117,34 +1126,25 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.nextButton.frame = CGRectMake(self.view.centerX + 61, self.view.centerY - 30, 60, 60);
         }
     }
-    if (!self.versionLabel.isHidden && self.versionLabel) {
-        if (num == 0) {
-            self.versionLabel.frame = CGRectMake(2, self.backView.height - 20, 50, 20);
-        }else {
-            self.versionLabel.frame = CGRectMake(self.backView.width - 52, self.backView.height - 20, 50, 20);
-        }
-    }
+//    if (!self.versionLabel.isHidden && self.versionLabel) {
+//        if (num == 0) {
+//            self.versionLabel.frame = CGRectMake(2, self.backView.height - 20, 50, 20);
+//        }else {
+//            self.versionLabel.frame = CGRectMake(self.backView.width - 52, self.backView.height - 20, 50, 20);
+//        }
+//    }
     
-    //从这里开始
-    if (!self.alert.isHidden && self.alert) {
-        //        [UIView animateWithDuration:0.5f animations:^{
-        //            self.alert.transform = CGAffineTransformMakeRotation(num);
-        //        }];
-    }
-    if (![DLYIndicatorView sharedIndicatorView].isHidden && [DLYIndicatorView sharedIndicatorView]) {
-        //        [DLYIndicatorView sharedIndicatorView].mainView.transform = CGAffineTransformMakeRotation(num);
-    }
     if (!self.normalBubble.isHidden && self.normalBubble) {
         self.normalBubble.flipState = self.newState;
     }
     if (!self.allBubble.isHidden && self.allBubble) {
-        self.allBubble.flipState = self.newState;
+        self.allBubble.deleteState = self.newState;
     }
     if (!self.partBubble.isHidden && self.partBubble) {
         self.partBubble.flipState = self.newState;
     }
-    if (!self.videoBubble.isHidden && self.videoBubble) {
-        self.videoBubble.rotateState = self.newState;
+    if (!self.nextStepBubble.isHidden && self.nextStepBubble) {
+        self.nextStepBubble.nextStepState = self.newState;
     }
 }
 
@@ -1169,7 +1169,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (isSlomoCamera) {
         if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showSlomoCameraPopup"]){
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showSlomoCameraPopup"];
-            self.normalBubble = [DLYPopupMenu showRelyOnView:self.toggleCameraBtn titles:@[@"慢镜头不能摄像头"] icons:nil menuWidth:120 withState:self.newState delegate:self];
+            self.normalBubble = [DLYPopupMenu showRelyOnView:self.toggleCameraBtn titles:@[@"慢镜头不能使用前置摄像头"] icons:nil menuWidth:120 withState:self.newState delegate:self];
             self.normalBubble.showMaskAlpha = 1;
             self.normalBubble.flipState = self.newState;
         }
@@ -1221,9 +1221,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         //气泡
         if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showSeeRushPopup"]){
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showSeeRushPopup"];
-            self.videoBubble = [DLYPopupMenu showRotateRelyOnView:self.seeRush titles:@[@"观看样片"] icons:nil menuWidth:120 withState:self.newState delegate:self];
-            self.videoBubble.showMaskAlpha = 1;
-            self.videoBubble.rotateState = self.newState;
+            DLYPopupMenu *videoBubble = [DLYPopupMenu showRelyOnView:self.seeRush titles:@[@"观看样片"] icons:nil menuWidth:120 delegate:self];
+            videoBubble.showMaskAlpha = 1;
         }
     }];
     
@@ -1357,9 +1356,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [DLYUserTrack recordAndEventKey:@"DeleteAll"];
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"deleteAllPopup"]){
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"deleteAllPopup"];
-        self.allBubble = [DLYPopupMenu showRelyOnView:sender titles:@[@"点击删除全部片段"] icons:nil menuWidth:120 withState:self.newState delegate:self];
+        self.allBubble = [DLYPopupMenu showDeleteOnView:sender titles:@[@"点击删除全部片段"] icons:nil menuWidth:120 withState:self.newState delegate:self];
         self.allBubble.showMaskAlpha = 0;
-        self.allBubble.flipState = self.newState;
+        self.allBubble.deleteState = self.newState;
         self.allBubble.dismissOnTouchOutside = NO;
         self.allBubble.dismissOnSelected = NO;
     }
@@ -1874,13 +1873,23 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
     }
     if (isAllPart) {
-        //光标
-        prepareTag = 10001;
-        oldPrepareTag = prepareTag;
-        prepareAlpha = 1;
-        [_prepareShootTimer setFireDate:[NSDate distantPast]];
+        [self showPlayView];
     }
     [self updateShootGuide];
+}
+
+- (void)showPlayView {
+    //光标
+    prepareTag = 10001;
+    oldPrepareTag = prepareTag;
+    prepareAlpha = 1;
+    [_prepareShootTimer setFireDate:[NSDate distantPast]];
+    
+    if (self.playView.isHidden && self.playView) {
+        selectPartTag = 10001;
+        cursorTag = selectPartTag;
+        self.playView.hidden = NO;
+    }
 }
 
 - (void)updateShootGuide {
@@ -2077,11 +2086,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
     }
     if (isAllPart) {
-        //光标
-        prepareTag = 10001;
-        oldPrepareTag = prepareTag;
-        prepareAlpha = 1;
-        [_prepareShootTimer setFireDate:[NSDate distantPast]];
+        [self showPlayView];
     }
     [self updateShootGuide];
 }
@@ -2632,17 +2637,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     } completion:^(BOOL finished) {
     }];
 }
+
 #pragma mark - 提示控件代理
-- (void)indicatorViewStartFlashAnimating {
-    NSArray *viewArr = self.navigationController.viewControllers;
-    if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
-        if (self.newState == 1) {
-            [DLYIndicatorView sharedIndicatorView].mainView.transform = CGAffineTransformMakeRotation(0);
-        }else {
-            [DLYIndicatorView sharedIndicatorView].mainView.transform = CGAffineTransformMakeRotation(M_PI);
-        }
-    }
-}
 - (void)indicatorViewStopFlashAnimating {
     NSArray *viewArr = self.navigationController.viewControllers;
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
@@ -2677,9 +2673,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.deleteButton.hidden = NO;
             if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showNextButtonPopup"]){
                 [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showNextButtonPopup"];
-                self.normalBubble = [DLYPopupMenu showRelyOnView:self.nextButton titles:@[@"去合成视频"] icons:nil menuWidth:120 withState:self.newState delegate:self];
-                self.normalBubble.showMaskAlpha = 1;
-                self.normalBubble.flipState = self.newState;
+                self.nextStepBubble = [DLYPopupMenu showNextStepOnView:self.nextButton titles:@[@"去合成视频"] icons:nil menuWidth:120 withState:self.newState delegate:self];
+                self.nextStepBubble.showMaskAlpha = 1;
+                self.nextStepBubble.nextStepState = self.newState;
             }
             self.isSuccess = YES;
         };
@@ -2826,11 +2822,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSString *str = [NSString stringWithFormat:@"请到设置页面允许使用%@", message];
     self.alert = [[DLYAlertView alloc] initWithMessage:str withSureButton:@"确定"];
     
-    if (self.newState == 1) {
-        self.alert.transform = CGAffineTransformMakeRotation(0);
-    }else {
-        self.alert.transform = CGAffineTransformMakeRotation(M_PI);
-    }
     __weak typeof(self) weakSelf = self;
     self.alert.sureButtonAction = ^{
         [weakSelf gotoSetting];

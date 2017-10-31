@@ -171,6 +171,17 @@ typedef NS_ENUM(NSInteger , YBPopupMenuPriorityDirection) {
  旋转气泡
  */
 @property (nonatomic, assign) NSInteger rotateState;
+
+/**
+ 删除气泡
+ */
+@property (nonatomic, assign) NSInteger deleteState;
+
+/**
+ 下一步按键气泡
+ */
+@property (nonatomic, assign) NSInteger nextStepState;
+
 /**
  代理
  */
@@ -251,6 +262,40 @@ typedef NS_ENUM(NSInteger , YBPopupMenuPriorityDirection) {
                              menuWidth:(CGFloat)itemWidth
                              withState:(NSUInteger)stateNum
                               delegate:(id<YBPopupMenuDelegate>)delegate;
+
+/**
+ 依赖指定view弹出 删除全部片段气泡
+ 
+ @param titles    标题数组  数组里是NSString/NSAttributedString
+ @param icons     图标数组  数组里是NSString/UIImage
+ @param itemWidth 菜单宽度
+ @param stateNum 设备状态
+ @param delegate  代理
+ */
+
++ (DLYPopupMenu *)showDeleteOnView:(UIView *)view
+                            titles:(NSArray *)titles
+                             icons:(NSArray *)icons
+                         menuWidth:(CGFloat)itemWidth
+                         withState:(NSUInteger)stateNum
+                          delegate:(id<YBPopupMenuDelegate>)delegate;
+
+/**
+ 依赖指定view弹出 合成视频气泡
+ 
+ @param titles    标题数组  数组里是NSString/NSAttributedString
+ @param icons     图标数组  数组里是NSString/UIImage
+ @param itemWidth 菜单宽度
+ @param stateNum 设备状态
+ @param delegate  代理
+ */
+
++ (DLYPopupMenu *)showNextStepOnView:(UIView *)view
+                              titles:(NSArray *)titles
+                               icons:(NSArray *)icons
+                           menuWidth:(CGFloat)itemWidth
+                           withState:(NSUInteger)stateNum
+                            delegate:(id<YBPopupMenuDelegate>)delegate;
 
 /**
  依赖指定view弹出(推荐方法)

@@ -10,10 +10,8 @@
 #import <CoreMotion/CoreMotion.h>
 #import "DLYPopupMenu.h"
 
-
 @interface DLYBaseViewController ()
 @property (nonatomic, strong) CMMotionManager * motionManager;
-//@property (nonatomic, strong) NSMutableArray *viewArr;
 @end
 
 @implementation DLYBaseViewController
@@ -32,54 +30,11 @@
 - (void)viewDidAppear:(BOOL)animated {
     
     [super viewDidAppear:animated];
-    
-    //    self.viewArr = [NSMutableArray arrayWithArray:[self.view subviews]];
-    //    [self listSubviewsOfView:self.view];
-    //
-    //    [self showPopupMenu];
-    
 }
 
-//- (void)showPopupMenu {
-//
-//    for (UIView *view in self.viewArr) {
-//
-//        if (view.isPopover == YES && view.isHidden == NO) {
-//            view.isPopover = NO;
-//            [DLYPopupMenu showRelyOnView:view titles:@[@"气泡"] icons:nil menuWidth:120 delegate:self];
-//            return;
-//        }
-//    }
-//
-//}
-
-//- (void)listSubviewsOfView:(UIView *)view {
-//
-//    // Get the subviews of the view
-//    NSArray *subviews = [view subviews];
-//
-//    // Return if there are no subviews
-//    if ([subviews count] == 0) {
-//
-//        [self.viewArr addObject:view];
-//        return;
-//    }
-//
-//    for (UIView *subview in subviews) {
-//
-//        // List the subviews of subview
-//        [self listSubviewsOfView:subview];
-//    }
-//}
-
-//- (void)ybPopupMenuDidDismiss {
-//    [self showPopupMenu];
-//}
-
 - (void)viewControllerWillEnterForeground {
-    
-    NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
-    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+//    NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
+//    [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
 }
 
 - (void)startMotionManager{

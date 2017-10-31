@@ -104,10 +104,6 @@
 }
 
 - (void)startFlashAnimatingWithTitle:(NSString *)title {
-    self.mainView.transform = CGAffineTransformMakeRotation(0);
-    if (self.delegate && [self.delegate respondsToSelector:@selector(indicatorViewStartFlashAnimating)]) {
-        [self.delegate indicatorViewStartFlashAnimating];
-    }
     NSString *newStr = [title stringByReplacingOccurrencesOfString:@" " withString:@""];
     if (newStr.length <= 0) {
         self.titlelabel.text = @"处理中,请稍后";
