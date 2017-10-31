@@ -60,14 +60,18 @@
     [[NSRunLoop currentRunLoop] addTimer:self.flashTimer forMode:NSRunLoopCommonModes];
     self.num = 0;
     
-    self.versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH - 60, SCREEN_HEIGHT - 25, 60, 25)];
+//    self.versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH - 60, SCREEN_HEIGHT - 25, 60, 25)];
+    self.versionLabel = [[UILabel alloc] init];
     self.versionLabel.textColor = RGB(134, 134, 134);
     NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
     NSString *appVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];
-    NSString *buildVersion = [infoDic objectForKey:@"CFBundleVersion"];
-    NSString *labelText = [NSString stringWithFormat:@"%@(%@)", appVersion,buildVersion];
+//    NSString *buildVersion = [infoDic objectForKey:@"CFBundleVersion"];
+//    NSString *labelText = [NSString stringWithFormat:@"%@(%@)", appVersion,buildVersion];
+    NSString *labelText = [NSString stringWithFormat:@"%@", appVersion];
     self.versionLabel.text = labelText;
-    self.versionLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size: 14];
+    self.versionLabel.font = [UIFont fontWithName:@"PingFangSC-Light" size: 8];
+    [self.versionLabel sizeToFit];
+    self.versionLabel.frame = CGRectMake(SCREEN_WIDTH - self.versionLabel.width, SCREEN_HEIGHT - self.versionLabel.height, self.versionLabel.width, self.versionLabel.height);
     [self.view addSubview:self.versionLabel];
 }
 
