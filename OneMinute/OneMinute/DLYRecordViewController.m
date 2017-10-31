@@ -963,15 +963,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 //后面改变的状态
 - (void)deviceChangeAndHomeOnTheLeft {//左手模式
     
-    if (![self.AVEngine isRecording]) {
-        
-        self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeRight;
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
-        });
-    }else{
-        DLYLog(@"录制过程中不再重设录制正方向");
-    }
     NSArray *viewArr = self.navigationController.viewControllers;
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
         [self deviceChangeAndHomeOnTheLeftNewLayout];
@@ -981,19 +972,17 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
         }];
     }
+    if (![self.AVEngine isRecording]) {
+        
+        self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeRight;
+        self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
+    }else{
+        DLYLog(@"录制过程中不再重设录制正方向");
+    }
 }
 //home在右 初始状态
 - (void)deviceChangeAndHomeOnTheRight {//右手模式
     
-    if (![self.AVEngine isRecording]) {
-        
-        self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
-        });
-    }else{
-        DLYLog(@"录制过程中不再重设录制正方向");
-    }
     NSArray *viewArr = self.navigationController.viewControllers;
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
         [self deviceChangeAndHomeOnTheRightNewLayout];
@@ -1002,6 +991,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             NSNumber *value = [NSNumber numberWithInt:UIDeviceOrientationLandscapeLeft];
             [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
         }];
+    }
+    if (![self.AVEngine isRecording]) {
+        self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+        self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
+    }else{
+        DLYLog(@"录制过程中不再重设录制正方向");
     }
 }
 
@@ -1231,15 +1226,20 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)startRecordBtnAction {
     
     [DLYUserTrack recordAndEventKey:@"StartRecord"];
-    // REC START
-    //    if (!self.AVEngine.isRecording) {
+    
+    if (self.newState == 1) {
+        self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+        self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
+    }else {
+        self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeRight;
+        self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
+    }
     
     NSInteger i = selectPartTag - 10000;
     DLYMiniVlogPart *part = partModelArray[i - 1];
     shootNum = 0.0;
-    //        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+
     [self.AVEngine startRecordingWithPart:part];
-    //        });
     
     DLYLog(@"计时器开始计时 :%@",[self getCurrentTime_MS]);
     
@@ -1621,6 +1621,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     } completion:^(BOOL finished) {
     }];
     
+    if (self.newState == 1) {
+        self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+        self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
+    }else {
+        self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeRight;
+        self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
+    }
 }
 //删除某个片段的具体操作
 - (void)deleteSelectPartVideo {
@@ -2644,6 +2651,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if ([viewArr[viewArr.count - 1] isKindOfClass:[DLYRecordViewController class]]) {
         
         [self showControlView];
+        
+        if (self.newState == 1) {
+            self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
+            self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
+        }else {
+            self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeRight;
+            self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
+        }
         
         for(int i = 0; i < partModelArray.count; i++)
         {
