@@ -186,6 +186,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self createPartViewLayout];
     }
     self.isPlayer = NO;
+    
+    if (!self.playView.isHidden && self.playView) {
+        if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showPlayButtonPopup"]){
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showPlayButtonPopup"];
+            self.normalBubble = [DLYPopupMenu showRelyOnView:self.playButton titles:@[@"预览视频片段"] icons:nil menuWidth:120 withState:self.newState delegate:self];
+            self.normalBubble.showMaskAlpha = 1;
+            self.normalBubble.flipState = self.newState;
+        }
+    }
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
@@ -440,7 +449,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         part.partTime = [self getDurationwithStartTime:part.dubStartTime andStopTime:part.dubStopTime];
         
     }
-
+    
     if (isExitDraft) {
         for (NSString *str in draftArr) {
             NSInteger num = [str integerValue];
@@ -1864,13 +1873,23 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
     }
     if (isAllPart) {
-        //光标
-        prepareTag = 10001;
-        oldPrepareTag = prepareTag;
-        prepareAlpha = 1;
-        [_prepareShootTimer setFireDate:[NSDate distantPast]];
+        [self showPlayView];
     }
     [self updateShootGuide];
+}
+
+- (void)showPlayView {
+    //光标
+    prepareTag = 10001;
+    oldPrepareTag = prepareTag;
+    prepareAlpha = 1;
+    [_prepareShootTimer setFireDate:[NSDate distantPast]];
+    
+    if (self.playView.isHidden && self.playView) {
+        selectPartTag = 10001;
+        cursorTag = selectPartTag;
+        self.playView.hidden = NO;
+    }
 }
 
 - (void)updateShootGuide {
@@ -2067,11 +2086,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
     }
     if (isAllPart) {
-        //光标
-        prepareTag = 10001;
-        oldPrepareTag = prepareTag;
-        prepareAlpha = 1;
-        [_prepareShootTimer setFireDate:[NSDate distantPast]];
+        [self showPlayView];
     }
     [self updateShootGuide];
 }
@@ -2806,7 +2821,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     NSString *str = [NSString stringWithFormat:@"请到设置页面允许使用%@", message];
     self.alert = [[DLYAlertView alloc] initWithMessage:str withSureButton:@"确定"];
-
+    
     __weak typeof(self) weakSelf = self;
     self.alert.sureButtonAction = ^{
         [weakSelf gotoSetting];

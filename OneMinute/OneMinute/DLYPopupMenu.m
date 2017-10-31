@@ -278,6 +278,11 @@ UITableViewDataSource
         [self removeFromSuperview];
         [_backView removeFromSuperview];
         [_menuBackView removeFromSuperview];
+        for (UIView *view in YBMainWindow.subviews) {
+            if (view.tag == 901) {
+                [view removeFromSuperview];
+            }
+        }
     } completion:^(BOOL finished) {
         if (self.delegate && [self.delegate respondsToSelector:@selector(ybPopupMenuDidDismiss)]) {
             [self.delegate ybPopupMenuDidDismiss];
@@ -359,7 +364,7 @@ UITableViewDataSource
     CGFloat width = self.width;
     CGFloat height = self.height;
     _backView = [[UIView alloc] initWithFrame:self.frame];
-    [YBMainWindow addSubview:_backView];
+    [_menuBackView addSubview:_backView];
     self.frame = CGRectMake(0, 0, width, height);
     [_backView addSubview:self];
     _backY = self.backView.y;
@@ -411,6 +416,7 @@ UITableViewDataSource
     _isCornerChanged = NO;
     _showMaskView = YES;
     _menuBackView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    _menuBackView.tag = 901;
     _menuBackView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0];
     _menuBackView.alpha = 0;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget: self action: @selector(touchOutSide)];
