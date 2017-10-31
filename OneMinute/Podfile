@@ -1,5 +1,5 @@
 
-platform :ios, '10.0'
+platform :ios, '11.0'
 inhibit_all_warnings!
 
 #ali_source 'alibaba-specs'
@@ -29,6 +29,6 @@ pod 'RNCryptor-objc', '~> 3.0.5'
 end
 
 target 'OneMinute' do
-    platform :ios, '10.0'
+    platform :ios, '11.0'
     main_pods
 end
