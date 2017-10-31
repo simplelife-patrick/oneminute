@@ -318,6 +318,7 @@
             [self changeCameraAnimation];
             [self.captureSession addInput:self.backCameraInput];//切换成了后置
             _currentVideoDeviceInput = self.frontCameraInput;
+            self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
         }
     }
     [self.captureSession startRunning];
