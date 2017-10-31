@@ -168,7 +168,7 @@
         
         _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:currentTemplate.templateId];
     }else{
-        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:@"Primary.dly"];
+        _currentTemplate = [[DLYMiniVlogTemplate alloc] initWithTemplateId:@"Default.dly"];
     }
 }
 - (NSString *)getDurationwithStartTime:(NSString *)startTime andStopTime:(NSString *)stopTime {
