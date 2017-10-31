@@ -1220,7 +1220,6 @@
         [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"处理中,请稍后"];
         typeof(self) weakSelf = self;
         [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl soundType:_currentPart.soundType recordTypeOfPart:_currentPart.recordType completed:^{
-            UISaveVideoAtPathToSavedPhotosAlbum([exportUrl path], self, nil, nil);
             DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
             [self.resource removePartWithPartNumFormTemp:self.currentPart.partNum];
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -1332,7 +1331,6 @@
     assetExportSession.shouldOptimizeForNetworkUse = YES;
     
     [assetExportSession exportAsynchronouslyWithCompletionHandler:^{
-        UISaveVideoAtPathToSavedPhotosAlbum([productOutputUrl path], self, nil, nil);
         DLYLog(@"全部片段merge成功");
         
         DLYMiniVlogTemplate *template = self.session.currentTemplate;
