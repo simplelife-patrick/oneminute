@@ -94,14 +94,7 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
 - (void) removePartWithPartNumFromDocument:(NSInteger)partNum;
 
 /**
- 删除Temp中全部草稿片段
- */
-- (void) removeCurrentAllPartFromTemp;
-
-/**
  删除Document中全部草稿片段
-
- @return 返回值
  */
 - (void) removeCurrentAllPartFromDocument;
 
