@@ -66,9 +66,6 @@
     });
     
 //    [self.tickThread cancel];
-    
-    NSDate* now = [NSDate date];
-    NSTimeInterval diff = now.timeIntervalSinceReferenceDate - self.startIntervalDiff - self.duration;
 }
 
 -(void) _tick
@@ -121,7 +118,6 @@
         if(loopCondition)
         {
             NSDate* now = [NSDate date];
-            NSTimeInterval diff = now.timeIntervalSinceReferenceDate - self.currentIntervalDiff - sleepInterval;
             self.currentIntervalDiff = now.timeIntervalSinceReferenceDate;
         }
         else
@@ -144,8 +140,6 @@
     {
         self.tickRemain = 0;
         self.stopIntervalDiff = now.timeIntervalSinceReferenceDate;
-        NSTimeInterval diff = self.stopIntervalDiff - self.currentIntervalDiff - sleepInterval;
-        NSTimeInterval totalDiff = self.stopIntervalDiff - self.startIntervalDiff - self.duration;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if(self.timerDelegate)
             {

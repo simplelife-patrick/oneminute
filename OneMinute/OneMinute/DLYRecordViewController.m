@@ -415,9 +415,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 #pragma mark ==== 初始化数据
 - (NSInteger)initDataReadDraft {
-    self.btnImg = @[@"\U0000e67e", @"\U0000e67d", @"\U0000e682", @"\U0000e683",
-                    @"\U0000e67b", @"\U0000e67f", @"\U0000e678", @"\U0000e680",
-                    @"\U0000e684", @"\U0000e67c", @"\U0000e679", @"\U0000e681"];
+    
+    self.btnImg = @[@"\U0000e67e", @"\U0000e67d", @"\U0000e682", @"\U0000e679",@"\U0000e683", @"\U0000e67b",
+                    @"\U0000e67f", @"\U0000e678", @"\U0000e680", @"\U0000e681", @"\U0000e684", @"\U0000e67c"];
     
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     
@@ -898,7 +898,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     CGFloat frameHeight = CGImageGetHeight(image.CGImage);
     
     NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   AVVideoCodecH264, AVVideoCodecKey,
+                                   AVVideoCodecTypeH264, AVVideoCodecKey,
                                    [NSNumber numberWithInt:frameWidth], AVVideoWidthKey,
                                    [NSNumber numberWithInt:frameHeight], AVVideoHeightKey,
                                    nil];
