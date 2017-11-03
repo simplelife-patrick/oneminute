@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DLYIconFont.h"
 
 @interface UIImage (iconfont)
 
 + (UIImage*)imageWithIcon:(NSString*)iconCode inFont:(NSString*)fontName size:(NSUInteger)size color:(UIColor*)color;
++ (UIImage*)imageWithIconName:(DLYIFName)iconName inFont:(NSString*)fontName size:(NSUInteger)size color:(UIColor*)color;
 @end

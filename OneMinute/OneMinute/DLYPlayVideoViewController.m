@@ -176,7 +176,7 @@
     
     //跳过button
     self.skipButton = [[UIButton alloc] initWithFrame:CGRectMake(582 * SCALE_WIDTH, 158 * SCALE_HEIGHT, 60 * SCALE_WIDTH, 60 * SCALE_WIDTH)];
-    [self.skipButton setImage:[UIImage imageWithIcon:@"\U0000e66b" inFont:ICONFONT size:30 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+    [self.skipButton setImage:[UIImage imageWithIconName:IFSuccessful inFont:ICONFONT size:30 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
     self.skipButton.backgroundColor = RGB(255, 0, 0);
     self.skipButton.layer.cornerRadius = 30 * SCALE_WIDTH;
     self.skipButton.clipsToBounds = YES;
@@ -275,7 +275,7 @@
     self.playButton.backgroundColor = RGBA(0, 0, 0, 0.4);
     self.playButton.tag = 11;
     [self.playButton addTarget:self action:@selector(onClickPlayOrPause:) forControlEvents:UIControlEventTouchUpInside];
-    [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66a" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+    [self.playButton setImage:[UIImage imageWithIconName:IFStopVideo inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
     self.playButton.center = self.view.center;
     [self.view addSubview:self.playButton];
     
@@ -606,12 +606,12 @@
 }
 - (void)play {
     [self.player play];
-    [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66a" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+    [self.playButton setImage:[UIImage imageWithIconName:IFStopVideo inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
     [self scheduleHideControls];
 }
 - (void)pause {
     [self.player pause];
-    [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+    [self.playButton setImage:[UIImage imageWithIconName:IFPlayVideo inFont:ICONFONT size:23 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
     [self scheduleHideControls];
 }
 #pragma mark ==== 重写父类方法

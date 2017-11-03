@@ -34,6 +34,7 @@
 #import "DLYIndicatorView.h"
 #import "DLYPopupMenu.h"
 #import "DLYUserTrack.h"
+#import "DLYIconFont.h"
 
 #ifdef DEBUG
 static const int ddLogLevel = DDLogLevelVerbose;

@@ -75,7 +75,7 @@
     self.successButton.layer.cornerRadius = self.successButton.width / 2.0;
     self.successButton.clipsToBounds = YES;
     self.successButton.contentMode = UIViewContentModeScaleAspectFill;
-    [self.successButton setImage:[UIImage imageWithIcon:@"\U0000e66b" inFont:ICONFONT size:30 color:RGB(255, 0, 0)] forState:UIControlStateNormal];
+    [self.successButton setImage:[UIImage imageWithIconName:IFSuccessful inFont:ICONFONT size:30 color:RGB(255, 0, 0)] forState:UIControlStateNormal];
     self.successButton.hidden = YES;
     [self.centerView addSubview:self.successButton];
     

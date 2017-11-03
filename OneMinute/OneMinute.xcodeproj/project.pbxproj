@@ -36,6 +36,7 @@
 		6F8925DF1F1B142300256093 /* DLYPopupMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DA1F1B142300256093 /* DLYPopupMenu.m */; };
 		6F8925E01F1B142300256093 /* DLYPopupMenuPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DC1F1B142300256093 /* DLYPopupMenuPath.m */; };
 		6F8925E11F1B142300256093 /* DLYRectConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925DE1F1B142300256093 /* DLYRectConst.m */; };
+		6FA02E901FACAD48001529CF /* DLYIconFont.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA02E8E1FACAD47001529CF /* DLYIconFont.m */; };
 		6FA74E871F5E48B800114C93 /* DLYTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA74E861F5E48B800114C93 /* DLYTitleView.m */; };
 		6FD13ABE1F5FDAF4000B72FC /* DLYAnimationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FD13ABD1F5FDAF4000B72FC /* DLYAnimationViewController.m */; };
 		6FD13AC41F60EC02000B72FC /* DLYIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FD13AC31F60EC02000B72FC /* DLYIndicatorView.m */; };
@@ -160,6 +161,8 @@
 		6F8925DC1F1B142300256093 /* DLYPopupMenuPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYPopupMenuPath.m; sourceTree = "<group>"; };
 		6F8925DD1F1B142300256093 /* DLYRectConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRectConst.h; sourceTree = "<group>"; };
 		6F8925DE1F1B142300256093 /* DLYRectConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRectConst.m; sourceTree = "<group>"; };
+		6FA02E8E1FACAD47001529CF /* DLYIconFont.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DLYIconFont.m; sourceTree = "<group>"; };
+		6FA02E8F1FACAD48001529CF /* DLYIconFont.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYIconFont.h; sourceTree = "<group>"; };
 		6FA74E851F5E48B800114C93 /* DLYTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYTitleView.h; sourceTree = "<group>"; };
 		6FA74E861F5E48B800114C93 /* DLYTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYTitleView.m; sourceTree = "<group>"; };
 		6FD13ABC1F5FDAF4000B72FC /* DLYAnimationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAnimationViewController.h; sourceTree = "<group>"; };
@@ -567,6 +570,8 @@
 				AD7608EA1F70C07F00556E20 /* NSObject+JSONCategories.m */,
 				AD7608EB1F70C07F00556E20 /* UIButton+LargerHitArea.h */,
 				AD7608EC1F70C07F00556E20 /* UIButton+LargerHitArea.m */,
+				6FA02E8F1FACAD48001529CF /* DLYIconFont.h */,
+				6FA02E8E1FACAD47001529CF /* DLYIconFont.m */,
 				AD7608ED1F70C07F00556E20 /* UIImage+iconfont.h */,
 				AD7608EE1F70C07F00556E20 /* UIImage+iconfont.m */,
 				AD7608EF1F70C07F00556E20 /* UIView+Extension.h */,
@@ -917,6 +922,7 @@
 				6F12AE6D1F3DB78300CE8CB6 /* DLYDownloadManager.m in Sources */,
 				6F7455131F7A3EDE00682FB8 /* DLYThemesData.m in Sources */,
 				ADFFF19E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m in Sources */,
+				6FA02E901FACAD48001529CF /* DLYIconFont.m in Sources */,
 				ADF0729E1FA03C8D003088AE /* DLYRecordTimer.m in Sources */,
 				ADD0E7D41F2D9F3500996BD6 /* UIImage+Extension.m in Sources */,
 				ADFFF19A1F18A33000FB5BF7 /* DLYVolumeAutomation.m in Sources */,
