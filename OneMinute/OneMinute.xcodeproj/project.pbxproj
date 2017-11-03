@@ -75,6 +75,7 @@
 		ADF263F31FA8867C00DB54C2 /* MyMaldivesBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF263F01FA8867B00DB54C2 /* MyMaldivesBGM.m4a */; };
 		ADF263F41FA8867C00DB54C2 /* ColorfulLifeBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF263F11FA8867B00DB54C2 /* ColorfulLifeBGM.m4a */; };
 		ADF263F61FA887D100DB54C2 /* BigMeal.dly in Resources */ = {isa = PBXBuildFile; fileRef = ADF263F51FA887D100DB54C2 /* BigMeal.dly */; };
+		ADF8DE2D1FAC4F4900639468 /* YoungOuting.dly in Resources */ = {isa = PBXBuildFile; fileRef = ADF8DE2C1FAC4F4900639468 /* YoungOuting.dly */; };
 		ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */; };
 		ADFFF19A1F18A33000FB5BF7 /* DLYVolumeAutomation.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1841F18A33000FB5BF7 /* DLYVolumeAutomation.m */; };
 		ADFFF19C1F18A33000FB5BF7 /* DLYMiniVlogPart.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF18A1F18A33000FB5BF7 /* DLYMiniVlogPart.m */; };
@@ -220,6 +221,7 @@
 		ADF263F01FA8867B00DB54C2 /* MyMaldivesBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyMaldivesBGM.m4a; sourceTree = "<group>"; };
 		ADF263F11FA8867B00DB54C2 /* ColorfulLifeBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorfulLifeBGM.m4a; sourceTree = "<group>"; };
 		ADF263F51FA887D100DB54C2 /* BigMeal.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = BigMeal.dly; sourceTree = "<group>"; };
+		ADF8DE2C1FAC4F4900639468 /* YoungOuting.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = YoungOuting.dly; sourceTree = "<group>"; };
 		ADFFF1811F18A33000FB5BF7 /* DLYMobileDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMobileDevice.h; sourceTree = "<group>"; };
 		ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMobileDevice.m; sourceTree = "<group>"; };
 		ADFFF1831F18A33000FB5BF7 /* DLYVolumeAutomation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYVolumeAutomation.h; sourceTree = "<group>"; };
@@ -528,6 +530,7 @@
 				AD66B5271FA1C582000606DD /* Secondary.dly */,
 				AD66B5281FA1C582000606DD /* SoDelicious.dly */,
 				AD66B52A1FA1C582000606DD /* SunSetBeach.dly */,
+				ADF8DE2C1FAC4F4900639468 /* YoungOuting.dly */,
 			);
 			path = v1.0;
 			sourceTree = "<group>";
@@ -762,6 +765,7 @@
 				ADF263F21FA8867C00DB54C2 /* GoNorthBGM.m4a in Resources */,
 				ADF072951F9F97B2003088AE /* SoDeliciousBGM.m4a in Resources */,
 				AD3485471FA33C4300C3EFBE /* Default.dly in Resources */,
+				ADF8DE2D1FAC4F4900639468 /* YoungOuting.dly in Resources */,
 				ADF072941F9F97B2003088AE /* PrimaryBGM.m4a in Resources */,
 				6F643AF41F97583E001FDA76 /* PromoteVideo.mp4 in Resources */,
 				AD66B5361FA1C582000606DD /* SunSetBeach.dly in Resources */,
