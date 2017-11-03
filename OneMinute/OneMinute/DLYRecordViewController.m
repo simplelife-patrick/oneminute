@@ -898,7 +898,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     CGFloat frameHeight = CGImageGetHeight(image.CGImage);
     
     NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   AVVideoCodecH264, AVVideoCodecKey,
+                                   AVVideoCodecTypeH264, AVVideoCodecKey,
                                    [NSNumber numberWithInt:frameWidth], AVVideoWidthKey,
                                    [NSNumber numberWithInt:frameHeight], AVVideoHeightKey,
                                    nil];

@@ -23,8 +23,6 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
 - (void) finishedRecording;
 - (void) canceledRecording:(NSTimeInterval) time;
 
-//- (void) startedRecording;
-
 @end
 
 @interface DLYAVEngine : DLYModule<DLYCaptureAVEngineDelegate>
