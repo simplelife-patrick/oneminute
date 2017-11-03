@@ -41,6 +41,7 @@
 		6FD13AC41F60EC02000B72FC /* DLYIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FD13AC31F60EC02000B72FC /* DLYIndicatorView.m */; };
 		AD038C9A1F7293F10002C092 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = AD038C9C1F7293F10002C092 /* InfoPlist.strings */; };
 		AD14ED461F9E0ABD000DB796 /* templateList_v1.plist in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED451F9E0ABD000DB796 /* templateList_v1.plist */; };
+		AD1E004B1FAB2703000116BF /* SpiritTerritory.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD1E004A1FAB2702000116BF /* SpiritTerritory.dly */; };
 		AD26F1A81F53E6DE00565E27 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */; };
 		AD26F1AA1F53E70A00565E27 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */; };
 		AD3485471FA33C4300C3EFBE /* Default.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD3485461FA33C4300C3EFBE /* Default.dly */; };
@@ -171,6 +172,7 @@
 		AD038C9B1F7293F10002C092 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		AD038C9D1F7293F30002C092 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AD14ED451F9E0ABD000DB796 /* templateList_v1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = templateList_v1.plist; sourceTree = "<group>"; };
+		AD1E004A1FAB2702000116BF /* SpiritTerritory.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = SpiritTerritory.dly; sourceTree = "<group>"; };
 		AD26F1A61F53E6DE00565E27 /* DLYAVEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAVEngine.h; sourceTree = "<group>"; };
 		AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAVEngine.m; sourceTree = "<group>"; };
 		AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRecordViewController.m; sourceTree = "<group>"; };
@@ -515,6 +517,7 @@
 		AD66B51F1FA1C582000606DD /* v1.0 */ = {
 			isa = PBXGroup;
 			children = (
+				AD1E004A1FAB2702000116BF /* SpiritTerritory.dly */,
 				ADF263F51FA887D100DB54C2 /* BigMeal.dly */,
 				AD66B5201FA1C582000606DD /* Advanced.dly */,
 				AD66B5211FA1C582000606DD /* AfternoonTea.dly */,
@@ -780,6 +783,7 @@
 				AD14ED461F9E0ABD000DB796 /* templateList_v1.plist in Resources */,
 				AD66B5331FA1C582000606DD /* Secondary.dly in Resources */,
 				6F32F7A71F99A57D004C4553 /* iconfont.ttf in Resources */,
+				AD1E004B1FAB2703000116BF /* SpiritTerritory.dly in Resources */,
 				ADF072901F9F97B2003088AE /* AfternoonTeaBGM.m4a in Resources */,
 				ADF072961F9F97B2003088AE /* AdvancedBGM.m4a in Resources */,
 			);
