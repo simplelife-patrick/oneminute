@@ -174,7 +174,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.partBubble = nil;
             }
             self.deletePartButton.selected = NO;
-            [self.deletePartButton setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+            [self.deletePartButton setImage:[UIImage imageWithIconName:IFDetelePart inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
             self.deletePartButton.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
             self.playView.hidden = YES;
         }
@@ -415,9 +415,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 #pragma mark ==== 初始化数据
 - (NSInteger)initDataReadDraft {
-    self.btnImg = @[@"\U0000e67e", @"\U0000e67d", @"\U0000e682", @"\U0000e683",
-                    @"\U0000e67b", @"\U0000e67f", @"\U0000e678", @"\U0000e680",
-                    @"\U0000e684", @"\U0000e67c", @"\U0000e679", @"\U0000e681"];
+    self.btnImg = @[@(IFPrimary), @(IFSecondary), @(IFAdvanced), @(IFGoNorth),
+                    @(IFMyMaldives), @(IFBigMeal), @(IFAfternoonTea), @(IFDelicious),
+                    @(IFSpiritTerritory), @(IFColorfulLife), @(IFSunSetBeach), @(IFYoungOuting)];
     
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     
@@ -499,9 +499,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
 }
 - (void)initData {
-    self.btnImg = @[@"\U0000e67e", @"\U0000e67d", @"\U0000e682", @"\U0000e683",
-                    @"\U0000e67b", @"\U0000e67f", @"\U0000e678", @"\U0000e680",
-                    @"\U0000e684", @"\U0000e67c", @"\U0000e679", @"\U0000e681"];
+    self.btnImg = @[@(IFPrimary), @(IFSecondary), @(IFAdvanced), @(IFGoNorth),
+                    @(IFMyMaldives), @(IFBigMeal), @(IFAfternoonTea), @(IFDelicious),
+                    @(IFSpiritTerritory), @(IFColorfulLife), @(IFSunSetBeach), @(IFYoungOuting)];
     
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     [self.session saveCurrentTemplateWithId:template.templateId version:template.version];
@@ -598,7 +598,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //通用button 选择场景button
     self.chooseScene = [[UIButton alloc]initWithFrame:CGRectMake(11, 16, 40, 40)];
     self.chooseScene.backgroundColor = RGBA(0, 0, 0, 0.4);
-    //    [self.chooseScene setImage:[UIImage imageWithIcon:@"\U0000e665" inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
     [self.chooseScene addTarget:self action:@selector(onClickChooseScene:) forControlEvents:UIControlEventTouchUpInside];
     self.chooseScene.layer.cornerRadius = 20;
     self.chooseScene.clipsToBounds = YES;
@@ -617,7 +616,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSArray *typeNameArray = [self.session loadAllTemplateFile];
     for (int i = 0; i < typeNameArray.count; i ++) {
         if ([template.templateId isEqualToString:typeNameArray[i]]) {
-            [self.chooseScene setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+            [self.chooseScene setImage:[UIImage imageWithIconName:[self.btnImg[i] integerValue] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
         }
     }
     
@@ -626,7 +625,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.flashButton.layer.cornerRadius = 20;
     self.flashButton.backgroundColor = RGBA(0, 0, 0, 0.4);
     self.flashButton.clipsToBounds = YES;
-    [self.flashButton setImage:[UIImage imageWithIcon:@"\U0000e600" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.flashButton setImage:[UIImage imageWithIconName:IFFlashOff inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+
     [self.flashButton addTarget:self action:@selector(onClickFlashAction) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.flashButton];
     
@@ -635,7 +635,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.toggleCameraBtn.layer.cornerRadius = 20;
     self.toggleCameraBtn.backgroundColor = RGBA(0, 0, 0, 0.4);
     self.toggleCameraBtn.clipsToBounds = YES;
-    [self.toggleCameraBtn setImage:[UIImage imageWithIcon:@"\U0000e668" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.toggleCameraBtn setImage:[UIImage imageWithIconName:IFToggleLens inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
     [self.toggleCameraBtn addTarget:self action:@selector(toggleCameraAction) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.toggleCameraBtn];
     
@@ -658,7 +658,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //拍摄按钮
     self.recordBtn = [[UIButton alloc]initWithFrame:CGRectMake(43 * SCALE_WIDTH, 0, 60 * SCALE_WIDTH, 60 * SCALE_WIDTH)];
     self.recordBtn.centerY = self.backView.centerY;
-    [self.recordBtn setImage:[UIImage imageWithIcon:@"\U0000e664" inFont:ICONFONT size:20 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+    [self.recordBtn setImage:[UIImage imageWithIconName:IFRecord inFont:ICONFONT size:20 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
     self.recordBtn.backgroundColor = RGB(255, 0, 0);
     self.recordBtn.layer.cornerRadius = 30 * SCALE_WIDTH;
     self.recordBtn.clipsToBounds = YES;
@@ -682,7 +682,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.deleteButton.clipsToBounds = YES;
     self.deleteButton.backgroundColor = RGBA(0, 0, 0, 0.4);
     self.deleteButton.hidden = YES;
-    [self.deleteButton setImage:[UIImage imageWithIcon:@"\U0000e669" inFont:ICONFONT size:20 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+    [self.deleteButton setImage:[UIImage imageWithIconName:IFDeleteAll inFont:ICONFONT size:20 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
     [self.deleteButton addTarget:self action:@selector(onClickDelete:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.deleteButton];
     
@@ -705,7 +705,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //右侧：播放某个片段的button
     self.playButton = [[UIButton alloc]initWithFrame:CGRectMake(self.playView.width - 60 * SCALE_WIDTH, (SCREEN_HEIGHT - 152)/2, 60* SCALE_WIDTH, 60* SCALE_WIDTH)];
     [self.playButton addTarget:self action:@selector(onClickPlayPartVideo:) forControlEvents:UIControlEventTouchUpInside];
-    [self.playButton setImage:[UIImage imageWithIcon:@"\U0000e66c" inFont:ICONFONT size:15 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+    [self.playButton setImage:[UIImage imageWithIconName:IFPlayVideo inFont:ICONFONT size:15 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
     self.playButton.layer.cornerRadius = 30* SCALE_WIDTH;
     self.playButton.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
     self.playButton.layer.borderWidth = 1;
@@ -713,7 +713,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //右侧：删除某个片段的button
     self.deletePartButton = [[UIButton alloc]initWithFrame:CGRectMake(self.playView.width - 60* SCALE_WIDTH, SCREEN_HEIGHT/2 + 76 - 60* SCALE_WIDTH, 60* SCALE_WIDTH, 60* SCALE_WIDTH)];
     [self.deletePartButton addTarget:self action:@selector(onClickDeletePartVideo:) forControlEvents:UIControlEventTouchUpInside];
-    [self.deletePartButton setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+    [self.deletePartButton setImage:[UIImage imageWithIconName:IFDetelePart inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
     self.deletePartButton.layer.cornerRadius = 30* SCALE_WIDTH;
     self.deletePartButton.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
     self.deletePartButton.layer.borderWidth = 1;
@@ -1147,10 +1147,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [DLYUserTrack recordAndEventKey:@"FlashBtn"];
     self.flashButton.selected = !self.flashButton.selected;
     if (self.flashButton.selected == YES) { //打开闪光灯
-        [self.flashButton setImage:[UIImage imageWithIcon:@"\U0000e601" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+        [self.flashButton setImage:[UIImage imageWithIconName:IFFlashOn inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
         [self.AVEngine switchFlashMode:YES];
     }else{//关闭闪光灯
-        [self.flashButton setImage:[UIImage imageWithIcon:@"\U0000e600" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+        [self.flashButton setImage:[UIImage imageWithIconName:IFFlashOff inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
         [self.AVEngine switchFlashMode:NO];
     }
 }
@@ -1378,7 +1378,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.partBubble = nil;
             }
             self.deletePartButton.selected = NO;
-            [self.deletePartButton setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+            [self.deletePartButton setImage:[UIImage imageWithIconName:IFDetelePart inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
             self.deletePartButton.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
             self.playView.hidden = YES;
         }
@@ -1420,7 +1420,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.partBubble.dismissOnSelected = NO;
     }
     if (sender.selected == NO) {
-        [sender setImage:[UIImage imageWithIcon:@"\U0000e669" inFont:ICONFONT size:24 color:RGB(255, 0, 0)] forState:UIControlStateNormal];
+        [sender setImage:[UIImage imageWithIconName:IFDeleteAll inFont:ICONFONT size:24 color:RGB(255, 0, 0)] forState:UIControlStateNormal];
         sender.layer.borderColor = RGBA(255, 0, 0, 1).CGColor;
     }else {
         [self.partBubble dismiss];
@@ -1428,7 +1428,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             [self.partBubble removeFromSuperview];
             self.partBubble = nil;
         }
-        [sender setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+        [sender setImage:[UIImage imageWithIconName:IFDetelePart inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
         sender.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
         NSInteger partNum = selectPartTag - 10000 - 1;
         [self.resource removePartWithPartNumFormTemp:partNum];
@@ -1708,7 +1708,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     {
         episodeHeight = (SCREEN_WIDTH - 30  * SCREEN_WIDTH/375 - (partModelArray.count - 1) * 2) / partModelArray.count;
     }
-    [self.toggleCameraBtn setImage:[UIImage imageWithIcon:@"\U0000e668" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.toggleCameraBtn setImage:[UIImage imageWithIconName:IFToggleLens inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
     isSlomoCamera = NO;
     BOOL isAllPart = YES;
     for(int i = 1; i <= partModelArray.count; i ++)
@@ -1756,7 +1756,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 [itemView addSubview:speedLabel];
                 
                 UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
-                icon.image = [UIImage imageWithIcon:@"\U0000e670" inFont:ICONFONT size:19 color:[UIColor whiteColor]];
+                icon.image = [UIImage imageWithIconName:IFFastLens inFont:ICONFONT size:19 color:[UIColor whiteColor]];
                 [itemView addSubview:icon];
             }else
             {//延时
@@ -1779,7 +1779,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 [itemView addSubview:speedLabel];
                 
                 UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
-                icon.image = [UIImage imageWithIcon:@"\U0000e66f" inFont:ICONFONT size:19 color:[UIColor whiteColor]];
+                icon.image = [UIImage imageWithIconName:IFSlowLens inFont:ICONFONT size:19 color:[UIColor whiteColor]];
                 [itemView addSubview:icon];
             }
         }else
@@ -1830,7 +1830,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     [itemView addSubview:speedLabel];
                     
                     UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
-                    icon.image = [UIImage imageWithIcon:@"\U0000e670" inFont:ICONFONT size:19 color:[UIColor whiteColor]];
+                    icon.image = [UIImage imageWithIconName:IFFastLens inFont:ICONFONT size:19 color:[UIColor whiteColor]];
                     [itemView addSubview:icon];
                     
                     //判断切换摄像头
@@ -1845,8 +1845,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         }
                         self.flashButton.hidden = NO;
                     }
-                    [self.toggleCameraBtn setImage:[UIImage imageWithIcon:@"\U0000e685" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
-                    
+                    [self.toggleCameraBtn setImage:[UIImage imageWithIconName:IFStopToggle inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
                     isSlomoCamera = YES;
                 }else
                 {//延时
@@ -1865,7 +1864,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     [itemView addSubview:speedLabel];
                     
                     UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
-                    icon.image = [UIImage imageWithIcon:@"\U0000e66f" inFont:ICONFONT size:19 color:[UIColor whiteColor]];
+                    icon.image = [UIImage imageWithIconName:IFSlowLens inFont:ICONFONT size:19 color:[UIColor whiteColor]];
                     [itemView addSubview:icon];
                 }
             }
@@ -1921,7 +1920,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     {
         episodeHeight = (SCREEN_WIDTH - 30  * SCREEN_WIDTH/375 - (partModelArray.count - 1) * 2) / partModelArray.count;
     }
-    [self.toggleCameraBtn setImage:[UIImage imageWithIcon:@"\U0000e668" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.toggleCameraBtn setImage:[UIImage imageWithIconName:IFToggleLens inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
     isSlomoCamera = NO;
     BOOL isAllPart = YES;
     for(int i = 1; i <= partModelArray.count; i ++)
@@ -1969,7 +1968,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 [itemView addSubview:speedLabel];
                 
                 UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
-                icon.image = [UIImage imageWithIcon:@"\U0000e670" inFont:ICONFONT size:19 color:[UIColor whiteColor]];
+                icon.image = [UIImage imageWithIconName:IFFastLens inFont:ICONFONT size:19 color:[UIColor whiteColor]];
                 [itemView addSubview:icon];
             }else
             {//延时
@@ -1992,7 +1991,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 [itemView addSubview:speedLabel];
                 
                 UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
-                icon.image = [UIImage imageWithIcon:@"\U0000e66f" inFont:ICONFONT size:19 color:[UIColor whiteColor]];
+                icon.image = [UIImage imageWithIconName:IFSlowLens inFont:ICONFONT size:19 color:[UIColor whiteColor]];
                 [itemView addSubview:icon];
             }
         }else
@@ -2043,7 +2042,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     [itemView addSubview:speedLabel];
                     
                     UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
-                    icon.image = [UIImage imageWithIcon:@"\U0000e670" inFont:ICONFONT size:19 color:[UIColor whiteColor]];
+                    icon.image = [UIImage imageWithIconName:IFFastLens inFont:ICONFONT size:19 color:[UIColor whiteColor]];
                     [itemView addSubview:icon];
                     
                     //判断切换摄像头
@@ -2058,8 +2057,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                         }
                         self.flashButton.hidden = NO;
                     }
-                    [self.toggleCameraBtn setImage:[UIImage imageWithIcon:@"\U0000e685" inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
-                    
+                    [self.toggleCameraBtn setImage:[UIImage imageWithIconName:IFStopToggle inFont:ICONFONT size:20 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
                     isSlomoCamera = YES;
                 }else
                 {//延时
@@ -2078,7 +2076,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     [itemView addSubview:speedLabel];
                     
                     UIImageView * icon = [[UIImageView alloc]initWithFrame:CGRectMake(0, 14, 15, 14)];
-                    icon.image = [UIImage imageWithIcon:@"\U0000e66f" inFont:ICONFONT size:19 color:[UIColor whiteColor]];
+                    icon.image = [UIImage imageWithIconName:IFSlowLens inFont:ICONFONT size:19 color:[UIColor whiteColor]];
                     [itemView addSubview:icon];
                 }
             }
@@ -2178,7 +2176,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.partBubble = nil;
             }
             self.deletePartButton.selected = NO;
-            [self.deletePartButton setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+            [self.deletePartButton setImage:[UIImage imageWithIconName:IFDetelePart inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
             self.deletePartButton.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
             self.playView.hidden = YES;
         }
@@ -2200,7 +2198,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.sceneDisapper = [[UIButton alloc]initWithFrame:CGRectMake(20, 20, 14, 14)];
     UIEdgeInsets edgeInsets = {-20, -20, -20, -20};
     [self.sceneDisapper setHitEdgeInsets:edgeInsets];
-    [self.sceneDisapper setImage:[UIImage imageWithIcon:@"\U0000e666" inFont:ICONFONT size:14 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.sceneDisapper setImage:[UIImage imageWithIconName:IFShut inFont:ICONFONT size:14 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
     [self.sceneDisapper addTarget:self action:@selector(onClickCancelSelect:) forControlEvents:UIControlEventTouchUpInside];
     [self.sceneView addSubview:self.sceneDisapper];
     
@@ -2213,7 +2211,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.sceneView addSubview:self.chooseTitleLabel];
     
     self.seeRush = [[UIButton alloc]initWithFrame:CGRectMake(SCREEN_WIDTH - 70, 21, 50, 17)];
-    [self.seeRush setImage:[UIImage imageWithIcon:@"\U0000e63f" inFont:ICONFONT size:12 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.seeRush setImage:[UIImage imageWithIconName:IFShowVideo inFont:ICONFONT size:12 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
     [self.seeRush setTitle:@"样片" forState:UIControlStateNormal];
     [self.seeRush setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
     self.seeRush.titleLabel.font = FONT_SYSTEM(12);
@@ -2247,7 +2245,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 7, 61, 61)];
         btn.tag = 1002 + i;
         btn.centerX = view.width / 2;
-        [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+        [btn setImage:[UIImage imageWithIconName:[self.btnImg[i] integerValue] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(changeTypeStatus:) forControlEvents:UIControlEventTouchUpInside];
         [view addSubview:btn];
         
@@ -2261,7 +2259,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [view addSubview:typeName];
         
         if(i == selectType) {
-            [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 122, 0, 1)] forState:UIControlStateNormal];
+            [btn setImage:[UIImage imageWithIconName:[self.btnImg[i] integerValue] inFont:ICONFONT size:22 color:RGBA(255, 122, 0, 1)] forState:UIControlStateNormal];
             //            btn.layer.borderColor = RGB(255, 122, 0).CGColor;
             typeName.textColor = RGB(255, 122, 0);
         }
@@ -2278,7 +2276,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     self.sureBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, self.alertLabel.bottom + 20, 61, 61)];
     self.sureBtn.centerX = self.sceneView.centerX - 46;
-    [self.sureBtn setImage:[UIImage imageWithIcon:@"\U0000e602" inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.sureBtn setImage:[UIImage imageWithIconName:IFSure inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
     [self.sureBtn addTarget:self action:@selector(onSureClickChangeTypeStatus) forControlEvents:UIControlEventTouchUpInside];
     self.sureBtn.layer.cornerRadius = 30.5;
     self.sureBtn.clipsToBounds = YES;
@@ -2289,7 +2287,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     self.giveUpBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, self.alertLabel.bottom + 20, 61, 61)];
     self.giveUpBtn.centerX = self.sceneView.centerX  + 46;
-    [self.giveUpBtn setImage:[UIImage imageWithIcon:@"\U0000e666" inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.giveUpBtn setImage:[UIImage imageWithIconName:IFShut inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
     [self.giveUpBtn addTarget:self action:@selector(onGiveUpClickChangeTypeStatus) forControlEvents:UIControlEventTouchUpInside];
     self.giveUpBtn.layer.cornerRadius = 30.5;
     self.giveUpBtn.clipsToBounds = YES;
@@ -2305,7 +2303,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.videoDisapper = [[UIButton alloc]initWithFrame:CGRectMake(20, 20, 14, 14)];
     UIEdgeInsets edgeInsets = {-20, -20, -20, -20};
     [self.videoDisapper setHitEdgeInsets:edgeInsets];
-    [self.videoDisapper setImage:[UIImage imageWithIcon:@"\U0000e64d" inFont:ICONFONT size:14 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.videoDisapper setImage:[UIImage imageWithIconName:IFBack inFont:ICONFONT size:14 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
     [self.videoDisapper addTarget:self action:@selector(hideVideoView) forControlEvents:UIControlEventTouchUpInside];
     [self.videoView addSubview:self.videoDisapper];
     
@@ -2342,7 +2340,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [btn setHitEdgeInsets:edgeInsets];
         btn.tag = 600 + i;
         btn.centerX = view.width / 2;
-        [btn setImage:[UIImage imageWithIcon:@"\U0000e63f" inFont:ICONFONT size:30 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+        [btn setImage:[UIImage imageWithIconName:IFShowVideo inFont:ICONFONT size:30 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(changeVideoToPlay:) forControlEvents:UIControlEventTouchUpInside];
         btn.backgroundColor = RGB(149, 145, 141);
         btn.layer.cornerRadius = 15;
@@ -2388,7 +2386,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.partBubble = nil;
         }
         self.deletePartButton.selected = NO;
-        [self.deletePartButton setImage:[UIImage imageWithIcon:@"\U0000e667" inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
+        [self.deletePartButton setImage:[UIImage imageWithIconName:IFDetelePart inFont:ICONFONT size:24 color:RGB(255, 255, 255)] forState:UIControlStateNormal];
         self.deletePartButton.layer.borderColor = RGBA(255, 255, 255, 1).CGColor;
         self.playView.hidden = YES;
     }
@@ -2463,14 +2461,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         UILabel * typeName = (UILabel *)[self.view viewWithTag:2002 + i];
         if(num == i)
         {
-            [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 122, 0, 1)] forState:UIControlStateNormal];
+            [btn setImage:[UIImage imageWithIconName:[self.btnImg[i] integerValue] inFont:ICONFONT size:22 color:RGBA(255, 122, 0, 1)] forState:UIControlStateNormal];
             //            btn.layer.borderColor = RGB(255, 122, 0).CGColor;
             typeName.textColor = RGB(255, 122, 0);
-            [self.chooseScene setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+            [self.chooseScene setImage:[UIImage imageWithIconName:[self.btnImg[i] integerValue] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
             
         }else
         {
-            [btn setImage:[UIImage imageWithIcon:self.btnImg[i] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+            [btn setImage:[UIImage imageWithIconName:[self.btnImg[i] integerValue] inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
             //            btn.layer.borderColor = RGB(255, 255, 255).CGColor;
             typeName.textColor = RGB(255, 255, 255);
         }
@@ -2517,7 +2515,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     self.warningIcon = [[UIImageView alloc]initWithFrame:CGRectMake(28, SCREEN_HEIGHT - 54, 32, 32)];
     self.warningIcon.hidden = YES;
-    self.warningIcon.image = [UIImage imageWithIcon:@"\U0000e663" inFont:ICONFONT size:32 color:[UIColor redColor]];
+    self.warningIcon.image = [UIImage imageWithIconName:IFMute inFont:ICONFONT size:32 color:[UIColor redColor]];
     [self.shootView addSubview:self.warningIcon];
     
     self.shootGuide.centerX = _shootView.centerX;
@@ -2554,7 +2552,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.completeButton.layer.borderColor = RGB(255, 0, 0).CGColor;
     self.completeButton.layer.cornerRadius = self.timeView.width / 2.0;
     self.completeButton.clipsToBounds = YES;
-    [self.completeButton setImage:[UIImage imageWithIcon:@"\U0000e66b" inFont:ICONFONT size:30 color:RGB(255, 0, 0)] forState:UIControlStateNormal];
+    [self.completeButton setImage:[UIImage imageWithIconName:IFSuccessful inFont:ICONFONT size:30 color:RGB(255, 0, 0)] forState:UIControlStateNormal];
     self.completeButton.hidden = YES;
     [_timeView addSubview:self.completeButton];
     
