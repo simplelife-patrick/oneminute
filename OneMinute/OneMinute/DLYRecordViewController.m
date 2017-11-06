@@ -2728,16 +2728,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //iOS8.0之后
     PHAuthorizationStatus photoStatus =  [PHPhotoLibrary authorizationStatus];
     switch (photoStatus) {
-            case PHAuthorizationStatusAuthorized:
+        case PHAuthorizationStatusAuthorized:
             isAvalible = YES;
             break;
-            case PHAuthorizationStatusDenied:
+        case PHAuthorizationStatusDenied:
         {
             [self showAlertPermissionwithMessage:@"相册"];
             isAvalible = NO;
         }
             break;
-            case PHAuthorizationStatusNotDetermined:
+        case PHAuthorizationStatusNotDetermined:
         {
             [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
                 if (status == PHAuthorizationStatusAuthorized) {
@@ -2758,7 +2758,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }];
         }
             break;
-            case PHAuthorizationStatusRestricted:
+        case PHAuthorizationStatusRestricted:
             isAvalible = NO;
             break;
         default:
@@ -2772,16 +2772,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     __block BOOL isAvalible = NO;
     AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
     switch (status) {
-            case AVAuthorizationStatusAuthorized: //授权
+        case AVAuthorizationStatusAuthorized: //授权
             isAvalible = YES;
             break;
-            case AVAuthorizationStatusDenied:   //拒绝，弹框
+        case AVAuthorizationStatusDenied:   //拒绝，弹框
         {
             [self showAlertPermissionwithMessage:@"相机"];
             isAvalible = NO;
         }
             break;
-            case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动默认弹框
+        case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动默认弹框
         {
             [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
                 isAvalible = granted;
@@ -2794,7 +2794,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }];
         }
             break;
-            case AVAuthorizationStatusRestricted:  //受限制，家长控制器
+        case AVAuthorizationStatusRestricted:  //受限制，家长控制器
             isAvalible = NO;
             break;
     }
@@ -2805,16 +2805,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     __block BOOL isAvalible = NO;
     AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
     switch (status) {
-            case AVAuthorizationStatusAuthorized: //授权
+        case AVAuthorizationStatusAuthorized: //授权
             isAvalible = YES;
             break;
-            case AVAuthorizationStatusDenied:   //拒绝，弹框
+        case AVAuthorizationStatusDenied:   //拒绝，弹框
         {
             [self showAlertPermissionwithMessage:@"麦克风"];
             isAvalible = NO;
         }
             break;
-            case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动
+        case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动
         {
             [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
                 isAvalible = granted;
@@ -2827,7 +2827,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }];
         }
             break;
-            case AVAuthorizationStatusRestricted:  //受限制，家长控制器
+        case AVAuthorizationStatusRestricted:  //受限制，家长控制器
             isAvalible = NO;
             break;
     }
