@@ -475,11 +475,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     [self.view insertSubview:self.previewView atIndex:0];
     
-    //创建手势
-    UIPinchGestureRecognizer *pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchGestureRecognizerAction:)];
-    pinchGestureRecognizer.delegate = self;
-    [self.previewView addGestureRecognizer:pinchGestureRecognizer];
-    
     //通用button 选择场景button
     self.chooseScene = [[UIButton alloc]initWithFrame:CGRectMake(11, 16, 40, 40)];
     self.chooseScene.backgroundColor = RGBA(0, 0, 0, 0.4);
