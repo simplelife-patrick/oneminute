@@ -301,9 +301,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 #pragma mark ==== 初始化数据
 - (NSInteger)initDataReadDraft {
-    self.btnImg = @[@(IFPrimary), @(IFSecondary), @(IFAdvanced), @(IFYoungOuting),
-                    @(IFGoNorth), @(IFMyMaldives), @(IFBigMeal), @(IFAfternoonTea),
-                    @(IFDelicious), @(IFSpiritTerritory), @(IFColorfulLife), @(IFSunSetBeach)];
+    self.btnImg = @[@(IFPrimary), @(IFSecondary), @(IFAdvanced), @(IFGoNorth),
+                    @(IFMyMaldives), @(IFBigMeal), @(IFAfternoonTea), @(IFDelicious),
+                    @(IFColorfulLife), @(IFSunSetBeach), @(IFYoungOuting), @(IFSpiritTerritory)];
 
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     
@@ -415,9 +415,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
 }
 - (void)initData {
-    self.btnImg = @[@(IFPrimary), @(IFSecondary), @(IFAdvanced), @(IFYoungOuting),
-                    @(IFGoNorth), @(IFMyMaldives), @(IFBigMeal), @(IFAfternoonTea),
-                    @(IFDelicious), @(IFSpiritTerritory), @(IFColorfulLife), @(IFSunSetBeach)];
+    self.btnImg = @[@(IFPrimary), @(IFSecondary), @(IFAdvanced), @(IFGoNorth),
+                    @(IFMyMaldives), @(IFBigMeal), @(IFAfternoonTea), @(IFDelicious),
+                    @(IFColorfulLife), @(IFSunSetBeach), @(IFYoungOuting), @(IFSpiritTerritory)];
     
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     [self.session saveCurrentTemplateWithId:template.templateId version:template.version];
