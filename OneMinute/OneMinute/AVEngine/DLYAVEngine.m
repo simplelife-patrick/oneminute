@@ -25,7 +25,7 @@
 #import "UIImage+Extension.h"
 #import "DLYPhotoAlbum.h"
 
-@interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate,AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate,DLYRecordTimerDelegate>
+@interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate,AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,/*AVCaptureMetadataOutputObjectsDelegate,*/DLYRecordTimerDelegate>
 {
     CMTime defaultVideoMaxFrameDuration;
     CMTime defaultVideoMinFrameDuration;
@@ -43,7 +43,7 @@
     NSURL *fileUrl;
     CGRect faceRegion;
     CGRect lastFaceRegion;
-    BOOL isDetectedMetadataObjectTarget;
+//    BOOL isDetectedMetadataObjectTarget;
     BOOL isMicGranted;
     
     NSString *UUIDString;
@@ -1914,40 +1914,6 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             //保存到相册
         });
-    }];
-}
-#pragma mark - 媒体文件截取 -
--(void)trimVideoByRange:(NSURL *)assetUrl startTime:(CMTime)startTime stop:(CMTime)stopTime{
-    
-    AVAsset *selectedAsset = [AVAsset assetWithURL:assetUrl];
-    AVAssetTrack *videoAssertTrack = nil;
-    AVAssetTrack *audioAssertTrack = nil;
-    
-    if ([[selectedAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0]) {
-        videoAssertTrack = [[selectedAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0];
-    }
-    if ([[selectedAsset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0]) {
-        audioAssertTrack = [[selectedAsset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
-    }
-    
-    AVMutableComposition *composition = [AVMutableComposition composition];
-    
-    CMTimeRange videoTimeRange = CMTimeRangeMake(startTime,stopTime);
-    
-    AVMutableCompositionTrack *videoCompositionTrack = [composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-    AVMutableCompositionTrack *audioCompositionTrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-    [videoCompositionTrack insertTimeRange:videoTimeRange ofTrack:videoAssertTrack atTime:kCMTimeZero error:nil];
-    [audioCompositionTrack insertTimeRange:videoTimeRange ofTrack:audioAssertTrack atTime:kCMTimeZero error:nil];
-    
-    NSURL *outputUrl = nil;
-    
-    AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]initWithAsset:composition presetName:AVAssetExportPreset1280x720];
-    
-    exportSession.outputURL = outputUrl;
-    exportSession.outputFileType = AVFileTypeMPEG4;
-    exportSession.shouldOptimizeForNetworkUse = YES;
-    [exportSession exportAsynchronouslyWithCompletionHandler:^{
-        DLYLog(@"视频截取成功");
     }];
 }
 
