@@ -1331,7 +1331,7 @@
     assetExportSession.shouldOptimizeForNetworkUse = YES;
     [assetExportSession exportAsynchronouslyWithCompletionHandler:^{
         DLYLog(@"全部片段merge成功");
-        UISaveVideoAtPathToSavedPhotosAlbum([productOutputUrl path], self, nil, nil);
+//        UISaveVideoAtPathToSavedPhotosAlbum([productOutputUrl path], self, nil, nil);
         DLYMiniVlogTemplate *template = self.session.currentTemplate;
         
         NSString *BGMPath = [[NSBundle mainBundle] pathForResource:template.BGM ofType:@"m4a"];
