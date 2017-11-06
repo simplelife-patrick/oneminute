@@ -62,14 +62,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     if (self.isOnline) {
         [self monitorNetWork];
     }
     
     if (!self.isSuccess && self.isAll) {
         [self initializationRecorder];
-        [self createMainView];
+        [self makeVideo];
+//        [self createMainView];
     }else {
         //这个页面 先不加载
         [self setupUI];
@@ -85,47 +85,53 @@
     
     [super viewDidAppear:animated];
     
-    if (!self.isSuccess && self.isAll) {
-        [self showCueBubble];
-    }
+//    if (!self.isSuccess && self.isAll) {
+//        [self showCueBubble];
+//    }
 }
 
-- (void)showCueBubble {
-    
-    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"DLYPlayViewPopup"]){
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"DLYPlayViewPopup"];
-        NSArray *arr = @[self.titleField, self.skipButton, self.skipTestBtn];
-        self.viewArr = [NSMutableArray arrayWithArray:arr];
-        NSArray *titleArr = @[@"输入描述文字", @"去完成视频", @"跳过输入文字操作"];
-        self.bubbleTitleArr = [NSMutableArray arrayWithArray:titleArr];
-        [self showPopupMenu];
-    }
-}
+//- (void)showCueBubble {
+//
+//    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"DLYPlayViewPopup"]){
+//        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"DLYPlayViewPopup"];
+//        NSArray *arr = @[self.titleField, self.skipButton, self.skipTestBtn];
+//        self.viewArr = [NSMutableArray arrayWithArray:arr];
+//        NSArray *titleArr = @[@"输入描述文字", @"去完成视频", @"跳过输入文字操作"];
+//        self.bubbleTitleArr = [NSMutableArray arrayWithArray:titleArr];
+//        [self showPopupMenu];
+//    }
+//}
 
-- (void)showPopupMenu {
-    
-    if (self.viewArr.count == 0) {
-        [self.titleField becomeFirstResponder];
-        return;
-    }
-    UIView *view = self.viewArr[0];
-    NSString *title = self.bubbleTitleArr[0];
-    NSArray *titles = @[title];
-    DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:view titles:titles icons:nil menuWidth:120 delegate:self];
-    normalBubble.showMaskAlpha = 1;
-    [self.viewArr removeObjectAtIndex:0];
-    [self.bubbleTitleArr removeObjectAtIndex:0];
-}
+//- (void)showPopupMenu {
+//
+//    if (self.viewArr.count == 0) {
+//        [self.titleField becomeFirstResponder];
+//        return;
+//    }
+//    UIView *view = self.viewArr[0];
+//    NSString *title = self.bubbleTitleArr[0];
+//    NSArray *titles = @[title];
+//    DLYPopupMenu *normalBubble = [DLYPopupMenu showRelyOnView:view titles:titles icons:nil menuWidth:120 delegate:self];
+//    normalBubble.showMaskAlpha = 1;
+//    [self.viewArr removeObjectAtIndex:0];
+//    [self.bubbleTitleArr removeObjectAtIndex:0];
+//}
 //气泡消失的代理方法
-- (void)ybPopupMenuDidDismiss {
-    [self showPopupMenu];
-}
+//- (void)ybPopupMenuDidDismiss {
+//    [self showPopupMenu];
+//}
 
 #pragma mark ==== 初始化相机
 - (void)initializationRecorder {
-    
     self.AVEngine = [[DLYAVEngine alloc] init];
     self.AVEngine.delegate = self;
+    
+    NSURL *url = [self.resource getPartUrlWithPartNum:0];
+    UIImage *frameImage = [self.AVEngine getKeyImage:url intervalTime:2.0];
+    self.frameImage = frameImage;
+    UIImageView * videoImage = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    videoImage.image = frameImage;
+    [self.view addSubview:videoImage];
 }
 - (void)didFinishEdititProductUrl:(NSURL *)productUrl{
     
@@ -153,14 +159,6 @@
     self.titleField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 370, 42)];
     self.titleField.center = self.view.center;
     self.titleField.delegate = self;
-    
-    //    NSString *text = [[NSUserDefaults standardUserDefaults] objectForKey:@"videoTitle"];
-    //    NSString *newStr = [text stringByReplacingOccurrencesOfString:@" " withString:@""];
-    //    if (newStr.length == 0) {
-    //        self.titleField.placeholder = @"请输入标题";
-    //    }else {
-    //        self.titleField.text = text;
-    //    }
     self.titleField.placeholder = @"请输入标题";
     self.titleField.textAlignment = NSTextAlignmentCenter;
     [self.titleField setValue:RGBA(255, 255, 255, 0.7) forKeyPath:@"_placeholderLabel.textColor"];
@@ -206,25 +204,26 @@
 
 - (void)makeVideo {
     
-    NSString *newStr = [self.titleField.text stringByReplacingOccurrencesOfString:@" " withString:@""];
-    if (newStr.length == 0) {
-        [DLYUserTrack recordAndEventKey:@"Skip"];
-    }else {
-        [DLYUserTrack recordAndEventKey:@"Skip" andDescribeStr:self.titleField.text];
-    }
+//    NSString *newStr = [self.titleField.text stringByReplacingOccurrencesOfString:@" " withString:@""];
+//    if (newStr.length == 0) {
+//        [DLYUserTrack recordAndEventKey:@"Skip"];
+//    }else {
+//        [DLYUserTrack recordAndEventKey:@"Skip" andDescribeStr:self.titleField.text];
+//    }
+    [DLYUserTrack recordAndEventKey:@"Skip"];
     
     //隐藏所有控件
-    self.backView.hidden = YES;
-    self.titleField.hidden = YES;
-    self.skipButton.hidden = YES;
-    self.skipTestBtn.hidden = YES;
+//    self.backView.hidden = YES;
+//    self.titleField.hidden = YES;
+//    self.skipButton.hidden = YES;
+//    self.skipTestBtn.hidden = YES;
     //创建view
     [self setupUI];
     //获取开始时刻统计合成耗时
     self.AVEngine.startOperation = [self.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
     
     typeof(self) weakSelf = self;
-    [self.AVEngine addVideoHeaderWithTitle:self.titleField.text successed:^{
+    [self.AVEngine addVideoHeaderWithTitle:nil successed:^{
         
         weakSelf.AVEngine.finishOperation = [weakSelf.AVEngine getDateTimeTOMilliSeconds:[NSDate date]];
         DLYLog(@"成片耗时: %lld s",(weakSelf.AVEngine.finishOperation - weakSelf.AVEngine.startOperation)/1000);
@@ -785,7 +784,6 @@
         self.backView.backgroundColor = RGBA(0, 0, 0, 0);
         self.titleField.center = self.view.center;
     }];
-    
 }
 //按下Return时调用
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
