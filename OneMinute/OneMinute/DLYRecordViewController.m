@@ -37,6 +37,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSInteger selectNewPartTag;
     NSMutableArray * partModelArray; //模拟存放拍摄片段的模型数组
     NSMutableArray * typeModelArray; //模拟选择样式的模型数组
+    NSMutableArray * videoArray; //模拟选择样式的模型数组
     BOOL isMicGranted;//麦克风权限是否被允许
     BOOL isFront;
     BOOL isSlomoCamera;
@@ -645,15 +646,15 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.view addSubview:self.backView];
     
     //版本页面
-//    self.versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(2, self.backView.height - 20, 50, 20)];
-//    self.versionLabel.textColor = [UIColor whiteColor];
-//    NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
-//    NSString *appVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];
-//    NSString *buildVersion = [infoDic objectForKey:@"CFBundleVersion"];
-//    NSString *labelText = [NSString stringWithFormat:@"%@(%@)", appVersion,buildVersion];
-//    self.versionLabel.text = labelText;
-//    self.versionLabel.font = FONT_SYSTEM(12);
-//    [self.backView addSubview:self.versionLabel];
+    //    self.versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(2, self.backView.height - 20, 50, 20)];
+    //    self.versionLabel.textColor = [UIColor whiteColor];
+    //    NSDictionary *infoDic = [[NSBundle mainBundle] infoDictionary];
+    //    NSString *appVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];
+    //    NSString *buildVersion = [infoDic objectForKey:@"CFBundleVersion"];
+    //    NSString *labelText = [NSString stringWithFormat:@"%@(%@)", appVersion,buildVersion];
+    //    self.versionLabel.text = labelText;
+    //    self.versionLabel.font = FONT_SYSTEM(12);
+    //    [self.backView addSubview:self.versionLabel];
     
     //拍摄按钮
     self.recordBtn = [[UIButton alloc]initWithFrame:CGRectMake(43 * SCALE_WIDTH, 0, 60 * SCALE_WIDTH, 60 * SCALE_WIDTH)];
@@ -1119,13 +1120,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.nextButton.frame = CGRectMake(self.view.centerX + 61, self.view.centerY - 30, 60, 60);
         }
     }
-//    if (!self.versionLabel.isHidden && self.versionLabel) {
-//        if (num == 0) {
-//            self.versionLabel.frame = CGRectMake(2, self.backView.height - 20, 50, 20);
-//        }else {
-//            self.versionLabel.frame = CGRectMake(self.backView.width - 52, self.backView.height - 20, 50, 20);
-//        }
-//    }
+    //    if (!self.versionLabel.isHidden && self.versionLabel) {
+    //        if (num == 0) {
+    //            self.versionLabel.frame = CGRectMake(2, self.backView.height - 20, 50, 20);
+    //        }else {
+    //            self.versionLabel.frame = CGRectMake(self.backView.width - 52, self.backView.height - 20, 50, 20);
+    //        }
+    //    }
     
     if (!self.normalBubble.isHidden && self.normalBubble) {
         self.normalBubble.flipState = self.newState;
@@ -1514,7 +1515,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     NSInteger num = sender.tag - 600;
     //url放在这里
-    DLYMiniVlogTemplate *template = typeModelArray[num];
+    DLYMiniVlogTemplate *template = videoArray[num];
     [DLYUserTrack recordAndEventKey:@"ChoosePlayVideo" andDescribeStr:template.templateTitle];
     
     NSArray *urlNameArr = [template.sampleVideoName componentsSeparatedByString:@"/"];
@@ -2326,11 +2327,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     float width = (self.filmView.width - 50)/6;
     videoScrollView.contentSize = CGSizeMake(width * 6 + 10 * 5, videoScrollView.height);
-    for(int i = 0; i < typeModelArray.count; i ++)
+    videoArray = [NSMutableArray array];
+    for(int i = 3; i < typeModelArray.count; i ++)
+    {
+        [videoArray addObject:typeModelArray[i]];
+    }
+    for(int i = 0; i < videoArray.count; i ++)
     {
         int wNum = i % 6;
         int hNum = i / 6;
-        DLYMiniVlogTemplate *templateModel = typeModelArray[i];
+        DLYMiniVlogTemplate *templateModel = videoArray[i];
         UIView *view = [[UIView alloc]initWithFrame:CGRectMake((width + 10) * wNum, 100 * hNum, width, 90)];
         view.tag = 500 + i;
         [videoScrollView addSubview:view];
@@ -2722,16 +2728,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     //iOS8.0之后
     PHAuthorizationStatus photoStatus =  [PHPhotoLibrary authorizationStatus];
     switch (photoStatus) {
-        case PHAuthorizationStatusAuthorized:
+            case PHAuthorizationStatusAuthorized:
             isAvalible = YES;
             break;
-        case PHAuthorizationStatusDenied:
+            case PHAuthorizationStatusDenied:
         {
             [self showAlertPermissionwithMessage:@"相册"];
             isAvalible = NO;
         }
             break;
-        case PHAuthorizationStatusNotDetermined:
+            case PHAuthorizationStatusNotDetermined:
         {
             [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
                 if (status == PHAuthorizationStatusAuthorized) {
@@ -2752,7 +2758,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }];
         }
             break;
-        case PHAuthorizationStatusRestricted:
+            case PHAuthorizationStatusRestricted:
             isAvalible = NO;
             break;
         default:
@@ -2766,16 +2772,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     __block BOOL isAvalible = NO;
     AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
     switch (status) {
-        case AVAuthorizationStatusAuthorized: //授权
+            case AVAuthorizationStatusAuthorized: //授权
             isAvalible = YES;
             break;
-        case AVAuthorizationStatusDenied:   //拒绝，弹框
+            case AVAuthorizationStatusDenied:   //拒绝，弹框
         {
             [self showAlertPermissionwithMessage:@"相机"];
             isAvalible = NO;
         }
             break;
-        case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动默认弹框
+            case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动默认弹框
         {
             [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
                 isAvalible = granted;
@@ -2788,7 +2794,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }];
         }
             break;
-        case AVAuthorizationStatusRestricted:  //受限制，家长控制器
+            case AVAuthorizationStatusRestricted:  //受限制，家长控制器
             isAvalible = NO;
             break;
     }
@@ -2799,16 +2805,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     __block BOOL isAvalible = NO;
     AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
     switch (status) {
-        case AVAuthorizationStatusAuthorized: //授权
+            case AVAuthorizationStatusAuthorized: //授权
             isAvalible = YES;
             break;
-        case AVAuthorizationStatusDenied:   //拒绝，弹框
+            case AVAuthorizationStatusDenied:   //拒绝，弹框
         {
             [self showAlertPermissionwithMessage:@"麦克风"];
             isAvalible = NO;
         }
             break;
-        case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动
+            case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动
         {
             [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
                 isAvalible = granted;
@@ -2821,7 +2827,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }];
         }
             break;
-        case AVAuthorizationStatusRestricted:  //受限制，家长控制器
+            case AVAuthorizationStatusRestricted:  //受限制，家长控制器
             isAvalible = NO;
             break;
     }
