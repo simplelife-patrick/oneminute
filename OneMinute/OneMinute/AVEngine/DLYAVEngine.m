@@ -25,7 +25,7 @@
 #import "UIImage+Extension.h"
 #import "DLYPhotoAlbum.h"
 
-@interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate,AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate,DLYRecordTimerDelegate>
+@interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate,AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,/*AVCaptureMetadataOutputObjectsDelegate,*/DLYRecordTimerDelegate>
 {
     CMTime defaultVideoMaxFrameDuration;
     CMTime defaultVideoMinFrameDuration;
@@ -43,7 +43,7 @@
     NSURL *fileUrl;
     CGRect faceRegion;
     CGRect lastFaceRegion;
-    BOOL isDetectedMetadataObjectTarget;
+//    BOOL isDetectedMetadataObjectTarget;
     BOOL isMicGranted;
     
     NSString *UUIDString;
