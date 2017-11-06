@@ -58,8 +58,6 @@
         
         DLYMiniVlogPart *part = [[DLYMiniVlogPart alloc]init];
         part.partNum = [[dic objectForKey:@"partNum"] integerValue];
-        part.starTime = [dic objectForKey:@"startTime"];
-        part.stopTime = [dic objectForKey:@"stopTime"];
         part.dubStartTime = [dic objectForKey:@"dubStartTime"];
         part.dubStopTime = [dic objectForKey:@"dubStopTime"];
         part.recordType = [[dic objectForKey:@"recordType"] integerValue];
@@ -70,8 +68,5 @@
         [mArray addObject:part];
     }
     return [mArray copy];
-}
-- (NSString*)description{
-    return [NSString stringWithFormat:@"<%@: %p> {templateId: %@ ,version: %f ,templateTitle: %@,templateDescription:%@,sampleVideoName: %@ ,parts: %@ ,BGM: %@,subTitle1:%@,videoHeaderType: %@ ,videoTailerType: %ld}",[self class],self,self.templateId,self.version,self.templateTitle,self,self.templateDescription,self.sampleVideoName,self.parts,self.BGM,self.subTitle1,(long)self.videoHeaderType,self.videoTailerType];
 }
 @end

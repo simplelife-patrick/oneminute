@@ -5,8 +5,6 @@
   "info": [
     {
       "partNum": 0,
-      "startTime": "00:00:00",
-      "stopTime": "00:08:28",
       "dubStartTime": "00:00:00",
       "dubStopTime": "00:08:28",
       "recordType": 0,
@@ -17,8 +15,6 @@
     },
     {
       "partNum": 1,
-      "startTime": "00:08:28",
-      "stopTime": "00:12:36",
       "dubStartTime": "00:08:28",
       "dubStopTime": "00:12:36",
       "recordType": 0,
@@ -29,8 +25,6 @@
     },
     {
       "partNum": 2,
-      "startTime": "00:12:36",
-      "stopTime": "00:28:72",
       "dubStartTime": "00:12:36",
       "dubStopTime": "00:28:72",
       "recordType": 0,
@@ -41,8 +35,6 @@
     },
     {
       "partNum": 3,
-      "startTime": "00:28:72",
-      "stopTime": "00:36:88",
       "dubStartTime": "00:28:72",
       "dubStopTime": "00:36:88",
       "recordType": 0,
@@ -53,8 +45,6 @@
     },
     {
       "partNum": 4,
-      "startTime": "00:36:88",
-      "stopTime": "00:53:04",
       "dubStartTime": "00:36:88",
       "dubStopTime": "00:53:04",
       "recordType": 0,
@@ -65,8 +55,6 @@
     },
     {
       "partNum": 5,
-      "startTime": "00:53:04",
-      "stopTime": "01:00:00",
       "dubStartTime": "00:53:04",
       "dubStopTime": "01:00:00",
       "recordType": 0,
