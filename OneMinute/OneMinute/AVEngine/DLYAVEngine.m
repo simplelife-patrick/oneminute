@@ -1741,11 +1741,6 @@
     NSURL *outPutUrl = [self.resource saveProductToSandbox];
     self.currentProductUrl = outPutUrl;
     
-    if ([[NSFileManager defaultManager] fileExistsAtPath:self.currentProductUrl.absoluteString])
-    {
-        [[NSFileManager defaultManager] removeItemAtPath:self.currentProductUrl.absoluteString error:nil];
-    }
-    
     AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1280x720];
     assetExportSession.outputURL = outPutUrl;
     assetExportSession.audioMix = audioMix;
