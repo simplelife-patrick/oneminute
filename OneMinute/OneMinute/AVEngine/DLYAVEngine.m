@@ -21,7 +21,6 @@
 #import "DLYSession.h"
 #import <math.h>
 #import <CoreMotion/CoreMotion.h>
-#import "DLYVideoFilter.h"
 #import "UIImage+Extension.h"
 #import "DLYPhotoAlbum.h"
 

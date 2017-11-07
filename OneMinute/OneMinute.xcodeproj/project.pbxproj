@@ -24,7 +24,6 @@
 		6F32F7A71F99A57D004C4553 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6F32F7A61F99A57D004C4553 /* iconfont.ttf */; };
 		6F643AF41F97583E001FDA76 /* PromoteVideo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 6F643AF31F97583E001FDA76 /* PromoteVideo.mp4 */; };
 		6F7455131F7A3EDE00682FB8 /* DLYThemesData.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F7455121F7A3EDE00682FB8 /* DLYThemesData.m */; };
-		6F806D6B1F7CEE7700B4EC51 /* DLYVideoFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F806D6A1F7CEE7700B4EC51 /* DLYVideoFilter.m */; };
 		6F81E7BD1F985564008A2FC9 /* DLYUserTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F81E7BC1F985564008A2FC9 /* DLYUserTrack.m */; };
 		6F89259C1F1B12A100256093 /* DLYExportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F89259B1F1B12A100256093 /* DLYExportViewController.m */; };
 		6F8925AF1F1B135100256093 /* DLYPlayVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8925AE1F1B135100256093 /* DLYPlayVideoViewController.m */; };
@@ -135,8 +134,6 @@
 		6F643AF31F97583E001FDA76 /* PromoteVideo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = PromoteVideo.mp4; sourceTree = "<group>"; };
 		6F7455111F7A3EDE00682FB8 /* DLYThemesData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYThemesData.h; sourceTree = "<group>"; };
 		6F7455121F7A3EDE00682FB8 /* DLYThemesData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYThemesData.m; sourceTree = "<group>"; };
-		6F806D691F7CEE7700B4EC51 /* DLYVideoFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYVideoFilter.h; sourceTree = "<group>"; };
-		6F806D6A1F7CEE7700B4EC51 /* DLYVideoFilter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DLYVideoFilter.m; sourceTree = "<group>"; };
 		6F81E7BB1F985564008A2FC9 /* DLYUserTrack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYUserTrack.h; sourceTree = "<group>"; };
 		6F81E7BC1F985564008A2FC9 /* DLYUserTrack.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DLYUserTrack.m; sourceTree = "<group>"; };
 		6F89259A1F1B12A100256093 /* DLYExportViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYExportViewController.h; sourceTree = "<group>"; };
@@ -595,8 +592,6 @@
 				ADFFF1AA1F18C00200FB5BF7 /* DLYTransitionInstructions.m */,
 				ADFFF1AC1F18C04400FB5BF7 /* DLYVideoTransition.h */,
 				ADFFF1AD1F18C04400FB5BF7 /* DLYVideoTransition.m */,
-				6F806D691F7CEE7700B4EC51 /* DLYVideoFilter.h */,
-				6F806D6A1F7CEE7700B4EC51 /* DLYVideoFilter.m */,
 				6F7455111F7A3EDE00682FB8 /* DLYThemesData.h */,
 				6F7455121F7A3EDE00682FB8 /* DLYThemesData.m */,
 				ADF0729C1FA03C8D003088AE /* DLYRecordTimer.h */,
@@ -885,7 +880,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -935,7 +930,6 @@
 				6F8925D61F1B13FF00256093 /* DLYAlertView.m in Sources */,
 				ADFFF19C1F18A33000FB5BF7 /* DLYMiniVlogPart.m in Sources */,
 				6F8925D51F1B13FF00256093 /* DLYAnnularProgress.m in Sources */,
-				6F806D6B1F7CEE7700B4EC51 /* DLYVideoFilter.m in Sources */,
 				6F12AE6C1F3DB78300CE8CB6 /* DLYDownloader.m in Sources */,
 				ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */,
 				AD26F1AA1F53E70A00565E27 /* DLYRecordViewController.m in Sources */,
