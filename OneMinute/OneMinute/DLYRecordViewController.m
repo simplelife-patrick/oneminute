@@ -330,9 +330,39 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             part.prepareRecord = @"0";
         }
         part.recordStatus = @"0";
-        part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
-        part.partTime = [self getDurationwithStartTime:part.dubStartTime andStopTime:part.dubStopTime];
         
+        DLYMiniVlogRecordType recordType = part.recordType;
+        double startTime = 0;
+        double stopTime = 0;
+        double duration = 0;
+        switch (recordType) {
+            case DLYMiniVlogRecordTypeNormal:
+                startTime = [self getTimeWithString:part.dubStartTime]  / 1000;
+                stopTime = [self getTimeWithString:part.dubStopTime] / 1000;
+                duration = stopTime - startTime;
+                part.partTime = [NSString stringWithFormat:@"%f",duration];
+                part.duration = part.partTime;
+                
+                break;
+            case DLYMiniVlogRecordTypeSlomo:
+                startTime = [self getTimeWithString:part.dubStartTime]  / 1000;
+                stopTime = [self getTimeWithString:part.dubStopTime] / 1000;
+                duration = stopTime - startTime;
+                part.partTime = [NSString stringWithFormat:@"%f",duration];
+                part.duration = [NSString stringWithFormat:@"%f",duration / 4];
+                
+                break;
+            case DLYMiniVlogRecordTypeTimelapse:
+                startTime = [self getTimeWithString:part.dubStartTime]  / 1000;
+                stopTime = [self getTimeWithString:part.dubStopTime] / 1000;
+                duration = stopTime - startTime;
+                part.partTime = [NSString stringWithFormat:@"%f",duration];
+                part.duration = [NSString stringWithFormat:@"%f",duration * 4];
+                
+                break;
+            default:
+                break;
+        }
     }
     
     if (isExitDraft) {
@@ -398,8 +428,39 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             part.prepareRecord = @"0";
         }
         part.recordStatus = @"0";
-        part.duration = [self getDurationwithStartTime:part.starTime andStopTime:part.stopTime];
-        part.partTime = [self getDurationwithStartTime:part.dubStartTime andStopTime:part.dubStopTime];
+        
+        DLYMiniVlogRecordType recordType = part.recordType;
+        double startTime = 0;
+        double stopTime = 0;
+        double duration = 0;
+        switch (recordType) {
+            case DLYMiniVlogRecordTypeNormal:
+                startTime = [self getTimeWithString:part.dubStartTime]  / 1000;
+                stopTime = [self getTimeWithString:part.dubStopTime] / 1000;
+                duration = stopTime - startTime;
+                part.partTime = [NSString stringWithFormat:@"%f",duration];
+                part.duration = part.partTime;
+                
+                break;
+            case DLYMiniVlogRecordTypeSlomo:
+                startTime = [self getTimeWithString:part.dubStartTime]  / 1000;
+                stopTime = [self getTimeWithString:part.dubStopTime] / 1000;
+                duration = stopTime - startTime;
+                part.partTime = [NSString stringWithFormat:@"%f",duration];
+                part.duration = [NSString stringWithFormat:@"%f",duration / 4];
+                
+                break;
+            case DLYMiniVlogRecordTypeTimelapse:
+                startTime = [self getTimeWithString:part.dubStartTime]  / 1000;
+                stopTime = [self getTimeWithString:part.dubStopTime] / 1000;
+                duration = stopTime - startTime;
+                part.partTime = [NSString stringWithFormat:@"%f",duration];
+                part.duration = [NSString stringWithFormat:@"%f",duration * 4];
+                
+                break;
+            default:
+                break;
+        }
     }
     //contentSize更新
     float episodeHeight = (self.backScrollView.height - (partModelArray.count - 1) * 2) / partModelArray.count;
@@ -2729,6 +2790,19 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)dealloc {
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+- (double)getTimeWithString:(NSString *)timeString
+{
+    NSArray *stringArr = [timeString componentsSeparatedByString:@":"];
+    NSString *timeStr_M = stringArr[0];
+    NSString *timeStr_S = stringArr[1];
+    NSString *timeStr_MS = stringArr[2];
+    
+    double timeNum_M = [timeStr_M doubleValue] * 60 * 1000;
+    double timeNum_S = [timeStr_S doubleValue] * 1000;
+    double timeNum_MS = [timeStr_MS doubleValue] * 10;
+    double timeNum = timeNum_M + timeNum_S + timeNum_MS;
+    return timeNum;
 }
 - (NSString *)getCurrentTime_MS {
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];

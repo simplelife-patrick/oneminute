@@ -21,7 +21,6 @@
 #import "DLYSession.h"
 #import <math.h>
 #import <CoreMotion/CoreMotion.h>
-#import "DLYVideoFilter.h"
 #import "UIImage+Extension.h"
 #import "DLYPhotoAlbum.h"
 
@@ -759,11 +758,25 @@
     if (error) {
         DLYLog(@"AVAssetWriter error:%@", error);
     }
-
-    double startTime = [self getTimeWithString:part.starTime];
-    double stopTime = [self getTimeWithString:part.stopTime];
-    double duration = (stopTime - startTime) / 1000;
     
+    DLYMiniVlogRecordType recordType = part.recordType;
+
+    double startTime = [self getTimeWithString:part.dubStartTime]  / 1000;
+    double stopTime = [self getTimeWithString:part.dubStopTime] / 1000;
+    double duration = 0;
+    switch (recordType) {
+        case DLYMiniVlogRecordTypeNormal:
+            duration = (stopTime - startTime);
+            break;
+        case DLYMiniVlogRecordTypeSlomo:
+            duration = (stopTime - startTime) / 4;
+            break;
+        case DLYMiniVlogRecordTypeTimelapse:
+            duration = (stopTime - startTime) * 4;
+            break;
+        default:
+            break;
+    }
     _recordTimer = [[DLYRecordTimer alloc] initWithPeriod:1.0f duration:duration];
     _recordTimer.timerDelegate = self;
     [_recordTimer startTick];
