@@ -519,12 +519,11 @@
     int numPixels = dimensions.width * dimensions.height;
     int bitsPerSecond;
     
-    // Assume that lower-than-SD resolutions are intended for streaming, and use a lower bitrate
-    if ( numPixels < (640 * 480) )
-        bitsPerPixel = 4.05; // This bitrate matches the quality produced by AVCaptureSessionPresetMedium or Low.
-    else
-        bitsPerPixel = 11.4; // This bitrate matches the quality produced by AVCaptureSessionPresetHigh.
-    
+    if (numPixels < (640 * 480) ){
+        bitsPerPixel = 4.05;
+    }else{
+        bitsPerPixel = 11.4;
+    }
     bitsPerSecond = numPixels * bitsPerPixel;
     
     NSDictionary *videoCompressionSettings = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -533,9 +532,8 @@
                                               [NSNumber numberWithInteger:dimensions.height], AVVideoHeightKey,
                                               [NSDictionary dictionaryWithObjectsAndKeys:
                                                [NSNumber numberWithInteger:bitsPerSecond],AVVideoAverageBitRateKey,/*
-                                                                                                                    [NSNumber numberWithInteger:30], AVVideoMaxKeyFrameIntervalKey,*/
-                                               nil], AVVideoCompressionPropertiesKey,
-                                              nil];
+                                                [NSNumber numberWithInteger:30], AVVideoMaxKeyFrameIntervalKey,*/
+                                               nil], AVVideoCompressionPropertiesKey,nil];
     
     if ([self.assetWriter canApplyOutputSettings:videoCompressionSettings forMediaType:AVMediaTypeVideo]) {
         
@@ -543,15 +541,12 @@
         self.assetWriterVideoInput.expectsMediaDataInRealTime = YES;
         
         if ([self.assetWriter canAddInput:self.assetWriterVideoInput]) {
-            
             [self.assetWriter addInput:self.assetWriterVideoInput];
-        }
-        else {
+        }else {
             DLYLog(@"Couldn't add asset writer video input.");
             return NO;
         }
-    }
-    else {
+    }else {
         DLYLog(@"Couldn't apply video output settings.");
         return NO;
     }
@@ -1745,11 +1740,6 @@
     
     NSURL *outPutUrl = [self.resource saveProductToSandbox];
     self.currentProductUrl = outPutUrl;
-    
-    if ([[NSFileManager defaultManager] fileExistsAtPath:self.currentProductUrl.absoluteString])
-    {
-        [[NSFileManager defaultManager] removeItemAtPath:self.currentProductUrl.absoluteString error:nil];
-    }
     
     AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1280x720];
     assetExportSession.outputURL = outPutUrl;

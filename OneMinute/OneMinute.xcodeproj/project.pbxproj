@@ -63,17 +63,17 @@
 		AD9ACE861FB03EA80050EBBA /* SoDelicious.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD9ACE7C1FB03EA80050EBBA /* SoDelicious.dly */; };
 		ADA3709C1F2D11780082AEC6 /* DLYResource.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA3709B1F2D11780082AEC6 /* DLYResource.m */; };
 		ADD0E7D41F2D9F3500996BD6 /* UIImage+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD0E7D31F2D9F3500996BD6 /* UIImage+Extension.m */; };
-		ADF072901F9F97B2003088AE /* AfternoonTeaBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF072841F9F97B0003088AE /* AfternoonTeaBGM.m4a */; };
-		ADF072931F9F97B2003088AE /* SecondaryBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF072871F9F97B1003088AE /* SecondaryBGM.m4a */; };
-		ADF072941F9F97B2003088AE /* PrimaryBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF072881F9F97B1003088AE /* PrimaryBGM.m4a */; };
-		ADF072951F9F97B2003088AE /* SoDeliciousBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF072891F9F97B1003088AE /* SoDeliciousBGM.m4a */; };
-		ADF072961F9F97B2003088AE /* AdvancedBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF0728A1F9F97B1003088AE /* AdvancedBGM.m4a */; };
-		ADF072981F9F97B2003088AE /* SunSetBeachBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF0728C1F9F97B2003088AE /* SunSetBeachBGM.m4a */; };
-		ADF0729B1F9F97B2003088AE /* BigMealBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF0728F1F9F97B2003088AE /* BigMealBGM.m4a */; };
 		ADF0729E1FA03C8D003088AE /* DLYRecordTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF0729D1FA03C8D003088AE /* DLYRecordTimer.m */; };
-		ADF263F21FA8867C00DB54C2 /* GoNorthBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF263EF1FA8867B00DB54C2 /* GoNorthBGM.m4a */; };
-		ADF263F31FA8867C00DB54C2 /* MyMaldivesBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF263F01FA8867B00DB54C2 /* MyMaldivesBGM.m4a */; };
-		ADF263F41FA8867C00DB54C2 /* ColorfulLifeBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF263F11FA8867B00DB54C2 /* ColorfulLifeBGM.m4a */; };
+		ADF5A6D11FB18A6300161F37 /* GoNorthBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF5A6C71FB18A6200161F37 /* GoNorthBGM.m4a */; };
+		ADF5A6D21FB18A6300161F37 /* AfternoonTeaBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF5A6C81FB18A6200161F37 /* AfternoonTeaBGM.m4a */; };
+		ADF5A6D31FB18A6300161F37 /* AdvancedBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF5A6C91FB18A6200161F37 /* AdvancedBGM.m4a */; };
+		ADF5A6D41FB18A6300161F37 /* MyMaldivesBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF5A6CA1FB18A6200161F37 /* MyMaldivesBGM.m4a */; };
+		ADF5A6D51FB18A6300161F37 /* PrimaryBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF5A6CB1FB18A6200161F37 /* PrimaryBGM.m4a */; };
+		ADF5A6D61FB18A6400161F37 /* ColorfulLifeBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF5A6CC1FB18A6300161F37 /* ColorfulLifeBGM.m4a */; };
+		ADF5A6D71FB18A6400161F37 /* SoDeliciousBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF5A6CD1FB18A6300161F37 /* SoDeliciousBGM.m4a */; };
+		ADF5A6D81FB18A6400161F37 /* BigMealBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF5A6CE1FB18A6300161F37 /* BigMealBGM.m4a */; };
+		ADF5A6D91FB18A6400161F37 /* SunSetBeachBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF5A6CF1FB18A6300161F37 /* SunSetBeachBGM.m4a */; };
+		ADF5A6DA1FB18A6400161F37 /* SecondaryBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF5A6D01FB18A6300161F37 /* SecondaryBGM.m4a */; };
 		ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */; };
 		ADFFF19A1F18A33000FB5BF7 /* DLYVolumeAutomation.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1841F18A33000FB5BF7 /* DLYVolumeAutomation.m */; };
 		ADFFF19C1F18A33000FB5BF7 /* DLYMiniVlogPart.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF18A1F18A33000FB5BF7 /* DLYMiniVlogPart.m */; };
@@ -206,18 +206,18 @@
 		ADA3709B1F2D11780082AEC6 /* DLYResource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYResource.m; sourceTree = "<group>"; };
 		ADD0E7D21F2D9F3500996BD6 /* UIImage+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Extension.h"; sourceTree = "<group>"; };
 		ADD0E7D31F2D9F3500996BD6 /* UIImage+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Extension.m"; sourceTree = "<group>"; };
-		ADF072841F9F97B0003088AE /* AfternoonTeaBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = AfternoonTeaBGM.m4a; sourceTree = "<group>"; };
-		ADF072871F9F97B1003088AE /* SecondaryBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SecondaryBGM.m4a; sourceTree = "<group>"; };
-		ADF072881F9F97B1003088AE /* PrimaryBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = PrimaryBGM.m4a; sourceTree = "<group>"; };
-		ADF072891F9F97B1003088AE /* SoDeliciousBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SoDeliciousBGM.m4a; sourceTree = "<group>"; };
-		ADF0728A1F9F97B1003088AE /* AdvancedBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = AdvancedBGM.m4a; sourceTree = "<group>"; };
-		ADF0728C1F9F97B2003088AE /* SunSetBeachBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SunSetBeachBGM.m4a; sourceTree = "<group>"; };
-		ADF0728F1F9F97B2003088AE /* BigMealBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = BigMealBGM.m4a; sourceTree = "<group>"; };
 		ADF0729C1FA03C8D003088AE /* DLYRecordTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYRecordTimer.h; sourceTree = "<group>"; };
 		ADF0729D1FA03C8D003088AE /* DLYRecordTimer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DLYRecordTimer.m; sourceTree = "<group>"; };
-		ADF263EF1FA8867B00DB54C2 /* GoNorthBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = GoNorthBGM.m4a; sourceTree = "<group>"; };
-		ADF263F01FA8867B00DB54C2 /* MyMaldivesBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyMaldivesBGM.m4a; sourceTree = "<group>"; };
-		ADF263F11FA8867B00DB54C2 /* ColorfulLifeBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorfulLifeBGM.m4a; sourceTree = "<group>"; };
+		ADF5A6C71FB18A6200161F37 /* GoNorthBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = GoNorthBGM.m4a; sourceTree = "<group>"; };
+		ADF5A6C81FB18A6200161F37 /* AfternoonTeaBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = AfternoonTeaBGM.m4a; sourceTree = "<group>"; };
+		ADF5A6C91FB18A6200161F37 /* AdvancedBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = AdvancedBGM.m4a; sourceTree = "<group>"; };
+		ADF5A6CA1FB18A6200161F37 /* MyMaldivesBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyMaldivesBGM.m4a; sourceTree = "<group>"; };
+		ADF5A6CB1FB18A6200161F37 /* PrimaryBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = PrimaryBGM.m4a; sourceTree = "<group>"; };
+		ADF5A6CC1FB18A6300161F37 /* ColorfulLifeBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = ColorfulLifeBGM.m4a; sourceTree = "<group>"; };
+		ADF5A6CD1FB18A6300161F37 /* SoDeliciousBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SoDeliciousBGM.m4a; sourceTree = "<group>"; };
+		ADF5A6CE1FB18A6300161F37 /* BigMealBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = BigMealBGM.m4a; sourceTree = "<group>"; };
+		ADF5A6CF1FB18A6300161F37 /* SunSetBeachBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SunSetBeachBGM.m4a; sourceTree = "<group>"; };
+		ADF5A6D01FB18A6300161F37 /* SecondaryBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SecondaryBGM.m4a; sourceTree = "<group>"; };
 		ADFFF1811F18A33000FB5BF7 /* DLYMobileDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMobileDevice.h; sourceTree = "<group>"; };
 		ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMobileDevice.m; sourceTree = "<group>"; };
 		ADFFF1831F18A33000FB5BF7 /* DLYVolumeAutomation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYVolumeAutomation.h; sourceTree = "<group>"; };
@@ -534,16 +534,16 @@
 		AD887A661F7661FB00A85881 /* BGM */ = {
 			isa = PBXGroup;
 			children = (
-				ADF0728A1F9F97B1003088AE /* AdvancedBGM.m4a */,
-				ADF072841F9F97B0003088AE /* AfternoonTeaBGM.m4a */,
-				ADF0728F1F9F97B2003088AE /* BigMealBGM.m4a */,
-				ADF263F11FA8867B00DB54C2 /* ColorfulLifeBGM.m4a */,
-				ADF263EF1FA8867B00DB54C2 /* GoNorthBGM.m4a */,
-				ADF263F01FA8867B00DB54C2 /* MyMaldivesBGM.m4a */,
-				ADF072881F9F97B1003088AE /* PrimaryBGM.m4a */,
-				ADF072871F9F97B1003088AE /* SecondaryBGM.m4a */,
-				ADF072891F9F97B1003088AE /* SoDeliciousBGM.m4a */,
-				ADF0728C1F9F97B2003088AE /* SunSetBeachBGM.m4a */,
+				ADF5A6C91FB18A6200161F37 /* AdvancedBGM.m4a */,
+				ADF5A6C81FB18A6200161F37 /* AfternoonTeaBGM.m4a */,
+				ADF5A6CE1FB18A6300161F37 /* BigMealBGM.m4a */,
+				ADF5A6CC1FB18A6300161F37 /* ColorfulLifeBGM.m4a */,
+				ADF5A6C71FB18A6200161F37 /* GoNorthBGM.m4a */,
+				ADF5A6CA1FB18A6200161F37 /* MyMaldivesBGM.m4a */,
+				ADF5A6CB1FB18A6200161F37 /* PrimaryBGM.m4a */,
+				ADF5A6D01FB18A6300161F37 /* SecondaryBGM.m4a */,
+				ADF5A6CD1FB18A6300161F37 /* SoDeliciousBGM.m4a */,
+				ADF5A6CF1FB18A6300161F37 /* SunSetBeachBGM.m4a */,
 			);
 			path = BGM;
 			sourceTree = "<group>";
@@ -755,33 +755,33 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ADF0729B1F9F97B2003088AE /* BigMealBGM.m4a in Resources */,
-				ADF263F21FA8867C00DB54C2 /* GoNorthBGM.m4a in Resources */,
-				ADF072951F9F97B2003088AE /* SoDeliciousBGM.m4a in Resources */,
-				ADF072941F9F97B2003088AE /* PrimaryBGM.m4a in Resources */,
+				ADF5A6D41FB18A6300161F37 /* MyMaldivesBGM.m4a in Resources */,
 				6F643AF41F97583E001FDA76 /* PromoteVideo.mp4 in Resources */,
-				ADF263F41FA8867C00DB54C2 /* ColorfulLifeBGM.m4a in Resources */,
-				ADF263F31FA8867C00DB54C2 /* MyMaldivesBGM.m4a in Resources */,
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
+				ADF5A6D71FB18A6400161F37 /* SoDeliciousBGM.m4a in Resources */,
+				ADF5A6D81FB18A6400161F37 /* BigMealBGM.m4a in Resources */,
+				ADF5A6D21FB18A6300161F37 /* AfternoonTeaBGM.m4a in Resources */,
 				AD038C9A1F7293F10002C092 /* InfoPlist.strings in Resources */,
 				AD9ACE7F1FB03EA80050EBBA /* Advanced.dly in Resources */,
 				AD9ACE7E1FB03EA80050EBBA /* AfternoonTea.dly in Resources */,
 				AD9ACE831FB03EA80050EBBA /* SunSetBeach.dly in Resources */,
-				ADF072981F9F97B2003088AE /* SunSetBeachBGM.m4a in Resources */,
+				ADF5A6D61FB18A6400161F37 /* ColorfulLifeBGM.m4a in Resources */,
+				ADF5A6D91FB18A6400161F37 /* SunSetBeachBGM.m4a in Resources */,
+				ADF5A6D31FB18A6300161F37 /* AdvancedBGM.m4a in Resources */,
+				ADF5A6DA1FB18A6400161F37 /* SecondaryBGM.m4a in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
-				ADF072931F9F97B2003088AE /* SecondaryBGM.m4a in Resources */,
 				AD9ACE861FB03EA80050EBBA /* SoDelicious.dly in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
 				AD9ACE7D1FB03EA80050EBBA /* Default.dly in Resources */,
 				AD9ACE821FB03EA80050EBBA /* GoNorth.dly in Resources */,
 				AD9ACE841FB03EA80050EBBA /* ColorfulLife.dly in Resources */,
 				AD9ACE811FB03EA80050EBBA /* MyMaldives.dly in Resources */,
+				ADF5A6D11FB18A6300161F37 /* GoNorthBGM.m4a in Resources */,
 				AD14ED461F9E0ABD000DB796 /* templateList_v1.plist in Resources */,
 				AD9ACE801FB03EA80050EBBA /* BigMeal.dly in Resources */,
 				AD9ACE851FB03EA80050EBBA /* Secondary.dly in Resources */,
+				ADF5A6D51FB18A6300161F37 /* PrimaryBGM.m4a in Resources */,
 				6F32F7A71F99A57D004C4553 /* iconfont.ttf in Resources */,
-				ADF072901F9F97B2003088AE /* AfternoonTeaBGM.m4a in Resources */,
-				ADF072961F9F97B2003088AE /* AdvancedBGM.m4a in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

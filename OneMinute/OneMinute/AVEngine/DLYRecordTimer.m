@@ -9,9 +9,6 @@
 #import "DLYRecordTimer.h"
 
 @interface DLYRecordTimer()
-{
-    
-}
 
 @property (nonatomic, assign) NSTimeInterval period;
 @property (nonatomic, assign) NSTimeInterval duration;
@@ -49,9 +46,7 @@
         [_tickThread start];
         
         [self performSelector:@selector(_bang) withObject:nil afterDelay:self.duration];
-    }
-    else
-    {
+    }else{
 
     }
 }
@@ -64,8 +59,6 @@
             [self.timerDelegate businessFinished:0];
         }
     });
-    
-//    [self.tickThread cancel];
 }
 
 -(void) _tick
@@ -99,9 +92,7 @@
         if(self.period > self.duration)
         {
             sleepInterval = self.duration;
-        }
-        else
-        {
+        }else{
             sleepInterval = (self.tickRemain >= self.period) ? self.period : self.tickRemain;
         }
         [NSThread sleepForTimeInterval:sleepInterval];
