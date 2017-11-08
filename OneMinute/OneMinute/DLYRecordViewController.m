@@ -1116,7 +1116,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             videoBubble.showMaskAlpha = 1;
         }
     }];
-    
+
 }
 //拍摄视频按键
 - (void)startRecordBtnAction {
