@@ -1664,44 +1664,44 @@
     
     AVMutableCompositionTrack *originalAudioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     
-//    //添加标题
-//    AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
-//
-//    if ([[mixComposition tracksWithMediaType:AVMediaTypeVideo] count] != 0) {
-//
-//        videoComposition.frameDuration = CMTimeMake(1, 30);
-//        videoComposition.renderSize = videoAssetTrack.naturalSize;
-//        
-//        AVMutableVideoCompositionInstruction *passThroughInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-//        passThroughInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, [mixComposition duration]);
-//
-//        AVAssetTrack *videoTrack = [mixComposition tracksWithMediaType:AVMediaTypeVideo].firstObject;
-//        AVMutableVideoCompositionLayerInstruction *passThroughLayer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
-//
-//        passThroughInstruction.layerInstructions = @[passThroughLayer];
-//        videoComposition.instructions = @[passThroughInstruction];
-//
-//        CGSize renderSize = videoComposition.renderSize;
-//        CALayer *videoTitleLayer = [self addTitleForVideoWith:videoTitle size:renderSize];
-//
-//        CALayer *parentLayer = [CALayer layer];
-//        CALayer *videoLayer = [CALayer layer];
-//        parentLayer.frame = CGRectMake(0, 0, videoComposition.renderSize.width, videoComposition.renderSize.height);
-//        videoLayer.frame = CGRectMake(0, 0, videoComposition.renderSize.width, videoComposition.renderSize.height);
-//        [parentLayer addSublayer:videoLayer];
-//
-//        videoTitleLayer.position = CGPointMake(videoComposition.renderSize.width / 2, videoComposition.renderSize.height / 2);
-//        [parentLayer addSublayer:videoTitleLayer];
-//
-//        if (APPTEST) {
-//            CALayer *watermarkLayer = [CALayer layer];
-//            watermarkLayer = [self addWatermarkWithSize:renderSize];
-//            watermarkLayer.position = CGPointMake(videoComposition.renderSize.width - 366, 8);
-//            [parentLayer addSublayer:watermarkLayer];
-//        }
-//
-//        videoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
-//    }
+    //添加标题
+    AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
+
+    if ([[mixComposition tracksWithMediaType:AVMediaTypeVideo] count] != 0) {
+
+        videoComposition.frameDuration = CMTimeMake(1, 30);
+        videoComposition.renderSize = videoAssetTrack.naturalSize;
+        
+        AVMutableVideoCompositionInstruction *passThroughInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+        passThroughInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, [mixComposition duration]);
+
+        AVAssetTrack *videoTrack = [mixComposition tracksWithMediaType:AVMediaTypeVideo].firstObject;
+        AVMutableVideoCompositionLayerInstruction *passThroughLayer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
+
+        passThroughInstruction.layerInstructions = @[passThroughLayer];
+        videoComposition.instructions = @[passThroughInstruction];
+
+        CGSize renderSize = videoComposition.renderSize;
+        CALayer *videoTitleLayer = [self addTitleForVideoWith:videoTitle size:renderSize];
+
+        CALayer *parentLayer = [CALayer layer];
+        CALayer *videoLayer = [CALayer layer];
+        parentLayer.frame = CGRectMake(0, 0, videoComposition.renderSize.width, videoComposition.renderSize.height);
+        videoLayer.frame = CGRectMake(0, 0, videoComposition.renderSize.width, videoComposition.renderSize.height);
+        [parentLayer addSublayer:videoLayer];
+
+        videoTitleLayer.position = CGPointMake(videoComposition.renderSize.width / 2, videoComposition.renderSize.height / 2);
+        [parentLayer addSublayer:videoTitleLayer];
+
+        if (APPTEST) {
+            CALayer *watermarkLayer = [CALayer layer];
+            watermarkLayer = [self addWatermarkWithSize:renderSize];
+            watermarkLayer.position = CGPointMake(videoComposition.renderSize.width - 366, 8);
+            [parentLayer addSublayer:watermarkLayer];
+        }
+
+        videoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
+    }
 
     [originalAudioCompositionTrack insertTimeRange:originalAudioAssetTrack.timeRange ofTrack:originalAudioAssetTrack atTime:kCMTimeZero error:nil];
     
@@ -1725,17 +1725,6 @@
         CMTime duration = CMTimeSubtract(_stopTime, _startTime);
         CMTimeRange timeRange = CMTimeRangeMake(_startTime, duration);
         [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
-
-//        if (part.soundType == DLYMiniVlogAudioTypeMusic) {//空镜,关人声,开BGM
-//
-//            [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
-////            [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:timeRange];
-//
-//        }else if(part.soundType == DLYMiniVlogAudioTypeNarrate){//人声
-//
-////            [videoParameters setVolumeRampFromStartVolume:2.0 toEndVolume:2.0 timeRange:timeRange];
-//            [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
-//        }
     }
     audioMix.inputParameters = @[videoParameters,BGMParameters];
     
@@ -1745,7 +1734,7 @@
     AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1280x720];
     assetExportSession.outputURL = outPutUrl;
     assetExportSession.audioMix = audioMix;
-//    assetExportSession.videoComposition = videoComposition;
+    assetExportSession.videoComposition = videoComposition;
     assetExportSession.outputFileType = AVFileTypeMPEG4;
     assetExportSession.shouldOptimizeForNetworkUse = YES;
     
