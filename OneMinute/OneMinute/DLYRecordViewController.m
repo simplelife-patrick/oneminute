@@ -415,10 +415,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
 }
 - (void)initData {
-    self.btnImg = @[@(IFPrimary), @(IFSecondary), @(IFAdvanced), @(IFGoNorth),
-                    @(IFMyMaldives), @(IFBigMeal), @(IFAfternoonTea), @(IFDelicious),
-                    @(IFColorfulLife), @(IFSunSetBeach), @(IFYoungOuting), @(IFSpiritTerritory)];
-    
+
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     [self.session saveCurrentTemplateWithId:template.templateId version:template.version];
     partModelArray = [NSMutableArray arrayWithArray:template.parts];
@@ -2158,7 +2155,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         if(i == selectType) {
             [btn setImage:[UIImage imageWithIconName:[self.btnImg[i] integerValue] inFont:ICONFONT size:22 color:RGBA(255, 122, 0, 1)] forState:UIControlStateNormal];
-            //            btn.layer.borderColor = RGB(255, 122, 0).CGColor;
             typeName.textColor = RGB(255, 122, 0);
         }
     }
@@ -2172,19 +2168,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.alertLabel.hidden = YES;
     [self.sceneView addSubview:self.alertLabel];
     
-    self.sureBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, self.alertLabel.bottom + 20, 61, 61)];
-    self.sureBtn.centerX = self.sceneView.centerX - 46;
-    [self.sureBtn setImage:[UIImage imageWithIconName:IFSure inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
-    [self.sureBtn addTarget:self action:@selector(onSureClickChangeTypeStatus) forControlEvents:UIControlEventTouchUpInside];
-    self.sureBtn.layer.cornerRadius = 30.5;
-    self.sureBtn.clipsToBounds = YES;
-    self.sureBtn.layer.borderWidth = 1,0;
-    self.sureBtn.layer.borderColor = RGB(255, 255, 255).CGColor;
-    self.sureBtn.hidden = YES;
-    [self.sceneView addSubview:self.sureBtn];
-    
     self.giveUpBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, self.alertLabel.bottom + 20, 61, 61)];
-    self.giveUpBtn.centerX = self.sceneView.centerX  + 46;
+    self.giveUpBtn.centerX = self.sceneView.centerX - 46;
     [self.giveUpBtn setImage:[UIImage imageWithIconName:IFShut inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
     [self.giveUpBtn addTarget:self action:@selector(onGiveUpClickChangeTypeStatus) forControlEvents:UIControlEventTouchUpInside];
     self.giveUpBtn.layer.cornerRadius = 30.5;
@@ -2194,6 +2179,16 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.giveUpBtn.hidden = YES;
     [self.sceneView addSubview:self.giveUpBtn];
     
+    self.sureBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, self.alertLabel.bottom + 20, 61, 61)];
+    self.sureBtn.centerX = self.sceneView.centerX + 46;
+    [self.sureBtn setImage:[UIImage imageWithIconName:IFSure inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+    [self.sureBtn addTarget:self action:@selector(onSureClickChangeTypeStatus) forControlEvents:UIControlEventTouchUpInside];
+    self.sureBtn.layer.cornerRadius = 30.5;
+    self.sureBtn.clipsToBounds = YES;
+    self.sureBtn.layer.borderWidth = 1,0;
+    self.sureBtn.layer.borderColor = RGB(255, 255, 255).CGColor;
+    self.sureBtn.hidden = YES;
+    [self.sceneView addSubview:self.sureBtn];
 }
 - (void)createVideoView {
     
