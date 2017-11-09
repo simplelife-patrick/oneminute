@@ -54,7 +54,6 @@
 		AD9ACE7D1FB03EA80050EBBA /* Default.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD9ACE731FB03EA60050EBBA /* Default.dly */; };
 		AD9ACE7E1FB03EA80050EBBA /* AfternoonTea.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD9ACE741FB03EA60050EBBA /* AfternoonTea.dly */; };
 		AD9ACE7F1FB03EA80050EBBA /* Advanced.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD9ACE751FB03EA60050EBBA /* Advanced.dly */; };
-		AD9ACE801FB03EA80050EBBA /* BigMeal.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD9ACE761FB03EA60050EBBA /* BigMeal.dly */; };
 		AD9ACE811FB03EA80050EBBA /* MyMaldives.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD9ACE771FB03EA60050EBBA /* MyMaldives.dly */; };
 		AD9ACE821FB03EA80050EBBA /* GoNorth.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD9ACE781FB03EA70050EBBA /* GoNorth.dly */; };
 		AD9ACE831FB03EA80050EBBA /* SunSetBeach.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD9ACE791FB03EA70050EBBA /* SunSetBeach.dly */; };
@@ -62,6 +61,7 @@
 		AD9ACE851FB03EA80050EBBA /* Secondary.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD9ACE7B1FB03EA80050EBBA /* Secondary.dly */; };
 		AD9ACE861FB03EA80050EBBA /* SoDelicious.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD9ACE7C1FB03EA80050EBBA /* SoDelicious.dly */; };
 		ADA3709C1F2D11780082AEC6 /* DLYResource.m in Sources */ = {isa = PBXBuildFile; fileRef = ADA3709B1F2D11780082AEC6 /* DLYResource.m */; };
+		ADAF8A4F1FB430EB00C09B4B /* BigMeal.dly in Resources */ = {isa = PBXBuildFile; fileRef = ADAF8A4E1FB430EB00C09B4B /* BigMeal.dly */; };
 		ADD0E7D41F2D9F3500996BD6 /* UIImage+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD0E7D31F2D9F3500996BD6 /* UIImage+Extension.m */; };
 		ADF0729E1FA03C8D003088AE /* DLYRecordTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF0729D1FA03C8D003088AE /* DLYRecordTimer.m */; };
 		ADF5A6D11FB18A6300161F37 /* GoNorthBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF5A6C71FB18A6200161F37 /* GoNorthBGM.m4a */; };
@@ -192,7 +192,6 @@
 		AD9ACE731FB03EA60050EBBA /* Default.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Default.dly; sourceTree = "<group>"; };
 		AD9ACE741FB03EA60050EBBA /* AfternoonTea.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = AfternoonTea.dly; sourceTree = "<group>"; };
 		AD9ACE751FB03EA60050EBBA /* Advanced.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Advanced.dly; sourceTree = "<group>"; };
-		AD9ACE761FB03EA60050EBBA /* BigMeal.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = BigMeal.dly; sourceTree = "<group>"; };
 		AD9ACE771FB03EA60050EBBA /* MyMaldives.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyMaldives.dly; sourceTree = "<group>"; };
 		AD9ACE781FB03EA70050EBBA /* GoNorth.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = GoNorth.dly; sourceTree = "<group>"; };
 		AD9ACE791FB03EA70050EBBA /* SunSetBeach.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = SunSetBeach.dly; sourceTree = "<group>"; };
@@ -202,6 +201,7 @@
 		ADA370971F2D11500082AEC6 /* DLYRecordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYRecordViewController.h; sourceTree = "<group>"; };
 		ADA3709A1F2D11780082AEC6 /* DLYResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYResource.h; sourceTree = "<group>"; };
 		ADA3709B1F2D11780082AEC6 /* DLYResource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYResource.m; sourceTree = "<group>"; };
+		ADAF8A4E1FB430EB00C09B4B /* BigMeal.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = BigMeal.dly; sourceTree = "<group>"; };
 		ADD0E7D21F2D9F3500996BD6 /* UIImage+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Extension.h"; sourceTree = "<group>"; };
 		ADD0E7D31F2D9F3500996BD6 /* UIImage+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Extension.m"; sourceTree = "<group>"; };
 		ADF0729C1FA03C8D003088AE /* DLYRecordTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYRecordTimer.h; sourceTree = "<group>"; };
@@ -513,8 +513,8 @@
 			children = (
 				AD9ACE751FB03EA60050EBBA /* Advanced.dly */,
 				AD9ACE741FB03EA60050EBBA /* AfternoonTea.dly */,
-				AD9ACE761FB03EA60050EBBA /* BigMeal.dly */,
 				AD9ACE7A1FB03EA70050EBBA /* ColorfulLife.dly */,
+				ADAF8A4E1FB430EB00C09B4B /* BigMeal.dly */,
 				AD9ACE731FB03EA60050EBBA /* Default.dly */,
 				AD9ACE781FB03EA70050EBBA /* GoNorth.dly */,
 				AD9ACE771FB03EA60050EBBA /* MyMaldives.dly */,
@@ -759,6 +759,7 @@
 				ADF5A6D91FB18A6400161F37 /* SunSetBeachBGM.m4a in Resources */,
 				ADF5A6D31FB18A6300161F37 /* AdvancedBGM.m4a in Resources */,
 				ADF5A6DA1FB18A6400161F37 /* SecondaryBGM.m4a in Resources */,
+				ADAF8A4F1FB430EB00C09B4B /* BigMeal.dly in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				AD9ACE861FB03EA80050EBBA /* SoDelicious.dly in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
@@ -768,7 +769,6 @@
 				AD9ACE811FB03EA80050EBBA /* MyMaldives.dly in Resources */,
 				ADF5A6D11FB18A6300161F37 /* GoNorthBGM.m4a in Resources */,
 				AD14ED461F9E0ABD000DB796 /* templateList_v1.plist in Resources */,
-				AD9ACE801FB03EA80050EBBA /* BigMeal.dly in Resources */,
 				AD9ACE851FB03EA80050EBBA /* Secondary.dly in Resources */,
 				ADF5A6D51FB18A6300161F37 /* PrimaryBGM.m4a in Resources */,
 				6F32F7A71F99A57D004C4553 /* iconfont.ttf in Resources */,

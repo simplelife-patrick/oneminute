@@ -1627,74 +1627,36 @@
     AVURLAsset *audioAsset = [AVURLAsset URLAssetWithURL:audioUrl options:nil];
     
     AVAssetTrack *videoAssetTrack = nil;
-    AVAssetTrack *audioAssetTrack = nil;
-    
     if ([[videoAsset tracksWithMediaType:AVMediaTypeVideo] count] != 0) {
         videoAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
     }
-    if ([[audioAsset tracksWithMediaType:AVMediaTypeAudio] count] != 0) {
-        audioAssetTrack = [[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
-    }
-    AVMutableComposition *mixComposition = [AVMutableComposition composition];
     
+    //BGM音频素材
+    AVAssetTrack *BGMAudioAssetTrack = nil;
+    if ([[audioAsset tracksWithMediaType:AVMediaTypeAudio] count] != 0) {
+        BGMAudioAssetTrack = [[audioAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
+    }
+    
+    AVMutableComposition *mixComposition = [AVMutableComposition composition];
     CMPersistentTrackID trackID = kCMPersistentTrackID_Invalid;
     AVMutableCompositionTrack *videoCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
-    AVMutableCompositionTrack *audioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:trackID];
+    AVMutableCompositionTrack *BGMAudioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:trackID];
+    
+    CMTimeRange videoTimeRange = CMTimeRangeMake(kCMTimeZero,videoAsset.duration);
+    CMTimeRange audioTimeRange = CMTimeRangeMake(kCMTimeZero,audioAsset.duration);
     
     NSError *error = nil;
-    CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero,videoAsset.duration);
-    DLYLog(@">>>>>>> - 配音时的time range");
-    CMTimeRangeShow(timeRange);
-    
     if (videoAssetTrack) {
-        [videoCompositionTrack insertTimeRange:timeRange ofTrack:videoAssetTrack atTime:kCMTimeZero error:&error];
+        [videoCompositionTrack insertTimeRange:videoTimeRange ofTrack:videoAssetTrack atTime:kCMTimeZero error:&error];
     }
-    if (audioAssetTrack) {
-        [audioCompositionTrack insertTimeRange:timeRange ofTrack:audioAssetTrack atTime:kCMTimeZero error:&error];
+    //BGM音轨
+    if (BGMAudioAssetTrack) {
+        [BGMAudioCompositionTrack insertTimeRange:audioTimeRange ofTrack:BGMAudioAssetTrack atTime:kCMTimeZero error:&error];
     }
     
     [videoCompositionTrack setPreferredTransform:videoAssetTrack.preferredTransform];
     
-    //添加标题
-    AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
-    
-    if ([[mixComposition tracksWithMediaType:AVMediaTypeVideo] count] != 0) {
-
-        videoComposition.frameDuration = CMTimeMake(1, 30);
-        videoComposition.renderSize = videoAssetTrack.naturalSize;
-        
-        AVMutableVideoCompositionInstruction *passThroughInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-        passThroughInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, [mixComposition duration]);
-        
-        AVAssetTrack *videoTrack = [mixComposition tracksWithMediaType:AVMediaTypeVideo].firstObject;
-        AVMutableVideoCompositionLayerInstruction *passThroughLayer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
-        
-        passThroughInstruction.layerInstructions = @[passThroughLayer];
-        videoComposition.instructions = @[passThroughInstruction];
-        
-        CGSize renderSize = videoComposition.renderSize;
-        CALayer *videoTitleLayer = [self addTitleForVideoWith:videoTitle size:renderSize];
-        
-        CALayer *parentLayer = [CALayer layer];
-        CALayer *videoLayer = [CALayer layer];
-        parentLayer.frame = CGRectMake(0, 0, videoComposition.renderSize.width, videoComposition.renderSize.height);
-        videoLayer.frame = CGRectMake(0, 0, videoComposition.renderSize.width, videoComposition.renderSize.height);
-        [parentLayer addSublayer:videoLayer];
-        
-        videoTitleLayer.position = CGPointMake(videoComposition.renderSize.width / 2, videoComposition.renderSize.height / 2);
-        [parentLayer addSublayer:videoTitleLayer];
-        
-        if (APPTEST) {
-            CALayer *watermarkLayer = [CALayer layer];
-            watermarkLayer = [self addWatermarkWithSize:renderSize];
-            watermarkLayer.position = CGPointMake(videoComposition.renderSize.width - 366, 8);
-            [parentLayer addSublayer:watermarkLayer];
-        }
-        
-        videoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
-    }
-    
-    //处理视频原声
+    //拿到视频原声音轨
     AVAssetTrack *originalAudioAssetTrack = nil;
     if ([[videoAsset tracksWithMediaType:AVMediaTypeAudio] count] != 0) {
         originalAudioAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
@@ -1702,12 +1664,51 @@
     
     AVMutableCompositionTrack *originalAudioCompositionTrack = [mixComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     
-    [originalAudioCompositionTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssetTrack.timeRange.duration) ofTrack:originalAudioAssetTrack atTime:kCMTimeZero error:nil];
+//    //添加标题
+//    AVMutableVideoComposition *videoComposition = [AVMutableVideoComposition videoComposition];
+//
+//    if ([[mixComposition tracksWithMediaType:AVMediaTypeVideo] count] != 0) {
+//
+//        videoComposition.frameDuration = CMTimeMake(1, 30);
+//        videoComposition.renderSize = videoAssetTrack.naturalSize;
+//        
+//        AVMutableVideoCompositionInstruction *passThroughInstruction = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+//        passThroughInstruction.timeRange = CMTimeRangeMake(kCMTimeZero, [mixComposition duration]);
+//
+//        AVAssetTrack *videoTrack = [mixComposition tracksWithMediaType:AVMediaTypeVideo].firstObject;
+//        AVMutableVideoCompositionLayerInstruction *passThroughLayer = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
+//
+//        passThroughInstruction.layerInstructions = @[passThroughLayer];
+//        videoComposition.instructions = @[passThroughInstruction];
+//
+//        CGSize renderSize = videoComposition.renderSize;
+//        CALayer *videoTitleLayer = [self addTitleForVideoWith:videoTitle size:renderSize];
+//
+//        CALayer *parentLayer = [CALayer layer];
+//        CALayer *videoLayer = [CALayer layer];
+//        parentLayer.frame = CGRectMake(0, 0, videoComposition.renderSize.width, videoComposition.renderSize.height);
+//        videoLayer.frame = CGRectMake(0, 0, videoComposition.renderSize.width, videoComposition.renderSize.height);
+//        [parentLayer addSublayer:videoLayer];
+//
+//        videoTitleLayer.position = CGPointMake(videoComposition.renderSize.width / 2, videoComposition.renderSize.height / 2);
+//        [parentLayer addSublayer:videoTitleLayer];
+//
+//        if (APPTEST) {
+//            CALayer *watermarkLayer = [CALayer layer];
+//            watermarkLayer = [self addWatermarkWithSize:renderSize];
+//            watermarkLayer.position = CGPointMake(videoComposition.renderSize.width - 366, 8);
+//            [parentLayer addSublayer:watermarkLayer];
+//        }
+//
+//        videoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
+//    }
+
+    [originalAudioCompositionTrack insertTimeRange:originalAudioAssetTrack.timeRange ofTrack:originalAudioAssetTrack atTime:kCMTimeZero error:nil];
     
     AVMutableAudioMix *audioMix = [AVMutableAudioMix audioMix];
     
     AVMutableAudioMixInputParameters *videoParameters = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:originalAudioCompositionTrack];
-    AVMutableAudioMixInputParameters *BGMParameters = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:audioCompositionTrack];
+    AVMutableAudioMixInputParameters *BGMParameters = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:BGMAudioCompositionTrack];
     
     NSArray *partArray = self.session.currentTemplate.parts;
     
@@ -1718,8 +1719,8 @@
         double startTime = [self getTimeWithString:part.dubStartTime]  / 1000;
         double stopTime = [self getTimeWithString:part.dubStopTime] / 1000;
         
-        _startTime = CMTimeMakeWithSeconds(startTime, videoAsset.duration.timescale);
-        _stopTime = CMTimeMakeWithSeconds(stopTime, videoAsset.duration.timescale);
+        _startTime = CMTimeMakeWithSeconds(startTime, audioAsset.duration.timescale);
+        _stopTime = CMTimeMakeWithSeconds(stopTime, audioAsset.duration.timescale);
 
         CMTime duration = CMTimeSubtract(_stopTime, _startTime);
         CMTimeRange timeRange = CMTimeRangeMake(_startTime, duration);
@@ -1743,7 +1744,7 @@
     AVAssetExportSession *assetExportSession = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1280x720];
     assetExportSession.outputURL = outPutUrl;
     assetExportSession.audioMix = audioMix;
-    assetExportSession.videoComposition = videoComposition;
+//    assetExportSession.videoComposition = videoComposition;
     assetExportSession.outputFileType = AVFileTypeMPEG4;
     assetExportSession.shouldOptimizeForNetworkUse = YES;
     
