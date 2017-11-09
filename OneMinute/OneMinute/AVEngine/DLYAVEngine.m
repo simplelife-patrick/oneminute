@@ -14,7 +14,6 @@
 #import <GPUImageChromaKeyBlendFilter.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "DLYResource.h"
-#import "DLYTransitionComposition.h"
 #import "DLYTransitionInstructions.h"
 #import "DLYVideoTransition.h"
 #import "DLYResource.h"
