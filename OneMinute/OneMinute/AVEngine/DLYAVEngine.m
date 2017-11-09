@@ -1724,17 +1724,18 @@
 
         CMTime duration = CMTimeSubtract(_stopTime, _startTime);
         CMTimeRange timeRange = CMTimeRangeMake(_startTime, duration);
-        
-        if (part.soundType == DLYMiniVlogAudioTypeMusic) {//空镜
-            
-            [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
-            [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:timeRange];
-            
-        }else if(part.soundType == DLYMiniVlogAudioTypeNarrate){//人声
-            
-            [videoParameters setVolumeRampFromStartVolume:2.0 toEndVolume:2.0 timeRange:timeRange];
-            [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
-        }
+        [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
+
+//        if (part.soundType == DLYMiniVlogAudioTypeMusic) {//空镜,关人声,开BGM
+//
+//            [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
+////            [videoParameters setVolumeRampFromStartVolume:0 toEndVolume:0 timeRange:timeRange];
+//
+//        }else if(part.soundType == DLYMiniVlogAudioTypeNarrate){//人声
+//
+////            [videoParameters setVolumeRampFromStartVolume:2.0 toEndVolume:2.0 timeRange:timeRange];
+//            [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
+//        }
     }
     audioMix.inputParameters = @[videoParameters,BGMParameters];
     
