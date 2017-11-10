@@ -299,7 +299,7 @@
     
     if (isFront) {
         
-        [self.captureSession stopRunning];
+        [self.captureSession beginConfiguration];
         [self.captureSession removeInput:self.backCameraInput];
         
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
@@ -310,7 +310,7 @@
         }
     }else {
         
-        [self.captureSession stopRunning];
+        [self.captureSession beginConfiguration];
         [self.captureSession removeInput:self.frontCameraInput];
         if ([self.captureSession canAddInput:self.backCameraInput]) {
             [self changeCameraAnimation];
@@ -319,7 +319,7 @@
             self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
         }
     }
-    [self.captureSession startRunning];
+    [self.captureSession commitConfiguration];
 }
 #pragma mark - Recorder初始化相关懒加载 -
 //后置摄像头输入
@@ -425,11 +425,6 @@
             self.defaultFormat = device.activeFormat;
             defaultVideoMaxFrameDuration = device.activeVideoMaxFrameDuration;
             defaultVideoMinFrameDuration = device.activeVideoMinFrameDuration;
-            
-//            if([device isSmoothAutoFocusSupported]){
-////                [device setSmoothAutoFocusEnabled:YES];
-//                device.smoothAutoFocusEnabled = YES;;
-//            }
             return device;
         }
     }
@@ -563,8 +558,7 @@
     if ( currentChannelLayout && aclSize > 0 ) {
         
         currentChannelLayoutData = [NSData dataWithBytes:currentChannelLayout length:aclSize];
-    }
-    else {
+    }else {
         currentChannelLayoutData = [NSData data];
     }
     
@@ -585,14 +579,12 @@
         if ([self.assetWriter canAddInput:self.assetWriterAudioInput]) {
             
             [self.assetWriter addInput:self.assetWriterAudioInput];
-        }
-        else {
+        }else {
             
             DLYLog(@"Couldn't add asset writer audio input.");
             return NO;
         }
-    }
-    else {
+    }else {
         
         DLYLog(@"Couldn't apply audio output settings.");
         return NO;
@@ -632,8 +624,7 @@
                     }
                 }
             }
-        }
-        else if (mediaType == AVMediaTypeAudio) {
+        }else if (mediaType == AVMediaTypeAudio) {
             
             if (self.assetWriterAudioInput.readyForMoreMediaData) {
                 
@@ -732,8 +723,9 @@
         DLYLog(@"正常拍摄片段");
         desiredFPS = 30;
     }
-    
-    [self switchFormatWithDesiredFPS:desiredFPS];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self switchFormatWithDesiredFPS:desiredFPS];
+    });
     
     NSString *_outputPath =  [self.resource saveDraftPartWithPartNum:_currentPart.partNum];
     if (_outputPath) {
