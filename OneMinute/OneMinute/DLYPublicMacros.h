@@ -10,7 +10,6 @@
 #ifndef DLYPublicMacros_h
 #define DLYPublicMacros_h
 
-#define APPTEST [[NSBundle mainBundle].infoDictionary[@"APPTEST"] boolValue]
 //全局尺寸定义
 #define SCREEN_RECT     [[UIScreen mainScreen] bounds]
 #define SCREEN_WIDTH    [UIScreen mainScreen].bounds.size.width
