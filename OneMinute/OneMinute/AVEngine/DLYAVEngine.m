@@ -2103,7 +2103,7 @@
     CALayer *animationLayer = [CALayer layer];
     
     animationLayer.opacity = 1.0;
-    animationLayer.frame = CGRectMake(0, 0, 1200, 900);
+    animationLayer.frame = CGRectMake(0, 0, 1280, 720);
     animationLayer.position = CGPointMake(640, 360);
     
     CAKeyframeAnimation *frameAnimation = [[CAKeyframeAnimation alloc] init];
