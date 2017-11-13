@@ -44,7 +44,6 @@
     if (describeStr != nil) {
         [dict setObject:describeStr forKey:@"describeStr"];
     }
-
     DLYLog(@"方法2Key===%@", eventKey);
     DLYLog(@"方法2Value===%@", dict);
     
@@ -64,7 +63,6 @@
     [dict setObject:dateTime forKey:@"dateTime"];
     DLYLog(@"方法1Key===%@", eventKey);
     DLYLog(@"方法1Value===%@", dict);
-    
     //调用友盟的方法
     [MobClick event:eventKey attributes:dict];
 }
