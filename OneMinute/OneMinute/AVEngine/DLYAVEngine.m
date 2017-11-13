@@ -729,43 +729,6 @@
         [self.captureSession commitConfiguration];
     }
 }
-- (void)switchFormatWithDesiredFPS:(CGFloat)desiredFPS
-{
-    DLYLog(@"最终设定的最佳帧率: %f",desiredFPS);
-    
-    [self.captureSession beginConfiguration];
-
-    AVCaptureDevice *device = self.defaultVideoDevice;
-    
-    if (desiredFPS == 30 && selectedFormat != nil ) {
-        if ([device lockForConfiguration:nil]) {
-            
-            device.activeFormat = selectedFormat;
-            device.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);//设置帧率
-            device.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
-            [device unlockForConfiguration];
-        }
-    }else if (desiredFPS == 120 && selectedFormat_slomo != nil){
-        if ([device lockForConfiguration:nil]) {
-            
-            device.activeFormat = selectedFormat_slomo;
-            device.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);//设置帧率
-            device.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
-            [device unlockForConfiguration];
-        }
-    }else{
-        DLYLog(@"用默认的format self.defaultFormat :%@", self.defaultFormat);
-        if ([device lockForConfiguration:nil]) {
-            
-            device.activeFormat = self.defaultFormat;
-            device.activeVideoMinFrameDuration = defaultVideoMinFrameDuration;//设置默认帧率
-            device.activeVideoMaxFrameDuration = defaultVideoMaxFrameDuration;
-            [device unlockForConfiguration];
-        }
-    }
-    [self.captureSession commitConfiguration];
-}
-
 #pragma mark 开始录制
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
     
