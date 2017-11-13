@@ -1771,10 +1771,19 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self.backScrollView addSubview:button];
         
     }
+    [self changeRecordType];
     if (isAllPart) {
         [self showPlayView];
     }
     [self updateShootGuide];
+    
+}
+
+- (void)changeRecordType {
+    NSInteger partNumber = selectPartTag - 10000;
+    DLYMiniVlogPart *part = partModelArray[partNumber - 1];
+    //设置当前片段录制格式
+    [self.AVEngine switchRecordFormatWithRecordType:part.recordType];
 }
 
 - (void)showPlayView {
@@ -1983,6 +1992,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self.backScrollView addSubview:button];
         
     }
+    [self changeRecordType];
     if (isAllPart) {
         [self showPlayView];
     }
