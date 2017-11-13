@@ -2036,6 +2036,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     selectPartTag = button.tag;
     DLYMiniVlogPart *part = partModelArray[i-1];
     
+    //设置当前片段录制格式
+    [self.AVEngine switchRecordFormatWithRecordType:part.recordType];
+    
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     NSString *partStr = [NSString stringWithFormat:@"第%ld段", (long)i];
     [DLYUserTrack recordAndEventKey:@"ChooseRecordPart" andDescribeStr:template.templateTitle andPartNum:partStr];
