@@ -73,6 +73,13 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
 - (void)startRecordingWithPart:(DLYMiniVlogPart *)part;
 
 /**
+ 设置当前片段的录制格式
+
+ @param recordtype 片段录制类型
+ */
+- (void) switchRecordFormatWithRecordType:(DLYMiniVlogRecordType)recordtype;
+
+/**
  灯光灯开关
 
  @param isOn 是否打开
