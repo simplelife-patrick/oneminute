@@ -23,6 +23,7 @@
 		6F12AE6D1F3DB78300CE8CB6 /* DLYDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F12AE6B1F3DB78300CE8CB6 /* DLYDownloadManager.m */; };
 		6F32F7A71F99A57D004C4553 /* iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6F32F7A61F99A57D004C4553 /* iconfont.ttf */; };
 		6F643AF41F97583E001FDA76 /* PromoteVideo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 6F643AF31F97583E001FDA76 /* PromoteVideo.mp4 */; };
+		6F6ECC241FBAD7EA0072A706 /* NSString+CompareVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6ECC231FBAD7E90072A706 /* NSString+CompareVersion.m */; };
 		6F7455131F7A3EDE00682FB8 /* DLYThemesData.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F7455121F7A3EDE00682FB8 /* DLYThemesData.m */; };
 		6F81E7BD1F985564008A2FC9 /* DLYUserTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F81E7BC1F985564008A2FC9 /* DLYUserTrack.m */; };
 		6F89259C1F1B12A100256093 /* DLYExportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F89259B1F1B12A100256093 /* DLYExportViewController.m */; };
@@ -130,6 +131,8 @@
 		6F12AE6B1F3DB78300CE8CB6 /* DLYDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYDownloadManager.m; sourceTree = "<group>"; };
 		6F32F7A61F99A57D004C4553 /* iconfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = iconfont.ttf; sourceTree = "<group>"; };
 		6F643AF31F97583E001FDA76 /* PromoteVideo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = PromoteVideo.mp4; sourceTree = "<group>"; };
+		6F6ECC221FBAD7E90072A706 /* NSString+CompareVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+CompareVersion.h"; sourceTree = "<group>"; };
+		6F6ECC231FBAD7E90072A706 /* NSString+CompareVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+CompareVersion.m"; sourceTree = "<group>"; };
 		6F7455111F7A3EDE00682FB8 /* DLYThemesData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYThemesData.h; sourceTree = "<group>"; };
 		6F7455121F7A3EDE00682FB8 /* DLYThemesData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYThemesData.m; sourceTree = "<group>"; };
 		6F81E7BB1F985564008A2FC9 /* DLYUserTrack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYUserTrack.h; sourceTree = "<group>"; };
@@ -567,6 +570,8 @@
 				ADD0E7D31F2D9F3500996BD6 /* UIImage+Extension.m */,
 				AD5B80B01F3443080094922B /* UIColor+Hex.h */,
 				AD5B80B11F3443080094922B /* UIColor+Hex.m */,
+				6F6ECC221FBAD7E90072A706 /* NSString+CompareVersion.h */,
+				6F6ECC231FBAD7E90072A706 /* NSString+CompareVersion.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -914,6 +919,7 @@
 				6F8925AF1F1B135100256093 /* DLYPlayVideoViewController.m in Sources */,
 				6F89259C1F1B12A100256093 /* DLYExportViewController.m in Sources */,
 				6FD13ABE1F5FDAF4000B72FC /* DLYAnimationViewController.m in Sources */,
+				6F6ECC241FBAD7EA0072A706 /* NSString+CompareVersion.m in Sources */,
 				6F8925E11F1B142300256093 /* DLYRectConst.m in Sources */,
 				6F8925D61F1B13FF00256093 /* DLYAlertView.m in Sources */,
 				ADFFF19C1F18A33000FB5BF7 /* DLYMiniVlogPart.m in Sources */,
