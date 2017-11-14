@@ -1681,21 +1681,21 @@
         videoComposition.instructions = @[passThroughInstruction];
 
         CGSize renderSize = videoComposition.renderSize;
-        CALayer *videoTitleLayer = [self addTitleForVideoWith:videoTitle size:renderSize];
-
+        
         CALayer *parentLayer = [CALayer layer];
-        CALayer *videoLayer = [CALayer layer];
-        parentLayer.frame = CGRectMake(0, 0, videoComposition.renderSize.width, videoComposition.renderSize.height);
-        videoLayer.frame = CGRectMake(0, 0, videoComposition.renderSize.width, videoComposition.renderSize.height);
-        [parentLayer addSublayer:videoLayer];
-
-        videoTitleLayer.position = CGPointMake(videoComposition.renderSize.width / 2, videoComposition.renderSize.height / 2);
+        parentLayer.frame = CGRectMake(0, 0, renderSize.width, renderSize.height);
+        
+        CALayer *videoTitleLayer = [self addTitleForVideoWith:videoTitle size:renderSize];
+        videoTitleLayer.position = CGPointMake(renderSize.width / 2,renderSize.height / 2);
         [parentLayer addSublayer:videoTitleLayer];
-
+        
+        CALayer *videoLayer = [CALayer layer];
+        videoLayer.frame = CGRectMake(0, 0, renderSize.width, renderSize.height);
+        [parentLayer addSublayer:videoLayer];
+        
         if (APPTEST) {
-            CALayer *watermarkLayer = [CALayer layer];
-            watermarkLayer = [self addWatermarkWithSize:renderSize];
-            watermarkLayer.position = CGPointMake(videoComposition.renderSize.width - 366, 8);
+            CALayer *watermarkLayer = [self addTestInfoWatermarkWithSize:renderSize];
+            watermarkLayer.position = CGPointMake(renderSize.width - watermarkLayer.bounds.size.width / 2, 15);
             [parentLayer addSublayer:watermarkLayer];
         }
 
@@ -1787,12 +1787,8 @@
     }];
 }
 #pragma mark - 添加测试水印 -
-- (CALayer *) addWatermarkWithSize:(CGSize)renderSize
+- (CALayer *) addTestInfoWatermarkWithSize:(CGSize)renderSize
 {
-    CALayer *overlayLayer = [CALayer layer];
-    CATextLayer *watermarkLayer = [CATextLayer layer];
-    UIFont *font = [UIFont systemFontOfSize:24.0];
-    
     //获取当前时间
     NSString *currentTime  = [self getCurrentTime];
     //获取当前版本号
@@ -1807,19 +1803,19 @@
     _currentDeviceType = [mobileDevice iPhoneModel];
     
     NSString *watermarkMessage = [self.session.currentTemplate.templateTitle stringByAppendingFormat:@"   %@  %@  %@(%@)   %@",_currentDeviceType,currentSystemVersion,localVersion,buildVersion,currentTime];
+    UIFont *font = [UIFont systemFontOfSize:24.0];
+    CGSize textSize = [watermarkMessage sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
     
+    CATextLayer *watermarkLayer = [CATextLayer layer];
+    watermarkLayer.frame = CGRectMake(0, 0, textSize.width * 1.14, textSize.height * 1.05);
+
     [watermarkLayer setFontSize:24.f];
     [watermarkLayer setFont:@"ArialRoundedMTBold"];
     [watermarkLayer setString:watermarkMessage];
     [watermarkLayer setAlignmentMode:kCAAlignmentCenter];
     [watermarkLayer setForegroundColor:[[UIColor colorWithHexString:@"FFFFFF" withAlpha:1] CGColor]];
     [watermarkLayer setBackgroundColor:[[UIColor colorWithHexString:@"#000000" withAlpha:0.8] CGColor]];
-    watermarkLayer.contentsCenter = overlayLayer.contentsCenter;
-    CGSize textSize = [watermarkMessage sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
-    watermarkLayer.bounds = CGRectMake(0, 0, textSize.width + 60, textSize.height + 25);
-    
-    [overlayLayer addSublayer:watermarkLayer];
-    return overlayLayer;
+    return watermarkLayer;
 }
 #pragma mark - 视频标题设置 -
 - (CALayer *) addTitleForVideoWith:(NSString *)titleText size:(CGSize)renderSize{
