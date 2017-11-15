@@ -361,6 +361,16 @@
         }
     }
     [self.captureSession commitConfiguration];
+    
+    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    if(device.isSmoothAutoFocusSupported){
+        NSError *error = nil;
+        if([device lockForConfiguration:&error]){
+            device.smoothAutoFocusEnabled = YES;
+            DLYLog(@"成功开启平滑变焦");
+            [device unlockForConfiguration];
+        }
+    }
 }
 #pragma mark - Recorder初始化相关懒加载 -
 //后置摄像头输入
@@ -460,7 +470,6 @@
     
     for (AVCaptureDevice *device in devices) {
         if ([device position] == position) {
-            
             // save the default format
             DLYLog(@"device.activeFormat:%@", device.activeFormat);
             self.defaultFormat = device.activeFormat;
