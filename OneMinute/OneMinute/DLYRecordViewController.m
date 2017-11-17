@@ -693,7 +693,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     {
         CGPoint point = [touch locationInView:self.previewView];
         CGPoint cameraPoint = [self.AVEngine.captureVideoPreviewLayer captureDevicePointOfInterestForPoint:point];
-        [self.AVEngine focusWithMode:AVCaptureFocusModeAutoFocus atPoint:cameraPoint];
+        [self.AVEngine focusContinuousWithPoint:cameraPoint];
         [self setFocusCursorWithPoint:point];
     }
 }
