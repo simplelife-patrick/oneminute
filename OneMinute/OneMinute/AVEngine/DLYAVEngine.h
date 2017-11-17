@@ -136,10 +136,12 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
  */
 -(UIImage*)getKeyImage:(NSURL *)assetUrl intervalTime:(Float32)intervalTime;
 
-//单次对焦
-- (void) focusOnceWithPoint:(CGPoint)point;
-//连续对焦
-- (void) focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point;
+/**
+ 自动对焦,调整曝光
+
+ @param point 触点
+ */
+-(void)focusContinuousWithPoint:(CGPoint)point;
 //时间格式转化
 - (long long)getDateTimeTOMilliSeconds:(NSDate *)datetime;
 

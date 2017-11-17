@@ -23,7 +23,7 @@
 #import "UIImage+Extension.h"
 #import "DLYPhotoAlbum.h"
 
-@interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate,AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,/*AVCaptureMetadataOutputObjectsDelegate,*/DLYRecordTimerDelegate>
+@interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate,AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate,DLYRecordTimerDelegate>
 {
     CMTime defaultVideoMaxFrameDuration;
     CMTime defaultVideoMinFrameDuration;
@@ -41,10 +41,10 @@
     NSURL *fileUrl;
     CGRect faceRegion;
     CGRect lastFaceRegion;
-//    BOOL isDetectedMetadataObjectTarget;
+    BOOL _isSupportFaceReconginition;
     BOOL isMicGranted;
     
-    NSString *UUIDString;
+    NSString *_UUIDString;
     BOOL _isRecordingCancel;
     AVAssetExportSession *_exportSession;
     BOOL flashMode;
@@ -58,7 +58,7 @@
     AVCaptureDeviceFormat *selectedFormat_slomo;
 }
 
-//@property (nonatomic, strong) AVCaptureMetadataOutput           *metadataOutput;
+@property (nonatomic, strong) AVCaptureMetadataOutput           *metadataOutput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *frontCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput              *audioMicInput;
 @property (nonatomic, strong) AVCaptureDeviceFormat             *defaultFormat;
@@ -86,9 +86,9 @@
 @property (nonatomic, strong) AVMutableVideoComposition         *videoComposition;
 @property (nonatomic, strong) AVAssetExportSession              *assetExporter;
 
-@property (atomic, assign)    BOOL                              isCapturing;//正在录制
+@property (atomic, assign)    BOOL                              isCapturing;
 @property (nonatomic, strong) NSMutableArray                    *imageArr;
-@property (nonatomic, strong) NSTimer                           *recorderTimer; //录制计时器
+@property (nonatomic, strong) NSTimer                           *recorderTimer;
 
 @property (nonatomic, strong) NSString                          *currentDeviceType;
 
@@ -112,12 +112,16 @@
 - (void)dealloc {
     
     [_captureSession stopRunning];
+    
     _captureSession               = nil;
     _captureVideoPreviewLayer     = nil;
+    
     _backCameraInput              = nil;
     _frontCameraInput             = nil;
+    
     _audioOutput                  = nil;
     _videoOutput                  = nil;
+    
     _audioConnection              = nil;
     _videoConnection              = nil;
 }
@@ -155,30 +159,7 @@
     }
     return _defaultVideoDevice;
 }
-#pragma mark - 视频录制相关访问权限检测 -
-- (BOOL)checkCameraAuthorization {
-    __block BOOL isAvalible = NO;
-    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-    switch (status) {
-        case AVAuthorizationStatusAuthorized: //授权
-            isAvalible = YES;
-            break;
-        case AVAuthorizationStatusDenied:   //拒绝，弹框
-        {
-            isAvalible = NO;
-        }
-            break;
-        case AVAuthorizationStatusNotDetermined:   //没有决定，第一次启动默认弹框
-        {
-            isAvalible = NO;
-        }
-            break;
-        case AVAuthorizationStatusRestricted:  //受限制，家长控制器
-            isAvalible = NO;
-            break;
-    }
-    return isAvalible;
-}
+
 -(AVCaptureSession *)captureSession{
     
     if (_captureSession == nil) {
@@ -188,8 +169,6 @@
 }
 - (instancetype)initWithPreviewView:(UIView *)previewView{
     if (self = [super init]) {
-
-//        [self createFaceRecognitionTimer];
         
         NSError *error;
 
@@ -238,11 +217,20 @@
         }else{
             DLYLog(@"Video output creation faild");
         }
-//        //添加元数据输出
-//        if ([self.captureSession canAddOutput:self.metadataOutput]) {
-//            [self.captureSession addOutput:self.metadataOutput];
-//            self.metadataOutput.metadataObjectTypes = @[AVMetadataObjectTypeFace];
-//        }
+        //添加元数据输出
+        if ([self.captureSession canAddOutput:self.metadataOutput]) {
+            [self.captureSession addOutput:self.metadataOutput];
+        }
+        NSArray *supportTypes = _metadataOutput.availableMetadataObjectTypes;
+        if ([supportTypes containsObject:AVMetadataObjectTypeFace]) {
+            
+            _isSupportFaceReconginition = YES;
+            
+            [self createFaceRecognitionTimer];
+            self.metadataOutput.metadataObjectTypes = @[AVMetadataObjectTypeFace];
+        }else{
+            _isSupportFaceReconginition = NO;
+        }
         
         //添加音频输出
         if ([self.captureSession canAddOutput:self.audioOutput]) {
@@ -293,7 +281,7 @@
         //According to the previewlayer center focus after launch
         CGPoint point = CGPointMake(self.captureVideoPreviewLayer.preferredFrameSize.width, self.captureVideoPreviewLayer.preferredFrameSize.height);
         CGPoint cameraPoint = [self.captureVideoPreviewLayer captureDevicePointOfInterestForPoint:point];
-        [self focusWithMode:AVCaptureFocusModeAutoFocus atPoint:cameraPoint];
+        [self focusContinuousWithPoint:cameraPoint];
         
         //设置视频录制的方向
         if ([self.videoConnection isVideoOrientationSupported]) {
@@ -310,7 +298,7 @@
         OSStatus err = CMBufferQueueCreate(kCFAllocatorDefault, 1, CMBufferQueueGetCallbacksForUnsortedSampleBuffers(), &previewBufferQueue);
         DLYLog(@"CMBufferQueueCreate error:%d", (int)err);
         
-//        self.metadataOutput.rectOfInterest = [self.captureVideoPreviewLayer metadataOutputRectOfInterestForRect:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        self.metadataOutput.rectOfInterest = [self.captureVideoPreviewLayer metadataOutputRectOfInterestForRect:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
         
         [self.captureSession startRunning];
     }
@@ -422,14 +410,14 @@
     }
     return _videoOutput;
 }
-//- (AVCaptureMetadataOutput *)metadataOutput {
-//    if (_metadataOutput == nil) {
-//        _metadataOutput = [[AVCaptureMetadataOutput alloc]init];
-//        dispatch_queue_t metadataOutputQueue = dispatch_queue_create("metadataOutput", DISPATCH_QUEUE_SERIAL);
-//        [_metadataOutput setMetadataObjectsDelegate:self queue:metadataOutputQueue];
-//    }
-//    return _metadataOutput;
-//}
+- (AVCaptureMetadataOutput *)metadataOutput {
+    if (_metadataOutput == nil) {
+        _metadataOutput = [[AVCaptureMetadataOutput alloc]init];
+        dispatch_queue_t metadataOutputQueue = dispatch_queue_create("metadataOutput", DISPATCH_QUEUE_SERIAL);
+        [_metadataOutput setMetadataObjectsDelegate:self queue:metadataOutputQueue];
+    }
+    return _metadataOutput;
+}
 //音频输出
 - (AVCaptureAudioDataOutput *)audioOutput {
     if (_audioOutput == nil) {
@@ -492,39 +480,9 @@
 
 #pragma mark - 点触设置曝光 -
 
-- (void)focusOnceWithPoint:(CGPoint)point{
+-(void)focusContinuousWithPoint:(CGPoint)point{
     
-    AVCaptureDevice *captureDevice = _currentVideoDeviceInput.device;
-    
-    if ([captureDevice lockForConfiguration:nil]) {
-        
-        // 设置对焦
-        if ([captureDevice isFocusModeSupported:AVCaptureFocusModeLocked]) {
-            [captureDevice setFocusMode:AVCaptureFocusModeLocked];
-        }
-        if ([captureDevice isFocusPointOfInterestSupported]) {
-            [captureDevice setFocusPointOfInterest:point];
-        }
-        
-        // 设置曝光
-        if ([captureDevice isExposureModeSupported:AVCaptureExposureModeLocked]) {
-            [captureDevice setExposureMode:AVCaptureExposureModeLocked];
-        }
-        if ([captureDevice isExposurePointOfInterestSupported]) {
-            [captureDevice setExposurePointOfInterest:point];
-        }
-        
-        //设置白平衡
-        if ([captureDevice isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeLocked]) {
-            [captureDevice setWhiteBalanceMode:AVCaptureWhiteBalanceModeLocked];
-        }
-        [captureDevice unlockForConfiguration];
-    }
-}
-
--(void)focusWithMode:(AVCaptureFocusMode)focusMode atPoint:(CGPoint)point{
-    
-    AVCaptureDevice *captureDevice = _currentVideoDeviceInput.device;
+    AVCaptureDevice *captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     
     if ([captureDevice lockForConfiguration:nil]) {
         
@@ -1083,83 +1041,76 @@
 }
 #pragma mark 从输出的元数据中捕捉人脸
 
-//-(void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection{
-//
-//    //检测到目标元数据
-//    if (metadataObjects.count) {
-//        isDetectedMetadataObjectTarget = YES;
-//        AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects.firstObject;
-//
-////        DLYLog(@"检测到 %lu 个人脸",metadataObjects.count);
-//        //取到识别到的人脸区域
-//        AVMetadataObject *transformedMetadataObject = [self.captureVideoPreviewLayer transformedMetadataObjectForMetadataObject:metadataObject];
-//        faceRegion = transformedMetadataObject.bounds;
-//
-//        //检测到人脸
-//        if (metadataObject.type == AVMetadataObjectTypeFace) {
-//            //检测区域
-//            CGRect referenceRect = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-//            //            DLYLog(@"%d, facePathRect: %@, faceRegion: %@",CGRectContainsRect(referenceRect, faceRegion) ? @"包含人脸":@"不包含人脸",NSStringFromCGRect(referenceRect),NSStringFromCGRect(faceRegion));
-//        }else{
-//            faceRegion = CGRectZero;
-//        }
-//    }else{
-//        isDetectedMetadataObjectTarget = NO;
-//        faceRegion = CGRectZero;
-//    }
-//}
+-(void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection{
+
+    if (_isSupportFaceReconginition) {
+        if (metadataObjects.count) {
+            
+            AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects.firstObject;
+            AVMetadataObject *transformedMetadataObject = [self.captureVideoPreviewLayer transformedMetadataObjectForMetadataObject:metadataObject];
+            
+            faceRegion = transformedMetadataObject.bounds;
+            
+            if (metadataObject.type != AVMetadataObjectTypeFace)
+                faceRegion = CGRectZero;
+        }else{
+            faceRegion = CGRectZero;
+        }
+    }
+}
 #pragma mark - 人脸识别用定时器 -
 
-//NSInteger timeCount = 0;
-//NSInteger maskCount = 0;
-//NSInteger startCount = MAXFLOAT;
-//BOOL isOnce = YES;
-//- (void)createFaceRecognitionTimer{
-//
-//    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-//    dispatch_source_t enliveTime2 = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
-//
-//    dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC));
-//    uint64_t interval = (uint64_t)(1.0 * NSEC_PER_SEC);
-//
-//    dispatch_source_set_timer(enliveTime2, start, interval, 0);
-//
-//    dispatch_source_set_event_handler(enliveTime2, ^{
-//
-//        CGFloat distance = distanceBetweenPoints(faceRegion.origin, lastFaceRegion.origin);
-//        lastFaceRegion = faceRegion;
-//        if (distance < 20) {
-//            if (isOnce) {
-//                isOnce = NO;
+NSInteger timeCount = 0;
+NSInteger maskCount = 0;
+NSInteger startCount = MAXFLOAT;
+BOOL isOnce = YES;
+
+- (void)createFaceRecognitionTimer{
+
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_source_t enliveTime2 = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+
+    dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC));
+    uint64_t interval = (uint64_t)(1.0 * NSEC_PER_SEC);
+
+    dispatch_source_set_timer(enliveTime2, start, interval, 0);
+
+    dispatch_source_set_event_handler(enliveTime2, ^{
+
+        CGFloat distance = distanceBetweenPoints(faceRegion.origin, lastFaceRegion.origin);
+        lastFaceRegion = faceRegion;
+        if (distance < 20) {
+            if (isOnce) {
+                isOnce = NO;
 //                CGPoint point = CGPointMake(faceRegion.size.width/2, faceRegion.size.height/2);
 //                CGPoint cameraPoint = [self.captureVideoPreviewLayer captureDevicePointOfInterestForPoint:point];
-//                [self focusOnceWithPoint:cameraPoint];
-//                startCount = timeCount;
-//            }
-//            maskCount++;
-//        }
-//        timeCount++;
-//        if (timeCount - startCount >= 3) {
-//            if (maskCount == 3) {
-//                faceRegion = CGRectZero;
-//            }
-//            isOnce = YES;
-//            startCount = MAXFLOAT;
-//            maskCount = 0;
-//        }
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            if (self.delegate && [self.delegate respondsToSelector:@selector(displayRefrenceRect:)]) {
-//                [self.delegate displayRefrenceRect:faceRegion];
-//            }
-//        });
-//        if(timeCount > MAXFLOAT){
-//            dispatch_cancel(enliveTime2);
-//        }
-//
-//    });
-//    //启动定时器
-//    dispatch_resume(enliveTime2);
-//}
+//                [self focusContinuousWithPoint:cameraPoint];
+                startCount = timeCount;
+            }
+            maskCount++;
+        }
+        timeCount++;
+        if (timeCount - startCount >= 1) {
+            if (maskCount == 1) {
+                faceRegion = CGRectZero;
+            }
+            isOnce = YES;
+            startCount = MAXFLOAT;
+            maskCount = 0;
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.delegate && [self.delegate respondsToSelector:@selector(displayRefrenceRect:)]) {
+                [self.delegate displayRefrenceRect:faceRegion];
+            }
+        });
+        if(timeCount > MAXFLOAT){
+            dispatch_cancel(enliveTime2);
+        }
+
+    });
+    //启动定时器
+    dispatch_resume(enliveTime2);
+}
 #pragma mark - 视频取帧 -
 -(UIImage*)getKeyImage:(NSURL *)assetUrl intervalTime:(Float32)intervalTime{
     
@@ -1331,8 +1282,8 @@
     NSString *productPath = [dataPath stringByAppendingPathComponent:kProductFolder];
     if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
         
-        UUIDString = [self.resource stringWithUUID];
-        NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,UUIDString];
+        _UUIDString = [self.resource stringWithUUID];
+        NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,_UUIDString];
         if (outputPath) {
             productOutputUrl = [NSURL fileURLWithPath:outputPath];
         }else{
@@ -1471,8 +1422,8 @@
     NSString *productPath = [dataPath stringByAppendingPathComponent:kProductFolder];
     if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
         
-        UUIDString = [self.resource stringWithUUID];
-        NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,UUIDString];
+        _UUIDString = [self.resource stringWithUUID];
+        NSString *outputPath = [NSString stringWithFormat:@"%@/%@.mp4",productPath,_UUIDString];
         if (outputPath) {
             productOutputUrl = [NSURL fileURLWithPath:outputPath];
         }else{
@@ -1768,7 +1719,7 @@
                     
                     if ([[NSFileManager defaultManager] fileExistsAtPath:productPath]) {
                         
-                        NSString *targetPath = [productPath stringByAppendingFormat:@"/%@.mp4",UUIDString];
+                        NSString *targetPath = [productPath stringByAppendingFormat:@"/%@.mp4",_UUIDString];
                         isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
                         DLYLog(@"%@",isSuccess ? @"成功删除未配音的成片视频 !" : @"删除未配音视频失败");
                     }
