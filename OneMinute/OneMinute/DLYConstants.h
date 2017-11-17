@@ -8,9 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-//extern int const ddLogLevel;
-//
-//extern int const ddLogError;
+extern BOOL const NEW_FUNCTION;
 
 @interface DLYConstants : NSObject
 

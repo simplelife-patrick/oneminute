@@ -10,6 +10,7 @@
 #ifndef DLYPublicMacros_h
 #define DLYPublicMacros_h
 
+
 //全局尺寸定义
 #define SCREEN_RECT     [[UIScreen mainScreen] bounds]
 #define SCREEN_WIDTH    [UIScreen mainScreen].bounds.size.width
@@ -28,18 +29,18 @@
 #define kTempFolder @"Temp"
 #define kBGMFolder @"BGM"
 
-//默认模板
-#define kDEFAULT_TEMPLATE_NAME  @"Default.dly"
-//全局当前模板
-#define kCURRENT_TEMPLATE_ID  @"CURRENT_TEMPLATE_ID"
-#define kCURRENT_TEMPLATE_VERSION  @"CURRENT_TEMPLATE_VERSION"
-#define kTEMPLATE_SAMPLE_API  @"http://dly.oss-cn-shanghai.aliyuncs.com/"
-
 #define kVideoHeaderFolder @"VideoHeader"
 #define kVideoTailerFolder @"VideoTailer"
 #define kSoundEffectFolder @"SoundEffect"
 
-#define DLog(format, ...) DDLogError((@"[文件名:%s]" "[函数名:%s]" "[行号:%d]" format), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__);
+//默认模板
+#define kDEFAULT_TEMPLATE_NAME  @"Default.dly"
+//当前模板名称
+#define kCURRENT_TEMPLATE_ID  @"CURRENT_TEMPLATE_ID"
+//当前模板的模板
+#define kCURRENT_TEMPLATE_VERSION  @"CURRENT_TEMPLATE_VERSION"
+//样片基地址
+#define kTEMPLATE_SAMPLE_API  @"http://dly.oss-cn-shanghai.aliyuncs.com/"
 
 //图片字体库
 #define ICONFONT @"iconfont"
@@ -58,5 +59,8 @@
 // GCD
 #define GCD_GLOBAL(block)           dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), block)
 #define GCD_MAIN(block)             dispatch_async(dispatch_get_main_queue(), block)
+
+#define DLog(format, ...) DDLogError((@"[文件名:%s]" "[函数名:%s]" "[行号:%d]" format), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__);
+
 
 #endif /* DLYPublicMacros_h */
