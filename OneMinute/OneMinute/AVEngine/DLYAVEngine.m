@@ -217,19 +217,22 @@
         }else{
             DLYLog(@"Video output creation faild");
         }
-        //添加元数据输出
-        if ([self.captureSession canAddOutput:self.metadataOutput]) {
-            [self.captureSession addOutput:self.metadataOutput];
-        }
-        NSArray *supportTypes = _metadataOutput.availableMetadataObjectTypes;
-        if ([supportTypes containsObject:AVMetadataObjectTypeFace]) {
-            
-            _isSupportFaceReconginition = YES;
-            
-            [self createFaceRecognitionTimer];
-            self.metadataOutput.metadataObjectTypes = @[AVMetadataObjectTypeFace];
-        }else{
-            _isSupportFaceReconginition = NO;
+        
+        if (NEW_FUNCTION) {
+            //添加元数据输出
+            if ([self.captureSession canAddOutput:self.metadataOutput]) {
+                [self.captureSession addOutput:self.metadataOutput];
+            }
+            NSArray *supportTypes = _metadataOutput.availableMetadataObjectTypes;
+            if ([supportTypes containsObject:AVMetadataObjectTypeFace]) {
+                
+                _isSupportFaceReconginition = YES;
+                
+                [self createFaceRecognitionTimer];
+                self.metadataOutput.metadataObjectTypes = @[AVMetadataObjectTypeFace];
+            }else{
+                _isSupportFaceReconginition = NO;
+            }
         }
         
         //添加音频输出
@@ -298,7 +301,9 @@
         OSStatus err = CMBufferQueueCreate(kCFAllocatorDefault, 1, CMBufferQueueGetCallbacksForUnsortedSampleBuffers(), &previewBufferQueue);
         DLYLog(@"CMBufferQueueCreate error:%d", (int)err);
         
-        self.metadataOutput.rectOfInterest = [self.captureVideoPreviewLayer metadataOutputRectOfInterestForRect:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        if (NEW_FUNCTION) {
+            self.metadataOutput.rectOfInterest = [self.captureVideoPreviewLayer metadataOutputRectOfInterestForRect:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        }
         
         [self.captureSession startRunning];
     }
@@ -1043,18 +1048,20 @@
 
 -(void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection{
 
-    if (_isSupportFaceReconginition) {
-        if (metadataObjects.count) {
-            
-            AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects.firstObject;
-            AVMetadataObject *transformedMetadataObject = [self.captureVideoPreviewLayer transformedMetadataObjectForMetadataObject:metadataObject];
-            
-            faceRegion = transformedMetadataObject.bounds;
-            
-            if (metadataObject.type != AVMetadataObjectTypeFace)
+    if (NEW_FUNCTION) {
+        if (_isSupportFaceReconginition) {
+            if (metadataObjects.count) {
+                
+                AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects.firstObject;
+                AVMetadataObject *transformedMetadataObject = [self.captureVideoPreviewLayer transformedMetadataObjectForMetadataObject:metadataObject];
+                
+                faceRegion = transformedMetadataObject.bounds;
+                
+                if (metadataObject.type != AVMetadataObjectTypeFace)
+                    faceRegion = CGRectZero;
+            }else{
                 faceRegion = CGRectZero;
-        }else{
-            faceRegion = CGRectZero;
+            }
         }
     }
 }
