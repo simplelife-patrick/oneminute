@@ -41,7 +41,6 @@
     NSURL *fileUrl;
     CGRect faceRegion;
     CGRect lastFaceRegion;
-    BOOL isDetectedMetadataObjectTarget;
     BOOL _isSupportFaceReconginition;
     BOOL isMicGranted;
     
@@ -1046,20 +1045,15 @@
 
     if (_isSupportFaceReconginition) {
         if (metadataObjects.count) {
-            isDetectedMetadataObjectTarget = YES;
-            AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects.firstObject;
             
+            AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects.firstObject;
             AVMetadataObject *transformedMetadataObject = [self.captureVideoPreviewLayer transformedMetadataObjectForMetadataObject:metadataObject];
+            
             faceRegion = transformedMetadataObject.bounds;
             
-            if (metadataObject.type == AVMetadataObjectTypeFace) {
-                
-                CGRect referenceRect = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-            }else{
+            if (metadataObject.type != AVMetadataObjectTypeFace)
                 faceRegion = CGRectZero;
-            }
         }else{
-            isDetectedMetadataObjectTarget = NO;
             faceRegion = CGRectZero;
         }
     }
