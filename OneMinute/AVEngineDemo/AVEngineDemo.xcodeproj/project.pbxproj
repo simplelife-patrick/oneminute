@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1885997C1FC2DA09005818A7 /* FastMotionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 188599731FC2DA09005818A7 /* FastMotionViewController.m */; };
+		1885997D1FC2DA09005818A7 /* NormalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 188599751FC2DA09005818A7 /* NormalViewController.m */; };
+		1885997E1FC2DA09005818A7 /* SlowMotionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 188599771FC2DA09005818A7 /* SlowMotionViewController.m */; };
+		1885997F1FC2DA09005818A7 /* AVManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1885997A1FC2DA09005818A7 /* AVManager.m */; };
 		18883F8F1FB99261001D9475 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18883F8E1FB99261001D9475 /* AppDelegate.m */; };
 		18883F921FB99262001D9475 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18883F911FB99262001D9475 /* ViewController.m */; };
 		18883F951FB99262001D9475 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18883F931FB99262001D9475 /* Main.storyboard */; };
@@ -35,6 +39,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		188599721FC2DA09005818A7 /* FastMotionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FastMotionViewController.h; sourceTree = "<group>"; };
+		188599731FC2DA09005818A7 /* FastMotionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FastMotionViewController.m; sourceTree = "<group>"; };
+		188599741FC2DA09005818A7 /* NormalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NormalViewController.h; sourceTree = "<group>"; };
+		188599751FC2DA09005818A7 /* NormalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NormalViewController.m; sourceTree = "<group>"; };
+		188599761FC2DA09005818A7 /* SlowMotionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SlowMotionViewController.h; sourceTree = "<group>"; };
+		188599771FC2DA09005818A7 /* SlowMotionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SlowMotionViewController.m; sourceTree = "<group>"; };
+		188599791FC2DA09005818A7 /* AVManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVManager.h; sourceTree = "<group>"; };
+		1885997A1FC2DA09005818A7 /* AVManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVManager.m; sourceTree = "<group>"; };
 		18883F8A1FB99261001D9475 /* AVEngineDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AVEngineDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18883F8D1FB99261001D9475 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		18883F8E1FB99261001D9475 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -78,6 +90,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		188599701FC2DA09005818A7 /* VideoProcessController */ = {
+			isa = PBXGroup;
+			children = (
+				188599721FC2DA09005818A7 /* FastMotionViewController.h */,
+				188599731FC2DA09005818A7 /* FastMotionViewController.m */,
+				188599741FC2DA09005818A7 /* NormalViewController.h */,
+				188599751FC2DA09005818A7 /* NormalViewController.m */,
+				188599761FC2DA09005818A7 /* SlowMotionViewController.h */,
+				188599771FC2DA09005818A7 /* SlowMotionViewController.m */,
+			);
+			path = VideoProcessController;
+			sourceTree = "<group>";
+		};
+		188599781FC2DA09005818A7 /* Tool */ = {
+			isa = PBXGroup;
+			children = (
+				188599791FC2DA09005818A7 /* AVManager.h */,
+				1885997A1FC2DA09005818A7 /* AVManager.m */,
+			);
+			path = Tool;
+			sourceTree = "<group>";
+		};
 		18883F811FB99261001D9475 = {
 			isa = PBXGroup;
 			children = (
@@ -105,6 +139,8 @@
 				18883F8E1FB99261001D9475 /* AppDelegate.m */,
 				18883F901FB99261001D9475 /* ViewController.h */,
 				18883F911FB99262001D9475 /* ViewController.m */,
+				188599781FC2DA09005818A7 /* Tool */,
+				188599701FC2DA09005818A7 /* VideoProcessController */,
 				18883F931FB99262001D9475 /* Main.storyboard */,
 				18883F961FB99262001D9475 /* Assets.xcassets */,
 				18883F981FB99262001D9475 /* LaunchScreen.storyboard */,
@@ -265,8 +301,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1885997C1FC2DA09005818A7 /* FastMotionViewController.m in Sources */,
 				18883F921FB99262001D9475 /* ViewController.m in Sources */,
+				1885997F1FC2DA09005818A7 /* AVManager.m in Sources */,
 				18883F9D1FB99262001D9475 /* main.m in Sources */,
+				1885997E1FC2DA09005818A7 /* SlowMotionViewController.m in Sources */,
+				1885997D1FC2DA09005818A7 /* NormalViewController.m in Sources */,
 				18883F8F1FB99261001D9475 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
