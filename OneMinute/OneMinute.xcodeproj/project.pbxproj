@@ -65,7 +65,7 @@
 		ADF0729E1FA03C8D003088AE /* DLYRecordTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF0729D1FA03C8D003088AE /* DLYRecordTimer.m */; };
 		ADF1B9121FCD358C00560D14 /* DLYVirtualPart.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF1B9101FCD358C00560D14 /* DLYVirtualPart.m */; };
 		ADF1B9161FCD35D000560D14 /* DLYMiniVlogTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF1B9151FCD35D000560D14 /* DLYMiniVlogTemplate.m */; };
-		ADF1B9181FCD37F300560D14 /* Default.dly in Resources */ = {isa = PBXBuildFile; fileRef = ADF1B9171FCD37F200560D14 /* Default.dly */; };
+		ADF1B9201FCD698600560D14 /* Default.dly in Resources */ = {isa = PBXBuildFile; fileRef = ADF1B91F1FCD698600560D14 /* Default.dly */; };
 		ADF5A6D11FB18A6300161F37 /* GoNorthBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF5A6C71FB18A6200161F37 /* GoNorthBGM.m4a */; };
 		ADF5A6D21FB18A6300161F37 /* AfternoonTeaBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF5A6C81FB18A6200161F37 /* AfternoonTeaBGM.m4a */; };
 		ADF5A6D31FB18A6300161F37 /* AdvancedBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF5A6C91FB18A6200161F37 /* AdvancedBGM.m4a */; };
@@ -211,7 +211,7 @@
 		ADF1B9131FCD35B800560D14 /* DLYMiniVlogPart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMiniVlogPart.h; sourceTree = "<group>"; };
 		ADF1B9141FCD35D000560D14 /* DLYMiniVlogTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMiniVlogTemplate.h; sourceTree = "<group>"; };
 		ADF1B9151FCD35D000560D14 /* DLYMiniVlogTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMiniVlogTemplate.m; sourceTree = "<group>"; };
-		ADF1B9171FCD37F200560D14 /* Default.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Default.dly; sourceTree = "<group>"; };
+		ADF1B91F1FCD698600560D14 /* Default.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Default.dly; sourceTree = "<group>"; };
 		ADF5A6C71FB18A6200161F37 /* GoNorthBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = GoNorthBGM.m4a; sourceTree = "<group>"; };
 		ADF5A6C81FB18A6200161F37 /* AfternoonTeaBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = AfternoonTeaBGM.m4a; sourceTree = "<group>"; };
 		ADF5A6C91FB18A6200161F37 /* AdvancedBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = AdvancedBGM.m4a; sourceTree = "<group>"; };
@@ -516,8 +516,8 @@
 				AD9ACE751FB03EA60050EBBA /* Advanced.dly */,
 				AD9ACE741FB03EA60050EBBA /* AfternoonTea.dly */,
 				AD9ACE7A1FB03EA70050EBBA /* ColorfulLife.dly */,
+				ADF1B91F1FCD698600560D14 /* Default.dly */,
 				ADAF8A4E1FB430EB00C09B4B /* BigMeal.dly */,
-				ADF1B9171FCD37F200560D14 /* Default.dly */,
 				AD9ACE781FB03EA70050EBBA /* GoNorth.dly */,
 				AD9ACE771FB03EA60050EBBA /* MyMaldives.dly */,
 				AD9ACE7B1FB03EA80050EBBA /* Secondary.dly */,
@@ -761,7 +761,7 @@
 				AD9ACE831FB03EA80050EBBA /* SunSetBeach.dly in Resources */,
 				ADF5A6D61FB18A6400161F37 /* ColorfulLifeBGM.m4a in Resources */,
 				ADF5A6D91FB18A6400161F37 /* SunSetBeachBGM.m4a in Resources */,
-				ADF1B9181FCD37F300560D14 /* Default.dly in Resources */,
+				ADF1B9201FCD698600560D14 /* Default.dly in Resources */,
 				ADF5A6D31FB18A6300161F37 /* AdvancedBGM.m4a in Resources */,
 				ADF5A6DA1FB18A6400161F37 /* SecondaryBGM.m4a in Resources */,
 				ADAF8A4F1FB430EB00C09B4B /* BigMeal.dly in Resources */,

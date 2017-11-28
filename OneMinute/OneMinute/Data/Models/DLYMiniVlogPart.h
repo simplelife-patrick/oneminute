@@ -18,8 +18,8 @@
  */
 typedef NS_ENUM(NSInteger, DLYMiniVlogPartType)
 {
-    DLYMiniVlogPartTypeNormal = 0,
-    DLYMiniVlogPartTypeVirtual
+    DLYMiniVlogPartTypeManual = 0,
+    DLYMiniVlogPartTypeComputer
 };
 
 /**
