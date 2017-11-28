@@ -10,7 +10,7 @@
 #import "DLYAnnularProgress.h"
 #import "DLYRecordViewController.h"
 #import "DLYResource.h"
-
+#import <UShareUI/UShareUI.h>
 @interface DLYExportViewController ()<YBPopupMenuDelegate>
 {
     double _shootTime;
@@ -26,6 +26,7 @@
 @property (nonatomic, strong) NSTimer *shootTimer;//定时器
 @property (nonatomic, strong) UIButton *successButton;
 @property (nonatomic, strong) UIButton *completeButton;
+@property (nonatomic, strong) UIButton *shareButton;
 @property (nonatomic, strong) UIView *backView;
 
 @end
@@ -103,6 +104,23 @@
     [self.completeButton addTarget:self action:@selector(onClickComplete) forControlEvents:UIControlEventTouchUpInside];
     [self.syntheticView addSubview:self.completeButton];
     
+    
+    //分享按钮
+    if (NEW_FUNCTION) {
+        self.shareButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-30-50, 30, 50, 50)];
+        self.shareButton.layer.cornerRadius = self.shareButton.bounds.size.height/2;
+        self.shareButton.clipsToBounds = YES;
+        self.shareButton.layer.borderWidth = 1;
+        self.shareButton.layer.borderColor = RGB(255, 255, 255).CGColor;
+        [self.shareButton setTitle:@"分享" forState:UIControlStateNormal];
+        [self.shareButton setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
+        self.shareButton.titleLabel.font = FONT_SYSTEM(16);
+        self.shareButton.hidden = YES;
+        [self.shareButton addTarget:self action:@selector(onClickShare) forControlEvents:UIControlEventTouchUpInside];
+        [self.syntheticView addSubview:self.shareButton];
+    }
+
+    
     _shootTime = 0.0;
     _shootTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(exportAction) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:_shootTimer forMode:NSRunLoopCommonModes];
@@ -119,7 +137,29 @@
     recoedVC.isExport = YES;
     [self.navigationController popToViewController:recoedVC animated:YES];
 }
+-(void)onClickShare{
+    [UMSocialUIManager showShareMenuViewInWindowWithPlatformSelectionBlock:^(UMSocialPlatformType platformType, NSDictionary *userInfo) {
+        // 根据获取的platformType确定所选平台进行下一步操作
+        UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
+        
+        UMShareVideoObject *shareObject = [UMShareVideoObject shareObjectWithTitle:@"分享标题" descr:@"分享内容描述" thumImage:[UIImage imageNamed:@"flash"]];
+        shareObject.videoUrl = @"http://video.sina.com.cn/p/sports/cba/v/2013-10-22/144463050817.html";
+        //            shareObject.videoStreamUrl = @"这里设置视频数据流地址（如果有的话，而且也要看所分享的平台支不支持）";
+        
+        messageObject.shareObject = shareObject;
+        
+        [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:self completion:^(id data, NSError *error) {
+            if (error) {
+                NSLog(@"************Share fail with error %@*********",error);
+            }else{
+                NSLog(@"response data is %@",data);
+            }
+        }];
+        
+        
+    }];
 
+}
 - (void)exportAction {
     _shootTime += 0.01;
     
@@ -129,12 +169,16 @@
         [self finishExportVideo];
     }
 }
+
 //完成之后（带延时操作）
 - (void)finishExportVideo {
     
     self.backView.hidden = YES;
     self.progressView.hidden = YES;
     self.successButton.hidden = NO;
+    if (NEW_FUNCTION) {
+        self.shareButton.hidden = NO;
+    }
     self.remindLabel.text = @"影片已合成\n保存在本地相册";
     self.completeButton.hidden = NO;
     
