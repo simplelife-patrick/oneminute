@@ -51,7 +51,6 @@
 		AD7608F71F70C08000556E20 /* UIView+Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608F21F70C07F00556E20 /* UIView+Utility.m */; };
 		AD7E15891FA7639000B3E9FB /* DLYPhotoAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7E15871FA7639000B3E9FB /* DLYPhotoAlbum.m */; };
 		AD849F441F72019900B1E08F /* DLYConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = AD849F431F72019900B1E08F /* DLYConstants.m */; };
-		AD9ACE7D1FB03EA80050EBBA /* Default.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD9ACE731FB03EA60050EBBA /* Default.dly */; };
 		AD9ACE7E1FB03EA80050EBBA /* AfternoonTea.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD9ACE741FB03EA60050EBBA /* AfternoonTea.dly */; };
 		AD9ACE7F1FB03EA80050EBBA /* Advanced.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD9ACE751FB03EA60050EBBA /* Advanced.dly */; };
 		AD9ACE811FB03EA80050EBBA /* MyMaldives.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD9ACE771FB03EA60050EBBA /* MyMaldives.dly */; };
@@ -64,6 +63,9 @@
 		ADAF8A4F1FB430EB00C09B4B /* BigMeal.dly in Resources */ = {isa = PBXBuildFile; fileRef = ADAF8A4E1FB430EB00C09B4B /* BigMeal.dly */; };
 		ADD0E7D41F2D9F3500996BD6 /* UIImage+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD0E7D31F2D9F3500996BD6 /* UIImage+Extension.m */; };
 		ADF0729E1FA03C8D003088AE /* DLYRecordTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF0729D1FA03C8D003088AE /* DLYRecordTimer.m */; };
+		ADF1B9121FCD358C00560D14 /* DLYVirtualPart.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF1B9101FCD358C00560D14 /* DLYVirtualPart.m */; };
+		ADF1B9161FCD35D000560D14 /* DLYMiniVlogTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = ADF1B9151FCD35D000560D14 /* DLYMiniVlogTemplate.m */; };
+		ADF1B9181FCD37F300560D14 /* Default.dly in Resources */ = {isa = PBXBuildFile; fileRef = ADF1B9171FCD37F200560D14 /* Default.dly */; };
 		ADF5A6D11FB18A6300161F37 /* GoNorthBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF5A6C71FB18A6200161F37 /* GoNorthBGM.m4a */; };
 		ADF5A6D21FB18A6300161F37 /* AfternoonTeaBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF5A6C81FB18A6200161F37 /* AfternoonTeaBGM.m4a */; };
 		ADF5A6D31FB18A6300161F37 /* AdvancedBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = ADF5A6C91FB18A6200161F37 /* AdvancedBGM.m4a */; };
@@ -77,7 +79,6 @@
 		ADFFF1991F18A33000FB5BF7 /* DLYMobileDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */; };
 		ADFFF19C1F18A33000FB5BF7 /* DLYMiniVlogPart.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF18A1F18A33000FB5BF7 /* DLYMiniVlogPart.m */; };
 		ADFFF19D1F18A33000FB5BF7 /* DLYMiniVlogProduct.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF18C1F18A33000FB5BF7 /* DLYMiniVlogProduct.m */; };
-		ADFFF19E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF18E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m */; };
 		ADFFF1A11F18A33000FB5BF7 /* DLYSession.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1961F18A33000FB5BF7 /* DLYSession.m */; };
 		ADFFF1AB1F18C00200FB5BF7 /* DLYTransitionInstructions.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1AA1F18C00200FB5BF7 /* DLYTransitionInstructions.m */; };
 		ADFFF1AE1F18C04400FB5BF7 /* DLYVideoTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = ADFFF1AD1F18C04400FB5BF7 /* DLYVideoTransition.m */; };
@@ -189,7 +190,6 @@
 		AD849F421F72019900B1E08F /* DLYConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYConstants.h; sourceTree = "<group>"; };
 		AD849F431F72019900B1E08F /* DLYConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYConstants.m; sourceTree = "<group>"; };
 		AD849F451F72021200B1E08F /* DLYPublicMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYPublicMacros.h; sourceTree = "<group>"; };
-		AD9ACE731FB03EA60050EBBA /* Default.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Default.dly; sourceTree = "<group>"; };
 		AD9ACE741FB03EA60050EBBA /* AfternoonTea.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = AfternoonTea.dly; sourceTree = "<group>"; };
 		AD9ACE751FB03EA60050EBBA /* Advanced.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Advanced.dly; sourceTree = "<group>"; };
 		AD9ACE771FB03EA60050EBBA /* MyMaldives.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = MyMaldives.dly; sourceTree = "<group>"; };
@@ -206,6 +206,12 @@
 		ADD0E7D31F2D9F3500996BD6 /* UIImage+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Extension.m"; sourceTree = "<group>"; };
 		ADF0729C1FA03C8D003088AE /* DLYRecordTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYRecordTimer.h; sourceTree = "<group>"; };
 		ADF0729D1FA03C8D003088AE /* DLYRecordTimer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DLYRecordTimer.m; sourceTree = "<group>"; };
+		ADF1B9101FCD358C00560D14 /* DLYVirtualPart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYVirtualPart.m; sourceTree = "<group>"; };
+		ADF1B9111FCD358C00560D14 /* DLYVirtualPart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYVirtualPart.h; sourceTree = "<group>"; };
+		ADF1B9131FCD35B800560D14 /* DLYMiniVlogPart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMiniVlogPart.h; sourceTree = "<group>"; };
+		ADF1B9141FCD35D000560D14 /* DLYMiniVlogTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMiniVlogTemplate.h; sourceTree = "<group>"; };
+		ADF1B9151FCD35D000560D14 /* DLYMiniVlogTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMiniVlogTemplate.m; sourceTree = "<group>"; };
+		ADF1B9171FCD37F200560D14 /* Default.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Default.dly; sourceTree = "<group>"; };
 		ADF5A6C71FB18A6200161F37 /* GoNorthBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = GoNorthBGM.m4a; sourceTree = "<group>"; };
 		ADF5A6C81FB18A6200161F37 /* AfternoonTeaBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = AfternoonTeaBGM.m4a; sourceTree = "<group>"; };
 		ADF5A6C91FB18A6200161F37 /* AdvancedBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = AdvancedBGM.m4a; sourceTree = "<group>"; };
@@ -218,12 +224,9 @@
 		ADF5A6D01FB18A6300161F37 /* SecondaryBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = SecondaryBGM.m4a; sourceTree = "<group>"; };
 		ADFFF1811F18A33000FB5BF7 /* DLYMobileDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMobileDevice.h; sourceTree = "<group>"; };
 		ADFFF1821F18A33000FB5BF7 /* DLYMobileDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMobileDevice.m; sourceTree = "<group>"; };
-		ADFFF1891F18A33000FB5BF7 /* DLYMiniVlogPart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMiniVlogPart.h; sourceTree = "<group>"; };
 		ADFFF18A1F18A33000FB5BF7 /* DLYMiniVlogPart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMiniVlogPart.m; sourceTree = "<group>"; };
 		ADFFF18B1F18A33000FB5BF7 /* DLYMiniVlogProduct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMiniVlogProduct.h; sourceTree = "<group>"; };
 		ADFFF18C1F18A33000FB5BF7 /* DLYMiniVlogProduct.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMiniVlogProduct.m; sourceTree = "<group>"; };
-		ADFFF18D1F18A33000FB5BF7 /* DLYMiniVlogTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYMiniVlogTemplate.h; sourceTree = "<group>"; };
-		ADFFF18E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYMiniVlogTemplate.m; sourceTree = "<group>"; };
 		ADFFF1951F18A33000FB5BF7 /* DLYSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYSession.h; sourceTree = "<group>"; };
 		ADFFF1961F18A33000FB5BF7 /* DLYSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYSession.m; sourceTree = "<group>"; };
 		ADFFF1A51F18A36700FB5BF7 /* DLYPrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYPrefixHeader.pch; sourceTree = "<group>"; };
@@ -514,7 +517,7 @@
 				AD9ACE741FB03EA60050EBBA /* AfternoonTea.dly */,
 				AD9ACE7A1FB03EA70050EBBA /* ColorfulLife.dly */,
 				ADAF8A4E1FB430EB00C09B4B /* BigMeal.dly */,
-				AD9ACE731FB03EA60050EBBA /* Default.dly */,
+				ADF1B9171FCD37F200560D14 /* Default.dly */,
 				AD9ACE781FB03EA70050EBBA /* GoNorth.dly */,
 				AD9ACE771FB03EA60050EBBA /* MyMaldives.dly */,
 				AD9ACE7B1FB03EA80050EBBA /* Secondary.dly */,
@@ -606,12 +609,14 @@
 		ADFFF1861F18A33000FB5BF7 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				ADFFF1891F18A33000FB5BF7 /* DLYMiniVlogPart.h */,
+				ADF1B9111FCD358C00560D14 /* DLYVirtualPart.h */,
+				ADF1B9101FCD358C00560D14 /* DLYVirtualPart.m */,
+				ADF1B9131FCD35B800560D14 /* DLYMiniVlogPart.h */,
 				ADFFF18A1F18A33000FB5BF7 /* DLYMiniVlogPart.m */,
+				ADF1B9141FCD35D000560D14 /* DLYMiniVlogTemplate.h */,
+				ADF1B9151FCD35D000560D14 /* DLYMiniVlogTemplate.m */,
 				ADFFF18B1F18A33000FB5BF7 /* DLYMiniVlogProduct.h */,
 				ADFFF18C1F18A33000FB5BF7 /* DLYMiniVlogProduct.m */,
-				ADFFF18D1F18A33000FB5BF7 /* DLYMiniVlogTemplate.h */,
-				ADFFF18E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -756,13 +761,13 @@
 				AD9ACE831FB03EA80050EBBA /* SunSetBeach.dly in Resources */,
 				ADF5A6D61FB18A6400161F37 /* ColorfulLifeBGM.m4a in Resources */,
 				ADF5A6D91FB18A6400161F37 /* SunSetBeachBGM.m4a in Resources */,
+				ADF1B9181FCD37F300560D14 /* Default.dly in Resources */,
 				ADF5A6D31FB18A6300161F37 /* AdvancedBGM.m4a in Resources */,
 				ADF5A6DA1FB18A6400161F37 /* SecondaryBGM.m4a in Resources */,
 				ADAF8A4F1FB430EB00C09B4B /* BigMeal.dly in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				AD9ACE861FB03EA80050EBBA /* SoDelicious.dly in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
-				AD9ACE7D1FB03EA80050EBBA /* Default.dly in Resources */,
 				AD9ACE821FB03EA80050EBBA /* GoNorth.dly in Resources */,
 				AD9ACE841FB03EA80050EBBA /* ColorfulLife.dly in Resources */,
 				AD9ACE811FB03EA80050EBBA /* MyMaldives.dly in Resources */,
@@ -881,6 +886,7 @@
 			files = (
 				AD7608F31F70C07F00556E20 /* NSObject+JSONCategories.m in Sources */,
 				AD7608F61F70C08000556E20 /* UIView+Extension.m in Sources */,
+				ADF1B9161FCD35D000560D14 /* DLYMiniVlogTemplate.m in Sources */,
 				AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */,
 				AD7608F51F70C07F00556E20 /* UIImage+iconfont.m in Sources */,
 				6FD13AC41F60EC02000B72FC /* DLYIndicatorView.m in Sources */,
@@ -897,7 +903,7 @@
 				AD7608F41F70C07F00556E20 /* UIButton+LargerHitArea.m in Sources */,
 				6F12AE6D1F3DB78300CE8CB6 /* DLYDownloadManager.m in Sources */,
 				6F7455131F7A3EDE00682FB8 /* DLYThemesData.m in Sources */,
-				ADFFF19E1F18A33000FB5BF7 /* DLYMiniVlogTemplate.m in Sources */,
+				ADF1B9121FCD358C00560D14 /* DLYVirtualPart.m in Sources */,
 				6FA02E901FACAD48001529CF /* DLYIconFont.m in Sources */,
 				ADF0729E1FA03C8D003088AE /* DLYRecordTimer.m in Sources */,
 				ADD0E7D41F2D9F3500996BD6 /* UIImage+Extension.m in Sources */,
