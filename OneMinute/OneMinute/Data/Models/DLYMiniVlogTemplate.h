@@ -55,6 +55,10 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogTailerType)
 @property (nonatomic, strong) NSString                        *templateTitle;
 
 /**
+ 水印日期
+ */
+@property (nonatomic, strong) NSDictionary                    *dateWaterMark;
+/**
  模板描述
  */
 @property (nonatomic, strong) NSString                        *templateDescription;
