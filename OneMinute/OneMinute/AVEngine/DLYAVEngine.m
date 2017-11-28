@@ -67,7 +67,6 @@
 @property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;
 @property (nonatomic, strong) AVCaptureAudioDataOutput          *audioOutput;
 @property (nonatomic, strong) dispatch_queue_t                  movieWritingQueue;
-@property (nonatomic, strong) dispatch_queue_t                  videoQueue;
 
 @property (nonatomic, strong) AVAssetWriter                     *assetWriter;
 @property (nonatomic, strong) AVAssetWriterInput                *assetWriterVideoInput;
@@ -293,7 +292,6 @@
         }
         // Video
         self.movieWritingQueue = dispatch_queue_create("moviewriting", DISPATCH_QUEUE_SERIAL);
-        self.videoQueue = dispatch_queue_create("videoQueue",NULL);
 
         videoOrientation = [self.videoConnection videoOrientation];
         
@@ -415,6 +413,7 @@
     }
     return _videoOutput;
 }
+//元数据输出
 - (AVCaptureMetadataOutput *)metadataOutput {
     if (_metadataOutput == nil) {
         _metadataOutput = [[AVCaptureMetadataOutput alloc]init];

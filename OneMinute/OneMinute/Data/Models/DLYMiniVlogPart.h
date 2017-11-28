@@ -9,6 +9,19 @@
 #import "DLYModule.h"
 #import "DLYVideoTransition.h"
 
+
+/**
+ 片段类型
+
+ - DLYMiniVlogPartTypeNormal: 标准片段
+ - DLYMiniVlogPartTypeVirtual: 虚拟片段
+ */
+typedef NS_ENUM(NSInteger, DLYMiniVlogPartType)
+{
+    DLYMiniVlogPartTypeNormal = 0,
+    DLYMiniVlogPartTypeVirtual
+};
+
 /**
  拍摄类型
 
@@ -64,10 +77,20 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
 @property (nonatomic, copy)   NSString                      *prepareRecord;
 
 #pragma mark - 需要在模板脚本中读取的属性 -
+
+/**
+ 片段类型
+ */
+@property (nonatomic, assign) NSInteger                     partType;
+
 /**
  片段序号
  */
 @property (nonatomic, assign) NSInteger                     partNum;
+/**
+ 是否合并片段
+ */
+@property (nonatomic, assign) BOOL                          ifCombin;
 
 /**
  配音开始时间

@@ -34,6 +34,7 @@
                 self.parts = [dic objectForKey:@"info"];
                 self.BGM = [dic objectForKey:@"BGM"];
                 self.subTitle1 = [dic objectForKey:@"subTitle1"];
+                self.dateWaterMark = [dic objectForKey:@"dateWaterMark"];
                 self.videoHeaderType = [[dic objectForKey:@"header"] integerValue];
                 self.videoTailerType = [[dic objectForKey:@"tailer"] integerValue];
                 self.templateDescription = [dic objectForKey:@"templateDescription"];
@@ -58,6 +59,8 @@
         
         DLYMiniVlogPart *part = [[DLYMiniVlogPart alloc]init];
         part.partNum = [[dic objectForKey:@"partNum"] integerValue];
+        part.partType = [[dic objectForKey:@"partType"] integerValue];
+        part.ifCombin = [[dic objectForKey:@"ifCombin"] integerValue];
         part.dubStartTime = [dic objectForKey:@"dubStartTime"];
         part.dubStopTime = [dic objectForKey:@"dubStopTime"];
         part.recordType = [[dic objectForKey:@"recordType"] integerValue];
@@ -68,5 +71,19 @@
         [mArray addObject:part];
     }
     return [mArray copy];
+}
+-(void)combinDurationWithParts:(NSArray<DLYMiniVlogPart *> *)parts{
+    
+    for (DLYMiniVlogPart *part in parts) {
+        if(part.partType == DLYMiniVlogPartTypeNormal){
+            if(part.ifCombin){
+                
+            }else{
+                
+            }
+        }else if (part.partType == DLYMiniVlogPartTypeVirtual){
+            
+        }
+    };
 }
 @end
