@@ -30,6 +30,7 @@
     }
     return template;
 }
+
 - (void) detectionTemplateForLaunchComplated:(ComplatedBlock)complated
 {
     NSString *_templateName = nil;

@@ -22,6 +22,7 @@
 #import <CoreMotion/CoreMotion.h>
 #import "UIImage+Extension.h"
 #import "DLYPhotoAlbum.h"
+#import "DLYVirtualPart.h"
 
 @interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate,AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate,DLYRecordTimerDelegate>
 {
@@ -701,7 +702,7 @@
     }
 }
 #pragma mark 开始录制
-- (void)startRecordingWithPart:(DLYMiniVlogPart *)part {
+- (void)startRecordingWithPart:(DLYMiniVlogPart *)part{
     
     _currentPart = part;
     

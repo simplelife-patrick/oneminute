@@ -24,6 +24,7 @@
             NSData *decryptedData = [RNDecryptor decryptData:encryptedData withPassword:@"dlyvlog2016" error:&error];
             
             if (!error) {
+                
             }
             
             if (decryptedData) {
@@ -47,6 +48,7 @@
             DLYLog(@"模板名称为空");
         }
     }
+    self.virtualPart = self.virtualPart;
     return self;
 }
 
@@ -72,18 +74,47 @@
     }
     return [mArray copy];
 }
--(void)combinDurationWithParts:(NSArray<DLYMiniVlogPart *> *)parts{
+-(DLYVirtualPart *)virtualPart{
     
-    for (DLYMiniVlogPart *part in parts) {
-        if(part.partType == DLYMiniVlogPartTypeNormal){
-            if(part.ifCombin){
-                
-            }else{
-                
-            }
-        }else if (part.partType == DLYMiniVlogPartTypeVirtual){
-            
+    //需要拍的片段
+    NSMutableArray *manualArray = [NSMutableArray array];
+    for (DLYMiniVlogPart *part in self.parts) {
+        if(part.partType == DLYMiniVlogPartTypeManual){
+            [manualArray addObject:part];
         }
+    }
+    _virtualPart = [self combinDurationWithParts:manualArray];
+    _virtualPart.partsInfo = manualArray;
+    _virtualPart.recordType = 0;
+    
+    return _virtualPart;
+}
+-(DLYVirtualPart *)combinDurationWithParts:(NSArray<DLYMiniVlogPart *> *)parts{
+    
+    double totalDutation = 0;
+    DLYVirtualPart *virtualPart = [[DLYVirtualPart alloc] init];
+
+    for (DLYMiniVlogPart *part in parts) {
+        double _start_ = [self getTimeWithString:part.dubStartTime];
+        double _stop_ = [self getTimeWithString:part.dubStopTime];
+        totalDutation += _stop_ -_start_;
     };
+    virtualPart.dubStartTime = @"00:00:00";
+    virtualPart.dubStopTime = [NSString stringWithFormat:@"00:%0.f:00",totalDutation / 1000];
+    
+    return virtualPart;
+}
+- (double)getTimeWithString:(NSString *)timeString
+{
+    NSArray *stringArr = [timeString componentsSeparatedByString:@":"];
+    NSString *timeStr_M = stringArr[0];
+    NSString *timeStr_S = stringArr[1];
+    NSString *timeStr_MS = stringArr[2];
+    
+    double timeNum_M = [timeStr_M doubleValue] * 60 * 1000;
+    double timeNum_S = [timeStr_S doubleValue] * 1000;
+    double timeNum_MS = [timeStr_MS doubleValue] * 10;
+    double timeNum = timeNum_M + timeNum_S + timeNum_MS;
+    return timeNum;
 }
 @end

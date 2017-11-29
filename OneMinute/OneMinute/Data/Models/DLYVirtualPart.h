@@ -6,21 +6,13 @@
 //  Copyright © 2017 动旅游. All rights reserved.
 //
 
-#import "DLYModule.h"
 #import "DLYMiniVlogPart.h"
 
-@interface DLYVirtualPart : DLYModule
-
-/**
- 拍摄时长
- */
-@property (nonatomic, copy)   NSString                      *duration;
+@interface DLYVirtualPart : DLYMiniVlogPart
 
 /**
  分段数
  */
-@property (nonatomic, assign) NSInteger                     partCount;
-
-- (void) combinDurationWithParts:(NSArray<DLYMiniVlogPart *> *)parts;
+@property (nonatomic, strong) NSMutableArray<DLYVirtualPart *>                 *partsInfo;
 
 @end
