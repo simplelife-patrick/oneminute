@@ -22,7 +22,7 @@
 #import <CoreMotion/CoreMotion.h>
 #import "UIImage+Extension.h"
 #import "DLYPhotoAlbum.h"
-#import "DLYVirtualPart.h"
+#import "DLYMiniVlogVirtualPart.h"
 
 @interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate,AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate,DLYRecordTimerDelegate>
 {
@@ -709,18 +709,18 @@
     
     NSString *_outputPath =  [self.resource saveDraftPartWithPartNum:_currentPart.partNum];
     if (_outputPath) {
-        _currentPart.partUrl = [NSURL fileURLWithPath:_outputPath];
-        DLYLog(@"第 %lu 个片段的地址 :%@",_currentPart.partNum + 1,_currentPart.partUrl);
+        _currentPart.partPath = _outputPath;
+        DLYLog(@"第 %lu 个片段的地址 :%@",_currentPart.partNum + 1,_currentPart.partPath);
     }else{
         DLYLog(@"片段地址获取为空,直接拼出全路径");
         NSString *path = [NSString stringWithFormat:@"%@/%@/%@/part%lu%@",kPathDocument,kDataFolder,kTempFolder,(long)part.partNum,@".mp4"];
         if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-            _currentPart.partUrl = [NSURL fileURLWithPath:path];
+            _currentPart.partPath = path;
         }
     }
-    
+    NSURL *url = [NSURL fileURLWithPath:_currentPart.partPath];
     NSError *error;
-    self.assetWriter = [[AVAssetWriter alloc] initWithURL:_currentPart.partUrl fileType:AVFileTypeMPEG4 error:&error];
+    self.assetWriter = [[AVAssetWriter alloc] initWithURL:url fileType:AVFileTypeMPEG4 error:&error];
     if (error) {
         DLYLog(@"AVAssetWriter error:%@", error);
     }
@@ -953,7 +953,7 @@
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
         
-        for (int i = 20; i<124; i++)
+        for (int i = 20; i < 124; i++)
         {
             @autoreleasepool {
                 NSString *imageName = [NSString stringWithFormat:@"MyHeader1_00%03d.png", i];
@@ -1193,7 +1193,7 @@ BOOL isOnce = YES;
     dispatch_async(dispatch_get_main_queue(), ^{
         [[DLYIndicatorView sharedIndicatorView] startFlashAnimatingWithTitle:@"处理中,请稍后"];
         typeof(self) weakSelf = self;
-        [weakSelf setSpeedWithVideo:_currentPart.partUrl outputUrl:exportUrl soundType:_currentPart.soundType recordTypeOfPart:_currentPart.recordType completed:^{
+        [weakSelf setSpeedWithVideo:[NSURL fileURLWithPath:_currentPart.partPath] outputUrl:exportUrl soundType:_currentPart.soundType recordTypeOfPart:_currentPart.recordType completed:^{
             DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
             [self.resource removePartWithPartNumFormTemp:self.currentPart.partNum];
             dispatch_async(dispatch_get_main_queue(), ^{

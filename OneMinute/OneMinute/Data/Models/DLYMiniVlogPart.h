@@ -52,11 +52,6 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
 @interface DLYMiniVlogPart : DLYModule
 
 /**
- 片段地址
- */
-@property (nonatomic, strong) NSURL                         *partUrl;
-
-/**
  拍摄时长
  */
 @property (nonatomic, copy)   NSString                      *duration;
@@ -78,6 +73,10 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
 
 #pragma mark - 需要在模板脚本中读取的属性 -
 
+/**
+ 片段地址
+ */
+@property (nonatomic, copy) NSString                        *partPath;
 /**
  片段类型
  */
@@ -124,12 +123,12 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
 /**
  拍摄指导
  */
-@property (nonatomic, strong) NSString                      *shootGuide;
+@property (nonatomic, copy) NSString                      *shootGuide;
 
 #pragma mark - 暂时保留的属性 -
 /**
  字幕
  */
-@property (nonatomic, strong) NSString                      *subtitle;
+@property (nonatomic, copy) NSString                      *subtitle;
 
 @end
