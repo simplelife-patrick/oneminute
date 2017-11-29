@@ -79,7 +79,7 @@
     //需要拍的片段
     NSMutableArray *manualArray = [NSMutableArray array];
     for (DLYMiniVlogPart *part in self.parts) {
-        if(part.partType == DLYMiniVlogPartTypeManual){
+        if(part.partType == DLYMiniVlogPartTypeManual && part.ifCombin){
             [manualArray addObject:part];
         }
     }

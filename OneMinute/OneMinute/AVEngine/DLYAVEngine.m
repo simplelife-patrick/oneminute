@@ -167,6 +167,7 @@
     }
     return _captureSession;
 }
+#pragma mark - 初始化 -
 - (instancetype)initWithPreviewView:(UIView *)previewView{
     if (self = [super init]) {
         
@@ -364,7 +365,7 @@
         }
     }
 }
-#pragma mark - Recorder初始化相关懒加载 -
+#pragma mark - Recorder加载组件 -
 //后置摄像头输入
 - (AVCaptureDeviceInput *)backCameraInput {
     if (_backCameraInput == nil) {
