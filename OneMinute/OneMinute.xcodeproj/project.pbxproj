@@ -417,6 +417,15 @@
 		6F5E5D261F1EF7A700D857C9 /* RecordView */ = {
 			isa = PBXGroup;
 			children = (
+				6F8925D81F1B141200256093 /* PopupMenu */,
+				6F8925CF1F1B13FF00256093 /* DLYAnnularProgress.h */,
+				6F8925D01F1B13FF00256093 /* DLYAnnularProgress.m */,
+				6F8925D11F1B13FF00256093 /* DLYAlertView.h */,
+				6F8925D21F1B13FF00256093 /* DLYAlertView.m */,
+				6FA74E851F5E48B800114C93 /* DLYTitleView.h */,
+				6FA74E861F5E48B800114C93 /* DLYTitleView.m */,
+				6FD13AC21F60EC02000B72FC /* DLYIndicatorView.h */,
+				6FD13AC31F60EC02000B72FC /* DLYIndicatorView.m */,
 			);
 			name = RecordView;
 			sourceTree = "<group>";
@@ -476,15 +485,6 @@
 			children = (
 				6FA02E8F1FACAD48001529CF /* DLYIconFont.h */,
 				6FA02E8E1FACAD47001529CF /* DLYIconFont.m */,
-				6F8925D81F1B141200256093 /* PopupMenu */,
-				6F8925CF1F1B13FF00256093 /* DLYAnnularProgress.h */,
-				6F8925D01F1B13FF00256093 /* DLYAnnularProgress.m */,
-				6F8925D11F1B13FF00256093 /* DLYAlertView.h */,
-				6F8925D21F1B13FF00256093 /* DLYAlertView.m */,
-				6FA74E851F5E48B800114C93 /* DLYTitleView.h */,
-				6FA74E861F5E48B800114C93 /* DLYTitleView.m */,
-				6FD13AC21F60EC02000B72FC /* DLYIndicatorView.h */,
-				6FD13AC31F60EC02000B72FC /* DLYIndicatorView.m */,
 			);
 			name = Tool;
 			sourceTree = "<group>";

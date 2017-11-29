@@ -89,9 +89,9 @@
     
     return _virtualPart;
 }
-double totalDutation;
 -(DLYVirtualPart *)combinDurationWithParts:(NSArray<DLYMiniVlogPart *> *)parts{
-
+    
+    double totalDutation = 0;
     DLYVirtualPart *virtualPart = [[DLYVirtualPart alloc] init];
 
     for (DLYMiniVlogPart *part in parts) {
