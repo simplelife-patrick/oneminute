@@ -8,7 +8,15 @@
 //
 
 #import "DLYMiniVlogTemplate.h"
+#import "DLYMiniVlogVirtualPart.h"
 #import <RNDecryptor.h>
+
+@interface DLYMiniVlogPart()
+{
+    
+}
+
+@end
 
 @implementation DLYMiniVlogTemplate
 
@@ -24,7 +32,7 @@
             NSData *decryptedData = [RNDecryptor decryptData:encryptedData withPassword:@"dlyvlog2016" error:&error];
             
             if (!error) {
-                
+                DLYLog(@"文件解密错误 :",error);
             }
             
             if (decryptedData) {
@@ -48,7 +56,7 @@
             DLYLog(@"模板名称为空");
         }
     }
-    self.virtualPart = self.virtualPart;
+    _virtualParts = self.virtualParts;
     return self;
 }
 
@@ -74,35 +82,46 @@
     }
     return [mArray copy];
 }
--(DLYVirtualPart *)virtualPart{
+-(NSMutableArray<DLYMiniVlogVirtualPart *> *)virtualParts{
+    //需要合并的
+    NSMutableArray *needCombinArray = [NSMutableArray array];
+    //不合并的
+    NSMutableArray *needNotCombinArray = [NSMutableArray array];
     
-    //需要拍的片段
-    NSMutableArray *manualArray = [NSMutableArray array];
     for (DLYMiniVlogPart *part in self.parts) {
-        if(part.partType == DLYMiniVlogPartTypeManual && part.ifCombin){
-            [manualArray addObject:part];
+        
+        if(part.partType == DLYMiniVlogPartTypeManual && part.ifCombin){//需要拍摄并且需要合并的
+            [needCombinArray addObject:part];
+            _virtualParts = [self combinDurationWithParts:needCombinArray];
         }
     }
-    _virtualPart = [self combinDurationWithParts:manualArray];
-    _virtualPart.partsInfo = manualArray;
-    _virtualPart.recordType = 0;
-    
-    return _virtualPart;
+    for (DLYMiniVlogPart *part in self.parts) {
+        if(part.partType == DLYMiniVlogPartTypeManual && !part.ifCombin){//需要拍摄不需要合并
+            [needNotCombinArray addObject:part];
+            _virtualParts = needNotCombinArray;
+        }
+    }
+    return _virtualParts;
 }
--(DLYVirtualPart *)combinDurationWithParts:(NSArray<DLYMiniVlogPart *> *)parts{
+-(NSArray<DLYMiniVlogVirtualPart *> *)combinDurationWithParts:(NSArray<DLYMiniVlogPart *> *)parts{
     
-    double totalDutation = 0;
-    DLYVirtualPart *virtualPart = [[DLYVirtualPart alloc] init];
+    NSMutableArray *mArray = [NSMutableArray array];
 
+    double totalDutation = 0;
+    
+    DLYMiniVlogVirtualPart *virtualPart = [[DLYMiniVlogVirtualPart alloc] init];
+    
     for (DLYMiniVlogPart *part in parts) {
         double _start_ = [self getTimeWithString:part.dubStartTime];
         double _stop_ = [self getTimeWithString:part.dubStopTime];
-        totalDutation += _stop_ -_start_;
+        totalDutation += (_stop_ -_start_);
     };
     virtualPart.dubStartTime = @"00:00:00";
-    virtualPart.dubStopTime = [NSString stringWithFormat:@"00:%0.f:00",totalDutation / 1000];
+    virtualPart.dubStopTime = [NSString stringWithFormat:@"00:%00.f:00",(totalDutation / 1000)];
     
-    return virtualPart;
+    [mArray addObject:virtualPart];
+    
+    return [mArray copy];
 }
 - (double)getTimeWithString:(NSString *)timeString
 {

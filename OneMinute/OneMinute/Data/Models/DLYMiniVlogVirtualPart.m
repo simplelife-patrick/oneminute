@@ -6,8 +6,8 @@
 //  Copyright © 2017 动旅游. All rights reserved.
 //
 
-#import "DLYVirtualPart.h"
+#import "DLYMiniVlogVirtualPart.h"
 
-@implementation DLYVirtualPart
+@implementation DLYMiniVlogVirtualPart
 
 @end

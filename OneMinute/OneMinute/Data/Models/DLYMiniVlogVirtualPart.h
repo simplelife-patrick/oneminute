@@ -8,11 +8,11 @@
 
 #import "DLYMiniVlogPart.h"
 
-@interface DLYVirtualPart : DLYMiniVlogPart
+@interface DLYMiniVlogVirtualPart : DLYMiniVlogPart
 
 /**
  分段数
  */
-@property (nonatomic, strong) NSMutableArray<DLYVirtualPart *>                 *partsInfo;
+@property (nonatomic, strong) NSMutableArray<DLYMiniVlogPart *>                 *partsInfo;
 
 @end

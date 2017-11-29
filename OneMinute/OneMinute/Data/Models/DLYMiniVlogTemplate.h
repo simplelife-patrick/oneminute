@@ -8,7 +8,7 @@
 
 #import "DLYModule.h"
 #import "DLYMiniVlogPart.h"
-#import "DLYVirtualPart.h"
+#import "DLYMiniVlogVirtualPart.h"
 
 /**
  片头类型
@@ -73,11 +73,10 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogTailerType)
  模板详情
  */
 @property (nonatomic, strong) NSArray<DLYMiniVlogPart *>      *parts;
-
 /**
  虚拟part
  */
-@property (nonatomic, strong) DLYVirtualPart                  *virtualPart;
+@property (nonatomic, strong) NSMutableArray<DLYMiniVlogVirtualPart *>*virtualParts;
 
 /**
  背景音乐
