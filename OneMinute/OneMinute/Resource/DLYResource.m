@@ -140,7 +140,35 @@
     }
     return nil;
 }
-
+- (NSArray *) loadVirtualPartsFromDocument{
+    
+    NSMutableArray *videoArray = [NSMutableArray array];
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:dataPath]) {
+        
+        NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
+            NSString *virtualPath = [draftPath stringByAppendingPathComponent:kVirtualFolder];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:virtualPath]){
+                NSArray *draftArray = [fileManager contentsOfDirectoryAtPath:virtualPath error:nil];
+                
+                for (NSInteger i = 0; i < [draftArray count]; i++) {
+                    NSString *path = draftArray[i];
+                    if ([path hasSuffix:@"mp4"]) {
+                        NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
+                        NSURL *url= [NSURL fileURLWithPath:allPath];
+                        [videoArray addObject:url];
+                    }
+                }
+                return videoArray;
+            }
+          
+        }
+    }
+    return nil;
+}
 - (NSURL *) saveProductToSandbox{
     
     NSURL *outPutUrl = nil;
@@ -222,6 +250,18 @@
         [fileManager removeItemAtPath:targetPath error:nil];
     }
 }
+- (void) removeVirtualPartWithPartNumFromDocument:(NSInteger)partNum
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    NSString *virtualPartPath = [NSString stringWithFormat:@"%@/%@/%@/%@",kPathDocument,kDataFolder,kDraftFolder,kVirtualFolder];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:virtualPartPath]) {
+        
+        NSString *targetPath = [virtualPartPath stringByAppendingFormat:@"/part%lu.mp4",partNum];
+        
+        [fileManager removeItemAtPath:targetPath error:nil];
+    }
+}
 
 - (void) removeProductFromDocument
 {
@@ -247,10 +287,33 @@
         }
     }
 }
+-(void)removeCurrentAllVirtualPartFromDocument{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *draftPath = [NSString stringWithFormat:@"%@/%@/%@",kPathDocument,kDataFolder,kDraftFolder];
+    NSString *virtualPath = [NSString stringWithFormat:@"%@/%@",draftPath,kVirtualFolder];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:virtualPath]) {
+        
+        NSArray *virtualArray = [self.fileManager contentsOfDirectoryAtPath:virtualPath error:nil];
+        BOOL isSuccess = NO;
+        
+        if ([virtualArray count] != 0) {
+            for (NSString *path in virtualArray) {
+                if ([path hasSuffix:@"mp4"]) {
+                    NSString *targetPath = [virtualPath stringByAppendingFormat:@"/%@",path];
+                    isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
+                }
+            }
+            DLYLog(@"成功删除Document全部virtual片段");
+        }else{
+            DLYLog(@"现在Document/virtual中无视频片段");
+        }
+    }
+}
 - (void) removeCurrentAllPartFromDocument{
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
     NSString *draftPath = [NSString stringWithFormat:@"%@/%@/%@",kPathDocument,kDataFolder,kDraftFolder];
+
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
         
         NSArray *draftArray = [self.fileManager contentsOfDirectoryAtPath:draftPath error:nil];
@@ -265,9 +328,10 @@
             }
             DLYLog(@"成功删除Document全部草稿片段");
         }else{
-            DLYLog(@"现在Document中无视频片段");
+            DLYLog(@"现在Document/draft中无视频片段");
         }
     }
+    [self removeCurrentAllVirtualPartFromDocument];
 }
 
 - (NSString *) saveDraftPartWithPartNum:(NSInteger)partNum{
@@ -277,6 +341,17 @@
         
         NSString *outputPath = [NSString stringWithFormat:@"%@/part%lu%@",tempPath,(long)partNum,@".mp4"];
         return outputPath;
+    }
+    return nil;
+}
+- (NSURL *) getVirtualPartUrlWithPartNum:(NSInteger)partNum
+{
+    NSString *draftPath = [NSString stringWithFormat:@"%@/%@/%@/%@",kPathDocument,kDataFolder,kDraftFolder,kVirtualFolder];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
+        
+        NSString *targetPath = [draftPath stringByAppendingFormat:@"/part%lu.mp4",partNum];
+        NSURL *targetUrl = [NSURL fileURLWithPath:targetPath];
+        return targetUrl;
     }
     return nil;
 }
@@ -291,7 +366,6 @@
     }
     return nil;
 }
-
 - (NSURL *) getProductWithProductName:(NSString *)productName
 {
     NSString *productPath = [self getSubFolderPathWithFolderName:kProductFolder];

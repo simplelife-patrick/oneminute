@@ -8,7 +8,7 @@
 
 #import "DLYModule.h"
 #import <CoreMedia/CoreMedia.h>
-#import "DLYMiniVlogPart.h"
+#import "DLYMiniVlogVirtualPart.h"
 #import "DLYRecordTimer.h"
 
 typedef void(^SuccessBlock)(void);
@@ -43,7 +43,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
 @property (nonatomic, strong) AVCaptureConnection                                     *videoConnection;
 @property (nonatomic, strong) AVCaptureSession                                        *captureSession;
 
-@property (nonatomic, strong) DLYMiniVlogPart                                         *currentPart;
+@property (nonatomic, strong) DLYMiniVlogVirtualPart                                  *currentPart;
 @property (nonatomic, strong) NSURL                                                   *currentProductUrl;
 @property (nonatomic, strong) NSMutableArray                                          *imageArray;
 
@@ -70,7 +70,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
 
  @param part info
  */
-- (void)startRecordingWithPart:(DLYMiniVlogPart *)part;
+- (void)startRecordingWithPart:(DLYMiniVlogVirtualPart *)part;
 
 /**
  设置当前片段的录制格式
@@ -109,7 +109,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
  @param startTime 开始时间
  @param duration 截取时长
  */
--(void)trimVideoByWithUrl:(NSURL *)assetUrl outputUrl:(NSURL *)outputUrl startTime:(CMTime)startTime duration:(CMTime)duration;
+-(void)trimVideoByWithUrl:(NSURL *)assetUrl outputUrl:(NSURL *)outputUrl startTime:(double)startTime duration:(double)duration;
 /**
  合并并添加转场效果
  
