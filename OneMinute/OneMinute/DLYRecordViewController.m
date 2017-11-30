@@ -320,10 +320,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
     }
     [self.session saveCurrentTemplateWithId:template.templateId version:template.version];
-    partModelArray = [NSMutableArray arrayWithArray:template.parts];
+    partModelArray = [NSMutableArray arrayWithArray:template.virtualParts];
     
     for (int i = 0; i < partModelArray.count; i++) {
-        DLYMiniVlogPart *part = partModelArray[i];
+        DLYMiniVlogVirtualPart *part = partModelArray[i];
         if (i == 0) {
             part.prepareRecord = @"1";
         }else {
@@ -368,17 +368,17 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if (isExitDraft) {
         for (NSString *str in draftArr) {
             NSInteger num = [str integerValue];
-            DLYMiniVlogPart *part = partModelArray[num];
+            DLYMiniVlogVirtualPart *part = partModelArray[num];
             part.recordStatus = @"1";
         }
         
-        for (DLYMiniVlogPart *part1 in partModelArray) {
+        for (DLYMiniVlogVirtualPart *part1 in partModelArray) {
             part1.prepareRecord = @"0";
         }
         
         for(int i = 0; i < partModelArray.count; i++)
         {
-            DLYMiniVlogPart *part2 = partModelArray[i];
+            DLYMiniVlogVirtualPart *part2 = partModelArray[i];
             if([part2.recordStatus isEqualToString:@"0"])
             {
                 part2.prepareRecord = @"1";
@@ -418,10 +418,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     [self.session saveCurrentTemplateWithId:template.templateId version:template.version];
-    partModelArray = [NSMutableArray arrayWithArray:template.parts];
+    partModelArray = [NSMutableArray arrayWithArray:template.virtualParts];
     
     for (int i = 0; i < partModelArray.count; i++) {
-        DLYMiniVlogPart *part = partModelArray[i];
+        DLYMiniVlogVirtualPart *part = partModelArray[i];
         if (i == 0) {
             part.prepareRecord = @"1";
         }else {
@@ -902,7 +902,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         //点击哪个item，光标移动到当前item
         prepareTag = button.tag;
         
-        for (DLYMiniVlogPart *part in partModelArray) {
+        for (DLYMiniVlogVirtualPart *part in partModelArray) {
             if ([part.prepareRecord isEqualToString:@"1"]) {
                 NSInteger i = [partModelArray indexOfObject:part];
                 UIView *view = (UIView *)[self.view viewWithTag:30001 + i];
@@ -922,7 +922,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         //点击哪个item，光标移动到当前item
         prepareTag = button.tag;
         
-        for (DLYMiniVlogPart *part in partModelArray) {
+        for (DLYMiniVlogVirtualPart *part in partModelArray) {
             if ([part.prepareRecord isEqualToString:@"1"]) {
                 NSInteger i = [partModelArray indexOfObject:part];
                 UIView *view = (UIView *)[self.view viewWithTag:30001 + i];
@@ -1129,7 +1129,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     NSInteger i = selectPartTag - 10000;
-    DLYMiniVlogPart *part = partModelArray[i - 1];
+    DLYMiniVlogVirtualPart *part = partModelArray[i - 1];
     shootNum = 0.0;
 
     [self.AVEngine startRecordingWithPart:part];
@@ -1139,7 +1139,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     // change UI
     [self.shootView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [self createShootView];
-    for (DLYMiniVlogPart *part in partModelArray) {
+    for (DLYMiniVlogVirtualPart *part in partModelArray) {
         if([part.prepareRecord isEqualToString:@"1"])
         {
             if(part.recordType != DLYMiniVlogRecordTypeNormal)
@@ -1198,12 +1198,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 - (void)finishedRecording {
     NSInteger partNumber = selectPartTag - 10000;
-    DLYMiniVlogPart *part = partModelArray[partNumber - 1];
+    DLYMiniVlogVirtualPart *part = partModelArray[partNumber - 1];
     dispatch_async(dispatch_get_main_queue(), ^{
         self.cancelButton.hidden = YES;
         for(int i = 0; i < partModelArray.count; i++)
         {
-            DLYMiniVlogPart *part1 = partModelArray[i];
+            DLYMiniVlogVirtualPart *part1 = partModelArray[i];
             part1.prepareRecord = @"0";
         }
         part.prepareRecord = @"0";
@@ -1212,7 +1212,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         NSInteger n = 0;
         for(int i = 0; i < partModelArray.count; i++)
         {
-            DLYMiniVlogPart *part2 = partModelArray[i];
+            DLYMiniVlogVirtualPart *part2 = partModelArray[i];
             if([part2.recordStatus isEqualToString:@"0"])
             {
                 part2.prepareRecord = @"1";
@@ -1527,7 +1527,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     NSInteger i = selectPartTag - 10000;
     
-    DLYMiniVlogPart *part = partModelArray[i-1];
+    DLYMiniVlogVirtualPart *part = partModelArray[i-1];
     
     [UIView animateWithDuration:0.5f animations:^{
         
@@ -1539,7 +1539,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     for(int i = 0; i < partModelArray.count; i++)
     {
-        DLYMiniVlogPart *part1 = partModelArray[i];
+        DLYMiniVlogVirtualPart *part1 = partModelArray[i];
         part1.prepareRecord = @"0";
     }
     part.prepareRecord = @"0";
@@ -1548,7 +1548,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSInteger n = 0;
     for(int i = 0; i < partModelArray.count; i++)
     {
-        DLYMiniVlogPart *part2 = partModelArray[i];
+        DLYMiniVlogVirtualPart *part2 = partModelArray[i];
         
         if([part2.recordStatus isEqualToString:@"0"])
         {
@@ -1561,7 +1561,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     //判断
-    for (DLYMiniVlogPart *part3 in partModelArray) {
+    for (DLYMiniVlogVirtualPart *part3 in partModelArray) {
         if ([part3.recordStatus isEqualToString:@"0"]) {
             self.nextButton.hidden = YES;
             [self.allBubble dismiss];
@@ -1608,7 +1608,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     BOOL isAllPart = YES;
     for(int i = 1; i <= partModelArray.count; i ++)
     {
-        DLYMiniVlogPart *part = partModelArray[i - 1];
+        DLYMiniVlogVirtualPart *part = partModelArray[i - 1];
         UIButton * button = [[UIButton alloc]initWithFrame:CGRectMake(43, (episodeHeight + 2) * (i - 1), 10, episodeHeight)];
         button.tag = 10000 + i;
         UIEdgeInsets edgeInsets = {0, -43, 0, -5};
@@ -1781,7 +1781,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
 - (void)changeRecordType {
     NSInteger partNumber = selectPartTag - 10000;
-    DLYMiniVlogPart *part = partModelArray[partNumber - 1];
+    DLYMiniVlogVirtualPart *part = partModelArray[partNumber - 1];
     //设置当前片段录制格式
     [self.AVEngine switchRecordFormatWithRecordType:part.recordType];
 }
@@ -1803,7 +1803,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)updateShootGuide {
     
     NSInteger i = selectPartTag - 10000;
-    DLYMiniVlogPart *part = partModelArray[i-1];
+    DLYMiniVlogVirtualPart *part = partModelArray[i-1];
     self.shootGuide.text = part.shootGuide;
 }
 
@@ -1829,7 +1829,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     BOOL isAllPart = YES;
     for(int i = 1; i <= partModelArray.count; i ++)
     {
-        DLYMiniVlogPart *part = partModelArray[i - 1];
+        DLYMiniVlogVirtualPart *part = partModelArray[i - 1];
         UIButton * button = [[UIButton alloc]initWithFrame:CGRectMake(0, (episodeHeight + 2) * (i - 1), 10, episodeHeight)];
         button.tag = 10000 + i;
         UIEdgeInsets edgeInsets = {0, -5, 0, -43};
@@ -2002,7 +2002,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)prepareShootAction {
     
     if (oldPrepareTag != prepareTag) {
-        DLYMiniVlogPart *part = partModelArray[oldPrepareTag - 10001];
+        DLYMiniVlogVirtualPart *part = partModelArray[oldPrepareTag - 10001];
         if([part.recordStatus isEqualToString:@"1"]){
             UIButton *button = (UIButton *)[self.view viewWithTag:oldPrepareTag];
             button.backgroundColor = RGB(255, 0, 0);
@@ -2044,7 +2044,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     UIButton * button = (UIButton *)sender;
     NSInteger i = button.tag - 10000;
     selectPartTag = button.tag;
-    DLYMiniVlogPart *part = partModelArray[i-1];
+    DLYMiniVlogVirtualPart *part = partModelArray[i-1];
     
     //设置当前片段录制格式
     [self.AVEngine switchRecordFormatWithRecordType:part.recordType];
@@ -2057,7 +2057,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     if([part.recordStatus isEqualToString:@"1"])
     {//说明时已拍摄片段
-        for (DLYMiniVlogPart *part in partModelArray) {
+        for (DLYMiniVlogVirtualPart *part in partModelArray) {
             if ([part.prepareRecord isEqualToString:@"1"]) {
                 NSInteger i = [partModelArray indexOfObject:part];
                 UIView *view = (UIView *)[self.view viewWithTag:30001 + i];
@@ -2091,7 +2091,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.recordBtn.hidden = NO;
         for(int i = 0; i < partModelArray.count; i++)
         {
-            DLYMiniVlogPart *part1 = partModelArray[i];
+            DLYMiniVlogVirtualPart *part1 = partModelArray[i];
             part1.prepareRecord = @"0";
         }
         part.prepareRecord = @"1";
@@ -2337,7 +2337,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     
     BOOL isEmpty = YES;
-    for (DLYMiniVlogPart *part in partModelArray) {
+    for (DLYMiniVlogVirtualPart *part in partModelArray) {
         if ([part.recordStatus isEqualToString:@"1"]) {
             isEmpty = NO;
         }
@@ -2470,7 +2470,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.timeNumber = [[UILabel alloc]initWithFrame:CGRectMake(3, 3, 54, 54)];
     self.timeNumber.textColor = RGB(255, 255, 255);
     NSInteger partNumber = selectPartTag - 10000;
-    DLYMiniVlogPart *part = partModelArray[partNumber - 1];
+    DLYMiniVlogVirtualPart *part = partModelArray[partNumber - 1];
     NSArray *timeArr = [part.duration componentsSeparatedByString:@"."];
     self.timeNumber.text = timeArr[0];
     self.timeNumber.font = FONT_SYSTEM(20);
@@ -2569,7 +2569,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
         for(int i = 0; i < partModelArray.count; i++)
         {
-            DLYMiniVlogPart *part = partModelArray[i];
+            DLYMiniVlogVirtualPart *part = partModelArray[i];
             if ([part.recordStatus isEqualToString:@"0"]) {
                 return;
             }

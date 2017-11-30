@@ -251,6 +251,8 @@
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
     NSString *draftPath = [NSString stringWithFormat:@"%@/%@/%@",kPathDocument,kDataFolder,kDraftFolder];
+    NSString *virtualPath = [NSString stringWithFormat:@"%@/%@/%@",kPathDocument,kDataFolder,kVirtualFolder];
+
     if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
         
         NSArray *draftArray = [self.fileManager contentsOfDirectoryAtPath:draftPath error:nil];
@@ -265,7 +267,24 @@
             }
             DLYLog(@"成功删除Document全部草稿片段");
         }else{
-            DLYLog(@"现在Document中无视频片段");
+            DLYLog(@"现在Document/draft中无视频片段");
+        }
+    }
+    if ([[NSFileManager defaultManager] fileExistsAtPath:virtualPath]) {
+        
+        NSArray *virtualArray = [self.fileManager contentsOfDirectoryAtPath:virtualPath error:nil];
+        BOOL isSuccess = NO;
+        
+        if ([virtualArray count] != 0) {
+            for (NSString *path in virtualArray) {
+                if ([path hasSuffix:@"mp4"]) {
+                    NSString *targetPath = [virtualPath stringByAppendingFormat:@"/%@",path];
+                    isSuccess = [fileManager removeItemAtPath:targetPath error:nil];
+                }
+            }
+            DLYLog(@"成功删除Document全部virtual片段");
+        }else{
+            DLYLog(@"现在Document/virtual中无视频片段");
         }
     }
 }

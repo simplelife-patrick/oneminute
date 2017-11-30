@@ -31,8 +31,8 @@
             NSError *error;
             NSData *decryptedData = [RNDecryptor decryptData:encryptedData withPassword:@"dlyvlog2016" error:&error];
             
-            if (!error) {
-                DLYLog(@"文件解密错误 :",error);
+            if (error!=nil) {
+                DLYLog(@"文件解密错误 :%@",error);
             }
             
             if (decryptedData) {
@@ -83,24 +83,73 @@
     return [mArray copy];
 }
 -(NSMutableArray<DLYMiniVlogVirtualPart *> *)virtualParts{
-    //需要合并的
-    NSMutableArray *needCombinArray = [NSMutableArray array];
-    //不合并的
-    NSMutableArray *needNotCombinArray = [NSMutableArray array];
+    if (!_virtualParts) {
+        _virtualParts = [NSMutableArray array];
+        int combinVirtualPartNum = -1;
+        for (DLYMiniVlogPart *part in self.parts) {
+            if (part.partType == DLYMiniVlogPartTypeComputer) {
+                continue;
+            }
+
+            if(part.ifCombin){//需要拍摄并且需要合并的
+                DLYMiniVlogVirtualPart *virtualPart;
+                NSMutableArray *partsArray;
+                if (combinVirtualPartNum>=0) {
+                    virtualPart = _virtualParts[combinVirtualPartNum];
+                    partsArray = virtualPart.partsInfo;
+                }else{
+                    virtualPart = [[DLYMiniVlogVirtualPart alloc] init];
+                    partsArray = [NSMutableArray array];
+                    virtualPart.partsInfo = partsArray;
+                    [_virtualParts addObject:virtualPart];
+                }
+                [partsArray addObject:part];
+                combinVirtualPartNum =(int)_virtualParts.count-1;
+            }else{
+                DLYMiniVlogVirtualPart *virtualPart = [[DLYMiniVlogVirtualPart alloc] init];
+                NSMutableArray *partsArray = [NSMutableArray array];
+                [partsArray addObject:part];
+                virtualPart.partsInfo = partsArray;
+                [_virtualParts addObject:virtualPart];
+
+            }
+        }
+        for (DLYMiniVlogVirtualPart *virtualPart in _virtualParts) {
+            double totalDutation = 0;
+            BOOL isFirst = YES;
+            for (DLYMiniVlogPart *part in virtualPart.partsInfo) {
+                if(isFirst){
+                    isFirst = NO;
+
+                    virtualPart.shootGuide =part.shootGuide;
+                    virtualPart.recordType = part.recordType;
+                    virtualPart.soundType = part.soundType;
+                    virtualPart.partNum = part.partNum;
+                }else{
+                    if(virtualPart.recordType!=part.recordType){
+                        DLYLog(@"需要合成的模板视频类型不一致！");
+                    }
+                }
+                
+                double _start_ = [self getTimeWithString:part.dubStartTime];
+                double _stop_ = [self getTimeWithString:part.dubStopTime];
+                totalDutation += (_stop_ -_start_);
+
+
+
+            };
+            virtualPart.dubStartTime = @"00:00:00";
+            virtualPart.dubStopTime = [NSString stringWithFormat:@"00:%00.f:00",(totalDutation / 1000)];
+            
+        }
+        if (combinVirtualPartNum>=0) {
+            DLYMiniVlogVirtualPart *virtualPart = _virtualParts[combinVirtualPartNum];
+            virtualPart.partNum = combinVirtualPartNum;
+         
+        }
+
+    }
     
-    for (DLYMiniVlogPart *part in self.parts) {
-        
-        if(part.partType == DLYMiniVlogPartTypeManual && part.ifCombin){//需要拍摄并且需要合并的
-            [needCombinArray addObject:part];
-            _virtualParts = [self combinDurationWithParts:needCombinArray];
-        }
-    }
-    for (DLYMiniVlogPart *part in self.parts) {
-        if(part.partType == DLYMiniVlogPartTypeManual && !part.ifCombin){//需要拍摄不需要合并
-            [needNotCombinArray addObject:part];
-            _virtualParts = needNotCombinArray;
-        }
-    }
     return _virtualParts;
 }
 -(NSArray<DLYMiniVlogVirtualPart *> *)combinDurationWithParts:(NSArray<DLYMiniVlogPart *> *)parts{

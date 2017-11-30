@@ -1180,13 +1180,22 @@ BOOL isOnce = YES;
 - (void) saveRecordedFile
 {
     NSString *exportPath;
+    NSString *partsPath;
     NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:dataPath]) {
+        NSString *virtualPartPath = [dataPath stringByAppendingPathComponent:kVirtualFolder];
         NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
-            exportPath = [NSString stringWithFormat:@"%@/part%lu.mp4",draftPath,(long)_currentPart.partNum];
+        if (![[NSFileManager defaultManager] fileExistsAtPath:virtualPartPath]) {
+            [[NSFileManager defaultManager] createDirectoryAtPath:virtualPartPath withIntermediateDirectories:YES attributes:nil error:nil];
+
         }
+        if (![[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
+            [[NSFileManager defaultManager] createDirectoryAtPath:draftPath withIntermediateDirectories:YES attributes:nil error:nil];
+
+        }
+        exportPath = [NSString stringWithFormat:@"%@/part%lu.mp4",virtualPartPath,(long)_currentPart.partNum];
+        partsPath = [NSString stringWithFormat:@"%@/part%lu.mp4",draftPath,(long)_currentPart.partNum];
     }
     NSURL *exportUrl = [NSURL fileURLWithPath:exportPath];
     
@@ -1196,6 +1205,14 @@ BOOL isOnce = YES;
         [weakSelf setSpeedWithVideo:[NSURL fileURLWithPath:_currentPart.partPath] outputUrl:exportUrl soundType:_currentPart.soundType recordTypeOfPart:_currentPart.recordType completed:^{
             DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
             [self.resource removePartWithPartNumFormTemp:self.currentPart.partNum];
+            //link([exportPath UTF8String], [partsPath UTF8String]);
+            NSError *error;
+//            [[NSFileManager defaultManager] linkItemAtPath:exportPath toPath:partsPath error:&error];
+//            [[NSFileManager defaultManager] createSymbolicLinkAtPath:partsPath withDestinationPath:exportPath error:&error];
+            [[NSFileManager defaultManager] copyItemAtPath:exportPath toPath:partsPath error:&error];
+            if (error) {
+                DLYLog(@"virtual路径拷贝到parts路径失败，原因：%@",error);
+            }
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[DLYIndicatorView sharedIndicatorView] stopFlashAnimating];
             });
