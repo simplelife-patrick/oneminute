@@ -1695,7 +1695,6 @@ BOOL isOnce = YES;
         CALayer *videoBorderLayer = [CALayer layer];
         videoBorderLayer.frame = CGRectMake(0, 0, renderSize.width, renderSize.height);
         [videoBorderLayer addSublayer:imageView.layer];
-        
         [parentLayer addSublayer:videoBorderLayer];
         
         CALayer *videoLayer = [CALayer layer];
