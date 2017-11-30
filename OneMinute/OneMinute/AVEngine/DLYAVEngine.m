@@ -1762,14 +1762,6 @@ BOOL isOnce = YES;
         videoTitleLayer.position = CGPointMake(renderSize.width / 2,renderSize.height / 2);
         [parentLayer addSublayer:videoTitleLayer];
         
-        UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, renderSize.width, renderSize.height)];
-        imageView.image = [UIImage imageNamed:@"videoBorder"];
-        
-        CALayer *videoBorderLayer = [CALayer layer];
-        videoBorderLayer.frame = CGRectMake(0, 0, renderSize.width, renderSize.height);
-        [videoBorderLayer addSublayer:imageView.layer];
-        [parentLayer addSublayer:videoBorderLayer];
-        
         CALayer *videoLayer = [CALayer layer];
         videoLayer.frame = CGRectMake(0, 0, renderSize.width, renderSize.height);
         [parentLayer addSublayer:videoLayer];
@@ -1779,6 +1771,14 @@ BOOL isOnce = YES;
             watermarkLayer.position = CGPointMake(renderSize.width - watermarkLayer.bounds.size.width / 2, 15);
             [parentLayer addSublayer:watermarkLayer];
         }
+        
+        UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, renderSize.width, renderSize.height)];
+        imageView.image = [UIImage imageNamed:@"videoBorder"];
+        
+        CALayer *videoBorderLayer = [CALayer layer];
+        videoBorderLayer.frame = CGRectMake(0, 0, renderSize.width, renderSize.height);
+        [videoBorderLayer addSublayer:imageView.layer];
+        [parentLayer addSublayer:videoBorderLayer];
 
         videoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
     }
