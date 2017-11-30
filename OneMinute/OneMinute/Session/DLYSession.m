@@ -139,17 +139,21 @@
     if ([fileManager fileExistsAtPath:dataPath]) {
         
         NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
-        
-        if ([fileManager fileExistsAtPath:draftPath]) {
-        
-            NSArray *draftArray = [fileManager contentsOfDirectoryAtPath:draftPath error:nil];
-            DLYLog(@"当前模板已经有 %lu 个完成的片段",[draftArray count]);
-            if ([draftArray count]) {
-                return YES;
-            }else{
-                return NO;
+        if([fileManager fileExistsAtPath:draftPath]){
+            NSString *virtualPath = [draftPath stringByAppendingPathComponent:kVirtualFolder];
+            
+            if ([fileManager fileExistsAtPath:virtualPath]) {
+                
+                NSArray *draftArray = [fileManager contentsOfDirectoryAtPath:virtualPath error:nil];
+                DLYLog(@"当前模板已经有 %lu 个完成的片段",[draftArray count]);
+                if ([draftArray count]) {
+                    return YES;
+                }else{
+                    return NO;
+                }
             }
         }
+        
     }
     return NO;
 }

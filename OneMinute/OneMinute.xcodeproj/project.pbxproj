@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1802FE651FCFE48D00809BA6 /* default_part2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 1802FE631FCFE48D00809BA6 /* default_part2.mp4 */; };
+		1802FE681FD0379800809BA6 /* default_part0.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 1802FE671FD0379700809BA6 /* default_part0.mp4 */; };
 		1C7E61841EE7DF4F0088F33F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61831EE7DF4F0088F33F /* main.m */; };
 		1C7E61871EE7DF4F0088F33F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61861EE7DF4F0088F33F /* AppDelegate.m */; };
 		1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C7E618B1EE7DF4F0088F33F /* Main.storyboard */; };
@@ -102,6 +104,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1802FE631FCFE48D00809BA6 /* default_part2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = default_part2.mp4; sourceTree = "<group>"; };
+		1802FE671FD0379700809BA6 /* default_part0.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = default_part0.mp4; sourceTree = "<group>"; };
 		1C7E617F1EE7DF4F0088F33F /* OneMinute.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OneMinute.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C7E61831EE7DF4F0088F33F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1C7E61851EE7DF4F0088F33F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -263,6 +267,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1802FE621FCFE48300809BA6 /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				1802FE631FCFE48D00809BA6 /* default_part2.mp4 */,
+				1802FE671FD0379700809BA6 /* default_part0.mp4 */,
+			);
+			path = Video;
+			sourceTree = "<group>";
+		};
 		1C2CA0151F10A4E50085B662 /* GUI */ = {
 			isa = PBXGroup;
 			children = (
@@ -547,6 +560,7 @@
 		ADA7C2881F2203500002A4E5 /* resources */ = {
 			isa = PBXGroup;
 			children = (
+				1802FE621FCFE48300809BA6 /* Video */,
 				AD887A661F7661FB00A85881 /* BGM */,
 			);
 			path = resources;
@@ -765,6 +779,7 @@
 				ADF5A6D31FB18A6300161F37 /* AdvancedBGM.m4a in Resources */,
 				ADF5A6DA1FB18A6400161F37 /* SecondaryBGM.m4a in Resources */,
 				ADAF8A4F1FB430EB00C09B4B /* BigMeal.dly in Resources */,
+				1802FE681FD0379800809BA6 /* default_part0.mp4 in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				AD9ACE861FB03EA80050EBBA /* SoDelicious.dly in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
@@ -772,6 +787,7 @@
 				AD9ACE841FB03EA80050EBBA /* ColorfulLife.dly in Resources */,
 				AD9ACE811FB03EA80050EBBA /* MyMaldives.dly in Resources */,
 				ADF5A6D11FB18A6300161F37 /* GoNorthBGM.m4a in Resources */,
+				1802FE651FCFE48D00809BA6 /* default_part2.mp4 in Resources */,
 				AD14ED461F9E0ABD000DB796 /* templateList_v1.plist in Resources */,
 				AD9ACE851FB03EA80050EBBA /* Secondary.dly in Resources */,
 				ADF5A6D51FB18A6300161F37 /* PrimaryBGM.m4a in Resources */,

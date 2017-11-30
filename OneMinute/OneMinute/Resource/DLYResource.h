@@ -52,6 +52,12 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
  @return 返回全部草稿片段
  */
 - (NSArray *) loadDraftPartsFromDocument;
+/**
+ 加载虚拟片段从Document
+ 
+ @return 返回虚拟草稿片段
+ */
+- (NSArray *) loadVirtualPartsFromDocument;
 
 /**
  保存成片视频到沙盒中
@@ -94,21 +100,36 @@ typedef  NS_ENUM(NSInteger, DLYResourceType){
 - (void) removePartWithPartNumFromDocument:(NSInteger)partNum;
 
 /**
- 删除Document中全部草稿片段
+ 按片段序号删除Document中的虚拟片段
+
+ @param partNum 虚拟片段序号
+ */
+- (void) removeVirtualPartWithPartNumFromDocument:(NSInteger)partNum;
+/**
+ 删除Document中全部草稿片段 包括虚拟
  */
 - (void) removeCurrentAllPartFromDocument;
 
+/**
+ 删除Document中全部虚拟片段
+ */
+-(void)removeCurrentAllVirtualPartFromDocument;
 /**
  删除Document中成片视频
  */
 - (void) removeProductFromDocument;
 
 /**
- 获取单个片段的播放地址
+ 获取单个虚拟片段的播放地址
+ @param partNum 片段序号
+ */
+- (NSURL *) getVirtualPartUrlWithPartNum:(NSInteger)partNum;
+
+/**
+ 获取单个part片段的播放地址
  @param partNum 片段序号
  */
 - (NSURL *) getPartUrlWithPartNum:(NSInteger)partNum;
-
 /**
  获取成片视频的播放地址
  */

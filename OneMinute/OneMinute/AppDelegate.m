@@ -44,9 +44,11 @@
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
-    if(![[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]){
-        
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstLaunch"];
+    
+    NSDictionary*infoDic = [[NSBundle mainBundle] infoDictionary];
+    NSString *localVersion = [infoDic objectForKey:@"CFBundleShortVersionString"];
+    if (![[NSUserDefaults standardUserDefaults] valueForKey:@"currentVersion"]||![[[NSUserDefaults standardUserDefaults] valueForKey:@"currentVersion"] isEqualToString:localVersion]) {
+        [[NSUserDefaults standardUserDefaults] setValue:localVersion forKey:@"currentVersion"];
         DLYLog(@"The Application Did First Finish Launch !");
         
         NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -61,6 +63,10 @@
                 [fileManager createDirectoryAtPath:draftPath withIntermediateDirectories:YES attributes:nil error:nil];
             }
             
+            NSString *virtualPath = [draftPath stringByAppendingPathComponent:kVirtualFolder];
+            if (![fileManager fileExistsAtPath:virtualPath]) {
+                [fileManager createDirectoryAtPath:virtualPath withIntermediateDirectories:YES attributes:nil error:nil];
+            }
             NSString *tempPath = [dataPath stringByAppendingPathComponent:kTempFolder];
             if (![fileManager fileExistsAtPath:tempPath]) {
                 [fileManager createDirectoryAtPath:tempPath withIntermediateDirectories:YES attributes:nil error:nil];

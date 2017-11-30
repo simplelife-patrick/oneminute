@@ -26,6 +26,7 @@
 #define kResourceFolder @"Resource"
 #define kProductFolder @"Product"
 #define kDraftFolder @"Draft"
+#define kVirtualFolder @"VirtualParts"
 #define kTempFolder @"Temp"
 #define kBGMFolder @"BGM"
 
