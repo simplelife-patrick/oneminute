@@ -102,6 +102,15 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
 - (void) mergeVideoWithVideoTitle:(NSString *)videoTitle successed:(SuccessBlock)successBlock failured:(FailureBlock)failureBlcok;
 
 /**
+ 视频截取
+
+ @param assetUrl 视频文件地址
+ @param outputUrl 保存地址
+ @param startTime 开始时间
+ @param duration 截取时长
+ */
+-(void)trimVideoByWithUrl:(NSURL *)assetUrl outputUrl:(NSURL *)outputUrl startTime:(CMTime)startTime duration:(CMTime)duration;
+/**
  合并并添加转场效果
  
  @param videoTitle 视频标题

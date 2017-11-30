@@ -1332,7 +1332,39 @@ BOOL isOnce = YES;
         [self addMusicToVideo:productOutputUrl audioUrl:BGMUrl videoTitle:videoTitle successed:successBlock failured:failureBlcok];
     }];
 }
-
+#pragma mark - 媒体文件截取 -
+-(void)trimVideoByWithUrl:(NSURL *)assetUrl outputUrl:(NSURL *)outputUrl startTime:(CMTime)startTime duration:(CMTime)duration{
+    
+    AVAsset *asset = [AVAsset assetWithURL:assetUrl];
+    AVAssetTrack *videoAssertTrack = nil;
+    AVAssetTrack *audioAssertTrack = nil;
+    
+    if ([[asset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0]) {
+        videoAssertTrack = [[asset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0];
+    }
+    if ([[asset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0]) {
+        audioAssertTrack = [[asset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
+    }
+    
+    AVMutableComposition *composition = [AVMutableComposition composition];
+    
+    CMTimeRange videoTimeRange = CMTimeRangeMake(startTime,duration);
+    
+    AVMutableCompositionTrack *videoCompositionTrack = [composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+    AVMutableCompositionTrack *audioCompositionTrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+    
+    [videoCompositionTrack insertTimeRange:videoTimeRange ofTrack:videoAssertTrack atTime:kCMTimeZero error:nil];
+    [audioCompositionTrack insertTimeRange:videoTimeRange ofTrack:audioAssertTrack atTime:kCMTimeZero error:nil];
+    
+    AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]initWithAsset:composition presetName:AVAssetExportPreset1280x720];
+    
+    exportSession.outputURL = outputUrl;
+    exportSession.outputFileType = AVFileTypeMPEG4;
+    exportSession.shouldOptimizeForNetworkUse = YES;
+    [exportSession exportAsynchronouslyWithCompletionHandler:^{
+        DLYLog(@"视频截取成功");
+    }];
+}
 #pragma mark - 转场 -
 - (void) addTransitionEffectWithTitle:(NSString *)videoTitle  successed:(SuccessBlock)successBlock failured:(FailureBlock)failureBlcok{
     
