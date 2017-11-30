@@ -310,7 +310,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     BOOL isExitDraft = [self.session isExistDraftAtFile];
     NSMutableArray *draftArr = [NSMutableArray array];
     if (isExitDraft) {
-        NSArray *arr = [self.resource loadDraftPartsFromDocument];
+        NSArray *arr = [self.resource loadVirtualPartsFromDocument];
         for (NSURL *url in arr) {
             NSString *partPath = url.path;
             NSString *newPath = [partPath stringByReplacingOccurrencesOfString:@".mp4" withString:@""];
@@ -1294,7 +1294,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [DLYUserTrack recordAndEventKey:@"PlayPart"];
     NSInteger partNum = selectPartTag - 10000 - 1;
     DLYPlayVideoViewController *playVC = [[DLYPlayVideoViewController alloc] init];
-    playVC.playUrl = [self.resource getPartUrlWithPartNum:partNum];
+    playVC.playUrl = [self.resource getVirtualPartUrlWithPartNum:partNum];
     playVC.isAll = NO;
     playVC.beforeState = self.newState;
     self.isPlayer = YES;
@@ -1328,6 +1328,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         NSInteger partNum = selectPartTag - 10000 - 1;
         [self.resource removePartWithPartNumFormTemp:partNum];
         [self.resource removePartWithPartNumFromDocument:partNum];
+        [self.resource removeVirtualPartWithPartNumFromDocument:partNum];
+        if  (self.AVEngine.currentPart.partsInfo.count>1){
+            [self.resource removeCurrentAllVirtualPartFromDocument];
+        }
         [self deleteSelectPartVideo];
     }
     sender.selected = !sender.selected;

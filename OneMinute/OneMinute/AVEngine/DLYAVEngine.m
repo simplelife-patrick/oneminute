@@ -140,9 +140,9 @@
     }
     return _imageArray;
 }
--(DLYMiniVlogPart *)currentPart{
+-(DLYMiniVlogVirtualPart *)currentPart{
     if (!_currentPart) {
-        _currentPart = [[DLYMiniVlogPart alloc] init];
+        _currentPart = [[DLYMiniVlogVirtualPart alloc] init];
     }
     return _currentPart;
 }
@@ -703,7 +703,7 @@
     }
 }
 #pragma mark 开始录制
-- (void)startRecordingWithPart:(DLYMiniVlogPart *)part{
+- (void)startRecordingWithPart:(DLYMiniVlogVirtualPart *)part{
     
     _currentPart = part;
     
@@ -914,7 +914,19 @@
 
 #pragma mark -添加片头片尾-
 - (void)addVideoHeaderWithTitle:(NSString *)videoTitle successed:(SuccessBlock)successBlock failured:(FailureBlock)failureBlcok{
-    
+    for (DLYMiniVlogVirtualPart *virtualPart in self.session.currentTemplate.parts) {
+        if (virtualPart.partType == DLYMiniVlogPartTypeComputer){
+            [self mergeVideoWithVideoTitle:videoTitle successed:^{
+                //成功
+                successBlock();
+            } failured:^(NSError *error) {
+                //
+                failureBlcok(error);
+            }];
+            return;
+        }
+    }
+
     NSURL *headerUrl;
     NSURL *footerUrl;
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -925,7 +937,7 @@
         if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
             
             NSArray *draftArray = [fileManager contentsOfDirectoryAtPath:draftPath error:nil];
-            NSString *headerPath = draftArray[0];
+            NSString *headerPath = draftArray[1];
             if ([headerPath hasSuffix:@"mp4"]) {
                 NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",headerPath];
                 headerUrl = [NSURL fileURLWithPath:allPath];
@@ -1184,16 +1196,17 @@ BOOL isOnce = YES;
     NSString *dataPath = [kPathDocument stringByAppendingPathComponent:kDataFolder];
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:dataPath]) {
-        NSString *virtualPartPath = [dataPath stringByAppendingPathComponent:kVirtualFolder];
         NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
+        NSString *virtualPartPath = [draftPath stringByAppendingPathComponent:kVirtualFolder];
+        if (![[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
+            [[NSFileManager defaultManager] createDirectoryAtPath:draftPath withIntermediateDirectories:YES attributes:nil error:nil];
+            
+        }
         if (![[NSFileManager defaultManager] fileExistsAtPath:virtualPartPath]) {
             [[NSFileManager defaultManager] createDirectoryAtPath:virtualPartPath withIntermediateDirectories:YES attributes:nil error:nil];
 
         }
-        if (![[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
-            [[NSFileManager defaultManager] createDirectoryAtPath:draftPath withIntermediateDirectories:YES attributes:nil error:nil];
 
-        }
         exportPath = [NSString stringWithFormat:@"%@/part%lu.mp4",virtualPartPath,(long)_currentPart.partNum];
         partsPath = [NSString stringWithFormat:@"%@/part%lu.mp4",draftPath,(long)_currentPart.partNum];
     }
@@ -1206,13 +1219,40 @@ BOOL isOnce = YES;
             DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
             [self.resource removePartWithPartNumFormTemp:self.currentPart.partNum];
             //link([exportPath UTF8String], [partsPath UTF8String]);
-            NSError *error;
-//            [[NSFileManager defaultManager] linkItemAtPath:exportPath toPath:partsPath error:&error];
-//            [[NSFileManager defaultManager] createSymbolicLinkAtPath:partsPath withDestinationPath:exportPath error:&error];
-            [[NSFileManager defaultManager] copyItemAtPath:exportPath toPath:partsPath error:&error];
-            if (error) {
-                DLYLog(@"virtual路径拷贝到parts路径失败，原因：%@",error);
+            if (self.currentPart.partsInfo.count>1){
+                double lastDuration = 0;
+                for (DLYMiniVlogPart *part in self.currentPart.partsInfo) {
+                    NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
+                    NSString *trimPartPath = [NSString stringWithFormat:@"%@/part%lu.mp4",draftPath,(long)part.partNum];
+                    double startTime = [self getTimeWithString:part.dubStartTime];
+                    double stopTime = [self getTimeWithString:part.dubStopTime];
+                    [self trimVideoByWithUrl:exportUrl outputUrl:[NSURL fileURLWithPath:trimPartPath] startTime:lastDuration duration:stopTime-startTime];
+                    lastDuration = stopTime - startTime;
+                }
+                NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
+                NSString *trimPartPath0 = [NSString stringWithFormat:@"%@/part0.mp4",draftPath];
+                NSString *trimPartPath2 = [NSString stringWithFormat:@"%@/part2.mp4",draftPath];
+
+                NSString *part0 = [[NSBundle mainBundle] pathForResource:@"default_part0" ofType:@"mp4"];
+                NSString *part2 = [[NSBundle mainBundle] pathForResource:@"default_part2" ofType:@"mp4"];
+                NSError *error;
+
+                [[NSFileManager defaultManager] copyItemAtPath:part0 toPath:trimPartPath0 error:nil];
+                [[NSFileManager defaultManager] copyItemAtPath:part2 toPath:trimPartPath2 error:nil];
+                if (error) {
+                    DLYLog(@"virtual路径拷贝到parts路径失败，原因：%@",error);
+                }
+
+            }else{
+                NSError *error;
+                //            [[NSFileManager defaultManager] linkItemAtPath:exportPath toPath:partsPath error:&error];
+                //            [[NSFileManager defaultManager] createSymbolicLinkAtPath:partsPath withDestinationPath:exportPath error:&error];
+                [[NSFileManager defaultManager] copyItemAtPath:exportPath toPath:partsPath error:&error];
+                if (error) {
+                    DLYLog(@"virtual路径拷贝到parts路径失败，原因：%@",error);
+                }
             }
+
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[DLYIndicatorView sharedIndicatorView] stopFlashAnimating];
             });
@@ -1254,28 +1294,40 @@ BOOL isOnce = YES;
     DLYLog(@"待合成的视频片段: %@",videoArray);
     
     CMTime cursorTime = kCMTimeZero;
-    for (NSUInteger i = 0; i < videoArray.count; i++) {
-
-        AVURLAsset *asset = nil;
-        if (i == 0) {
-            NSString *headerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"headerVideo.mp4"];
-            if ([[NSFileManager defaultManager] fileExistsAtPath:headerPath]) {
-                NSURL *headerUrl = [NSURL fileURLWithPath:headerPath];
-                asset = [AVURLAsset URLAssetWithURL:headerUrl options:nil];
-            }else {
-                asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
-            }
-        }else if (i == videoArray.count - 1) {
-            NSString *footerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"footerVideo.mp4"];
-            if ([[NSFileManager defaultManager] fileExistsAtPath:footerPath]) {
-                NSURL *footerUrl = [NSURL fileURLWithPath:footerPath];
-                asset = [AVURLAsset URLAssetWithURL:footerUrl options:nil];
-            }else {
-                asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
-            }
-        }else {
-            asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
+    BOOL containCombin = NO;
+    for (DLYMiniVlogVirtualPart *part in self.session.currentTemplate.virtualParts) {
+        if(part.partsInfo.count>1){
+            containCombin = YES;
         }
+    }
+    for (NSUInteger i = 0; i < videoArray.count; i++) {
+        
+        AVURLAsset *asset = nil;
+       
+        if (containCombin){
+            asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
+        }else{
+            if (i == 0) {
+                NSString *headerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"headerVideo.mp4"];
+                if ([[NSFileManager defaultManager] fileExistsAtPath:headerPath]) {
+                    NSURL *headerUrl = [NSURL fileURLWithPath:headerPath];
+                    asset = [AVURLAsset URLAssetWithURL:headerUrl options:nil];
+                }else {
+                    asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
+                }
+            }else if (i == videoArray.count - 1) {
+                NSString *footerPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"footerVideo.mp4"];
+                if ([[NSFileManager defaultManager] fileExistsAtPath:footerPath]) {
+                    NSURL *footerUrl = [NSURL fileURLWithPath:footerPath];
+                    asset = [AVURLAsset URLAssetWithURL:footerUrl options:nil];
+                }else {
+                    asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
+                }
+            }else {
+                asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
+            }
+        }
+       
         
         AVAssetTrack *assetVideoTrack = nil;
         AVAssetTrack *assetAudioTrack = nil;
@@ -1333,28 +1385,32 @@ BOOL isOnce = YES;
     }];
 }
 #pragma mark - 媒体文件截取 -
--(void)trimVideoByWithUrl:(NSURL *)assetUrl outputUrl:(NSURL *)outputUrl startTime:(CMTime)startTime duration:(CMTime)duration{
+-(void)trimVideoByWithUrl:(NSURL *)assetUrl outputUrl:(NSURL *)outputUrl startTime:(double)startTime duration:(double)duration{
     
     AVAsset *asset = [AVAsset assetWithURL:assetUrl];
     AVAssetTrack *videoAssertTrack = nil;
     AVAssetTrack *audioAssertTrack = nil;
     
-    if ([[asset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0]) {
+    if ([asset tracksWithMediaType:AVMediaTypeVideo].count > 0) {
         videoAssertTrack = [[asset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0];
     }
-    if ([[asset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0]) {
+    if ([asset tracksWithMediaType:AVMediaTypeAudio].count > 0){
         audioAssertTrack = [[asset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
     }
+  
     
     AVMutableComposition *composition = [AVMutableComposition composition];
     
-    CMTimeRange videoTimeRange = CMTimeRangeMake(startTime,duration);
+    CMTime _startTime = CMTimeMakeWithSeconds(startTime / 1000, asset.duration.timescale);
+    CMTime _duration = CMTimeMakeWithSeconds(duration / 1000, asset.duration.timescale);
+    
+    CMTimeRange videoTimeRange = CMTimeRangeMake(_startTime,_duration);
     
     AVMutableCompositionTrack *videoCompositionTrack = [composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-    AVMutableCompositionTrack *audioCompositionTrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+//    AVMutableCompositionTrack *audioCompositionTrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     
     [videoCompositionTrack insertTimeRange:videoTimeRange ofTrack:videoAssertTrack atTime:kCMTimeZero error:nil];
-    [audioCompositionTrack insertTimeRange:videoTimeRange ofTrack:audioAssertTrack atTime:kCMTimeZero error:nil];
+//    [audioCompositionTrack insertTimeRange:videoTimeRange ofTrack:audioAssertTrack atTime:kCMTimeZero error:nil];
     
     AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]initWithAsset:composition presetName:AVAssetExportPreset1280x720];
     

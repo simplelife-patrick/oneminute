@@ -63,7 +63,7 @@
                 [fileManager createDirectoryAtPath:draftPath withIntermediateDirectories:YES attributes:nil error:nil];
             }
             
-            NSString *virtualPath = [dataPath stringByAppendingPathComponent:kVirtualFolder];
+            NSString *virtualPath = [draftPath stringByAppendingPathComponent:kVirtualFolder];
             if (![fileManager fileExistsAtPath:virtualPath]) {
                 [fileManager createDirectoryAtPath:virtualPath withIntermediateDirectories:YES attributes:nil error:nil];
             }
