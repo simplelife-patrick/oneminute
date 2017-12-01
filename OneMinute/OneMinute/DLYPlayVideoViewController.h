@@ -16,6 +16,7 @@
 @property (nonatomic, strong) NSURL *playUrl;
 @property (nonatomic, assign) BOOL isSuccess;
 @property (nonatomic, assign) BOOL isOnline;
+@property (nonatomic, copy) NSString *previewBorderName;
 @property (nonatomic, assign) NSInteger beforeState;
 @property (nonatomic, copy) NSArray<DLYMiniVlogPart *>   *moviePaths;  // 录制的原始视频数组
 

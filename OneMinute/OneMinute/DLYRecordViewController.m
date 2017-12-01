@@ -50,6 +50,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, copy) NSArray                             *btnImg;//场景对应的图片
 @property (nonatomic, strong) DLYAVEngine                       *AVEngine;
 @property (nonatomic, strong) UIView                            *previewView;
+@property (nonatomic, strong) UIImageView                       *previewMaskView;
 @property (nonatomic, strong) UIImageView                       *focusCursorImageView;
 @property (nonatomic, strong) UIImageView                       *faceRegionImageView;
 @property (nonatomic, strong) UIView * sceneView; //选择场景的view
@@ -306,7 +307,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     @(IFColorfulLife), @(IFSunSetBeach), @(IFYoungOuting), @(IFSpiritTerritory)];
 
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
-    
+    if (self.session.currentTemplate.previewBorderName) {
+        self.previewMaskView.image = [UIImage imageNamed:self.session.currentTemplate.previewBorderName];
+    }else{
+        self.previewMaskView.image = nil;
+    }
     BOOL isExitDraft = [self.session isExistDraftAtFile];
     NSMutableArray *draftArr = [NSMutableArray array];
     if (isExitDraft) {
@@ -418,6 +423,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     [self.session saveCurrentTemplateWithId:template.templateId version:template.version];
+    if (self.session.currentTemplate.previewBorderName) {
+        self.previewMaskView.image = [UIImage imageNamed:self.session.currentTemplate.previewBorderName];
+    }else{
+        self.previewMaskView.image = nil;
+    }
     partModelArray = [NSMutableArray arrayWithArray:template.virtualParts];
     
     for (int i = 0; i < partModelArray.count; i++) {
@@ -533,7 +543,13 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.previewView.backgroundColor = [UIColor clearColor];
     
     [self.view insertSubview:self.previewView atIndex:0];
-    
+    self.previewMaskView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    [self.view addSubview:self.previewMaskView];
+    if (self.session.currentTemplate.previewBorderName) {
+        self.previewMaskView.image = [UIImage imageNamed:self.session.currentTemplate.previewBorderName];
+    }else{
+        self.previewMaskView.image = nil;
+    }
     //通用button 选择场景button
     self.chooseScene = [[UIButton alloc]initWithFrame:CGRectMake(11, 16, 40, 40)];
     self.chooseScene.backgroundColor = RGBA(0, 0, 0, 0.4);
@@ -1297,6 +1313,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     playVC.playUrl = [self.resource getVirtualPartUrlWithPartNum:partNum];
     playVC.isAll = NO;
     playVC.beforeState = self.newState;
+    playVC.previewBorderName = self.session.currentTemplate.previewBorderName;
     self.isPlayer = YES;
     [self hideBubbleWhenPush];
     [self.navigationController pushViewController:playVC animated:YES];
