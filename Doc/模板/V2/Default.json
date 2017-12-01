@@ -1,6 +1,7 @@
 {
   "id": "Default.dly",
   "title":"入门操作",
+  "border": "default",
   "version": 1,
   "templateType": 0,
   "info": [
@@ -15,7 +16,7 @@
       "soundType": 0,
       "BGMVolume": 100,
       "transitionType": 0,
-      "shootGuide": "只录画面，不录声音哦，快去拍下美好的风景吧"
+      "shootGuide": ""
     },
     {
       "partNum": 1,
@@ -28,7 +29,7 @@
       "recordType": 0,
       "BGMVolume": 100,
       "transitionType": 0,
-      "shootGuide": "只录画面，不录声音哦，快去拍下美好的风景吧"
+      "shootGuide": ""
     },
     {
       "partNum": 2,
@@ -38,10 +39,10 @@
       "dubStartTime": "00:02:97",
       "dubStopTime": "00:07:00",
       "recordType": 0,
-      "soundType": 1,
-      "BGMVolume": 20,
+      "soundType": 0,
+      "BGMVolume": 100,
       "transitionType": 0,
-      "shootGuide": "话筒开启，可以录音，说出你的想法吧"
+      "shootGuide": ""
     },
     {
       "partNum": 3,
@@ -54,7 +55,7 @@
       "soundType": 0,
       "BGMVolume": 100,
       "transitionType": 0,
-      "shootGuide": "不录音，常速"
+      "shootGuide": ""
     }
   ],
   "subTitle1": {
@@ -67,7 +68,7 @@
     "wordSpace": "2",
     "frame": "0/275/667/100"
   },
-  "BGM": "DefaultBGM",
+  "BGM": "PrimaryBGM",
   "header": 0,
   "tailer": 0,
   "templateDescription": "这个模板成片长度为10s，你可以学会怎么用一分拍风景，以及拍自己说话",
