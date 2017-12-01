@@ -45,7 +45,7 @@
 		AD26F1AA1F53E70A00565E27 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */; };
 		AD2877D71FD147FB000F8B28 /* default_part0.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD2877D51FD147FA000F8B28 /* default_part0.mp4 */; };
 		AD2877D81FD147FB000F8B28 /* default_part2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD2877D61FD147FB000F8B28 /* default_part2.mp4 */; };
-		AD2877DC1FD181A8000F8B28 /* Default.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD2877DB1FD181A8000F8B28 /* Default.dly */; };
+		AD2877DE1FD186CC000F8B28 /* Default.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD2877DD1FD186CC000F8B28 /* Default.dly */; };
 		AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5B80B11F3443080094922B /* UIColor+Hex.m */; };
 		AD7608F31F70C07F00556E20 /* NSObject+JSONCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608EA1F70C07F00556E20 /* NSObject+JSONCategories.m */; };
 		AD7608F41F70C07F00556E20 /* UIButton+LargerHitArea.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608EC1F70C07F00556E20 /* UIButton+LargerHitArea.m */; };
@@ -177,7 +177,7 @@
 		AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRecordViewController.m; sourceTree = "<group>"; };
 		AD2877D51FD147FA000F8B28 /* default_part0.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = default_part0.mp4; sourceTree = "<group>"; };
 		AD2877D61FD147FB000F8B28 /* default_part2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = default_part2.mp4; sourceTree = "<group>"; };
-		AD2877DB1FD181A8000F8B28 /* Default.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Default.dly; sourceTree = "<group>"; };
+		AD2877DD1FD186CC000F8B28 /* Default.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Default.dly; sourceTree = "<group>"; };
 		AD5B80B01F3443080094922B /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		AD5B80B11F3443080094922B /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		AD7608E91F70C07F00556E20 /* NSObject+JSONCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+JSONCategories.h"; sourceTree = "<group>"; };
@@ -526,7 +526,7 @@
 		AD66B51F1FA1C582000606DD /* v1.0 */ = {
 			isa = PBXGroup;
 			children = (
-				AD2877DB1FD181A8000F8B28 /* Default.dly */,
+				AD2877DD1FD186CC000F8B28 /* Default.dly */,
 				AD9ACE751FB03EA60050EBBA /* Advanced.dly */,
 				AD9ACE741FB03EA60050EBBA /* AfternoonTea.dly */,
 				AD9ACE7A1FB03EA70050EBBA /* ColorfulLife.dly */,
@@ -771,7 +771,7 @@
 				ADF5A6D81FB18A6400161F37 /* BigMealBGM.m4a in Resources */,
 				ADF5A6D21FB18A6300161F37 /* AfternoonTeaBGM.m4a in Resources */,
 				AD9ACE7F1FB03EA80050EBBA /* Advanced.dly in Resources */,
-				AD2877DC1FD181A8000F8B28 /* Default.dly in Resources */,
+				AD2877DE1FD186CC000F8B28 /* Default.dly in Resources */,
 				AD9ACE7E1FB03EA80050EBBA /* AfternoonTea.dly in Resources */,
 				AD9ACE831FB03EA80050EBBA /* SunSetBeach.dly in Resources */,
 				ADF5A6D61FB18A6400161F37 /* ColorfulLifeBGM.m4a in Resources */,
