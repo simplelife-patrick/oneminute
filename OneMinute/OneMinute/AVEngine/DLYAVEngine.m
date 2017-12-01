@@ -1244,12 +1244,10 @@ BOOL isOnce = YES;
                         }
                     }
                 }
-
+                
             }else{
                 NSError *error;
-                //            [[NSFileManager defaultManager] linkItemAtPath:exportPath toPath:partsPath error:&error];
-                //            [[NSFileManager defaultManager] createSymbolicLinkAtPath:partsPath withDestinationPath:exportPath error:&error];
-                [[NSFileManager defaultManager] copyItemAtPath:exportPath toPath:partsPath error:&error];
+                [[NSFileManager defaultManager] createSymbolicLinkAtPath:partsPath withDestinationPath:exportPath error:&error];
                 if (error) {
                     DLYLog(@"virtual路径拷贝到parts路径失败，原因：%@",error);
                 }
@@ -1350,12 +1348,10 @@ BOOL isOnce = YES;
                         
                     }
                     NSArray *draftArray = [fileManager contentsOfDirectoryAtPath:draftPath error:nil];
-                    BOOL isEmpty = YES;
                     for (NSInteger i = 0; i < [draftArray count]; i++) {
                         NSString *path = draftArray[i];
                         DLYLog(@"合并-->加载--> 第 %lu 个片段",i);
                         if ([path hasSuffix:@"mp4"]) {
-                            isEmpty = NO;
                             NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
                             NSURL *url= [NSURL fileURLWithPath:allPath];
                             [videoArray addObject:url];
