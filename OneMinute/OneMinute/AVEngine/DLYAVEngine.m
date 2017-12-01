@@ -1845,6 +1845,32 @@ BOOL isOnce = YES;
             watermarkLayer.position = CGPointMake(renderSize.width - watermarkLayer.bounds.size.width / 2, 15);
             [parentLayer addSublayer:watermarkLayer];
         }
+        
+        //添加视频边框
+        UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, renderSize.width, renderSize.height)];
+        imageView.image = [UIImage imageNamed:@"videoBorder"];
+        
+        CALayer *videoBorderLayer = [CALayer layer];
+        videoBorderLayer.frame = CGRectMake(0, 0, renderSize.width, renderSize.height);
+        [videoBorderLayer addSublayer:imageView.layer];
+        [parentLayer addSublayer:videoBorderLayer];
+        
+        //添加天数水印
+        NSInteger days = [self getTodayIsHowManyDay];
+        NSString *daysString = [NSString stringWithFormat:@"NO %lu",days];
+        
+        UIFont *font = [UIFont systemFontOfSize:30.0];
+        CGSize textSize = [daysString sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
+        
+        CATextLayer *daysLayer = [CATextLayer layer];
+        daysLayer.frame = CGRectMake(0, 0, textSize.width * 1.14, textSize.height * 1.05);
+        [daysLayer setFontSize:30.f];
+        [daysLayer setFont:@"ArialRoundedMTBold"];
+        [daysLayer setString:daysString];
+        [daysLayer setAlignmentMode:kCAAlignmentCenter];
+        [daysLayer setForegroundColor:[[UIColor colorWithHexString:@"#000000" withAlpha:0.5] CGColor]];
+        daysLayer.position = CGPointMake(renderSize.width - daysLayer.bounds.size.width, 32);
+        [parentLayer addSublayer:daysLayer];
 
         videoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
     }
@@ -2325,6 +2351,21 @@ BOOL isOnce = YES;
     NSString *dateTime = [formatter stringFromDate:[NSDate date]];
     return dateTime;
 }
+
+- (NSInteger) getTodayIsHowManyDay
+{
+    NSDate*date = [NSDate date];
+    NSCalendar*calendar = [NSCalendar currentCalendar];
+    NSDateComponents *comps = [calendar components:(NSWeekCalendarUnit | NSWeekdayCalendarUnit |NSWeekdayOrdinalCalendarUnit)fromDate:date];
+    
+    NSInteger week = [comps week];
+    NSInteger weekday = [comps weekday];
+    
+    NSInteger howManyDay = (week - 1) * 7 + weekday;
+    
+    return howManyDay;
+}
+
 //计算两点间距离
 CGFloat distanceBetweenPoints (CGPoint first, CGPoint second) {
     CGFloat deltaX = second.x - first.x;
