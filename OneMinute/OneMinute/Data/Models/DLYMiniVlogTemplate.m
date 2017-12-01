@@ -78,6 +78,7 @@
         part.BGMVolume = [[dic objectForKey:@"BGMVolume"] floatValue];
         part.transitionType = [[dic objectForKey:@"transitionType"] integerValue];
         part.shootGuide = [dic objectForKey:@"shootGuide"];
+        part.partPath = [dic objectForKey:@"partPath"];
         [mArray addObject:part];
     }
     return [mArray copy];

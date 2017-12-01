@@ -1218,7 +1218,7 @@ BOOL isOnce = YES;
         [weakSelf setSpeedWithVideo:[NSURL fileURLWithPath:_currentPart.partPath] outputUrl:exportUrl soundType:_currentPart.soundType recordTypeOfPart:_currentPart.recordType completed:^{
             DLYLog(@"第 %lu 个片段调速完成",self.currentPart.partNum + 1);
             [self.resource removePartWithPartNumFormTemp:self.currentPart.partNum];
-            //link([exportPath UTF8String], [partsPath UTF8String]);
+            //如果是需要拍摄的且需要切分
             if (self.currentPart.partsInfo.count>1){
                 double lastDuration = 0;
                 for (DLYMiniVlogPart *part in self.currentPart.partsInfo) {
@@ -1230,17 +1230,19 @@ BOOL isOnce = YES;
                     lastDuration = stopTime - startTime;
                 }
                 NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
-                NSString *trimPartPath0 = [NSString stringWithFormat:@"%@/part0.mp4",draftPath];
-                NSString *trimPartPath2 = [NSString stringWithFormat:@"%@/part2.mp4",draftPath];
 
-                NSString *part0 = [[NSBundle mainBundle] pathForResource:@"default_part0" ofType:@"mp4"];
-                NSString *part2 = [[NSBundle mainBundle] pathForResource:@"default_part2" ofType:@"mp4"];
-                NSError *error;
+                for (DLYMiniVlogPart * part in self.session.currentTemplate.parts) {
 
-                [[NSFileManager defaultManager] copyItemAtPath:part0 toPath:trimPartPath0 error:nil];
-                [[NSFileManager defaultManager] copyItemAtPath:part2 toPath:trimPartPath2 error:nil];
-                if (error) {
-                    DLYLog(@"virtual路径拷贝到parts路径失败，原因：%@",error);
+                    if (part.partType ==DLYMiniVlogPartTypeComputer) {
+                        NSString *bundlePath = [[NSBundle mainBundle] pathForResource:[part partPath] ofType:nil];
+                        NSString *destPath = [NSString stringWithFormat:@"%@/part%ld.mp4",draftPath,[part partNum]];
+                        NSError *error;
+                        
+                        [[NSFileManager defaultManager] copyItemAtPath:bundlePath toPath:destPath error:nil];
+                        if (error) {
+                            DLYLog(@"bundle路径拷贝到parts路径失败，原因：%@",error);
+                        }
+                    }
                 }
 
             }else{
@@ -1279,14 +1281,86 @@ BOOL isOnce = YES;
         if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
             
             NSArray *draftArray = [fileManager contentsOfDirectoryAtPath:draftPath error:nil];
-            
+            BOOL isEmpty = YES;
             for (NSInteger i = 0; i < [draftArray count]; i++) {
                 NSString *path = draftArray[i];
                 DLYLog(@"合并-->加载--> 第 %lu 个片段",i);
                 if ([path hasSuffix:@"mp4"]) {
+                    isEmpty = NO;
                     NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
                     NSURL *url= [NSURL fileURLWithPath:allPath];
                     [videoArray addObject:url];
+                }
+            }
+            if (isEmpty){
+                BOOL needCombine = NO;
+                for (DLYMiniVlogPart *part in self.session.currentTemplate.parts) {
+                    if (part.ifCombin) {
+                        needCombine = YES;
+                        break;
+                    }
+                }
+#warning 目前是10s只会拍摄一次 存在视频切分异步问题
+                if (needCombine){
+                    NSString *exportPath = @"";
+                    if ([[NSFileManager defaultManager] fileExistsAtPath:dataPath]) {
+                        NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
+                        NSString *virtualPartPath = [draftPath stringByAppendingPathComponent:kVirtualFolder];
+                        if (![[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
+                            [[NSFileManager defaultManager] createDirectoryAtPath:draftPath withIntermediateDirectories:YES attributes:nil error:nil];
+                            
+                        }
+                        if (![[NSFileManager defaultManager] fileExistsAtPath:virtualPartPath]) {
+                            [[NSFileManager defaultManager] createDirectoryAtPath:virtualPartPath withIntermediateDirectories:YES attributes:nil error:nil];
+                            
+                        }
+                        
+                        exportPath = [NSString stringWithFormat:@"%@/part%lu.mp4",virtualPartPath,(long)_currentPart.partNum];
+                    }
+                    NSURL *exportUrl = [NSURL fileURLWithPath:exportPath];
+                    if (self.session.currentTemplate.virtualParts<=0){
+                        DLYLog(@"草稿有合拍的视频但没有切分且读取不到当前模板的虚拟片段");
+                        return;
+                    }
+                    if (self.session.currentTemplate.virtualParts[0].partsInfo.count>1){
+                        double lastDuration = 0;
+                        for (DLYMiniVlogPart *part in self.self.session.currentTemplate.virtualParts[0].partsInfo) {
+                            NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
+                            NSString *trimPartPath = [NSString stringWithFormat:@"%@/part%lu.mp4",draftPath,(long)part.partNum];
+                            double startTime = [self getTimeWithString:part.dubStartTime];
+                            double stopTime = [self getTimeWithString:part.dubStopTime];
+                            [self trimVideoByWithUrl:exportUrl outputUrl:[NSURL fileURLWithPath:trimPartPath] startTime:lastDuration duration:stopTime-startTime];
+                            lastDuration = stopTime - startTime;
+                        }
+                        NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
+                        
+                        for (DLYMiniVlogPart * part in self.session.currentTemplate.parts) {
+                            
+                            if (part.partType ==DLYMiniVlogPartTypeComputer) {
+                                NSString *bundlePath = [[NSBundle mainBundle] pathForResource:[part partPath] ofType:nil];
+                                NSString *destPath = [NSString stringWithFormat:@"%@/part%ld.mp4",draftPath,[part partNum]];
+                                NSError *error;
+                                
+                                [[NSFileManager defaultManager] copyItemAtPath:bundlePath toPath:destPath error:nil];
+                                if (error) {
+                                    DLYLog(@"bundle路径拷贝到parts路径失败，原因：%@",error);
+                                }
+                            }
+                        }
+                        
+                    }
+                    NSArray *draftArray = [fileManager contentsOfDirectoryAtPath:draftPath error:nil];
+                    BOOL isEmpty = YES;
+                    for (NSInteger i = 0; i < [draftArray count]; i++) {
+                        NSString *path = draftArray[i];
+                        DLYLog(@"合并-->加载--> 第 %lu 个片段",i);
+                        if ([path hasSuffix:@"mp4"]) {
+                            isEmpty = NO;
+                            NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
+                            NSURL *url= [NSURL fileURLWithPath:allPath];
+                            [videoArray addObject:url];
+                        }
+                    }
                 }
             }
         }

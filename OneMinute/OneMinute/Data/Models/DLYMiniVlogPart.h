@@ -80,7 +80,7 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
 /**
  片段类型
  */
-@property (nonatomic, assign) NSInteger                     partType;
+@property (nonatomic, assign) DLYMiniVlogPartType           partType;
 
 /**
  片段序号
