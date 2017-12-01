@@ -1840,37 +1840,57 @@ BOOL isOnce = YES;
         videoLayer.frame = CGRectMake(0, 0, renderSize.width, renderSize.height);
         [parentLayer addSublayer:videoLayer];
         
-        if (APPTEST) {
-            CALayer *watermarkLayer = [self addTestInfoWatermarkWithSize:renderSize];
-            watermarkLayer.position = CGPointMake(renderSize.width - watermarkLayer.bounds.size.width / 2, 15);
-            [parentLayer addSublayer:watermarkLayer];
-        }
+//        if (APPTEST) {
+//            CALayer *watermarkLayer = [self addTestInfoWatermarkWithSize:renderSize];
+//            watermarkLayer.position = CGPointMake(renderSize.width - watermarkLayer.bounds.size.width / 2, 15);
+//            [parentLayer addSublayer:watermarkLayer];
+//        }
         
         //添加视频边框
         UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, renderSize.width, renderSize.height)];
-        imageView.image = [UIImage imageNamed:@"videoBorder"];
+        imageView.image = [UIImage imageNamed:@"video_border_render"];
         
         CALayer *videoBorderLayer = [CALayer layer];
         videoBorderLayer.frame = CGRectMake(0, 0, renderSize.width, renderSize.height);
         [videoBorderLayer addSublayer:imageView.layer];
         [parentLayer addSublayer:videoBorderLayer];
         
-        //添加天数水印
+        //添加时间戳水印
         NSInteger days = [self getTodayIsHowManyDay];
-        NSString *daysString = [NSString stringWithFormat:@"NO %lu",days];
         
-        UIFont *font = [UIFont systemFontOfSize:30.0];
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"yyyy"];
+        NSString *whoseYear = [formatter stringFromDate:[NSDate date]];
+        
+        NSString *daysString = [NSString stringWithFormat:@"%@    NO. %lu",whoseYear,days];
+        
+        UIFont *font = [UIFont systemFontOfSize:25];
         CGSize textSize = [daysString sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
         
         CATextLayer *daysLayer = [CATextLayer layer];
-        daysLayer.frame = CGRectMake(0, 0, textSize.width * 1.14, textSize.height * 1.05);
-        [daysLayer setFontSize:30.f];
-        [daysLayer setFont:@"ArialRoundedMTBold"];
+        daysLayer.frame = CGRectMake(0, 0, textSize.width * 1.2, textSize.height * 1.05);
+        [daysLayer setFontSize:25];
+        [daysLayer setFont:@"Helvetica"];
         [daysLayer setString:daysString];
         [daysLayer setAlignmentMode:kCAAlignmentCenter];
-        [daysLayer setForegroundColor:[[UIColor colorWithHexString:@"#000000" withAlpha:0.5] CGColor]];
-        daysLayer.position = CGPointMake(renderSize.width - daysLayer.bounds.size.width, 32);
+        [daysLayer setForegroundColor:[[UIColor colorWithHexString:@"#0B1013" withAlpha:1] CGColor]];
+        daysLayer.position = CGPointMake(renderSize.width - daysLayer.bounds.size.width / 2, 35);
         [parentLayer addSublayer:daysLayer];
+        
+        //添加水印签名
+        NSString *maskStr = @"POWERED BY 一分视频";
+        UIFont *maskStrfFont = [UIFont systemFontOfSize:20.0];
+        CGSize maskStrTextSize = [maskStr sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:maskStrfFont,NSFontAttributeName, nil]];
+        
+        CATextLayer *markStrLayer = [CATextLayer layer];
+        markStrLayer.frame = CGRectMake(0, 0, maskStrTextSize.width * 1.3, maskStrTextSize.height * 1.05);
+        [markStrLayer setFontSize:20.f];
+        [markStrLayer setString:maskStr];
+        [markStrLayer setFont:@"Helvetica"];
+        [markStrLayer setAlignmentMode:kCAAlignmentCenter];
+        [markStrLayer setForegroundColor:[[UIColor colorWithHexString:@"#ffffff" withAlpha:0.5] CGColor]];
+        markStrLayer.position = CGPointMake(renderSize.width - markStrLayer.bounds.size.width / 2, 90);
+        [parentLayer addSublayer:markStrLayer];
 
         videoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
     }
@@ -1882,23 +1902,23 @@ BOOL isOnce = YES;
     AVMutableAudioMixInputParameters *videoParameters = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:originalAudioCompositionTrack];
     AVMutableAudioMixInputParameters *BGMParameters = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:BGMAudioCompositionTrack];
     
-    NSArray *partArray = self.session.currentTemplate.parts;
-    
-    for (NSInteger i = 0; i < partArray.count; i++) {
-        
-        DLYMiniVlogPart *part = partArray[i];
-        
-        double startTime = [self getTimeWithString:part.dubStartTime]  / 1000;
-        double stopTime = [self getTimeWithString:part.dubStopTime] / 1000;
-        
-        _startTime = CMTimeMakeWithSeconds(startTime, audioAsset.duration.timescale);
-        _stopTime = CMTimeMakeWithSeconds(stopTime, audioAsset.duration.timescale);
-
-        CMTime duration = CMTimeSubtract(_stopTime, _startTime);
-        CMTimeRange timeRange = CMTimeRangeMake(_startTime, duration);
-        [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
-    }
-    audioMix.inputParameters = @[videoParameters,BGMParameters];
+//    NSArray *partArray = self.session.currentTemplate.parts;
+//
+//    for (NSInteger i = 0; i < partArray.count; i++) {
+//
+//        DLYMiniVlogPart *part = partArray[i];
+//
+//        double startTime = [self getTimeWithString:part.dubStartTime]  / 1000;
+//        double stopTime = [self getTimeWithString:part.dubStopTime] / 1000;
+//
+//        _startTime = CMTimeMakeWithSeconds(startTime, audioAsset.duration.timescale);
+//        _stopTime = CMTimeMakeWithSeconds(stopTime, audioAsset.duration.timescale);
+//
+//        CMTime duration = CMTimeSubtract(_stopTime, _startTime);
+//        CMTimeRange timeRange = CMTimeRangeMake(_startTime, duration);
+//        [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
+//    }
+    audioMix.inputParameters = @[/*videoParameters,*/BGMParameters];
     
     NSURL *outPutUrl = [self.resource saveProductToSandbox];
     self.currentProductUrl = outPutUrl;
