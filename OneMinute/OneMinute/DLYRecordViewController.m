@@ -1347,7 +1347,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self.resource removePartWithPartNumFromDocument:partNum];
         [self.resource removeVirtualPartWithPartNumFromDocument:partNum];
         if  (self.AVEngine.currentPart.partsInfo.count>1){
-            [self.resource removeCurrentAllVirtualPartFromDocument];
+            [self.resource removeCurrentAllPartFromDocument];
         }
         [self deleteSelectPartVideo];
     }
@@ -1826,6 +1826,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     NSInteger i = selectPartTag - 10000;
     DLYMiniVlogVirtualPart *part = partModelArray[i-1];
     self.shootGuide.text = part.shootGuide;
+    if ([self.shootGuide.text isEqualToString:@""]||!self.shootGuide.text) {
+        self.shootGuide.hidden = YES;
+    }else{
+        self.shootGuide.hidden = NO;
+    }
 }
 
 - (void)createLeftPartView {
