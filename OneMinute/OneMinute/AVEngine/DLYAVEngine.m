@@ -1890,14 +1890,14 @@ BOOL isOnce = YES;
     AVMutableAudioMixInputParameters *BGMParameters = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:BGMAudioCompositionTrack];
     
     NSArray *partArray = self.session.currentTemplate.parts;
-    
+
     for (NSInteger i = 0; i < partArray.count; i++) {
-        
+
         DLYMiniVlogPart *part = partArray[i];
-        
+
         double startTime = [self getTimeWithString:part.dubStartTime]  / 1000;
         double stopTime = [self getTimeWithString:part.dubStopTime] / 1000;
-        
+
         _startTime = CMTimeMakeWithSeconds(startTime, audioAsset.duration.timescale);
         _stopTime = CMTimeMakeWithSeconds(stopTime, audioAsset.duration.timescale);
 

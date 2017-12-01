@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1802FE651FCFE48D00809BA6 /* default_part2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 1802FE631FCFE48D00809BA6 /* default_part2.mp4 */; };
-		1802FE681FD0379800809BA6 /* default_part0.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 1802FE671FD0379700809BA6 /* default_part0.mp4 */; };
 		1C7E61841EE7DF4F0088F33F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61831EE7DF4F0088F33F /* main.m */; };
 		1C7E61871EE7DF4F0088F33F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61861EE7DF4F0088F33F /* AppDelegate.m */; };
 		1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C7E618B1EE7DF4F0088F33F /* Main.storyboard */; };
@@ -45,6 +43,8 @@
 		AD14ED461F9E0ABD000DB796 /* templateList_v1.plist in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED451F9E0ABD000DB796 /* templateList_v1.plist */; };
 		AD26F1A81F53E6DE00565E27 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */; };
 		AD26F1AA1F53E70A00565E27 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */; };
+		AD2877D71FD147FB000F8B28 /* default_part0.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD2877D51FD147FA000F8B28 /* default_part0.mp4 */; };
+		AD2877D81FD147FB000F8B28 /* default_part2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD2877D61FD147FB000F8B28 /* default_part2.mp4 */; };
 		AD5B80B21F3443080094922B /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = AD5B80B11F3443080094922B /* UIColor+Hex.m */; };
 		AD7608F31F70C07F00556E20 /* NSObject+JSONCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608EA1F70C07F00556E20 /* NSObject+JSONCategories.m */; };
 		AD7608F41F70C07F00556E20 /* UIButton+LargerHitArea.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608EC1F70C07F00556E20 /* UIButton+LargerHitArea.m */; };
@@ -104,8 +104,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1802FE631FCFE48D00809BA6 /* default_part2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = default_part2.mp4; sourceTree = "<group>"; };
-		1802FE671FD0379700809BA6 /* default_part0.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = default_part0.mp4; sourceTree = "<group>"; };
 		1C7E617F1EE7DF4F0088F33F /* OneMinute.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OneMinute.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C7E61831EE7DF4F0088F33F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1C7E61851EE7DF4F0088F33F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -177,6 +175,8 @@
 		AD26F1A61F53E6DE00565E27 /* DLYAVEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAVEngine.h; sourceTree = "<group>"; };
 		AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAVEngine.m; sourceTree = "<group>"; };
 		AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRecordViewController.m; sourceTree = "<group>"; };
+		AD2877D51FD147FA000F8B28 /* default_part0.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = default_part0.mp4; sourceTree = "<group>"; };
+		AD2877D61FD147FB000F8B28 /* default_part2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = default_part2.mp4; sourceTree = "<group>"; };
 		AD5B80B01F3443080094922B /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		AD5B80B11F3443080094922B /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		AD7608E91F70C07F00556E20 /* NSObject+JSONCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+JSONCategories.h"; sourceTree = "<group>"; };
@@ -270,8 +270,8 @@
 		1802FE621FCFE48300809BA6 /* Video */ = {
 			isa = PBXGroup;
 			children = (
-				1802FE631FCFE48D00809BA6 /* default_part2.mp4 */,
-				1802FE671FD0379700809BA6 /* default_part0.mp4 */,
+				AD2877D51FD147FA000F8B28 /* default_part0.mp4 */,
+				AD2877D61FD147FB000F8B28 /* default_part2.mp4 */,
 			);
 			path = Video;
 			sourceTree = "<group>";
@@ -779,15 +779,15 @@
 				ADF5A6D31FB18A6300161F37 /* AdvancedBGM.m4a in Resources */,
 				ADF5A6DA1FB18A6400161F37 /* SecondaryBGM.m4a in Resources */,
 				ADAF8A4F1FB430EB00C09B4B /* BigMeal.dly in Resources */,
-				1802FE681FD0379800809BA6 /* default_part0.mp4 in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				AD9ACE861FB03EA80050EBBA /* SoDelicious.dly in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
 				AD9ACE821FB03EA80050EBBA /* GoNorth.dly in Resources */,
 				AD9ACE841FB03EA80050EBBA /* ColorfulLife.dly in Resources */,
+				AD2877D71FD147FB000F8B28 /* default_part0.mp4 in Resources */,
+				AD2877D81FD147FB000F8B28 /* default_part2.mp4 in Resources */,
 				AD9ACE811FB03EA80050EBBA /* MyMaldives.dly in Resources */,
 				ADF5A6D11FB18A6300161F37 /* GoNorthBGM.m4a in Resources */,
-				1802FE651FCFE48D00809BA6 /* default_part2.mp4 in Resources */,
 				AD14ED461F9E0ABD000DB796 /* templateList_v1.plist in Resources */,
 				AD9ACE851FB03EA80050EBBA /* Secondary.dly in Resources */,
 				ADF5A6D51FB18A6300161F37 /* PrimaryBGM.m4a in Resources */,
