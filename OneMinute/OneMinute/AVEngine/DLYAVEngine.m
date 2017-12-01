@@ -1862,7 +1862,13 @@ BOOL isOnce = YES;
         [formatter setDateFormat:@"yyyy"];
         NSString *whoseYear = [formatter stringFromDate:[NSDate date]];
         
-        NSString *daysString = [NSString stringWithFormat:@"%@    NO. %lu",whoseYear,days];
+        NSString *daysString = [NSString stringWithFormat:@"%@ NO. %lu",whoseYear,days];
+        
+        int space = 20;
+        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:daysString attributes:@{NSKernAttributeName:@(space)}];
+        
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [daysString length])];
         
         UIFont *font = [UIFont systemFontOfSize:25];
         CGSize textSize = [daysString sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
