@@ -48,6 +48,10 @@
                 self.videoTailerType = [[dic objectForKey:@"tailer"] integerValue];
                 self.templateDescription = [dic objectForKey:@"templateDescription"];
                 self.sampleVideoName = [kTEMPLATE_SAMPLE_API stringByAppendingFormat:@"%@",[dic objectForKey:@"sampleVideoName"]];
+                if ([dic valueForKey:@"border"]) {
+                    self.previewBorderName = [NSString stringWithFormat:@"%@_preview.png",[dic valueForKey:@"border"]];
+                    self.renderBorderName = [NSString stringWithFormat:@"%@_render.png",[dic valueForKey:@"border"]];
+                }
             }else{
                 DLYLog(@"模板脚本文件解析出错");
             }
