@@ -1884,7 +1884,9 @@ BOOL isOnce = YES;
         [parentLayer addSublayer:daysLayer];
         
         //添加水印签名
-        NSString *maskStr = @"POWERED BY 一分视频";
+        NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+        NSString *app_Name = [infoDictionary objectForKey:@"CFBundleDisplayName"];
+        NSString *maskStr = [NSString stringWithFormat:@"POWERED BY %@",app_Name];
         UIFont *maskStrfFont = [UIFont systemFontOfSize:20.0];
         CGSize maskStrTextSize = [maskStr sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:maskStrfFont,NSFontAttributeName, nil]];
         
@@ -1908,23 +1910,23 @@ BOOL isOnce = YES;
     AVMutableAudioMixInputParameters *videoParameters = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:originalAudioCompositionTrack];
     AVMutableAudioMixInputParameters *BGMParameters = [AVMutableAudioMixInputParameters audioMixInputParametersWithTrack:BGMAudioCompositionTrack];
     
-//    NSArray *partArray = self.session.currentTemplate.parts;
-//
-//    for (NSInteger i = 0; i < partArray.count; i++) {
-//
-//        DLYMiniVlogPart *part = partArray[i];
-//
-//        double startTime = [self getTimeWithString:part.dubStartTime]  / 1000;
-//        double stopTime = [self getTimeWithString:part.dubStopTime] / 1000;
-//
-//        _startTime = CMTimeMakeWithSeconds(startTime, audioAsset.duration.timescale);
-//        _stopTime = CMTimeMakeWithSeconds(stopTime, audioAsset.duration.timescale);
-//
-//        CMTime duration = CMTimeSubtract(_stopTime, _startTime);
-//        CMTimeRange timeRange = CMTimeRangeMake(_startTime, duration);
-//        [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
-//    }
-    audioMix.inputParameters = @[/*videoParameters,*/BGMParameters];
+    NSArray *partArray = self.session.currentTemplate.parts;
+
+    for (NSInteger i = 0; i < partArray.count; i++) {
+
+        DLYMiniVlogPart *part = partArray[i];
+
+        double startTime = [self getTimeWithString:part.dubStartTime]  / 1000;
+        double stopTime = [self getTimeWithString:part.dubStopTime] / 1000;
+
+        _startTime = CMTimeMakeWithSeconds(startTime, audioAsset.duration.timescale);
+        _stopTime = CMTimeMakeWithSeconds(stopTime, audioAsset.duration.timescale);
+
+        CMTime duration = CMTimeSubtract(_stopTime, _startTime);
+        CMTimeRange timeRange = CMTimeRangeMake(_startTime, duration);
+        [BGMParameters setVolumeRampFromStartVolume:part.BGMVolume / 100 toEndVolume:part.BGMVolume / 100 timeRange:timeRange];
+    }
+    audioMix.inputParameters = @[videoParameters,BGMParameters];
     
     NSURL *outPutUrl = [self.resource saveProductToSandbox];
     self.currentProductUrl = outPutUrl;
