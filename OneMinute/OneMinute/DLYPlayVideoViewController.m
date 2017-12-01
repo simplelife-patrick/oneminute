@@ -35,6 +35,7 @@
 @property (nonatomic, strong) UILabel *currentLabel;
 @property (nonatomic, strong) UILabel *durationLabel;
 //控件
+@property (nonatomic, strong) UIImageView                       *previewMaskView;
 @property (nonatomic, strong) UIActivityIndicatorView *waitIndicator;
 @property (nonatomic, strong) UIButton *nextButton;
 @property (nonatomic, strong) UIButton *backButton;
@@ -254,7 +255,13 @@
     self.playerLayer.videoGravity = AVLayerVideoGravityResize;
     //    [self.view.layer insertSublayer:self.playerLayer atIndex:0];
     [self.view.layer addSublayer:self.playerLayer];
-    
+    self.previewMaskView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    [self.view addSubview:self.previewMaskView];
+    if (_previewBorderName) {
+        self.previewMaskView.image = [UIImage imageNamed:_previewBorderName];
+    }else{
+        self.previewMaskView.image = nil;
+    }
     //返回
     self.backButton = [[UIButton alloc]initWithFrame:CGRectMake(28, 0, 60, 60)];
     self.backButton.centerY = self.view.centerY;

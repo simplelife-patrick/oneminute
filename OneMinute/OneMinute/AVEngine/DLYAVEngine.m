@@ -1484,6 +1484,9 @@ BOOL isOnce = YES;
     
     AVAssetExportSession *exportSession = [[AVAssetExportSession alloc]initWithAsset:composition presetName:AVAssetExportPreset1280x720];
     
+    if ([[NSFileManager defaultManager]fileExistsAtPath:outputUrl.path]) {
+        [[NSFileManager defaultManager]removeItemAtPath:outputUrl.path error:nil];
+    }
     exportSession.outputURL = outputUrl;
     exportSession.outputFileType = AVFileTypeMPEG4;
     exportSession.shouldOptimizeForNetworkUse = YES;
@@ -1843,58 +1846,60 @@ BOOL isOnce = YES;
 //        }
         
         //添加视频边框
-        UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, renderSize.width, renderSize.height)];
-        imageView.image = [UIImage imageNamed:@"video_border_render"];
-        
-        CALayer *videoBorderLayer = [CALayer layer];
-        videoBorderLayer.frame = CGRectMake(0, 0, renderSize.width, renderSize.height);
-        [videoBorderLayer addSublayer:imageView.layer];
-        [parentLayer addSublayer:videoBorderLayer];
-        
-        //添加时间戳水印
-        NSInteger days = [self getTodayIsHowManyDay];
-        
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"yyyy"];
-        NSString *whoseYear = [formatter stringFromDate:[NSDate date]];
-        
-        NSString *daysString = [NSString stringWithFormat:@"%@ NO. %lu",whoseYear,days];
-        
-        int space = 20;
-        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:daysString attributes:@{NSKernAttributeName:@(space)}];
-        
-        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-        [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [daysString length])];
-        
-        UIFont *font = [UIFont systemFontOfSize:25];
-        CGSize textSize = [daysString sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
-        
-        CATextLayer *daysLayer = [CATextLayer layer];
-        daysLayer.frame = CGRectMake(0, 0, textSize.width * 1.2, textSize.height * 1.05);
-        [daysLayer setFontSize:25];
-        [daysLayer setFont:@"Helvetica"];
-        [daysLayer setString:daysString];
-        [daysLayer setAlignmentMode:kCAAlignmentCenter];
-        [daysLayer setForegroundColor:[[UIColor colorWithHexString:@"#0B1013" withAlpha:1] CGColor]];
-        daysLayer.position = CGPointMake(renderSize.width - daysLayer.bounds.size.width / 2, 35);
-        [parentLayer addSublayer:daysLayer];
-        
-        //添加水印签名
-        NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
-        NSString *app_Name = [infoDictionary objectForKey:@"CFBundleDisplayName"];
-        NSString *maskStr = [NSString stringWithFormat:@"POWERED BY %@",app_Name];
-        UIFont *maskStrfFont = [UIFont systemFontOfSize:20.0];
-        CGSize maskStrTextSize = [maskStr sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:maskStrfFont,NSFontAttributeName, nil]];
-        
-        CATextLayer *markStrLayer = [CATextLayer layer];
-        markStrLayer.frame = CGRectMake(0, 0, maskStrTextSize.width * 1.3, maskStrTextSize.height * 1.05);
-        [markStrLayer setFontSize:20.f];
-        [markStrLayer setString:maskStr];
-        [markStrLayer setFont:@"Helvetica"];
-        [markStrLayer setAlignmentMode:kCAAlignmentCenter];
-        [markStrLayer setForegroundColor:[[UIColor colorWithHexString:@"#ffffff" withAlpha:0.5] CGColor]];
-        markStrLayer.position = CGPointMake(renderSize.width - markStrLayer.bounds.size.width / 2, 90);
-        [parentLayer addSublayer:markStrLayer];
+        if (self.session.currentTemplate.renderBorderName) {
+            UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, renderSize.width, renderSize.height)];
+            imageView.image = [UIImage imageNamed:self.session.currentTemplate.renderBorderName];
+            
+            CALayer *videoBorderLayer = [CALayer layer];
+            videoBorderLayer.frame = CGRectMake(0, 0, renderSize.width, renderSize.height);
+            [videoBorderLayer addSublayer:imageView.layer];
+            [parentLayer addSublayer:videoBorderLayer];
+            
+            //添加时间戳水印
+            NSInteger days = [self getTodayIsHowManyDay];
+            
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"yyyy"];
+            NSString *whoseYear = [formatter stringFromDate:[NSDate date]];
+            
+            NSString *daysString = [NSString stringWithFormat:@"%@ NO. %lu",whoseYear,days];
+            
+            int space = 20;
+            NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:daysString attributes:@{NSKernAttributeName:@(space)}];
+            
+            NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+            [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [daysString length])];
+            
+            UIFont *font = [UIFont systemFontOfSize:25];
+            CGSize textSize = [daysString sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
+            
+            CATextLayer *daysLayer = [CATextLayer layer];
+            daysLayer.frame = CGRectMake(0, 0, textSize.width * 1.2, textSize.height * 1.05);
+            [daysLayer setFontSize:25];
+            [daysLayer setFont:@"Helvetica"];
+            [daysLayer setString:daysString];
+            [daysLayer setAlignmentMode:kCAAlignmentCenter];
+            [daysLayer setForegroundColor:[[UIColor colorWithHexString:@"#0B1013" withAlpha:1] CGColor]];
+            daysLayer.position = CGPointMake(renderSize.width - daysLayer.bounds.size.width / 2, 35);
+            [parentLayer addSublayer:daysLayer];
+            
+            //添加水印签名
+            NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+            NSString *app_Name = [infoDictionary objectForKey:@"CFBundleDisplayName"];
+            NSString *maskStr = [NSString stringWithFormat:@"POWERED BY %@",app_Name];
+            UIFont *maskStrfFont = [UIFont systemFontOfSize:20.0];
+            CGSize maskStrTextSize = [maskStr sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:maskStrfFont,NSFontAttributeName, nil]];
+            
+            CATextLayer *markStrLayer = [CATextLayer layer];
+            markStrLayer.frame = CGRectMake(0, 0, maskStrTextSize.width * 1.3, maskStrTextSize.height * 1.05);
+            [markStrLayer setFontSize:20.f];
+            [markStrLayer setString:maskStr];
+            [markStrLayer setFont:@"Helvetica"];
+            [markStrLayer setAlignmentMode:kCAAlignmentCenter];
+            [markStrLayer setForegroundColor:[[UIColor colorWithHexString:@"#ffffff" withAlpha:0.5] CGColor]];
+            markStrLayer.position = CGPointMake(renderSize.width - markStrLayer.bounds.size.width / 2, 90);
+            [parentLayer addSublayer:markStrLayer];
+        }
 
         videoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
     }

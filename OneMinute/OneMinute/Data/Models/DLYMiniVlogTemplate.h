@@ -70,6 +70,14 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogTailerType)
 @property (nonatomic, strong) NSString                        *sampleVideoName;
 
 /**
+ 预览遮罩图片名称
+ */
+@property (nonatomic, strong) NSString                        *previewBorderName;
+/**
+ 渲染遮罩图片名称
+ */
+@property (nonatomic, strong) NSString                        *renderBorderName;
+/**
  模板详情
  */
 @property (nonatomic, strong) NSArray<DLYMiniVlogPart *>      *parts;
