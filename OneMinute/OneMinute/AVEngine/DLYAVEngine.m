@@ -1873,7 +1873,7 @@ BOOL isOnce = YES;
             [daysLayer setString:attibutedString];
             [daysLayer setAlignmentMode:kCAAlignmentCenter];
             [daysLayer setForegroundColor:[[UIColor colorWithHexString:@"#0B1013" withAlpha:1] CGColor]];
-            daysLayer.position = CGPointMake(renderSize.width - textSize.width / 2, 35);
+            daysLayer.position = CGPointMake((renderSize.width - textSize.width / 2) - 10, 35);
             [parentLayer addSublayer:daysLayer];
             
             //POWERED BY 一分
