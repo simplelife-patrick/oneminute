@@ -915,18 +915,6 @@
 #pragma mark -添加片头片尾-
 - (void)addVideoHeaderWithTitle:(NSString *)videoTitle successed:(SuccessBlock)successBlock failured:(FailureBlock)failureBlcok{
 
-    if (self.session.currentTemplate.videoHeaderType ==DLYMiniVlogHeaderTypeNone) {
-            [self mergeVideoWithVideoTitle:videoTitle successed:^{
-                //成功
-                successBlock();
-            } failured:^(NSError *error) {
-                //
-                failureBlcok(error);
-            }];
-            return;
-        
-    }
-
     if (self.session.currentTemplate.videoHeaderType == DLYMiniVlogHeaderTypeNone) {
         [self mergeVideoWithVideoTitle:videoTitle successed:^{
             //成功
