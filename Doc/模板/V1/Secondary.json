@@ -49,8 +49,8 @@
     "stopTime": "00:04:00"
   },
   "BGM": "SecondaryBGM",
-  "header": 0,
-  "tailer": 0,
+  "header": 1,
+  "tailer": 1,
   "templateDescription": "这个模板成片长度为30s，你可以学会怎么用一分拍慢镜头和快镜头，以及看到转场的使用",
   "sampleVideoName": "SecondarySample.mp4"
 }

@@ -79,8 +79,8 @@
     "stopTime": "00:05:00"
   },
   "BGM": "GoNorthBGM",
-  "header": 0,
-  "tailer": 0,
+  "header": 1,
+  "tailer": 1,
   "templateDescription": "本模板有7个片段，其中3个常速空镜，2个慢镜头片段，2个说话片段。再次开启你的旅程吧。",
   "sampleVideoName": "GoNorthSample.mp4"
 }

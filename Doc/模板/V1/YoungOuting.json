@@ -79,8 +79,8 @@
     "stopTime": "00:05:00"
   },
   "BGM": "YoungOutingBGM",
-  "header": 0,
-  "tailer": 0,
+  "header": 1,
+  "tailer": 1,
   "templateDescription": "本模板有7个片段，其中6个慢镜头空镜，1个说话片段。用来拍旅行更赞哦",
   "sampleVideoName": "YoungOutingSample.mp4"
 }
