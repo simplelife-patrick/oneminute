@@ -12,30 +12,34 @@
 
 /**
  片头类型
-
+ 
+ - DLYMiniVlogHeaderType_None: 不加
  - DLYMiniVlogHeaderType_A: 片头A
  - DLYMiniVlogHeaderType_B: 片头B
  - DLYMiniVlogHeaderType_C: 片头C
  */
 typedef NS_ENUM(NSInteger, DLYMiniVlogHeaderType)
 {
-    DLYMiniVlogHeaderType_A = 0,
-    DLYMiniVlogHeaderType_B,
-    DLYMiniVlogHeaderType_C
+    DLYMiniVlogHeaderTypeNone = 0,
+    DLYMiniVlogHeaderTypeA,
+    DLYMiniVlogHeaderTypeB,
+    DLYMiniVlogHeaderTypeC
 };
 
 /**
  片尾类型
 
+ - DLYMiniVlogFooterType_None: 不加
  - DLYMiniVlogFooterType_A: 片尾A
  - DLYMiniVlogFooterType_B: 片尾B
  - DLYMiniVlogFooterType_C: 片尾C
  */
 typedef NS_ENUM(NSInteger, DLYMiniVlogTailerType)
 {
-    DLYMiniVlogTailerType_A = 0,
-    DLYMiniVlogTailerType_B,
-    DLYMiniVlogTailerType_C
+    DLYMiniVlogTailerTypeNone = 0,
+    DLYMiniVlogTailerTypeA,
+    DLYMiniVlogTailerTypeB,
+    DLYMiniVlogTailerTypeC
 };
 
 @interface DLYMiniVlogTemplate : DLYModule
