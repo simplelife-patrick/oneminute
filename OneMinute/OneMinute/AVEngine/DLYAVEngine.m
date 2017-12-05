@@ -927,6 +927,16 @@
         
     }
 
+    if (self.session.currentTemplate.videoHeaderType == DLYMiniVlogHeaderTypeNone) {
+        [self mergeVideoWithVideoTitle:videoTitle successed:^{
+            //成功
+            successBlock();
+        } failured:^(NSError *error) {
+            //
+            failureBlcok(error);
+        }];
+        return;
+    }
     NSURL *headerUrl;
     NSURL *footerUrl;
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -1425,9 +1435,11 @@ BOOL isOnce = YES;
         }
         
         NSError *audioError = nil;
-        [compositionAudioTrack insertTimeRange:timeRange ofTrack:assetAudioTrack atTime:cursorTime error:&audioError];
-        if (audioError) {
-            DLYLog(@"视频合成过程音频轨道插入发生错误,错误信息 :%@",audioError);
+        if (assetAudioTrack) {
+            [compositionAudioTrack insertTimeRange:timeRange ofTrack:assetAudioTrack atTime:cursorTime error:&audioError];
+            if (audioError) {
+                DLYLog(@"视频合成过程音频轨道插入发生错误,错误信息 :%@",audioError);
+            }
         }
         cursorTime = CMTimeAdd(cursorTime, timeRange.duration);
     }
