@@ -914,8 +914,8 @@
 
 #pragma mark -添加片头片尾-
 - (void)addVideoHeaderWithTitle:(NSString *)videoTitle successed:(SuccessBlock)successBlock failured:(FailureBlock)failureBlcok{
-    for (DLYMiniVlogVirtualPart *virtualPart in self.session.currentTemplate.parts) {
-        if (virtualPart.partType == DLYMiniVlogPartTypeComputer){
+
+    if (self.session.currentTemplate.videoHeaderType ==DLYMiniVlogHeaderTypeNone) {
             [self mergeVideoWithVideoTitle:videoTitle successed:^{
                 //成功
                 successBlock();
@@ -924,7 +924,7 @@
                 failureBlcok(error);
             }];
             return;
-        }
+        
     }
 
     NSURL *headerUrl;
@@ -937,13 +937,19 @@
         if ([[NSFileManager defaultManager] fileExistsAtPath:draftPath]) {
             
             NSArray *draftArray = [fileManager contentsOfDirectoryAtPath:draftPath error:nil];
-            NSString *headerPath = draftArray[1];
+            NSString *headerPath = @"";
+            if (draftArray.count!=0) {
+                headerPath = @"part0.mp4";
+            }
             if ([headerPath hasSuffix:@"mp4"]) {
                 NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",headerPath];
                 headerUrl = [NSURL fileURLWithPath:allPath];
             }
+            NSString *footerPath = @"";
+            if (draftArray.count!=0) {
+                footerPath =[NSString stringWithFormat:@"part%ld.mp4",draftArray.count-1-1];
+            }
             
-            NSString *footerPath = draftArray[draftArray.count - 1];
             if ([footerPath hasSuffix:@"mp4"]) {
                 NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",footerPath];
                 footerUrl = [NSURL fileURLWithPath:allPath];
@@ -1247,7 +1253,8 @@ BOOL isOnce = YES;
                 
             }else{
                 NSError *error;
-                [[NSFileManager defaultManager] createSymbolicLinkAtPath:partsPath withDestinationPath:exportPath error:&error];
+//                [[NSFileManager defaultManager] createSymbolicLinkAtPath:partsPath withDestinationPath:exportPath error:&error];
+                [[NSFileManager defaultManager] copyItemAtPath:exportPath toPath:partsPath error:&error];
                 if (error) {
                     DLYLog(@"virtual路径拷贝到parts路径失败，原因：%@",error);
                 }
@@ -1374,7 +1381,7 @@ BOOL isOnce = YES;
         
         AVURLAsset *asset = nil;
        
-        if (containCombin){
+        if (self.session.currentTemplate.videoHeaderType ==DLYMiniVlogHeaderTypeNone){
             asset = [AVURLAsset URLAssetWithURL:videoArray[i] options:nil];
         }else{
             if (i == 0) {
