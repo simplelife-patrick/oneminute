@@ -15,6 +15,11 @@ typedef void(^SuccessBlock)(void);
 typedef void(^FailureBlock)(NSError *error);
 typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
 
+typedef NS_ENUM(NSInteger, DLYAVEngineCapturePositionType) {
+    DLYAVEngineCapturePositionTypeBack = 0,
+    DLYAVEngineCapturePositionTypeFront
+};
+
 @protocol DLYCaptureAVEngineDelegate <NSObject>
 
 - (void) didFinishEdititProductUrl:(NSURL *)productUrl;
@@ -36,6 +41,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *backCameraInput;
 @property (nonatomic, strong) AVCaptureDeviceInput                                    *currentVideoDeviceInput;
 @property (nonatomic, strong) AVCaptureDevice                                         *defaultVideoDevice;
+@property (nonatomic, assign) DLYAVEngineCapturePositionType                          cameraPosition;
 
 @property (nonatomic, assign) BOOL                                                    isRecording;
 
@@ -93,6 +99,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
  @param isFront 是否是前置摄像头
  */
 - (void)changeCameraInputDeviceisFront:(BOOL)isFront;
+- (BOOL)switchCameras;
 
 /**
  合并片段
