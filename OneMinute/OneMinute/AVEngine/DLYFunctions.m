@@ -39,14 +39,8 @@ CGAffineTransform DLYTransformForDeviceOrientation(UIDeviceOrientation orientati
         case UIDeviceOrientationLandscapeRight:
             result = CGAffineTransformMakeRotation(M_PI);
             break;
-        case UIDeviceOrientationPortraitUpsideDown:
-            result = CGAffineTransformMakeRotation((M_PI_2 * 3));
-            break;
-            
-        case UIDeviceOrientationPortrait:
-        case UIDeviceOrientationFaceUp:
-        case UIDeviceOrientationFaceDown:
-            result = CGAffineTransformMakeRotation(M_PI_2);
+        case UIDeviceOrientationLandscapeLeft:
+            result = CGAffineTransformMakeRotation(M_PI);
             break;
             
         default: // Default orientation of landscape left

@@ -1092,24 +1092,34 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         return;
     }
-    self.toggleCameraBtn.selected = !self.toggleCameraBtn.selected;
-    if (self.toggleCameraBtn.selected) {
-        [self.AVEngine changeCameraInputDeviceisFront:YES];
-        self.flashButton.hidden = YES;
-        if (self.flashButton.selected) {
-            self.flashButton.selected = NO;
-        }
-        isFront = YES;
+    if (self.AVEngine.cameraPosition == DLYAVEngineCapturePositionTypeFront) {
+        self.previewView.transform = CGAffineTransformMakeRotation(2*M_PI);
     }else{
-        [self.AVEngine changeCameraInputDeviceisFront:NO];
-        if (self.newState == 1) {
-            self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
-        }else {
-            self.flashButton.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 101, 40, 40);
-        }
-        self.flashButton.hidden = NO;
-        isFront = NO;
+        self.previewView.transform = CGAffineTransformMakeRotation(M_PI);
+
     }
+    [self.AVEngine switchCameras];
+//    if (self.AVEngine.cameraPosition == DLYAVEngineCapturePositionTypeFront) {
+//    }
+//    self.toggleCameraBtn.selected = !self.toggleCameraBtn.selected;
+//    if (self.toggleCameraBtn.selected) {
+//        [self.AVEngine changeCameraInputDeviceisFront:YES];
+//
+//        self.flashButton.hidden = YES;
+//        if (self.flashButton.selected) {
+//            self.flashButton.selected = NO;
+//        }
+//        isFront = YES;
+//    }else{
+//        [self.AVEngine changeCameraInputDeviceisFront:NO];
+//        if (self.newState == 1) {
+//            self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
+//        }else {
+//            self.flashButton.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 101, 40, 40);
+//        }
+//        self.flashButton.hidden = NO;
+//        isFront = NO;
+//    }
 }
 //选择场景
 - (void)onClickChooseScene:(UIButton *)sender {
