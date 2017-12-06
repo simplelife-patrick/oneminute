@@ -795,12 +795,7 @@
             _currentPart.partPath = path;
         }
     }
-    NSURL *url = [NSURL fileURLWithPath:_currentPart.partPath];
-    NSError *error;
-    self.assetWriter = [[AVAssetWriter alloc] initWithURL:url fileType:AVFileTypeMPEG4 error:&error];
-    if (error) {
-        DLYLog(@"AVAssetWriter error:%@", error);
-    }
+    self.movieWriter.outputUrl = [NSURL fileURLWithPath:_currentPart.partPath];
     
     DLYMiniVlogRecordType recordType = part.recordType;
 
