@@ -1328,6 +1328,7 @@ BOOL isOnce = YES;
                     if (self.session.currentTemplate.virtualParts[0].partsInfo.count>1){
                         double lastDuration = 0;
                         for (DLYMiniVlogPart *part in self.self.session.currentTemplate.virtualParts[0].partsInfo) {
+                            
                             NSString *draftPath = [dataPath stringByAppendingPathComponent:kDraftFolder];
                             NSString *trimPartPath = [NSString stringWithFormat:@"%@/part%lu.mp4",draftPath,(long)part.partNum];
                             double startTime = [self getTimeWithString:part.dubStartTime];
@@ -1423,11 +1424,9 @@ BOOL isOnce = YES;
         }
         
         NSError *audioError = nil;
-        if (assetAudioTrack) {
-            [compositionAudioTrack insertTimeRange:timeRange ofTrack:assetAudioTrack atTime:cursorTime error:&audioError];
-            if (audioError) {
-                DLYLog(@"视频合成过程音频轨道插入发生错误,错误信息 :%@",audioError);
-            }
+        [compositionAudioTrack insertTimeRange:timeRange ofTrack:assetAudioTrack atTime:cursorTime error:&audioError];
+        if (audioError) {
+            DLYLog(@"视频合成过程音频轨道插入发生错误,错误信息 :%@",audioError);
         }
         cursorTime = CMTimeAdd(cursorTime, timeRange.duration);
     }
