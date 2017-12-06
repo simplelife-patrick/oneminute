@@ -828,9 +828,7 @@
     
     [self.movieWriter stopWriting];
     self.recording = NO;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self saveRecordedFile];
-    });
+
 }
 
 #pragma mark - 取消录制 -
@@ -1101,21 +1099,7 @@
 }
 -(void)didWriteMovieAtURL:(NSURL *)outputURL{
     //导出保存
-    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-    
-    if ([library videoAtPathIsCompatibleWithSavedPhotosAlbum:outputURL]) {
-        
-        ALAssetsLibraryWriteVideoCompletionBlock completionBlock;
-        
-        completionBlock = ^(NSURL *assetURL, NSError *error){
-            if (error) {
-                DLYLog(@"保存出错: %@",error);
-            }
-        };
-        
-        [library writeVideoAtPathToSavedPhotosAlbum:outputURL
-                                    completionBlock:completionBlock];
-    }
+    [self saveRecordedFile];
 }
 #pragma mark 从输出的元数据中捕捉人脸
 
