@@ -22,6 +22,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
 - (void) statutUpdateWithClockTick:(double)count;
 - (void) finishedRecording;
 - (void) canceledRecording:(NSTimeInterval) time;
+- (void) imageWithImageTarget:(CIImage *)sourceImage;
 
 @end
 

@@ -9,6 +9,7 @@
 #import "DLYConstants.h"
 
 BOOL const NEW_FUNCTION = NO;
+NSString *const DLYFilterSelectionChangedNotification = @"filter_selection_changed";
 
 @implementation DLYConstants
 
