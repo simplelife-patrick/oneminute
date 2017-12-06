@@ -892,7 +892,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }];
     }
     if (![self.AVEngine isRecording]) {
-        
+        self.previewView.transform = CGAffineTransformMakeRotation(M_PI);
+
         self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeRight;
         self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
     }else{
@@ -912,6 +913,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }];
     }
     if (![self.AVEngine isRecording]) {
+        self.previewView.transform = CGAffineTransformMakeRotation(2*M_PI);
+
         self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
         self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
     }else{

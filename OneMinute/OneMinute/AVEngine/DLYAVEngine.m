@@ -99,7 +99,7 @@
 @property (nonatomic, strong) DLYSession                        *session;
 @property (nonatomic, strong) DLYRecordTimer                    *recordTimer;
 
-@property (nonatomic, getter = isRecording) BOOL                recording;
+//@property (nonatomic, getter = isRecording) BOOL                recording;
 
 @end
 
@@ -820,14 +820,14 @@
     [_recordTimer startTick];
     
     [self.movieWriter startWriting];
-    self.recording = YES;
+    self.isRecording = YES;
 }
 
 #pragma mark - 停止录制 -
 - (void)stopRecording {
     
     [self.movieWriter stopWriting];
-    self.recording = NO;
+    self.isRecording = NO;
 
 }
 
@@ -889,7 +889,7 @@
         [self.delegate finishedRecording];
     }
     [self stopRecording];
-    self.recording = NO;
+    self.isRecording = NO;
 }
 
 -(void)timerCanceled:(NSTimeInterval) time
