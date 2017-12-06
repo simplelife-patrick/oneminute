@@ -890,8 +890,7 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
         [self.delegate finishedRecording];
     }
-    
-    [self.movieWriter stopWriting];
+    [self stopRecording];
     self.recording = NO;
 }
 

@@ -57,7 +57,12 @@
     }
     return self;
 }
-
+-(void)setOutputUrl:(NSURL *)outputUrl{
+    if ([[NSFileManager defaultManager] fileExistsAtPath:outputUrl.path]) {
+        [[NSFileManager defaultManager] removeItemAtPath:outputUrl.path error:nil];
+    }
+    _outputUrl = outputUrl;
+}
 - (void)dealloc {
     CGColorSpaceRelease(_colorSpace);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
