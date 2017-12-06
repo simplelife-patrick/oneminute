@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 extern BOOL const NEW_FUNCTION;
+extern NSString *const DLYFilterSelectionChangedNotification;
 
 @interface DLYConstants : NSObject
 

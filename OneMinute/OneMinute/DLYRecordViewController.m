@@ -17,6 +17,11 @@
 #import "DLYDownloadManager.h"
 #import "DLYTitleView.h"
 
+#import "DLYPreviewView.h"
+#import "DLYImageTarget.h"
+#import "DLYContextManager.h"
+#import "DLYPhotoFilters.h"
+
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
 
@@ -49,7 +54,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic,assign) CGFloat                            effectiveScale;//最后的缩放比例
 @property (nonatomic, copy) NSArray                             *btnImg;//场景对应的图片
 @property (nonatomic, strong) DLYAVEngine                       *AVEngine;
-@property (nonatomic, strong) UIView                            *previewView;
+@property (nonatomic, strong) DLYPreviewView                    *previewView;
+@property (nonatomic, weak) id <DLYImageTarget>                 imageTarget;
 @property (nonatomic, strong) UIImageView                       *previewMaskView;
 @property (nonatomic, strong) UIImageView                       *focusCursorImageView;
 @property (nonatomic, strong) UIImageView                       *faceRegionImageView;
@@ -538,18 +544,20 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 #pragma mark ==== 主界面
 - (void)setupUI {
     self.view.backgroundColor = RGB(0, 0, 0);
-    //PreviewView
-    self.previewView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-    self.previewView.backgroundColor = [UIColor clearColor];
     
-    [self.view insertSubview:self.previewView atIndex:0];
-    self.previewMaskView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-    [self.view addSubview:self.previewMaskView];
-    if (self.session.currentTemplate.previewBorderName) {
-        self.previewMaskView.image = [UIImage imageNamed:self.session.currentTemplate.previewBorderName];
-    }else{
-        self.previewMaskView.image = nil;
-    }
+    //OverlayView
+    UIView *overlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    overlayView.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:overlayView];
+    
+    EAGLContext *eaglContext = [DLYContextManager sharedInstance].eaglContext;
+    self.previewView = [[DLYPreviewView alloc] initWithFrame:SCREEN_RECT context:eaglContext];
+    self.previewView.filter = [DLYPhotoFilters defaultFilter];
+    
+    self.imageTarget = self.previewView;
+    self.previewView.coreImageContext = [DLYContextManager sharedInstance].ciContext;
+    [overlayView insertSubview:self.previewView belowSubview:overlayView];
+    
     //通用button 选择场景button
     self.chooseScene = [[UIButton alloc]initWithFrame:CGRectMake(11, 16, 40, 40)];
     self.chooseScene.backgroundColor = RGBA(0, 0, 0, 0.4);
@@ -700,7 +708,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.AVEngine = [[DLYAVEngine alloc] initWithPreviewView:self.previewView];
     self.AVEngine.delegate = self;
 }
-
+-(void)imageWithImageTarget:(CIImage *)sourceImage{
+    [self.imageTarget setImage:sourceImage];
+}
 #pragma mark -触屏自动调整曝光-
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     
