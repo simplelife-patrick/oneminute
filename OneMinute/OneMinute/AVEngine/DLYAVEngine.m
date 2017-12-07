@@ -316,7 +316,7 @@
             [self.captureSession addInput:videoInput];
             self.activeVideoInput = videoInput;
         } else {
-            [self changeCameraAnimation];
+//            [self changeCameraAnimation];
             [self.captureSession addInput:self.activeVideoInput];
         }
         
@@ -349,7 +349,7 @@
 #pragma mark - 初始化 -
 - (instancetype)initWithPreviewView:(UIView *)previewView{
     if (self = [super init]) {
-        
+        _orientation = UIDeviceOrientationLandscapeLeft;
         _dispatchQueue = dispatch_queue_create("dispatchQueue", DISPATCH_QUEUE_SERIAL);
         _previewView = previewView;
         NSError *error;
@@ -823,7 +823,7 @@
     _recordTimer.timerDelegate = self;
     [_recordTimer startTick];
     
-    [self.movieWriter startWriting];
+    [self.movieWriter startWritingWith:self.orientation];
     self.isRecording = YES;
 }
 
@@ -837,6 +837,7 @@
 #pragma mark - 取消录制 -
 - (void)cancelRecording{
     DLYLog(@"取消录制");
+
     self.movieWriter.isWriting = NO;
     
     dispatch_async(self.dispatchQueue, ^{
