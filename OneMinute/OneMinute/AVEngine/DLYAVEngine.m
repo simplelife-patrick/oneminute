@@ -316,7 +316,7 @@
             [self.captureSession addInput:videoInput];
             self.activeVideoInput = videoInput;
         } else {
-            [self changeCameraAnimation];
+//            [self changeCameraAnimation];
             [self.captureSession addInput:self.activeVideoInput];
         }
         
@@ -843,7 +843,7 @@
     readyToRecordVideo = NO;
     readyToRecordAudio = NO;
     
-    dispatch_async(_movieWritingQueue, ^{
+    dispatch_async(_dispatchQueue, ^{
     
         [self.assetWriter finishWritingWithCompletionHandler:^{
 
