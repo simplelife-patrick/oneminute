@@ -1292,11 +1292,11 @@ BOOL isOnce = YES;
 #pragma mark - 合并 -
 - (void) mergeVideoWithVideoTitle:(NSString *)videoTitle successed:(SuccessBlock)successBlock failured:(FailureBlock)failureBlcok{
     
+    BOOL isCreateAudioTrack = NO;
     AVMutableComposition *composition = [AVMutableComposition composition];
     
     CMPersistentTrackID trackID = kCMPersistentTrackID_Invalid;
     AVMutableCompositionTrack *compositionVideoTrack = [composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
-    AVMutableCompositionTrack *compositionAudioTrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:trackID];
     
     NSMutableArray *videoArray = [NSMutableArray array];
     
@@ -1316,6 +1316,11 @@ BOOL isOnce = YES;
                     isEmpty = NO;
                     NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
                     NSURL *url= [NSURL fileURLWithPath:allPath];
+                    
+                    AVURLAsset *asset = [AVURLAsset URLAssetWithURL:url options:nil];
+                    if ([asset tracksWithMediaType:AVMediaTypeAudio].count != 0) {
+                        isCreateAudioTrack = YES;
+                    }
                     [videoArray addObject:url];
                 }
             }
@@ -1447,11 +1452,17 @@ BOOL isOnce = YES;
             DLYLog(@"视频合成过程中视频轨道插入发生错误,错误信息 :%@",videoError);
         }
         
-        NSError *audioError = nil;
-        [compositionAudioTrack insertTimeRange:timeRange ofTrack:assetAudioTrack atTime:cursorTime error:&audioError];
-        if (audioError) {
-            DLYLog(@"视频合成过程音频轨道插入发生错误,错误信息 :%@",audioError);
+        AVMutableCompositionTrack *compositionAudioTrack = nil;
+        if (isCreateAudioTrack) {
+            compositionAudioTrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:trackID];
+            
+            NSError *audioError = nil;
+            [compositionAudioTrack insertTimeRange:timeRange ofTrack:assetAudioTrack atTime:cursorTime error:&audioError];
+            if (audioError) {
+                DLYLog(@"视频合成过程音频轨道插入发生错误,错误信息 :%@",audioError);
+            }
         }
+
         cursorTime = CMTimeAdd(cursorTime, timeRange.duration);
     }
     
