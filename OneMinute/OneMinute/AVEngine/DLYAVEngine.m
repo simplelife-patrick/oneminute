@@ -935,29 +935,14 @@
             
             [compositionVideoTrack insertTimeRange:videoTimeRange ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
             [compositionAudioTrack insertTimeRange:videoTimeRange ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeAudio] firstObject] atTime:kCMTimeZero error:nil];
-            
-            DLYLog(@"value_original -----------%lld",videoAsset.duration.value);
-            DLYLog(@"timescale_original -----------%d",videoAsset.duration.timescale);
-            
-            DLYLog(@">>>>>>> - 单片段的time range");
-            CMTimeRangeShow(videoTimeRange);
 
         }else if (soundType == DLYMiniVlogAudioTypeMusic){//不录音的片段做丢弃原始音频处理
             
             [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
             
             CMTimeRange scaleRange = CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale));
-            DLYLog(@">>>>>>> - 单片段的time range");
-            CMTimeRangeShow(scaleRange);
             
-            CMTime toDuration_before = CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale);
             CMTime toDuration_after = CMTimeMake(videoAsset.duration.value * scale , videoAsset.duration.timescale);
-            
-            DLYLog(@"value_original -----------%lld",videoAsset.duration.value);
-            DLYLog(@"timescale_original -----------%d",videoAsset.duration.timescale);
-
-            DLYLog(@"value_after -----------%f",videoAsset.duration.value * scale);
-            DLYLog(@"timescale_after -----------%d",videoAsset.duration.timescale);
             
             [compositionVideoTrack scaleTimeRange:scaleRange toDuration:toDuration_after];
         }
