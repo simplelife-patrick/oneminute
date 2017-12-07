@@ -50,7 +50,6 @@ CGAffineTransform DLYTransformForDeviceOrientation(UIDeviceOrientation orientati
         case UIDeviceOrientationFaceDown:
             result = CGAffineTransformMakeRotation(M_PI_2);
             break;
-            
         default: // Default orientation of landscape left
             result = CGAffineTransformIdentity;
             break;

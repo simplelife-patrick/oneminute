@@ -26,6 +26,7 @@
 
 #import "DLYCaptureConfigErrorDelegate.h"
 #import "DLYMovieWriter.h"
+#import <UIKit/UIKit.h>
 
 @interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate,AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate,DLYRecordTimerDelegate,DLYMovieWriterDelegate,DLYCaptureConfigErrorDelegate>
 {
@@ -68,6 +69,7 @@
 @property (nonatomic, strong) AVCaptureDeviceInput              *audioMicInput;
 @property (nonatomic, strong) AVCaptureDeviceFormat             *defaultFormat;
 @property (nonatomic, strong) AVCaptureConnection               *audioConnection;
+@property (nonatomic, strong) UIView                            *previewView;
 
 @property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;
 @property (nonatomic, strong) AVCaptureAudioDataOutput          *audioOutput;
@@ -276,8 +278,10 @@
     if (self.cameraCount > 1) {
         if ([self activeCamera].position == AVCaptureDevicePositionBack) {
             device = [self cameraWithPosition:AVCaptureDevicePositionFront];
+            _cameraPosition = DLYAVEngineCapturePositionTypeFront;
         } else {
             device = [self cameraWithPosition:AVCaptureDevicePositionBack];
+            _cameraPosition = DLYAVEngineCapturePositionTypeBack;
         }
     }
     return device;
@@ -308,9 +312,11 @@
         [self.captureSession removeInput:self.activeVideoInput];
         
         if ([self.captureSession canAddInput:videoInput]) {
+//            [self changeCameraAnimation];
             [self.captureSession addInput:videoInput];
             self.activeVideoInput = videoInput;
         } else {
+            [self changeCameraAnimation];
             [self.captureSession addInput:self.activeVideoInput];
         }
         
@@ -323,7 +329,16 @@
     
     return YES;
 }
-
+//摄像头切换翻转动画
+- (void)changeCameraAnimation {
+    
+    CATransition *changeAnimation = [CATransition animation];
+    changeAnimation.delegate = self;
+    changeAnimation.duration = 0.3;
+    changeAnimation.type = @"oglFlip";
+    changeAnimation.subtype = kCATransitionFromTop;
+    [self.previewView.layer addAnimation:changeAnimation forKey:@"changeAnimation"];
+}
 -(AVCaptureSession *)captureSession{
     
     if (_captureSession == nil) {
@@ -336,13 +351,15 @@
     if (self = [super init]) {
         _orientation = UIDeviceOrientationLandscapeLeft;
         _dispatchQueue = dispatch_queue_create("dispatchQueue", DISPATCH_QUEUE_SERIAL);
-        
+        _previewView = previewView;
         NSError *error;
         if ([self setupCaptureSession:&error]) {
             [self startCaptureSession];
         } else {
             NSLog(@"Error: %@", [error localizedDescription]);
         }
+        //启动后参照中心点自动对焦一次
+        [self focusContinuousWithPoint:previewView.center];
         
         //确定快慢镜头录制设备的格式
         selectedFormat = nil;
@@ -416,8 +433,6 @@
         if ([self.captureSession canAddInput:self.frontCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.frontCameraInput];//切换成了前置
-            _currentVideoDeviceInput = self.frontCameraInput;
-            self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
         }
     }else {
         
@@ -426,8 +441,6 @@
         if ([self.captureSession canAddInput:self.backCameraInput]) {
             [self changeCameraAnimation];
             [self.captureSession addInput:self.backCameraInput];//切换成了后置
-            _currentVideoDeviceInput = self.frontCameraInput;
-            self.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
         }
     }
     [self.captureSession commitConfiguration];
@@ -550,15 +563,6 @@
         }
     }
     return nil;
-}
-//摄像头切换翻转动画
-- (void)changeCameraAnimation {
-    CATransition *changeAnimation = [CATransition animation];
-    changeAnimation.delegate = self;
-    changeAnimation.duration = 0.3;
-    changeAnimation.type = @"oglFlip";
-    changeAnimation.subtype = kCATransitionFromTop;
-    [self.captureVideoPreviewLayer addAnimation:changeAnimation forKey:@"changeAnimation"];
 }
 
 #pragma mark - 点触设置曝光 -
