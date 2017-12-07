@@ -892,7 +892,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }];
     }
     if (![self.AVEngine isRecording]) {
-        self.previewView.transform = CGAffineTransformMakeRotation(M_PI);
+        [self resetPreviewViewTransform];
         self.AVEngine.orientation = UIDeviceOrientationLandscapeRight;
         self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeRight;
         self.AVEngine.videoConnection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
@@ -913,7 +913,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }];
     }
     if (![self.AVEngine isRecording]) {
-        self.previewView.transform = CGAffineTransformMakeRotation(2*M_PI);
+        [self resetPreviewViewTransform];
         self.AVEngine.orientation = UIDeviceOrientationLandscapeLeft;
 
         self.AVEngine.captureVideoPreviewLayer.orientation = UIDeviceOrientationLandscapeLeft;
@@ -922,7 +922,24 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         DLYLog(@"录制过程中不再重设录制正方向");
     }
 }
-
+- (void)resetPreviewViewTransform{
+    if (self.AVEngine.cameraPosition == DLYAVEngineCapturePositionTypeBack) {
+        if (self.newState ==1) {
+            self.previewView.transform = CGAffineTransformIdentity;
+        }else{
+            self.previewView.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+        
+    }else{
+        CGAffineTransform flipLR = CGAffineTransformMakeScale(-1.0, 1.0);
+        if (self.newState == 1) {
+            self.previewView.transform = CGAffineTransformRotate(flipLR, M_PI);
+        }else{
+            self.previewView.transform = flipLR;
+        }
+    }
+    
+}
 - (void)deviceChangeAndHomeOnTheLeftNewLayout {
     [self createLeftPartView];
     
@@ -1093,13 +1110,10 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         }
         return;
     }
-    if (self.AVEngine.cameraPosition == DLYAVEngineCapturePositionTypeFront) {
-        self.previewView.transform = CGAffineTransformMakeRotation(2*M_PI);
-    }else{
-        self.previewView.transform = CGAffineTransformMakeRotation(M_PI);
 
-    }
     [self.AVEngine switchCameras];
+    [self resetPreviewViewTransform];
+
 //    if (self.AVEngine.cameraPosition == DLYAVEngineCapturePositionTypeFront) {
 //    }
 //    self.toggleCameraBtn.selected = !self.toggleCameraBtn.selected;
