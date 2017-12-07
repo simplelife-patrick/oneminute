@@ -25,6 +25,7 @@
 @property (weak, nonatomic) CIContext                              *ciContext;
 @property (nonatomic) CGColorSpaceRef                              colorSpace;
 @property (strong, nonatomic) CIFilter                             *activeFilter;
+@property (strong, nonatomic) CIFilter                             *transformFilter;
 
 @property (strong, nonatomic) NSDictionary                         *videoSettings;
 @property (strong, nonatomic) NSDictionary                         *audioSettings;
@@ -47,6 +48,10 @@
         _colorSpace = CGColorSpaceCreateDeviceRGB();
         
         _activeFilter = [DLYPhotoFilters defaultFilter];
+        NSLog(@"%@",[CIFilter filterNamesInCategory:kCICategoryGeometryAdjustment]);
+        _transformFilter = [CIFilter filterWithName:@"CIAffineTransform"];
+        CGAffineTransform t = CGAffineTransformMakeRotation(M_PI);
+//        [_transformFilter setValue:[NSValue valueWithCGAffineTransform:t] forKey:@"inputTransform"];
         _firstSample = YES;
         
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -72,7 +77,7 @@
     self.activeFilter = [notification.object copy];
 }
 
-- (void)startWriting {
+- (void)startWritingWith:(UIDeviceOrientation)orientation {
     dispatch_async(self.dispatchQueue, ^{
         
         NSError *error = nil;
@@ -91,9 +96,20 @@
         
         self.assetWriterVideoInput.expectsMediaDataInRealTime = YES;
         
-        UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
-        self.assetWriterVideoInput.transform = DLYTransformForDeviceOrientation(orientation);
+//        UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+//        self.assetWriterVideoInput.transform = DLYTransformForDeviceOrientation(orientation);
+        CGAffineTransform transform =DLYTransformForDeviceOrientation(orientation);
+        if (orientation ==UIDeviceOrientationLandscapeRight) {
+            transform.tx = [self.videoSettings[AVVideoWidthKey] floatValue];
+            transform.ty = [self.videoSettings [AVVideoHeightKey] floatValue];
+        }else{
+            transform.tx = 0;
+            transform.ty = 0;
+        }
+
         
+        [_transformFilter setValue:[NSValue valueWithCGAffineTransform:transform] forKey:@"inputTransform"];
+
         NSDictionary *attributes = @{
                                      (id)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA),
                                      (id)kCVPixelBufferWidthKey : self.videoSettings[AVVideoWidthKey],
@@ -175,9 +191,9 @@
                                                        options:nil];
         
         [self.activeFilter setValue:sourceImage forKey:kCIInputImageKey];
-        
-        CIImage *filteredImage = self.activeFilter.outputImage;
-        
+        [self.transformFilter setValue:self.activeFilter.outputImage forKey:kCIInputImageKey];
+        CIImage *filteredImage = self.transformFilter.outputImage;
+    
         if (!filteredImage) {
             filteredImage = sourceImage;
         }
@@ -216,7 +232,7 @@
     dispatch_async(self.dispatchQueue, ^{
         
         [self.assetWriter finishWritingWithCompletionHandler:^{
-            
+
             if (self.assetWriter.status == AVAssetWriterStatusCompleted) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSURL *fileURL = [self.assetWriter outputURL];
@@ -225,6 +241,9 @@
             } else {
                 NSLog(@"Failed to write movie: %@", self.assetWriter.error);
             }
+            self.assetWriter = nil;
+            self.assetWriterVideoInput = nil;
+            self.assetWriterAudioInput = nil;
         }];
     });
 }

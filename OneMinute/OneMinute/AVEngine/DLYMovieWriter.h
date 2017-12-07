@@ -21,7 +21,7 @@
 @property (nonatomic, strong) NSURL                          *outputUrl;
 
 
-- (void)startWriting;
+- (void)startWritingWith:(UIDeviceOrientation)orientation;
 - (void)stopWriting;
 - (void)processSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 - (id)initWithVideoSettings:(NSDictionary *)videoSettings
