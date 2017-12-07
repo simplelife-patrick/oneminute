@@ -13,8 +13,8 @@
 /**
  片段类型
 
- - DLYMiniVlogPartTypeNormal: 标准片段
- - DLYMiniVlogPartTypeVirtual: 虚拟片段
+ - DLYMiniVlogPartTypeNormal: 手动拍摄
+ - DLYMiniVlogPartTypeVirtual: 电脑添加
  */
 typedef NS_ENUM(NSInteger, DLYMiniVlogPartType)
 {
@@ -39,8 +39,8 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogRecordType)
 /**
  音轨方案
 
- - DLYMiniVlogAudioTypeMusic: 空镜
- - DLYMiniVlogAudioTypeNarrate: 人声
+ - DLYMiniVlogAudioTypeMusic: 只有背景音
+ - DLYMiniVlogAudioTypeNarrate: 人声 + 背景音
  */
 typedef NS_ENUM(NSInteger, DLYMiniVlogAudioType)
 {
