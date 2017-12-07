@@ -44,6 +44,7 @@ typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
 @property (nonatomic, strong) AVCaptureConnection                                     *videoConnection;
 @property (nonatomic, strong) AVCaptureSession                                        *captureSession;
 
+@property (nonatomic, assign) UIDeviceOrientation                                     orientation;
 @property (nonatomic, strong) DLYMiniVlogVirtualPart                                  *currentPart;
 @property (nonatomic, strong) NSURL                                                   *currentProductUrl;
 @property (nonatomic, strong) NSMutableArray                                          *imageArray;

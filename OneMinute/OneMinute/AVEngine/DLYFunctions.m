@@ -42,7 +42,9 @@ CGAffineTransform DLYTransformForDeviceOrientation(UIDeviceOrientation orientati
         case UIDeviceOrientationPortraitUpsideDown:
             result = CGAffineTransformMakeRotation((M_PI_2 * 3));
             break;
-            
+        case UIDeviceOrientationLandscapeLeft:
+            result = CGAffineTransformIdentity;
+            break;
         case UIDeviceOrientationPortrait:
         case UIDeviceOrientationFaceUp:
         case UIDeviceOrientationFaceDown:
