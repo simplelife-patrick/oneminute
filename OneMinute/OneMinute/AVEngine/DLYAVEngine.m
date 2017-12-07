@@ -832,26 +832,21 @@
     
     [self.movieWriter stopWriting];
     self.isRecording = NO;
-
 }
 
 #pragma mark - 取消录制 -
 - (void)cancelRecording{
     DLYLog(@"取消录制");
-    [_recordTimer cancelTick];
-    _isRecording = NO;
-    readyToRecordVideo = NO;
-    readyToRecordAudio = NO;
+    self.movieWriter.isWriting = NO;
     
-    dispatch_async(_movieWritingQueue, ^{
-    
+    dispatch_async(self.dispatchQueue, ^{
         [self.assetWriter finishWritingWithCompletionHandler:^{
-
-            self.assetWriterVideoInput = nil;
-            self.assetWriterAudioInput = nil;
-            self.assetWriter = nil;
+            
         }];
     });
+    [_recordTimer cancelTick];
+    self.isRecording = NO;
+
 }
 
 #pragma mark - 重置录制 -
