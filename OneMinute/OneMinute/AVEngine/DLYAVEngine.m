@@ -879,7 +879,8 @@
 
 -(void)timerStopped:(NSTimeInterval) time
 {
-
+    [self stopRecording];
+    self.isRecording = NO;
 }
 
 -(void)businessFinished:(NSTimeInterval) time;
@@ -887,8 +888,6 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
         [self.delegate finishedRecording];
     }
-    [self stopRecording];
-    self.isRecording = NO;
 }
 
 -(void)timerCanceled:(NSTimeInterval) time
@@ -940,11 +939,11 @@
             
             [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
             
-            CMTimeRange scaleRange = CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale));
+            CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale));
             
             CMTime toDuration_after = CMTimeMake(videoAsset.duration.value * scale , videoAsset.duration.timescale);
             
-            [compositionVideoTrack scaleTimeRange:scaleRange toDuration:toDuration_after];
+            [compositionVideoTrack scaleTimeRange:timeRange toDuration:toDuration_after];
         }
         
         AVAssetExportSession *assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1280x720];

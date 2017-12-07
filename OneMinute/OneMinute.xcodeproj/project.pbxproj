@@ -44,6 +44,7 @@
 		AD14ED461F9E0ABD000DB796 /* templateList_v1.plist in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED451F9E0ABD000DB796 /* templateList_v1.plist */; };
 		AD1E17C41FD553DB0042910D /* DreamTheSea.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD1E17C21FD553DB0042910D /* DreamTheSea.dly */; };
 		AD1E17C71FD5541E0042910D /* LanternBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD1E17C61FD5541D0042910D /* LanternBGM.m4a */; };
+		AD24760E1FD9166A004D5D15 /* Lantern.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD24760D1FD9166A004D5D15 /* Lantern.dly */; };
 		AD26F1A81F53E6DE00565E27 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */; };
 		AD26F1AA1F53E70A00565E27 /* DLYRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */; };
 		AD2877D71FD147FB000F8B28 /* dreamTheSea_part0.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AD2877D51FD147FA000F8B28 /* dreamTheSea_part0.mp4 */; };
@@ -59,7 +60,6 @@
 		AD641CD61FD643020046A5A3 /* SunSetBeach.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD641CCC1FD643020046A5A3 /* SunSetBeach.dly */; };
 		AD641CD71FD643020046A5A3 /* Default.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD641CCD1FD643020046A5A3 /* Default.dly */; };
 		AD641CD81FD643020046A5A3 /* Secondary.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD641CCE1FD643020046A5A3 /* Secondary.dly */; };
-		AD641CE21FD692770046A5A3 /* Lantern.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD641CE11FD692770046A5A3 /* Lantern.dly */; };
 		AD7608F31F70C07F00556E20 /* NSObject+JSONCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608EA1F70C07F00556E20 /* NSObject+JSONCategories.m */; };
 		AD7608F41F70C07F00556E20 /* UIButton+LargerHitArea.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608EC1F70C07F00556E20 /* UIButton+LargerHitArea.m */; };
 		AD7608F51F70C07F00556E20 /* UIImage+iconfont.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7608EE1F70C07F00556E20 /* UIImage+iconfont.m */; };
@@ -185,6 +185,7 @@
 		AD14ED451F9E0ABD000DB796 /* templateList_v1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = templateList_v1.plist; sourceTree = "<group>"; };
 		AD1E17C21FD553DB0042910D /* DreamTheSea.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = DreamTheSea.dly; sourceTree = "<group>"; };
 		AD1E17C61FD5541D0042910D /* LanternBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = LanternBGM.m4a; sourceTree = "<group>"; };
+		AD24760D1FD9166A004D5D15 /* Lantern.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Lantern.dly; sourceTree = "<group>"; };
 		AD26F1A61F53E6DE00565E27 /* DLYAVEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAVEngine.h; sourceTree = "<group>"; };
 		AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYAVEngine.m; sourceTree = "<group>"; };
 		AD26F1A91F53E70A00565E27 /* DLYRecordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DLYRecordViewController.m; sourceTree = "<group>"; };
@@ -202,7 +203,6 @@
 		AD641CCC1FD643020046A5A3 /* SunSetBeach.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = SunSetBeach.dly; sourceTree = "<group>"; };
 		AD641CCD1FD643020046A5A3 /* Default.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Default.dly; sourceTree = "<group>"; };
 		AD641CCE1FD643020046A5A3 /* Secondary.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Secondary.dly; sourceTree = "<group>"; };
-		AD641CE11FD692770046A5A3 /* Lantern.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Lantern.dly; sourceTree = "<group>"; };
 		AD7608E91F70C07F00556E20 /* NSObject+JSONCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+JSONCategories.h"; sourceTree = "<group>"; };
 		AD7608EA1F70C07F00556E20 /* NSObject+JSONCategories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+JSONCategories.m"; sourceTree = "<group>"; };
 		AD7608EB1F70C07F00556E20 /* UIButton+LargerHitArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+LargerHitArea.h"; sourceTree = "<group>"; };
@@ -572,7 +572,7 @@
 		AD1E17C11FD553DB0042910D /* v2.0 */ = {
 			isa = PBXGroup;
 			children = (
-				AD641CE11FD692770046A5A3 /* Lantern.dly */,
+				AD24760D1FD9166A004D5D15 /* Lantern.dly */,
 				AD1E17C21FD553DB0042910D /* DreamTheSea.dly */,
 			);
 			path = v2.0;
@@ -840,7 +840,7 @@
 				AD1E17C41FD553DB0042910D /* DreamTheSea.dly in Resources */,
 				ADF5A6DA1FB18A6400161F37 /* SecondaryBGM.m4a in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
-				AD641CE21FD692770046A5A3 /* Lantern.dly in Resources */,
+				AD24760E1FD9166A004D5D15 /* Lantern.dly in Resources */,
 				AD641CD21FD643020046A5A3 /* AfternoonTea.dly in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
 				AD2877D71FD147FB000F8B28 /* dreamTheSea_part0.mp4 in Resources */,
