@@ -197,16 +197,15 @@
         if (!filteredImage) {
             filteredImage = sourceImage;
         }
-        
         [self.ciContext render:filteredImage
-               toCVPixelBuffer:outputRenderBuffer
+               toCVPixelBuffer:imageBuffer
                         bounds:filteredImage.extent
                     colorSpace:self.colorSpace];
         
         
         if (self.assetWriterVideoInput.readyForMoreMediaData) {
             if (![self.assetWriterInputPixelBufferAdaptor
-                  appendPixelBuffer:outputRenderBuffer
+                  appendPixelBuffer:imageBuffer
                   withPresentationTime:timestamp]) {
                 NSLog(@"Error appending pixel buffer.");
             }
