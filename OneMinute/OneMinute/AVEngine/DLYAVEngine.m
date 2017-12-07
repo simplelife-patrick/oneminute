@@ -25,7 +25,7 @@
 #import "DLYMiniVlogVirtualPart.h"
 
 #import "DLYCaptureConfigErrorDelegate.h"
-#import "DLYMovieWriter.h"
+
 #import <UIKit/UIKit.h>
 
 @interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate,AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate,DLYRecordTimerDelegate,DLYMovieWriterDelegate,DLYCaptureConfigErrorDelegate>
@@ -850,7 +850,7 @@
     _recordTimer.timerDelegate = self;
     [_recordTimer startTick];
     
-    [self.movieWriter startWritingWith:self.orientation];
+    [self.movieWriter startWritingWith:self.orientation AndCameraPosition:self.cameraPosition];
     self.isRecording = YES;
 }
 
