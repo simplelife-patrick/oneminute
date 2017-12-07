@@ -25,7 +25,7 @@
 #import "DLYMiniVlogVirtualPart.h"
 
 #import "DLYCaptureConfigErrorDelegate.h"
-#import "DLYMovieWriter.h"
+
 #import <UIKit/UIKit.h>
 
 @interface DLYAVEngine ()<AVCaptureFileOutputRecordingDelegate,AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,CAAnimationDelegate,AVCaptureMetadataOutputObjectsDelegate,DLYRecordTimerDelegate,DLYMovieWriterDelegate,DLYCaptureConfigErrorDelegate>
@@ -279,6 +279,33 @@
         if ([self activeCamera].position == AVCaptureDevicePositionBack) {
             device = [self cameraWithPosition:AVCaptureDevicePositionFront];
             _cameraPosition = DLYAVEngineCapturePositionTypeFront;
+            int32_t maxWidth = 1280;
+            AVCaptureDeviceFormat *act = nil;
+            for (AVCaptureDeviceFormat *format in [device formats]) {
+                
+                CMFormatDescriptionRef desc = format.formatDescription;
+                CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(desc);
+                int32_t width = dimensions.width;
+                
+                for (AVFrameRateRange *range in format.videoSupportedFrameRateRanges) {
+                    
+                    if (range.minFrameRate <= 30 && 30 <= range.maxFrameRate && width == maxWidth) {
+                        act = format;
+                        DLYLog(@"最终选定的正常录制格式 :format:%@", format);
+                        break;
+                    }
+                }
+                if (act) break;
+            }
+            if (act) {
+                [self.captureSession beginConfiguration];
+                if ([device lockForConfiguration:nil]) {
+                    device.activeFormat = act;
+                    [device unlockForConfiguration];
+                }
+                [self.captureSession commitConfiguration];
+            }
+         
         } else {
             device = [self cameraWithPosition:AVCaptureDevicePositionBack];
             _cameraPosition = DLYAVEngineCapturePositionTypeBack;
@@ -823,7 +850,7 @@
     _recordTimer.timerDelegate = self;
     [_recordTimer startTick];
     
-    [self.movieWriter startWritingWith:self.orientation];
+    [self.movieWriter startWritingWith:self.orientation AndCameraPosition:self.cameraPosition];
     self.isRecording = YES;
 }
 
@@ -1067,7 +1094,6 @@
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     
-    [self.movieWriter processSampleBuffer:sampleBuffer];
     
     if (captureOutput == self.videoDataOutput) {
         
@@ -1080,6 +1106,8 @@
             [self.delegate imageWithImageTarget:sourceImage];
         }
     }
+    [self.movieWriter processSampleBuffer:sampleBuffer];
+
 }
 -(void)didWriteMovieAtURL:(NSURL *)outputURL{
     //导出保存

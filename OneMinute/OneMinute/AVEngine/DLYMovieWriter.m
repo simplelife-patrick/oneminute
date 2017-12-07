@@ -77,7 +77,7 @@
     self.activeFilter = [notification.object copy];
 }
 
-- (void)startWritingWith:(UIDeviceOrientation)orientation {
+- (void)startWritingWith:(UIDeviceOrientation)orientation AndCameraPosition:(DLYAVEngineCapturePositionType)position{
     dispatch_async(self.dispatchQueue, ^{
         
         NSError *error = nil;
@@ -98,17 +98,31 @@
         
 //        UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
 //        self.assetWriterVideoInput.transform = DLYTransformForDeviceOrientation(orientation);
-        CGAffineTransform transform =DLYTransformForDeviceOrientation(orientation);
-        if (orientation ==UIDeviceOrientationLandscapeRight) {
-            transform.tx = [self.videoSettings[AVVideoWidthKey] floatValue];
-            transform.ty = [self.videoSettings [AVVideoHeightKey] floatValue];
+        CGAffineTransform transform;
+        if (position == DLYAVEngineCapturePositionTypeBack) {
+            transform =DLYTransformForDeviceOrientation(orientation);
+            if (orientation ==UIDeviceOrientationLandscapeRight) {
+                transform.tx = [self.videoSettings[AVVideoWidthKey] floatValue];
+                transform.ty = [self.videoSettings [AVVideoHeightKey] floatValue];
+            }else{
+                transform.tx = 0;
+                transform.ty = 0;
+            }
         }else{
-            transform.tx = 0;
-            transform.ty = 0;
-        }
+            if (orientation ==UIDeviceOrientationLandscapeRight) {
+                transform = CGAffineTransformIdentity;
+                transform.tx = 0;
+                transform.ty = 0;
 
-        
+            }else{
+                transform = CGAffineTransformMakeRotation(M_PI);
+                transform.tx = [self.videoSettings[AVVideoWidthKey] floatValue];
+                transform.ty = [self.videoSettings [AVVideoHeightKey] floatValue];
+            }
+        }
         [_transformFilter setValue:[NSValue valueWithCGAffineTransform:transform] forKey:@"inputTransform"];
+
+ 
 
         NSDictionary *attributes = @{
                                      (id)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA),
@@ -197,7 +211,6 @@
         if (!filteredImage) {
             filteredImage = sourceImage;
         }
-        
         [self.ciContext render:filteredImage
                toCVPixelBuffer:outputRenderBuffer
                         bounds:filteredImage.extent

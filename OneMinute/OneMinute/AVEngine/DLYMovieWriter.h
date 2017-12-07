@@ -7,6 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
+typedef NS_ENUM(NSInteger, DLYAVEngineCapturePositionType) {
+    DLYAVEngineCapturePositionTypeBack = 0,
+    DLYAVEngineCapturePositionTypeFront
+};
 
 @protocol DLYMovieWriterDelegate<NSObject>
 
@@ -21,7 +25,7 @@
 @property (nonatomic, strong) NSURL                          *outputUrl;
 
 
-- (void)startWritingWith:(UIDeviceOrientation)orientation;
+- (void)startWritingWith:(UIDeviceOrientation)orientation AndCameraPosition:(DLYAVEngineCapturePositionType)position;
 - (void)stopWriting;
 - (void)processSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 - (id)initWithVideoSettings:(NSDictionary *)videoSettings

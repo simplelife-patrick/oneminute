@@ -10,15 +10,11 @@
 #import <CoreMedia/CoreMedia.h>
 #import "DLYMiniVlogVirtualPart.h"
 #import "DLYRecordTimer.h"
-
+#import "DLYMovieWriter.h"
 typedef void(^SuccessBlock)(void);
 typedef void(^FailureBlock)(NSError *error);
 typedef void (^Callback)(NSURL *finalUrl ,NSString * filePath);
 
-typedef NS_ENUM(NSInteger, DLYAVEngineCapturePositionType) {
-    DLYAVEngineCapturePositionTypeBack = 0,
-    DLYAVEngineCapturePositionTypeFront
-};
 
 @protocol DLYCaptureAVEngineDelegate <NSObject>
 
