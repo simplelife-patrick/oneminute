@@ -740,7 +740,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     UITouch *touch = [touches anyObject];
     if (touch.view != self.backView && touch.view != self.sceneView && touch.view != self.playView
-        && touch.view != self.filterView)
+        && touch.view != self.filterView&& touch.view != self.filterContentView)
     {
         CGPoint point = [touch locationInView:self.previewView];
         CGPoint cameraPoint = [self.AVEngine.captureVideoPreviewLayer captureDevicePointOfInterestForPoint:point];
