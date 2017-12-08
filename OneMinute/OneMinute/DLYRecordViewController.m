@@ -109,7 +109,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) NSMutableArray *bubbleTitleArr;//视图数组
 @property (nonatomic, assign) BOOL isAvalible;              //权限都已经许可
 //@property (nonatomic, strong) UILabel *versionLabel;        //版本显示
-@property (nonatomic, assign)BOOL isFilterTableViewHasSelected;   //第一次是手动把无滤镜选择中
+@property (nonatomic, assign)BOOL isFilterTableViewHasSelected;   //第一次时手动把无滤镜选中
 @end
 
 @implementation DLYRecordViewController
@@ -267,9 +267,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showFirstPopup"]){
         
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showFirstPopup"];
-        NSArray *arr = @[self.chooseScene, self.flashButton, self.toggleCameraBtn, self.recordBtn];
+        NSArray *arr = @[self.chooseScene,self.chooseFilter, self.flashButton, self.toggleCameraBtn, self.recordBtn];
         self.viewArr = [NSMutableArray arrayWithArray:arr];
-        NSArray *titleArr = @[@"选择场景", @"补光灯", @"切换摄像头", @"录制视频"];
+        NSArray *titleArr = @[@"选择场景",@"选择滤镜", @"补光灯", @"切换摄像头", @"录制视频"];
         self.bubbleTitleArr = [NSMutableArray arrayWithArray:titleArr];
         [self showPopupMenu];
     }
@@ -561,7 +561,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.imageTarget = self.previewView;
     self.previewView.coreImageContext = [DLYContextManager sharedInstance].ciContext;
     [overlayView insertSubview:self.previewView belowSubview:overlayView];
-    
+    self.previewMaskView = [[UIImageView alloc]initWithFrame:SCREEN_RECT];
+    [overlayView addSubview:self.previewMaskView];
     //通用button 选择场景button
     self.chooseScene = [[UIButton alloc]initWithFrame:CGRectMake(11, 16, 40, 40)];
     self.chooseScene.backgroundColor = RGBA(0, 0, 0, 0.4);
@@ -2579,18 +2580,26 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [UIView animateWithDuration:0.5f animations:^{
         self.sceneView.alpha = 0;
         if (self.newState == 1) {
-            self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
-        }else {
-            self.chooseScene.frame = CGRectMake(SCREEN_WIDTH - 51, 16, 40, 40);
-        }
-        
-        self.chooseScene.hidden = NO;
-        if (self.newState == 1) {
             self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
+            self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
+            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.bottom + 2, 50, 13);
+            self.chooseFilter.frame = CGRectMake(11, 94, 40, 40);
+            self.chooseFilterLabel.frame = CGRectMake(6, self.chooseFilter.bottom + 2, 50, 13);
+
         }else {
             self.toggleCameraBtn.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 51, 40, 40);
+            self.chooseScene.frame = CGRectMake(SCREEN_WIDTH - 51, 16, 40, 40);
+            self.chooseSceneLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseScene.bottom + 2, 50, 13);
+            self.chooseFilter.frame = CGRectMake(SCREEN_WIDTH - 51, 94, 40, 40);
+            self.chooseFilterLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseFilter.bottom + 2, 50, 13);
         }
         self.toggleCameraBtn.hidden = NO;
+        self.chooseScene.hidden = NO;
+        self.chooseSceneLabel.hidden = NO;
+        self.chooseFilter.hidden = NO;
+        self.chooseFilterLabel.hidden = NO;
+        self.backView.hidden = NO;
+    
         if (!isFront) {
             if (self.newState == 1) {
                 self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
@@ -2599,13 +2608,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }
             self.flashButton.hidden = NO;
         }
-        if (self.newState == 1) {
-            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.bottom + 2, 50, 13);
-        }else {
-            self.chooseSceneLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseScene.bottom + 2, 50, 13);
-        }
-        self.chooseSceneLabel.hidden = NO;
-        self.backView.hidden = NO;
+       
     } completion:^(BOOL finished) {
         self.sceneView.hidden = YES;
         [DLYUserTrack recordAndEventKey:@"ChooseSceneViewEnd"];

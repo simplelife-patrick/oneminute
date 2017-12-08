@@ -47,7 +47,7 @@ static id _instance;
     
     return @[@"CIPhotoEffectChrome",
              @"CIPhotoEffectTransfer",
-             @"CISRGBToneCurveToLinear",
+             @"CIPhotoEffectInstant",
              ];
 }
 
@@ -59,9 +59,9 @@ static id _instance;
 //        [displayNames addObject:[filterName stringByMatchingRegex:@"CIPhotoEffect(.*)" capture:1]];
 //    }
     
-    return @[@"CIPhotoEffectChrome",
-             @"CIPhotoEffectTransfer",
-             @"CISRGBToneCurveToLinear",
+    return @[@"01  盛夏时光",
+             @"02  春暖花开",
+             @"03  冬季飞雪",
              ];;
 }
 
