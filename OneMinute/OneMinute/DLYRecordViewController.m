@@ -744,13 +744,26 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         && touch.view != self.filterView&& touch.view != self.filterContentView)
     {
         CGPoint point = [touch locationInView:self.previewView];
-        CGPoint cameraPoint = [self.AVEngine.captureVideoPreviewLayer captureDevicePointOfInterestForPoint:point];
-        [self.AVEngine focusContinuousWithPoint:cameraPoint];
+//        CGPoint cameraPoint = [self.AVEngine.captureVideoPreviewLayer captureDevicePointOfInterestForPoint:point];
+        [self.AVEngine focusContinuousWithPoint:point];
         [self setFocusCursorWithPoint:point];
     }
 }
 - (void)setFocusCursorWithPoint:(CGPoint)point {
-    self.focusCursorImageView.center = point;
+    
+    CGPoint changePoint = point;
+    if (self.newState == 1 &&  self.AVEngine.cameraPosition == DLYAVEngineCapturePositionTypeFront) {//右手 + 前置
+        changePoint = CGPointMake(point.x, SCREEN_HEIGHT - point.y);
+    }
+    
+    if (self.newState == 2 && self.AVEngine.cameraPosition == DLYAVEngineCapturePositionTypeBack) {//左手 + 后置
+        changePoint = CGPointMake(SCREEN_WIDTH - point.x, SCREEN_HEIGHT - point.y);
+    }
+    
+    if (self.newState == 2 && self.AVEngine.cameraPosition == DLYAVEngineCapturePositionTypeFront) {//左手 + 前置
+        changePoint = CGPointMake(SCREEN_WIDTH - point.x,point.y);
+    }
+    self.focusCursorImageView.center = changePoint;
     self.focusCursorImageView.transform = CGAffineTransformMakeScale(1.6, 1.6);
     self.focusCursorImageView.alpha = 1.0;
     [UIView animateWithDuration:0.5 animations:^{
@@ -950,7 +963,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 }
 - (void)resetPreviewViewTransform{
     if (self.AVEngine.cameraPosition == DLYAVEngineCapturePositionTypeBack) {
-        if (self.newState ==1) {
+        if (self.newState == 1) {
             self.previewView.transform = CGAffineTransformIdentity;
         }else{
             self.previewView.transform = CGAffineTransformMakeRotation(M_PI);
