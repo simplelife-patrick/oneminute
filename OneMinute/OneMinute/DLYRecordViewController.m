@@ -21,11 +21,11 @@
 #import "DLYImageTarget.h"
 #import "DLYContextManager.h"
 #import "DLYPhotoFilters.h"
-
+#import "DLYChooseFilterTableViewCell.h"
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
 
-@interface DLYRecordViewController ()<DLYCaptureAVEngineDelegate,UIAlertViewDelegate,UIGestureRecognizerDelegate,YBPopupMenuDelegate,DLYIndicatorViewDelegate>
+@interface DLYRecordViewController ()<DLYCaptureAVEngineDelegate,UIAlertViewDelegate,UIGestureRecognizerDelegate,YBPopupMenuDelegate,DLYIndicatorViewDelegate,UITableViewDelegate,UITableViewDataSource>
 {
     NSInteger cursorTag;
     //记录选中的样片类型
@@ -60,6 +60,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) UIImageView                       *focusCursorImageView;
 @property (nonatomic, strong) UIImageView                       *faceRegionImageView;
 @property (nonatomic, strong) UIView * sceneView; //选择场景的view
+@property (nonatomic, strong) UIView * filterView; //选择filter的view
+@property (nonatomic, strong) UIView * filterContentView; //选择filter的背景view
 @property (nonatomic, strong) UIView * videoView; //选择样片的view
 @property (nonatomic, strong) UIView * shootView; //拍摄界面
 @property (nonatomic, strong) UIView * timeView;
@@ -70,6 +72,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) DLYTitleView *titleView;      //拍摄说明
 @property (nonatomic, strong) UIButton *chooseScene;        //选择场景
 @property (nonatomic, strong) UILabel *chooseSceneLabel;    //选择场景文字
+@property (nonatomic, strong) UIButton *chooseFilter;        //选择滤镜
+@property (nonatomic, strong) UILabel *chooseFilterLabel;    //选择滤镜文字
 @property (nonatomic, strong) UIButton *toggleCameraBtn;    //切换摄像头
 @property (nonatomic, strong) UIButton *flashButton;        //闪光灯
 @property (nonatomic, strong) UIView *backView;             //控制页面底层
@@ -105,7 +109,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) NSMutableArray *bubbleTitleArr;//视图数组
 @property (nonatomic, assign) BOOL isAvalible;              //权限都已经许可
 //@property (nonatomic, strong) UILabel *versionLabel;        //版本显示
-
+@property (nonatomic, assign)BOOL isFilterTableViewHasSelected;   //第一次是手动把无滤镜选择中
 @end
 
 @implementation DLYRecordViewController
@@ -552,7 +556,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     EAGLContext *eaglContext = [DLYContextManager sharedInstance].eaglContext;
     self.previewView = [[DLYPreviewView alloc] initWithFrame:SCREEN_RECT context:eaglContext];
-    self.previewView.filter = [DLYPhotoFilters defaultFilter];
+    self.previewView.filter = [[DLYPhotoFilters sharedInstance] currentFilter];
     
     self.imageTarget = self.previewView;
     self.previewView.coreImageContext = [DLYContextManager sharedInstance].ciContext;
@@ -567,6 +571,17 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.chooseScene.titleLabel.font = FONT_SYSTEM(14);
     [self.chooseScene setTitleColor:RGB(0, 0, 0) forState:UIControlStateNormal];
     [self.view addSubview:self.chooseScene];
+    
+    self.chooseFilter = [[UIButton alloc]initWithFrame:CGRectMake(11, 94, 40, 40)];
+    self.chooseFilter.backgroundColor = RGBA(0, 0, 0, 0.4);
+    [self.chooseFilter addTarget:self action:@selector(onClickChooseFilter:) forControlEvents:UIControlEventTouchUpInside];
+    self.chooseFilter.layer.cornerRadius = 20;
+    self.chooseFilter.clipsToBounds = YES;
+    self.chooseFilter.titleLabel.font = FONT_SYSTEM(14);
+    [self.chooseFilter setTitleColor:RGB(0, 0, 0) forState:UIControlStateNormal];
+    [self.chooseFilter setImage:[UIImage imageWithIconName:IFNoFilter inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+
+    [self.view addSubview:self.chooseFilter];
     //显示场景的label 40
     self.chooseSceneLabel = [[UILabel alloc]initWithFrame:CGRectMake(6, self.chooseScene.bottom + 2, 50, 13)];
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
@@ -575,6 +590,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.chooseSceneLabel.textColor = RGBA(255, 255, 255, 1);
     self.chooseSceneLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:self.chooseSceneLabel];
+    
+    self.chooseFilterLabel = [[UILabel alloc]initWithFrame:CGRectMake(6, self.chooseFilter.bottom + 2, 50, 13)];
+    self.chooseFilterLabel.text = [[DLYPhotoFilters sharedInstance] currentDisplayFilterName];
+    self.chooseFilterLabel.font = FONT_SYSTEM(12);
+    self.chooseFilterLabel.textColor = RGBA(255, 255, 255, 1);
+    self.chooseFilterLabel.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:self.chooseFilterLabel];
+
     
     NSArray *typeNameArray = [self.session loadAllTemplateFile];
     for (int i = 0; i < typeNameArray.count; i ++) {
@@ -699,6 +722,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self createPartView];
     //创建场景页面
     [self createSceneView];
+    [self createFilterView];
     [self createVideoView];
     [self.view addSubview:[self shootView]];
 }
@@ -715,7 +739,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     
     UITouch *touch = [touches anyObject];
-    if (touch.view != self.backView && touch.view != self.sceneView && touch.view != self.playView)
+    if (touch.view != self.backView && touch.view != self.sceneView && touch.view != self.playView
+        && touch.view != self.filterView)
     {
         CGPoint point = [touch locationInView:self.previewView];
         CGPoint cameraPoint = [self.AVEngine.captureVideoPreviewLayer captureDevicePointOfInterestForPoint:point];
@@ -1032,6 +1057,28 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             self.chooseSceneLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseScene.bottom + 2, 50, 13);
         }
     }
+    
+    if (!self.chooseFilter.isHidden && self.chooseFilter) {
+        if (num == 0) {
+            self.chooseFilter.frame = CGRectMake(11, 94, 40, 40);
+        }else {
+            self.chooseFilter.frame = CGRectMake(SCREEN_WIDTH - 51, 94, 40, 40);
+        }
+    }
+    if (!self.chooseFilterLabel.isHidden && self.chooseFilterLabel) {
+        if (num == 0) {
+            self.chooseFilterLabel.frame = CGRectMake(6, self.chooseFilter.bottom + 2, 50, 13);
+        }else {
+            self.chooseFilterLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseFilter.bottom + 2, 50, 13);
+        }
+    }
+    if (!self.filterView.isHidden && self.filterView) {
+        if (num == 0) {
+            self.filterView.frame = CGRectMake(61, 10, 120, SCREEN_HEIGHT-20);
+        }else {
+            self.filterView.frame = CGRectMake(SCREEN_WIDTH-61-120, 10, 120, SCREEN_HEIGHT-20);
+        }
+    }
     if (!self.toggleCameraBtn.isHidden && self.toggleCameraBtn) {
         if (num == 0) {
             self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
@@ -1141,15 +1188,23 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [DLYUserTrack recordAndEventKey:@"ChooseScene"];
     [self showChooseSceneView];
 }
+- (void)onClickChooseFilter:(UIButton *)sender{
+    [DLYUserTrack recordAndEventKey:@"ChooseFilter"];
+    [self showChooseFilterView];
+}
 //显示模板页面
 - (void)showChooseSceneView {
     
     [UIView animateWithDuration:0.1f animations:^{
         self.chooseScene.hidden = YES;
+        self.chooseFilter.hidden = YES;
         self.toggleCameraBtn.hidden = YES;
         self.flashButton.hidden = YES;
         self.chooseSceneLabel.hidden = YES;
+        self.chooseFilterLabel.hidden = YES;
         self.backView.hidden = YES;
+        self.filterContentView.hidden = YES;
+
         [self.partBubble dismiss];
         if (self.partBubble) {
             [self.partBubble removeFromSuperview];
@@ -1169,6 +1224,43 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }];
 
 }
+//显示选择filter页面
+- (void)showChooseFilterView {
+    
+    [UIView animateWithDuration:0.1f animations:^{
+//        self.chooseScene.hidden = YES;
+//        self.chooseFilter.hidden = YES;
+//        self.toggleCameraBtn.hidden = YES;
+//        self.flashButton.hidden = YES;
+//        self.chooseSceneLabel.hidden = YES;
+//        self.chooseFilterLabel.hidden = YES;
+//        self.backView.hidden = YES;
+        [self.partBubble dismiss];
+        if (self.partBubble) {
+            [self.partBubble removeFromSuperview];
+            self.partBubble = nil;
+        }
+    } completion:^(BOOL finished) {
+//        [DLYUserTrack recordAndEventKey:@"ChooseSceneViewStart"];
+//        [DLYUserTrack beginRecordPageViewWith:@"ChooseSceneView"];
+        self.filterContentView.hidden = NO;
+        if (self.newState == 1) {
+            self.filterView.frame = CGRectMake(61, 10, 120, SCREEN_HEIGHT-20);
+        }else {
+            self.filterView.frame = CGRectMake(SCREEN_WIDTH-61-120, 10, 120, SCREEN_HEIGHT-20);
+        }
+        self.filterView.hidden = NO;
+
+        //气泡
+//        if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showSeeRushPopup"]){
+//            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showSeeRushPopup"];
+//            DLYPopupMenu *videoBubble = [DLYPopupMenu showRelyOnView:self.seeRush titles:@[@"观看样片"] icons:nil menuWidth:120 delegate:self];
+//            videoBubble.showMaskAlpha = 1;
+//        }
+    }];
+    
+}
+
 //拍摄视频按键
 - (void)startRecordBtnAction {
     
@@ -1223,6 +1315,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [UIView animateWithDuration:0.5f animations:^{
         self.chooseScene.hidden = YES;
         self.chooseSceneLabel.hidden = YES;
+        self.chooseFilter.hidden = YES;
+        self.chooseFilterLabel.hidden = YES;
         self.toggleCameraBtn.hidden = YES;
         self.flashButton.hidden = YES;
         if (self.newState == 1) {
@@ -1414,17 +1508,27 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [DLYUserTrack recordAndEventKey:@"CancelSelect"];
     [UIView animateWithDuration:0.5f animations:^{
         if (self.newState == 1) {
-            self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
-        }else {
-            self.chooseScene.frame = CGRectMake(SCREEN_WIDTH - 51, 16, 40, 40);
-        }
-        self.chooseScene.hidden = NO;
-        if (self.newState == 1) {
             self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
+            self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
+            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.bottom + 2, 50, 13);
+            self.chooseFilter.frame = CGRectMake(11, 94, 40, 40);
+            self.chooseFilterLabel.frame = CGRectMake(11, self.chooseFilter.bottom + 2, 40, 40);
+
         }else {
             self.toggleCameraBtn.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 51, 40, 40);
+            self.chooseScene.frame = CGRectMake(SCREEN_WIDTH - 51, 16, 40, 40);
+            self.chooseSceneLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseScene.bottom + 2, 50, 13);
+            self.chooseFilter.frame = CGRectMake(SCREEN_WIDTH - 51, 94, 40, 40);
+            self.chooseFilterLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseFilter.bottom + 2, 50, 13);
+
         }
         self.toggleCameraBtn.hidden = NO;
+        self.chooseScene.hidden = NO;
+        self.chooseSceneLabel.hidden = NO;
+        self.chooseFilter.hidden = NO;
+        self.chooseFilterLabel.hidden = NO;
+
+
         if (!isFront) {
             if (self.newState == 1) {
                 self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
@@ -1433,12 +1537,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }
             self.flashButton.hidden = NO;
         }
-        if (self.newState == 1) {
-            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.bottom + 2, 50, 13);
-        }else {
-            self.chooseSceneLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseScene.bottom + 2, 50, 13);
-        }
-        self.chooseSceneLabel.hidden = NO;
+
         self.backView.hidden = NO;
         self.sceneView.alpha = 0;
     } completion:^(BOOL finished) {
@@ -1463,7 +1562,14 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [DLYUserTrack recordAndEventKey:@"ChooseVideoViewEnd"];
     [DLYUserTrack endRecordPageViewWith:@"ChooseVideoView"];
 }
-
+- (void)hiddenFilterContentView{
+//    [DLYUserTrack recordAndEventKey:@"BackVideoView"];
+    self.filterContentView.hidden = YES;
+    self.filterView.hidden = YES;
+    
+//    [DLYUserTrack recordAndEventKey:@"ChooseVideoViewEnd"];
+//    [DLYUserTrack endRecordPageViewWith:@"ChooseVideoView"];
+}
 - (void)changeVideoToPlay:(UIButton *)sender {
     
     NSInteger num = sender.tag - 600;
@@ -1537,17 +1643,28 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         self.progressView.hidden = YES;
         self.timeNumber.hidden = YES;
         if (self.newState == 1) {
-            self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
-        }else {
-            self.chooseScene.frame = CGRectMake(SCREEN_WIDTH - 51, 16, 40, 40);
-        }
-        self.chooseScene.hidden = NO;
-        if (self.newState == 1) {
             self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
+            self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
+            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.bottom + 2, 50, 13);
+            self.chooseFilter.frame = CGRectMake(11, 94, 40, 40);
+            self.chooseFilterLabel.frame = CGRectMake(6, self.chooseFilter.bottom + 2, 50, 13);
+            self.backView.frame = CGRectMake(SCREEN_WIDTH - 180 * SCALE_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
+
         }else {
             self.toggleCameraBtn.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 51, 40, 40);
+            self.chooseScene.frame = CGRectMake(SCREEN_WIDTH - 51, 16, 40, 40);
+            self.chooseSceneLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseScene.bottom + 2, 50, 13);
+            self.chooseFilter.frame = CGRectMake(SCREEN_WIDTH - 51, 94, 40, 40);
+            self.chooseFilterLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseFilter.bottom + 2, 50, 13);
+            self.backView.frame = CGRectMake(0, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
+
         }
         self.toggleCameraBtn.hidden = NO;
+        self.chooseScene.hidden = NO;
+        self.chooseSceneLabel.hidden = NO;
+        self.chooseFilter.hidden = NO;
+        self.chooseFilterLabel.hidden = NO;
+        self.backView.hidden = NO;
         if (!isFront) {
             if (self.newState == 1) {
                 self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
@@ -1555,18 +1672,6 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 self.flashButton.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 101, 40, 40);
             }
             self.flashButton.hidden = NO;
-        }
-        if (self.newState == 1) {
-            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.bottom + 2, 50, 13);
-        }else {
-            self.chooseSceneLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseScene.bottom + 2, 50, 13);
-        }
-        self.chooseSceneLabel.hidden = NO;
-        self.backView.hidden = NO;
-        if (self.newState == 1) {
-            self.backView.frame = CGRectMake(SCREEN_WIDTH - 180 * SCALE_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
-        }else {
-            self.backView.frame = CGRectMake(0, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
         }
         self.shootView.alpha = 0;
         self.shootView.hidden = YES;
@@ -2267,6 +2372,23 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.sureBtn.hidden = YES;
     [self.sceneView addSubview:self.sureBtn];
 }
+- (void)createFilterView {
+    [self.view addSubview:[self filterContentView]];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hiddenFilterContentView)];
+    [self.filterContentView addGestureRecognizer:tap];
+    [self.view addSubview:self.filterView];
+    UITableView *filterTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, self.filterView.height/4, self.filterView.width, self.filterView.height/2) style:UITableViewStylePlain];
+    filterTableView.delegate = self;
+    filterTableView.dataSource = self;
+    filterTableView.rowHeight = 50;
+    filterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    filterTableView.tableFooterView = [[UIView alloc]init];
+    filterTableView.backgroundColor = [UIColor clearColor];
+    [filterTableView registerClass:[DLYChooseFilterTableViewCell class] forCellReuseIdentifier:@"CELL"];
+    [self.filterView addSubview:filterTableView];
+
+}
+
 - (void)createVideoView {
     
     [self.view addSubview:[self videoView]];
@@ -2367,6 +2489,12 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     if (self.recordBtn.isHidden && self.recordBtn) {
         self.recordBtn.hidden = NO;
+    }
+    if (self.chooseFilter.isHidden && self.chooseFilter) {
+        self.chooseFilter.hidden = NO;
+    }
+    if (self.chooseFilterLabel.isHidden && self.chooseFilterLabel) {
+        self.chooseFilterLabel.hidden = NO;
     }
     [self changeSceneWithSelectNum:selectNewPartTag];
     [self initData];
@@ -2567,23 +2695,39 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     [self createPartViewLayout];
     
+
     if (self.newState == 1) {
         self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 51;
-    }else {
-        self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 180 * SCALE_WIDTH;
-    }
-    if (self.newState == 1) {
         self.backView.frame = CGRectMake(SCREEN_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
     }else {
         self.backView.frame = CGRectMake(-180 * SCALE_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
+        self.shootGuide.centerX = (SCREEN_WIDTH - 180 * SCALE_WIDTH - 51) / 2 + 180 * SCALE_WIDTH;
     }
     [UIView animateWithDuration:0.5f animations:^{
         if (self.newState == 1) {
             self.toggleCameraBtn.frame = CGRectMake(11, SCREEN_HEIGHT - 51, 40, 40);
+            self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
+            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.bottom + 2, 50, 13);
+            self.chooseFilter.frame = CGRectMake(11, 94, 40, 40);
+            self.chooseFilterLabel.frame = CGRectMake(6, self.chooseFilter.bottom + 2, 50, 13);
+            self.backView.frame = CGRectMake(SCREEN_WIDTH - 180 * SCALE_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
+
         }else {
             self.toggleCameraBtn.frame = CGRectMake(SCREEN_WIDTH - 51, SCREEN_HEIGHT - 51, 40, 40);
+            self.chooseScene.frame = CGRectMake(SCREEN_WIDTH - 51, 16, 40, 40);
+            self.chooseSceneLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseScene.bottom + 2, 50, 13);
+            self.chooseFilter.frame = CGRectMake(SCREEN_WIDTH - 51, 94, 40, 40);
+            self.chooseFilterLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseFilter.bottom + 2, 50, 13);
+            self.backView.frame = CGRectMake(0, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
+
         }
         self.toggleCameraBtn.hidden = NO;
+        self.chooseScene.hidden = NO;
+        self.chooseSceneLabel.hidden = NO;
+        self.chooseFilter.hidden = NO;
+        self.chooseFilterLabel.hidden = NO;
+        self.backView.hidden = NO;
+
         if (!isFront) {
             if (self.newState == 1) {
                 self.flashButton.frame = CGRectMake(11, SCREEN_HEIGHT - 101, 40, 40);
@@ -2592,24 +2736,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
             }
             self.flashButton.hidden = NO;
         }
-        if (self.newState == 1) {
-            self.chooseScene.frame = CGRectMake(11, 16, 40, 40);
-        }else {
-            self.chooseScene.frame = CGRectMake(SCREEN_WIDTH - 51, 16, 40, 40);
-        }
-        self.chooseScene.hidden = NO;
-        if (self.newState == 1) {
-            self.chooseSceneLabel.frame = CGRectMake(6, self.chooseScene.bottom + 2, 50, 13);
-        }else {
-            self.chooseSceneLabel.frame = CGRectMake(SCREEN_WIDTH - 56, self.chooseScene.bottom + 2, 50, 13);
-        }
-        self.chooseSceneLabel.hidden = NO;
-        self.backView.hidden = NO;
-        if (self.newState == 1) {
-            self.backView.frame = CGRectMake(SCREEN_WIDTH - 180 * SCALE_WIDTH, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
-        }else {
-            self.backView.frame = CGRectMake(0, 0, 180 * SCALE_WIDTH, SCREEN_HEIGHT);
-        }
+
         self.shootView.alpha = 0;
         self.shootView.hidden = YES;
     } completion:^(BOOL finished) {
@@ -2820,7 +2947,41 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [[UIApplication sharedApplication] openURL:url];
     }
 }
+#pragma mark ---tableview delegate
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    static NSString *cellID = @"CELL";
+    DLYChooseFilterTableViewCell *tableViewCell = [tableView dequeueReusableCellWithIdentifier:cellID];
+    tableViewCell.selectionStyle = UITableViewCellSelectionStyleNone;
+    if (indexPath.row == 0) {
+        tableViewCell.title = @"无滤镜";
+        if (!_isFilterTableViewHasSelected) {
+            [tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+        }
+    }else{
+        tableViewCell.title = [[[DLYPhotoFilters sharedInstance] filterDisplayNames] objectAtIndex:indexPath.row-1];
+    }
+    return  tableViewCell;
+    
+}
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return [[DLYPhotoFilters sharedInstance]filterNames].count +1;
+}
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if (!_isFilterTableViewHasSelected) {
+        _isFilterTableViewHasSelected = YES;
+    }
+    if (indexPath.row ==0) {
+        [[DLYPhotoFilters sharedInstance]setFilterEnabled:NO];
+//        [self.chooseFilter setImage:[UIImage imageWithIconName:IFNoFilter inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+        self.chooseFilterLabel.text = @"";
 
+    }else{
+        [[DLYPhotoFilters sharedInstance]setFilterEnabled:YES];
+        [[DLYPhotoFilters sharedInstance]setCurrentFilterIndex:indexPath.row -1];
+//        [self.chooseFilter setImage:[UIImage imageWithIconName:IFFilter inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
+        self.chooseFilterLabel.text = [NSString stringWithFormat:@"%ld",indexPath.row];
+    }
+}
 #pragma mark ==== 懒加载
 
 - (UIView *)sceneView {
@@ -2833,7 +2994,26 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     }
     return _sceneView;
 }
-
+- (UIView *)filterView {
+    if(_filterView == nil)
+    {
+        _filterView = [[UIView alloc]initWithFrame:CGRectMake(61, 10, 120, SCREEN_HEIGHT-20)];
+        _filterView.backgroundColor = RGBA(0, 0, 0, 0.7);
+        _filterView.alpha = 1;
+        _filterView.hidden = YES;
+    }
+    return _filterView;
+}
+- (UIView *)filterContentView {
+    if(_filterContentView == nil)
+    {
+        _filterContentView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        _filterContentView.backgroundColor = [UIColor clearColor];
+        _filterContentView.alpha = 1;
+        _filterContentView.hidden = YES;
+    }
+    return _filterContentView;
+}
 - (UIView *)videoView {
     if(_videoView == nil)
     {
