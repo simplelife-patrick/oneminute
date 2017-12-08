@@ -46,6 +46,8 @@
              @(IFSure)                  :@"\U0000e602",
              @(IFBack)                  :@"\U0000e64d",
              @(IFMute)                  :@"\U0000e663",
+             @(IFNoFilter)              :@"\U0000e61d",
+             @(IFFilter)                :@"\U0000e686",
              };
 }
 

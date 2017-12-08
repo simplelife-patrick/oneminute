@@ -47,7 +47,7 @@
         _ciContext = [DLYContextManager sharedInstance].ciContext;
         _colorSpace = CGColorSpaceCreateDeviceRGB();
         
-        _activeFilter = [DLYPhotoFilters defaultFilter];
+        _activeFilter = [[DLYPhotoFilters sharedInstance] currentFilter];
         NSLog(@"%@",[CIFilter filterNamesInCategory:kCICategoryGeometryAdjustment]);
         _transformFilter = [CIFilter filterWithName:@"CIAffineTransform"];
         CGAffineTransform t = CGAffineTransformMakeRotation(M_PI);

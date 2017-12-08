@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18DC9FAD1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DC9FAC1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.m */; };
 		1C7E61841EE7DF4F0088F33F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61831EE7DF4F0088F33F /* main.m */; };
 		1C7E61871EE7DF4F0088F33F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61861EE7DF4F0088F33F /* AppDelegate.m */; };
 		1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C7E618B1EE7DF4F0088F33F /* Main.storyboard */; };
@@ -114,6 +115,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		18DC9FAB1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYChooseFilterTableViewCell.h; sourceTree = "<group>"; };
+		18DC9FAC1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DLYChooseFilterTableViewCell.m; sourceTree = "<group>"; };
 		1C7E617F1EE7DF4F0088F33F /* OneMinute.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OneMinute.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C7E61831EE7DF4F0088F33F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1C7E61851EE7DF4F0088F33F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -467,6 +470,8 @@
 				6FA74E861F5E48B800114C93 /* DLYTitleView.m */,
 				6FD13AC21F60EC02000B72FC /* DLYIndicatorView.h */,
 				6FD13AC31F60EC02000B72FC /* DLYIndicatorView.m */,
+				18DC9FAB1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.h */,
+				18DC9FAC1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.m */,
 			);
 			name = RecordView;
 			sourceTree = "<group>";
@@ -998,6 +1003,7 @@
 				6F8925AF1F1B135100256093 /* DLYPlayVideoViewController.m in Sources */,
 				6F89259C1F1B12A100256093 /* DLYExportViewController.m in Sources */,
 				6FD13ABE1F5FDAF4000B72FC /* DLYAnimationViewController.m in Sources */,
+				18DC9FAD1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.m in Sources */,
 				6F6ECC241FBAD7EA0072A706 /* NSString+CompareVersion.m in Sources */,
 				6F8925E11F1B142300256093 /* DLYRectConst.m in Sources */,
 				6F8925D61F1B13FF00256093 /* DLYAlertView.m in Sources */,

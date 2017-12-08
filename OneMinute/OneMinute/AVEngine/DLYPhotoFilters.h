@@ -9,10 +9,15 @@
 #import <Foundation/Foundation.h>
 
 @interface DLYPhotoFilters : NSObject
+@property (nonatomic,assign)BOOL filterEnabled;
+@property (nonatomic,assign)NSInteger currentFilterIndex;
 
-+ (NSArray *)filterNames;
-+ (NSArray *)filterDisplayNames;
-+ (CIFilter *)filterForDisplayName:(NSString *)displayName;
-+ (CIFilter *)defaultFilter;
-
+- (NSArray *)filterNames;
+- (NSArray *)filterDisplayNames;
+- (CIFilter *)filterForDisplayName:(NSString *)displayName;
+- (CIFilter *)defaultFilter;
+- (CIFilter *)currentFilter;
+- (NSString *)currentDisplayFilterName;
++ (BOOL)filterEnabled;
++ (instancetype)sharedInstance;
 @end

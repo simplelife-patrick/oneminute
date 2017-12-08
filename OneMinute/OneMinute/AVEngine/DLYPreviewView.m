@@ -51,7 +51,9 @@
     
     [self.filter setValue:sourceImage forKey:kCIInputImageKey];
     CIImage *filteredImage = self.filter.outputImage;
-    
+    if (!filteredImage) {
+        filteredImage = sourceImage;
+    }
     if (filteredImage) {
         
         CGRect cropRect = DLYCenterCropImageRect(sourceImage.extent, self.drawableBounds);

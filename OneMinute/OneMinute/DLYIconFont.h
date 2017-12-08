@@ -38,6 +38,8 @@ typedef NS_ENUM(NSInteger, DLYIFName) {
     IFSure                     = 0xe602,       // 确定按钮
     IFBack                     = 0xe64d,       // 返回
     IFMute                     = 0xe663,       // 静音
+    IFNoFilter                 = 0xe61d,       //没有滤镜
+    IFFilter                   = 0xe686,       //滤镜
 };
 
 @interface DLYIconFont : NSObject
