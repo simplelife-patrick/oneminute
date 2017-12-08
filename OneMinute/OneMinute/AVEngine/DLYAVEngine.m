@@ -907,7 +907,8 @@
 
 -(void)timerStopped:(NSTimeInterval) time
 {
-
+    [self stopRecording];
+    self.isRecording = NO;
 }
 
 -(void)businessFinished:(NSTimeInterval) time;
@@ -915,8 +916,6 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(finishedRecording)]) {
         [self.delegate finishedRecording];
     }
-    [self stopRecording];
-    self.isRecording = NO;
 }
 
 -(void)timerCanceled:(NSTimeInterval) time
@@ -963,31 +962,16 @@
             
             [compositionVideoTrack insertTimeRange:videoTimeRange ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
             [compositionAudioTrack insertTimeRange:videoTimeRange ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeAudio] firstObject] atTime:kCMTimeZero error:nil];
-            
-            DLYLog(@"value_original -----------%lld",videoAsset.duration.value);
-            DLYLog(@"timescale_original -----------%d",videoAsset.duration.timescale);
-            
-            DLYLog(@">>>>>>> - 单片段的time range");
-            CMTimeRangeShow(videoTimeRange);
 
         }else if (soundType == DLYMiniVlogAudioTypeMusic){//不录音的片段做丢弃原始音频处理
             
             [compositionVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale)) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo] firstObject] atTime:kCMTimeZero error:nil];
             
-            CMTimeRange scaleRange = CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale));
-            DLYLog(@">>>>>>> - 单片段的time range");
-            CMTimeRangeShow(scaleRange);
+            CMTimeRange timeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale));
             
-            CMTime toDuration_before = CMTimeMake(videoAsset.duration.value, videoAsset.duration.timescale);
             CMTime toDuration_after = CMTimeMake(videoAsset.duration.value * scale , videoAsset.duration.timescale);
             
-            DLYLog(@"value_original -----------%lld",videoAsset.duration.value);
-            DLYLog(@"timescale_original -----------%d",videoAsset.duration.timescale);
-
-            DLYLog(@"value_after -----------%f",videoAsset.duration.value * scale);
-            DLYLog(@"timescale_after -----------%d",videoAsset.duration.timescale);
-            
-            [compositionVideoTrack scaleTimeRange:scaleRange toDuration:toDuration_after];
+            [compositionVideoTrack scaleTimeRange:timeRange toDuration:toDuration_after];
         }
         
         AVAssetExportSession *assetExport = [[AVAssetExportSession alloc] initWithAsset:mixComposition presetName:AVAssetExportPreset1280x720];
@@ -1336,11 +1320,11 @@ BOOL isOnce = YES;
 #pragma mark - 合并 -
 - (void) mergeVideoWithVideoTitle:(NSString *)videoTitle successed:(SuccessBlock)successBlock failured:(FailureBlock)failureBlcok{
     
+    BOOL isCreateAudioTrack = NO;
     AVMutableComposition *composition = [AVMutableComposition composition];
     
     CMPersistentTrackID trackID = kCMPersistentTrackID_Invalid;
     AVMutableCompositionTrack *compositionVideoTrack = [composition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:trackID];
-    AVMutableCompositionTrack *compositionAudioTrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:trackID];
     
     NSMutableArray *videoArray = [NSMutableArray array];
     
@@ -1360,6 +1344,11 @@ BOOL isOnce = YES;
                     isEmpty = NO;
                     NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
                     NSURL *url= [NSURL fileURLWithPath:allPath];
+                    
+                    AVURLAsset *asset = [AVURLAsset URLAssetWithURL:url options:nil];
+                    if ([asset tracksWithMediaType:AVMediaTypeAudio].count != 0) {
+                        isCreateAudioTrack = YES;
+                    }
                     [videoArray addObject:url];
                 }
             }
@@ -1491,11 +1480,17 @@ BOOL isOnce = YES;
             DLYLog(@"视频合成过程中视频轨道插入发生错误,错误信息 :%@",videoError);
         }
         
-        NSError *audioError = nil;
-        [compositionAudioTrack insertTimeRange:timeRange ofTrack:assetAudioTrack atTime:cursorTime error:&audioError];
-        if (audioError) {
-            DLYLog(@"视频合成过程音频轨道插入发生错误,错误信息 :%@",audioError);
+        AVMutableCompositionTrack *compositionAudioTrack = nil;
+        if (isCreateAudioTrack) {
+            compositionAudioTrack = [composition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:trackID];
+            
+            NSError *audioError = nil;
+            [compositionAudioTrack insertTimeRange:timeRange ofTrack:assetAudioTrack atTime:cursorTime error:&audioError];
+            if (audioError) {
+                DLYLog(@"视频合成过程音频轨道插入发生错误,错误信息 :%@",audioError);
+            }
         }
+
         cursorTime = CMTimeAdd(cursorTime, timeRange.duration);
     }
     
