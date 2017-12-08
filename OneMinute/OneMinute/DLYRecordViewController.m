@@ -562,6 +562,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.previewView.coreImageContext = [DLYContextManager sharedInstance].ciContext;
     [overlayView insertSubview:self.previewView belowSubview:overlayView];
     self.previewMaskView = [[UIImageView alloc]initWithFrame:SCREEN_RECT];
+    if (self.session.currentTemplate.previewBorderName) {
+        self.previewMaskView.image = [UIImage imageNamed:self.session.currentTemplate.previewBorderName];
+    }else{
+        self.previewMaskView.image = nil;
+    }
     [overlayView addSubview:self.previewMaskView];
     //通用button 选择场景button
     self.chooseScene = [[UIButton alloc]initWithFrame:CGRectMake(11, 16, 40, 40)];

@@ -34,8 +34,9 @@
 #define kVideoTailerFolder @"VideoTailer"
 #define kSoundEffectFolder @"SoundEffect"
 
-//默认模板
-#define kDEFAULT_TEMPLATE_NAME  @"Default.dly"
+//默认模板 Default.dly
+#define kDEFAULT_TEMPLATE_NAME  @"DreamTheSea.dly"
+
 //当前模板名称
 #define kCURRENT_TEMPLATE_ID  @"CURRENT_TEMPLATE_ID"
 //当前模板的模板
