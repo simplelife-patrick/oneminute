@@ -595,11 +595,9 @@
 #pragma mark - 点触设置曝光 -
 
 -(void)focusContinuousWithPoint:(CGPoint)point{
-    //AVCaptureVideoPreviewLayer传的点是(0,0)到(1,1)之间,GLKView获得的是屏幕像素点,需要转换
-    if (point.x>1) {
-        point.x = point.x/SCREEN_WIDTH*1.0;
-        point.y = point.y/SCREEN_HEIGHT*1.0;
-    }
+    //AVCaptureVideoPreviewLayer传的点是(0,0)到(1,1)之间,GLKView获得的是屏幕坐标点,需要转换
+    point.x = point.x/SCREEN_WIDTH*1.0;
+    point.y = point.y/SCREEN_HEIGHT*1.0;
     
     AVCaptureDevice *captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     
