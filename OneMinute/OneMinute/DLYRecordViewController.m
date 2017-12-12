@@ -317,6 +317,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     @(IFColorfulLife), @(IFSunSetBeach), @(IFYoungOuting), @(IFSpiritTerritory)];
 
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
+    [[DLYPhotoFilters sharedInstance]changeToName:template.filterName];
     if (self.session.currentTemplate.previewBorderName) {
         self.previewMaskView.image = [UIImage imageNamed:self.session.currentTemplate.previewBorderName];
     }else{
@@ -432,6 +433,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)initData {
 
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
+    [[DLYPhotoFilters sharedInstance] changeToName:template.filterName];
     [self.session saveCurrentTemplateWithId:template.templateId version:template.version];
     if (self.session.currentTemplate.previewBorderName) {
         self.previewMaskView.image = [UIImage imageNamed:self.session.currentTemplate.previewBorderName];
@@ -556,7 +558,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     EAGLContext *eaglContext = [DLYContextManager sharedInstance].eaglContext;
     self.previewView = [[DLYPreviewView alloc] initWithFrame:SCREEN_RECT context:eaglContext];
-    self.previewView.filter = [[DLYPhotoFilters sharedInstance] currentFilter];
+    self.previewView.filter = [[DLYPhotoFilters sharedInstance] defaultFilter];
     
     self.imageTarget = self.previewView;
     self.previewView.coreImageContext = [DLYContextManager sharedInstance].ciContext;
@@ -587,7 +589,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.chooseFilter setTitleColor:RGB(0, 0, 0) forState:UIControlStateNormal];
     [self.chooseFilter setImage:[UIImage imageWithIconName:IFNoFilter inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
 
-    [self.view addSubview:self.chooseFilter];
+//    [self.view addSubview:self.chooseFilter];
     //显示场景的label 40
     self.chooseSceneLabel = [[UILabel alloc]initWithFrame:CGRectMake(6, self.chooseScene.bottom + 2, 50, 13)];
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
@@ -602,7 +604,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.chooseFilterLabel.font = FONT_SYSTEM(12);
     self.chooseFilterLabel.textColor = RGBA(255, 255, 255, 1);
     self.chooseFilterLabel.textAlignment = NSTextAlignmentCenter;
-    [self.view addSubview:self.chooseFilterLabel];
+//    [self.view addSubview:self.chooseFilterLabel];
 
     
     NSArray *typeNameArray = [self.session loadAllTemplateFile];

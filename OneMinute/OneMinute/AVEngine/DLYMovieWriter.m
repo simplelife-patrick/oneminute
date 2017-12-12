@@ -20,6 +20,7 @@
 @property (strong, nonatomic) AVAssetWriterInputPixelBufferAdaptor *assetWriterInputPixelBufferAdaptor;
 
 @property (strong, nonatomic) dispatch_queue_t                     dispatchQueue;
+@property (nonatomic, strong) dispatch_queue_t                     movieWritingQueue;
 @property (nonatomic) BOOL                                         firstSample;
 
 @property (weak, nonatomic) CIContext                              *ciContext;
@@ -43,11 +44,11 @@
         _videoSettings = videoSettings;
         _audioSettings = audioSettings;
         _dispatchQueue = dispatchQueue;
-        
+        _movieWritingQueue = dispatch_queue_create("_movieWritingQueue", NULL);
         _ciContext = [DLYContextManager sharedInstance].ciContext;
         _colorSpace = CGColorSpaceCreateDeviceRGB();
         
-        _activeFilter = [[DLYPhotoFilters sharedInstance] currentFilter];
+        _activeFilter = [[DLYPhotoFilters sharedInstance] defaultFilter];
         NSLog(@"%@",[CIFilter filterNamesInCategory:kCICategoryGeometryAdjustment]);
         _transformFilter = [CIFilter filterWithName:@"CIAffineTransform"];
         CGAffineTransform t = CGAffineTransformMakeRotation(M_PI);
@@ -78,7 +79,7 @@
 }
 
 - (void)startWritingWith:(UIDeviceOrientation)orientation AndCameraPosition:(DLYAVEngineCapturePositionType)position{
-    dispatch_async(self.dispatchQueue, ^{
+    dispatch_async(self.movieWritingQueue, ^{
         
         NSError *error = nil;
         
@@ -237,12 +238,81 @@
     }
     
 }
-
+-(void)processAudioSampleBuffer:(CMSampleBufferRef)sampleBuffer{
+    if (!self.isWriting) {
+        return;
+    }
+    if (!self.firstSample) {
+        if (self.assetWriterAudioInput.isReadyForMoreMediaData) {
+            if (![self.assetWriterAudioInput appendSampleBuffer:sampleBuffer]) {
+                NSLog(@"Error appending audio sample buffer.");
+            }
+        }
+    }
+}
+-(void)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer{
+    if (!self.isWriting) {
+        return;
+    }
+    CMTime timestamp =
+    CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+    
+    if (self.firstSample) {
+        if ([self.assetWriter startWriting]) {
+            [self.assetWriter startSessionAtSourceTime:timestamp];
+        } else {
+            NSLog(@"Failed to start writing.");
+        }
+        self.firstSample = NO;
+    }
+    
+    CVPixelBufferRef outputRenderBuffer = NULL;
+    
+    CVPixelBufferPoolRef pixelBufferPool =
+    self.assetWriterInputPixelBufferAdaptor.pixelBufferPool;
+    
+    OSStatus err = CVPixelBufferPoolCreatePixelBuffer(NULL,
+                                                      pixelBufferPool,
+                                                      &outputRenderBuffer);
+    if (err) {
+        NSLog(@"Unable to obtain a pixel buffer from the pool.");
+        return;
+    }
+    
+    CVPixelBufferRef imageBuffer =
+    CMSampleBufferGetImageBuffer(sampleBuffer);
+    
+    CIImage *sourceImage = [CIImage imageWithCVPixelBuffer:imageBuffer
+                                                   options:nil];
+    
+    [self.activeFilter setValue:sourceImage forKey:kCIInputImageKey];
+    [self.transformFilter setValue:self.activeFilter.outputImage forKey:kCIInputImageKey];
+    CIImage *filteredImage = self.transformFilter.outputImage;
+    
+    if (!filteredImage) {
+        filteredImage = sourceImage;
+    }
+    [self.ciContext render:filteredImage
+           toCVPixelBuffer:outputRenderBuffer
+                    bounds:filteredImage.extent
+                colorSpace:self.colorSpace];
+    
+    
+    if (self.assetWriterVideoInput.readyForMoreMediaData) {
+        if (![self.assetWriterInputPixelBufferAdaptor
+              appendPixelBuffer:outputRenderBuffer
+              withPresentationTime:timestamp]) {
+            NSLog(@"Error appending pixel buffer.");
+        }
+    }
+    
+    CVPixelBufferRelease(outputRenderBuffer);
+}
 - (void)stopWriting {
     
     self.isWriting = NO;
     
-    dispatch_async(self.dispatchQueue, ^{
+    dispatch_async(self.movieWritingQueue, ^{
         
         [self.assetWriter finishWritingWithCompletionHandler:^{
 

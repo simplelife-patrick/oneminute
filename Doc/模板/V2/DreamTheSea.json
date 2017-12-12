@@ -3,7 +3,6 @@
   "title":"面朝大海",
   "border": "DreamTheSea",
   "version": 1,
-  "templateType": 0,
   "info": [
     {
       "partNum": 0,
@@ -63,14 +62,17 @@
     "stopTime": "00:05:00"
   },
   "dateWaterMark": {
-    "fontName": "YRDZST-Extralight",
-    "size": "40",
-    "wordSpace": "2",
-    "frame": "0/275/667/100"
+    "fontName": "Courier",
+    "size": 50,
+    "wordSpace": 10,
+    "x": 1577,
+    "y": 1010,
+    "color": ""
   },
   "BGM": "DreamTheSeaBGM",
   "header": 0,
   "tailer": 0,
+  "filter": "CIPhotoEffectChrome",
   "templateDescription": "这个模板成片长度为10s，你可以学会怎么用一分拍风景，以及拍自己说话",
   "sampleVideoName": "DreamTheSeaSample.mp4"
 }

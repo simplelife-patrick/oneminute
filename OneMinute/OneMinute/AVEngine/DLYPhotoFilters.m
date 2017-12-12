@@ -16,6 +16,7 @@
 }
 @property (nonatomic,strong)NSArray* filterNames;
 @property (nonatomic,strong)CIFilter* currentFilter;
+@property (nonatomic,strong)CIFilter* defaultFilter;
 @end
 @implementation DLYPhotoFilters
 
@@ -48,6 +49,8 @@ static id _instance;
     return @[@"CIPhotoEffectChrome",
              @"CIPhotoEffectTransfer",
              @"CIPhotoEffectInstant",
+             @"CIPhotoEffectMono",
+             @"CIPhotoEffectFade",
              ];
 }
 
@@ -62,10 +65,13 @@ static id _instance;
     return @[@"01  盛夏时光",
              @"02  春暖花开",
              @"03  冬季飞雪",
+             @"04  灰度世界",
+             @"05  渐行渐远"
              ];;
 }
 
 - (CIFilter *)defaultFilter {
+    return _defaultFilter;
     return [CIFilter filterWithName:[[self filterNames] objectAtIndex:0]];
 }
 -(CIFilter *)currentFilter{
@@ -76,13 +82,19 @@ static id _instance;
     }
     
 }
-- (CIFilter *)filterForDisplayName:(NSString *)displayName {
-    for (NSString *name in [self filterNames]) {
-        if ([name containsString:displayName]) {
-            return [CIFilter filterWithName:name];
-        }
+- (CIFilter *)filterForName:(NSString *)name {
+   
+    return [CIFilter filterWithName:name];
+
+}
+-(void)changeToName:(NSString *)name{
+    CIFilter *filter = nil;
+    if (name) {
+        filter =[CIFilter filterWithName:name];
     }
-    return nil;
+    _defaultFilter = filter;
+    [[NSNotificationCenter defaultCenter] postNotificationName:DLYFilterSelectionChangedNotification object:filter];
+
 }
 -(void)setCurrentFilterIndex:(NSInteger)currentFilterIndex{
     _currentFilterIndex = currentFilterIndex;

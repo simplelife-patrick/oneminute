@@ -1,7 +1,7 @@
 {
-  "id": "Lantern.dly",
-  "title":"灯",
-  "border": "Lantern",
+  "id": "ShuangBaiTiao.dly",
+  "title":"上下白条",
+  "border": "ShuangBaiTiao",
   "version": 1,
   "info": [
     {
@@ -23,17 +23,17 @@
     "stopTime": "00:05:00"
   },
   "dateWaterMark": {
-    "fontName": "Courier",
-    "size": 25,
-    "wordSpace": 1,
-    "x": 1477,
-    "y": 900,
-    "color": "4c4b4b"
+    "fontName": "verdana",
+    "size": 36,
+    "wordSpace": 30,
+    "x": 1600,
+    "y": 1010,
+    "color": "4C4B4B"
   },
-  "BGM": "LanternBGM",
+  "BGM": "ShuangBaiTiaoBGM",
   "header": 0,
   "tailer": 0,
   "filter": "CIPhotoEffectFade",
   "templateDescription": "本片长度10s，一起来记录生活中的诗意片段吧。",
-  "sampleVideoName": "LanternSample.mp4"
+  "sampleVideoName": "ShuangBaiTiaoSample.mp4"
 }

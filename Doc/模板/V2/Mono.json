@@ -1,7 +1,7 @@
 {
-  "id": "Lantern.dly",
-  "title":"灯",
-  "border": "Lantern",
+  "id": "Mono.dly",
+  "title":"Mono",
+  "border": "Mono",
   "version": 1,
   "info": [
     {
@@ -24,16 +24,16 @@
   },
   "dateWaterMark": {
     "fontName": "Courier",
-    "size": 25,
-    "wordSpace": 1,
-    "x": 1477,
-    "y": 900,
-    "color": "4c4b4b"
+    "size": 36,
+    "wordSpace": 30,
+    "x": 1375,
+    "y": 68,
+    "color": "00fff0"
   },
-  "BGM": "LanternBGM",
+  "BGM": "MonoBGM",
   "header": 0,
   "tailer": 0,
-  "filter": "CIPhotoEffectFade",
+  "filter": "CIPhotoEffectMono",
   "templateDescription": "本片长度10s，一起来记录生活中的诗意片段吧。",
-  "sampleVideoName": "LanternSample.mp4"
+  "sampleVideoName": "MonoSample.mp4"
 }
