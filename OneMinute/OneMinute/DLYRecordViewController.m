@@ -589,7 +589,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     [self.chooseFilter setTitleColor:RGB(0, 0, 0) forState:UIControlStateNormal];
     [self.chooseFilter setImage:[UIImage imageWithIconName:IFNoFilter inFont:ICONFONT size:22 color:RGBA(255, 255, 255, 1)] forState:UIControlStateNormal];
 
-    [self.view addSubview:self.chooseFilter];
+//    [self.view addSubview:self.chooseFilter];
     //显示场景的label 40
     self.chooseSceneLabel = [[UILabel alloc]initWithFrame:CGRectMake(6, self.chooseScene.bottom + 2, 50, 13)];
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
@@ -604,7 +604,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.chooseFilterLabel.font = FONT_SYSTEM(12);
     self.chooseFilterLabel.textColor = RGBA(255, 255, 255, 1);
     self.chooseFilterLabel.textAlignment = NSTextAlignmentCenter;
-    [self.view addSubview:self.chooseFilterLabel];
+//    [self.view addSubview:self.chooseFilterLabel];
 
     
     NSArray *typeNameArray = [self.session loadAllTemplateFile];

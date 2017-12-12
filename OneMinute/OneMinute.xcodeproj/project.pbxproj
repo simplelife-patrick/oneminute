@@ -11,14 +11,15 @@
 		18627B491FDFC4D9004D4C1C /* Mono.dly in Resources */ = {isa = PBXBuildFile; fileRef = 18627B481FDFC4D9004D4C1C /* Mono.dly */; };
 		18627B4B1FDFCDBF004D4C1C /* FelizNavidadBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 18627B4A1FDFCDBF004D4C1C /* FelizNavidadBGM.m4a */; };
 		18627B4D1FDFCF3B004D4C1C /* DecemberBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 18627B4C1FDFCF3B004D4C1C /* DecemberBGM.m4a */; };
-		18627B501FDFCF9A004D4C1C /* FelizNavidad.dly in Resources */ = {isa = PBXBuildFile; fileRef = 18627B4E1FDFCF9A004D4C1C /* FelizNavidad.dly */; };
-		18627B511FDFCF9A004D4C1C /* December.dly in Resources */ = {isa = PBXBuildFile; fileRef = 18627B4F1FDFCF9A004D4C1C /* December.dly */; };
 		18627B551FDFD836004D4C1C /* YouDaBaiBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 18627B521FDFD836004D4C1C /* YouDaBaiBGM.m4a */; };
 		18627B561FDFD836004D4C1C /* BanTouMingBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 18627B531FDFD836004D4C1C /* BanTouMingBGM.m4a */; };
 		18627B571FDFD836004D4C1C /* ShuangBaiTiaoBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 18627B541FDFD836004D4C1C /* ShuangBaiTiaoBGM.m4a */; };
 		18627B5B1FDFD876004D4C1C /* BanTouMing.dly in Resources */ = {isa = PBXBuildFile; fileRef = 18627B581FDFD876004D4C1C /* BanTouMing.dly */; };
 		18627B5C1FDFD876004D4C1C /* ShuangBaiTiao.dly in Resources */ = {isa = PBXBuildFile; fileRef = 18627B591FDFD876004D4C1C /* ShuangBaiTiao.dly */; };
 		18627B5D1FDFD876004D4C1C /* YouDaBai.dly in Resources */ = {isa = PBXBuildFile; fileRef = 18627B5A1FDFD876004D4C1C /* YouDaBai.dly */; };
+		18627B601FDFDB6D004D4C1C /* December.dly in Resources */ = {isa = PBXBuildFile; fileRef = 18627B5E1FDFDB6D004D4C1C /* December.dly */; };
+		18627B611FDFDB6D004D4C1C /* FelizNavidad.dly in Resources */ = {isa = PBXBuildFile; fileRef = 18627B5F1FDFDB6D004D4C1C /* FelizNavidad.dly */; };
+		18627B631FDFDBD0004D4C1C /* DreamTheSea.dly in Resources */ = {isa = PBXBuildFile; fileRef = 18627B621FDFDBD0004D4C1C /* DreamTheSea.dly */; };
 		18DC9FAD1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DC9FAC1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.m */; };
 		1C7E61841EE7DF4F0088F33F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61831EE7DF4F0088F33F /* main.m */; };
 		1C7E61871EE7DF4F0088F33F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61861EE7DF4F0088F33F /* AppDelegate.m */; };
@@ -55,7 +56,6 @@
 		6FD13AC41F60EC02000B72FC /* DLYIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FD13AC31F60EC02000B72FC /* DLYIndicatorView.m */; };
 		AD024B131FD2CAEB002FCCC6 /* PrimaryBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD024B121FD2CAEB002FCCC6 /* PrimaryBGM.m4a */; };
 		AD14ED461F9E0ABD000DB796 /* templateList_v1.plist in Resources */ = {isa = PBXBuildFile; fileRef = AD14ED451F9E0ABD000DB796 /* templateList_v1.plist */; };
-		AD1E17C41FD553DB0042910D /* DreamTheSea.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD1E17C21FD553DB0042910D /* DreamTheSea.dly */; };
 		AD1E17C71FD5541E0042910D /* LanternBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = AD1E17C61FD5541D0042910D /* LanternBGM.m4a */; };
 		AD24760E1FD9166A004D5D15 /* Lantern.dly in Resources */ = {isa = PBXBuildFile; fileRef = AD24760D1FD9166A004D5D15 /* Lantern.dly */; };
 		AD26F1A81F53E6DE00565E27 /* DLYAVEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AD26F1A71F53E6DE00565E27 /* DLYAVEngine.m */; };
@@ -131,14 +131,15 @@
 		18627B481FDFC4D9004D4C1C /* Mono.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Mono.dly; sourceTree = "<group>"; };
 		18627B4A1FDFCDBF004D4C1C /* FelizNavidadBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = FelizNavidadBGM.m4a; sourceTree = "<group>"; };
 		18627B4C1FDFCF3B004D4C1C /* DecemberBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = DecemberBGM.m4a; sourceTree = "<group>"; };
-		18627B4E1FDFCF9A004D4C1C /* FelizNavidad.dly */ = {isa = PBXFileReference; lastKnownFileType = file; name = FelizNavidad.dly; path = "../../../../../Doc/模板/V2/res/FelizNavidad.dly"; sourceTree = "<group>"; };
-		18627B4F1FDFCF9A004D4C1C /* December.dly */ = {isa = PBXFileReference; lastKnownFileType = file; name = December.dly; path = "../../../../../Doc/模板/V2/res/December.dly"; sourceTree = "<group>"; };
 		18627B521FDFD836004D4C1C /* YouDaBaiBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = YouDaBaiBGM.m4a; sourceTree = "<group>"; };
 		18627B531FDFD836004D4C1C /* BanTouMingBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = BanTouMingBGM.m4a; sourceTree = "<group>"; };
 		18627B541FDFD836004D4C1C /* ShuangBaiTiaoBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = ShuangBaiTiaoBGM.m4a; sourceTree = "<group>"; };
 		18627B581FDFD876004D4C1C /* BanTouMing.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = BanTouMing.dly; sourceTree = "<group>"; };
 		18627B591FDFD876004D4C1C /* ShuangBaiTiao.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = ShuangBaiTiao.dly; sourceTree = "<group>"; };
 		18627B5A1FDFD876004D4C1C /* YouDaBai.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = YouDaBai.dly; sourceTree = "<group>"; };
+		18627B5E1FDFDB6D004D4C1C /* December.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = December.dly; sourceTree = "<group>"; };
+		18627B5F1FDFDB6D004D4C1C /* FelizNavidad.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = FelizNavidad.dly; sourceTree = "<group>"; };
+		18627B621FDFDBD0004D4C1C /* DreamTheSea.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = DreamTheSea.dly; sourceTree = "<group>"; };
 		18DC9FAB1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYChooseFilterTableViewCell.h; sourceTree = "<group>"; };
 		18DC9FAC1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DLYChooseFilterTableViewCell.m; sourceTree = "<group>"; };
 		1C7E617F1EE7DF4F0088F33F /* OneMinute.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OneMinute.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -210,7 +211,6 @@
 		AD038C961F7293C50002C092 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		AD038C971F7293C50002C092 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		AD14ED451F9E0ABD000DB796 /* templateList_v1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = templateList_v1.plist; sourceTree = "<group>"; };
-		AD1E17C21FD553DB0042910D /* DreamTheSea.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = DreamTheSea.dly; sourceTree = "<group>"; };
 		AD1E17C61FD5541D0042910D /* LanternBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = LanternBGM.m4a; sourceTree = "<group>"; };
 		AD24760D1FD9166A004D5D15 /* Lantern.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Lantern.dly; sourceTree = "<group>"; };
 		AD26F1A61F53E6DE00565E27 /* DLYAVEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DLYAVEngine.h; sourceTree = "<group>"; };
@@ -602,10 +602,10 @@
 			isa = PBXGroup;
 			children = (
 				AD24760D1FD9166A004D5D15 /* Lantern.dly */,
-				18627B4F1FDFCF9A004D4C1C /* December.dly */,
-				18627B4E1FDFCF9A004D4C1C /* FelizNavidad.dly */,
-				AD1E17C21FD553DB0042910D /* DreamTheSea.dly */,
 				18627B481FDFC4D9004D4C1C /* Mono.dly */,
+				18627B621FDFDBD0004D4C1C /* DreamTheSea.dly */,
+				18627B5E1FDFDB6D004D4C1C /* December.dly */,
+				18627B5F1FDFDB6D004D4C1C /* FelizNavidad.dly */,
 				18627B581FDFD876004D4C1C /* BanTouMing.dly */,
 				18627B591FDFD876004D4C1C /* ShuangBaiTiao.dly */,
 				18627B5A1FDFD876004D4C1C /* YouDaBai.dly */,
@@ -863,6 +863,7 @@
 				6F643AF41F97583E001FDA76 /* PromoteVideo.mp4 in Resources */,
 				18627B551FDFD836004D4C1C /* YouDaBaiBGM.m4a in Resources */,
 				AD641CD71FD643020046A5A3 /* Default.dly in Resources */,
+				18627B611FDFDB6D004D4C1C /* FelizNavidad.dly in Resources */,
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
 				18627B5D1FDFD876004D4C1C /* YouDaBai.dly in Resources */,
 				AD641CD51FD643020046A5A3 /* Advanced.dly in Resources */,
@@ -883,14 +884,13 @@
 				ADF5A6D31FB18A6300161F37 /* AdvancedBGM.m4a in Resources */,
 				AD641CD01FD643020046A5A3 /* ColorfulLife.dly in Resources */,
 				AD641CD31FD643020046A5A3 /* MyMaldives.dly in Resources */,
-				AD1E17C41FD553DB0042910D /* DreamTheSea.dly in Resources */,
 				18627B5C1FDFD876004D4C1C /* ShuangBaiTiao.dly in Resources */,
 				ADF5A6DA1FB18A6400161F37 /* SecondaryBGM.m4a in Resources */,
+				18627B601FDFDB6D004D4C1C /* December.dly in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
+				18627B631FDFDBD0004D4C1C /* DreamTheSea.dly in Resources */,
 				AD24760E1FD9166A004D5D15 /* Lantern.dly in Resources */,
-				18627B511FDFCF9A004D4C1C /* December.dly in Resources */,
 				18627B491FDFC4D9004D4C1C /* Mono.dly in Resources */,
-				18627B501FDFCF9A004D4C1C /* FelizNavidad.dly in Resources */,
 				AD641CD21FD643020046A5A3 /* AfternoonTea.dly in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
 				AD2877D71FD147FB000F8B28 /* dreamTheSea_part0.mp4 in Resources */,
