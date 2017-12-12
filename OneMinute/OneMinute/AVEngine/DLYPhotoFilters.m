@@ -48,6 +48,7 @@ static id _instance;
     return @[@"CIPhotoEffectChrome",
              @"CIPhotoEffectTransfer",
              @"CIPhotoEffectInstant",
+             @"CIPhotoEffectMono",
              ];
 }
 
@@ -62,6 +63,7 @@ static id _instance;
     return @[@"01  盛夏时光",
              @"02  春暖花开",
              @"03  冬季飞雪",
+             @"04  灰度世界",
              ];;
 }
 
