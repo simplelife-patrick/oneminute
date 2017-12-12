@@ -1,7 +1,7 @@
 {
-  "id": "Lantern.dly",
-  "title":"灯",
-  "border": "Lantern",
+  "id": "FelizNavidad.dly",
+  "title":"Feliz Navidad",
+  "border": "FelizNavidad",
   "version": 1,
   "info": [
     {
@@ -24,16 +24,16 @@
   },
   "dateWaterMark": {
     "fontName": "Courier",
-    "size": 25,
-    "wordSpace": 1,
-    "x": 1477,
-    "y": 900,
-    "color": "4c4b4b"
+    "size": 30,
+    "wordSpace": 30,
+    "x": 1430,
+    "y": 834,
+    "color": "f75687"
   },
-  "BGM": "LanternBGM",
+  "BGM": "FelizNavidadBGM",
   "header": 0,
   "tailer": 0,
   "filter": "CIPhotoEffectFade",
   "templateDescription": "本片长度10s，一起来记录生活中的诗意片段吧。",
-  "sampleVideoName": "LanternSample.mp4"
+  "sampleVideoName": "FelizNavidadSample.mp4"
 }

@@ -1,7 +1,7 @@
 {
-  "id": "Lantern.dly",
-  "title":"灯",
-  "border": "Lantern",
+  "id": "December.dly",
+  "title":"December",
+  "border": "December",
   "version": 1,
   "info": [
     {
@@ -24,16 +24,16 @@
   },
   "dateWaterMark": {
     "fontName": "Courier",
-    "size": 25,
-    "wordSpace": 1,
-    "x": 1477,
-    "y": 900,
+    "size": 38,
+    "wordSpace": 30,
+    "x": 840,
+    "y": 271,
     "color": "4c4b4b"
   },
-  "BGM": "LanternBGM",
+  "BGM": "DecemberBGM",
   "header": 0,
   "tailer": 0,
   "filter": "CIPhotoEffectFade",
   "templateDescription": "本片长度10s，一起来记录生活中的诗意片段吧。",
-  "sampleVideoName": "LanternSample.mp4"
+  "sampleVideoName": "DecemberSample.mp4"
 }

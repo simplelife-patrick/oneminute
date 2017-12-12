@@ -47,6 +47,7 @@
                 self.videoHeaderType = [[dic objectForKey:@"header"] integerValue];
                 self.videoTailerType = [[dic objectForKey:@"tailer"] integerValue];
                 self.templateDescription = [dic objectForKey:@"templateDescription"];
+                self.filterName = [dic objectForKey:@"filter"];
                 self.sampleVideoName = [kTEMPLATE_SAMPLE_API stringByAppendingFormat:@"%@",[dic objectForKey:@"sampleVideoName"]];
                 if ([dic valueForKey:@"border"]) {
                     self.previewBorderName = [NSString stringWithFormat:@"%@_preview.png",[dic valueForKey:@"border"]];

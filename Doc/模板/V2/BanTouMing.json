@@ -1,7 +1,7 @@
 {
-  "id": "Lantern.dly",
-  "title":"灯",
-  "border": "Lantern",
+  "id": "BanTouMing.dly",
+  "title":"半透明框",
+  "border": "BanTouMing",
   "version": 1,
   "info": [
     {
@@ -23,17 +23,17 @@
     "stopTime": "00:05:00"
   },
   "dateWaterMark": {
-    "fontName": "Courier",
-    "size": 25,
-    "wordSpace": 1,
-    "x": 1477,
-    "y": 900,
+    "fontName": "verdana",
+    "size": 69,
+    "wordSpace": 30,
+    "x": 91,
+    "y": 447,
     "color": "4c4b4b"
   },
-  "BGM": "LanternBGM",
+  "BGM": "BanTouMingBGM",
   "header": 0,
   "tailer": 0,
   "filter": "CIPhotoEffectFade",
   "templateDescription": "本片长度10s，一起来记录生活中的诗意片段吧。",
-  "sampleVideoName": "LanternSample.mp4"
+  "sampleVideoName": "BanTouMingSample.mp4"
 }

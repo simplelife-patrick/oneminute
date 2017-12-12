@@ -27,7 +27,9 @@ typedef NS_ENUM(NSInteger, DLYAVEngineCapturePositionType) {
 
 - (void)startWritingWith:(UIDeviceOrientation)orientation AndCameraPosition:(DLYAVEngineCapturePositionType)position;
 - (void)stopWriting;
-- (void)processSampleBuffer:(CMSampleBufferRef)sampleBuffer;
+//- (void)processSampleBuffer:(CMSampleBufferRef)sampleBuffer;
+- (void)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
+- (void)processAudioSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 - (id)initWithVideoSettings:(NSDictionary *)videoSettings
               audioSettings:(NSDictionary *)audioSettings
               dispatchQueue:(dispatch_queue_t)dispatchQueue;

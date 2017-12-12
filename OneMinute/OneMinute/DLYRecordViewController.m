@@ -317,6 +317,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                     @(IFColorfulLife), @(IFSunSetBeach), @(IFYoungOuting), @(IFSpiritTerritory)];
 
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
+    [[DLYPhotoFilters sharedInstance]changeToName:template.filterName];
     if (self.session.currentTemplate.previewBorderName) {
         self.previewMaskView.image = [UIImage imageNamed:self.session.currentTemplate.previewBorderName];
     }else{
@@ -432,6 +433,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 - (void)initData {
 
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
+    [[DLYPhotoFilters sharedInstance] changeToName:template.filterName];
     [self.session saveCurrentTemplateWithId:template.templateId version:template.version];
     if (self.session.currentTemplate.previewBorderName) {
         self.previewMaskView.image = [UIImage imageNamed:self.session.currentTemplate.previewBorderName];
@@ -556,7 +558,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     
     EAGLContext *eaglContext = [DLYContextManager sharedInstance].eaglContext;
     self.previewView = [[DLYPreviewView alloc] initWithFrame:SCREEN_RECT context:eaglContext];
-    self.previewView.filter = [[DLYPhotoFilters sharedInstance] currentFilter];
+    self.previewView.filter = [[DLYPhotoFilters sharedInstance] defaultFilter];
     
     self.imageTarget = self.previewView;
     self.previewView.coreImageContext = [DLYContextManager sharedInstance].ciContext;

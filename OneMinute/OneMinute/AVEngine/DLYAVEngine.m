@@ -23,7 +23,7 @@
 #import "UIImage+Extension.h"
 #import "DLYPhotoAlbum.h"
 #import "DLYMiniVlogVirtualPart.h"
-
+#import "DLYPreviewView.h"
 #import "DLYCaptureConfigErrorDelegate.h"
 
 #import <UIKit/UIKit.h>
@@ -69,7 +69,7 @@
 @property (nonatomic, strong) AVCaptureDeviceInput              *audioMicInput;
 @property (nonatomic, strong) AVCaptureDeviceFormat             *defaultFormat;
 @property (nonatomic, strong) AVCaptureConnection               *audioConnection;
-@property (nonatomic, strong) UIView                            *previewView;
+@property (nonatomic, strong) DLYPreviewView                    *previewView;
 
 @property (nonatomic, strong) AVCaptureVideoDataOutput          *videoOutput;
 @property (nonatomic, strong) AVCaptureAudioDataOutput          *audioOutput;
@@ -251,6 +251,7 @@
                                                        audioSettings:audioSettings
                                                        dispatchQueue:self.dispatchQueue];
     self.movieWriter.delegate = self;
+
     
     return YES;
 }
@@ -1093,24 +1094,21 @@
         }];
     });
 }
-
 #pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     
-    
     if (captureOutput == self.videoDataOutput) {
-        
         CVPixelBufferRef imageBuffer =
         CMSampleBufferGetImageBuffer(sampleBuffer);
         
         CIImage *sourceImage = [CIImage imageWithCVPixelBuffer:imageBuffer options:nil];
-        
-        if ([self.delegate respondsToSelector:@selector(imageWithImageTarget:)]) {
-            [self.delegate imageWithImageTarget:sourceImage];
-        }
-    }
-    [self.movieWriter processSampleBuffer:sampleBuffer];
+        [self.previewView setImage:sourceImage];
+        [self.movieWriter processVideoSampleBuffer:sampleBuffer];
 
+    }else if(captureOutput == self.audioDataOutput){
+        [self.movieWriter processAudioSampleBuffer:sampleBuffer];
+
+    }
 }
 -(void)didWriteMovieAtURL:(NSURL *)outputURL{
     //导出保存
@@ -1934,37 +1932,48 @@ BOOL isOnce = YES;
             NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
             [formatter setDateFormat:@"yyyy"];
             NSString *whichYear = [formatter stringFromDate:[NSDate date]];
-            NSString *daysMessage = [NSString stringWithFormat:@"%@  NO.%lu",whichYear,days];
-            NSAttributedString *attibutedString = [[NSAttributedString alloc]initWithString:daysMessage attributes:@{NSKernAttributeName:@(8),NSFontAttributeName:[UIFont fontWithName:@"Helvetica" size:25]}];
+            NSString *daysMessage = [NSString stringWithFormat:@"%@ NO.%lu",whichYear,days];
+            NSDictionary *dateWaterMarkDict =self.session.currentTemplate.dateWaterMark ;
+            NSString *fontName = [dateWaterMarkDict valueForKey:@"fontName"];
+            int fontSize = [[dateWaterMarkDict valueForKey:@"size"] integerValue]*renderSize.height/1080;
+            int wordSpace = [[dateWaterMarkDict valueForKey:@"wordSpace"] integerValue]/30.0;
+            NSString* textColor = [dateWaterMarkDict valueForKey:@"color"];
+            UIColor *co = [UIColor colorWithHexString:textColor];
+            NSDictionary *attributes = @{NSKernAttributeName:@(wordSpace),NSFontAttributeName:[UIFont fontWithName:fontName size:fontSize],NSForegroundColorAttributeName:[UIColor colorWithHexString:textColor withAlpha:1]};
+            NSAttributedString *attibutedString = [[NSAttributedString alloc]initWithString:daysMessage attributes:attributes];
             
-            CGSize textSize = [daysMessage sizeWithAttributes:@{NSKernAttributeName:@(8),NSFontAttributeName:[UIFont fontWithName:@"Helvetica" size:25]}];
+            CGSize textSize = [daysMessage sizeWithAttributes:attributes];
             
             CATextLayer *daysLayer = [CATextLayer layer];
 //            daysLayer.frame = CGRectMake(0, 0, textSize.width * 1.6, textSize.height * 1.05);
             daysLayer.frame = CGRectMake(0, 0, textSize.width, textSize.height);
             [daysLayer setString:attibutedString];
             [daysLayer setAlignmentMode:kCAAlignmentCenter];
-            [daysLayer setForegroundColor:[[UIColor colorWithHexString:@"#0B1013" withAlpha:1] CGColor]];
-            daysLayer.position = CGPointMake((renderSize.width - textSize.width / 2) - 10, 35);
+//            [daysLayer setForegroundColor:[[UIColor colorWithHexString:textColor withAlpha:1] CGColor]];
+            daysLayer.position = CGPointMake((renderSize.width - textSize.width / 2), 35);
+            
+            CGFloat pointX =renderSize.width*[[dateWaterMarkDict valueForKey:@"x"] floatValue]/1920+textSize.width/2;
+            CGFloat pointY =renderSize.height- renderSize.height*[[dateWaterMarkDict valueForKey:@"y"] floatValue]/1080-textSize.height/2;
+            daysLayer.position = CGPointMake(pointX, pointY);
             [parentLayer addSublayer:daysLayer];
             
             //POWERED BY 一分
-            NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
-            NSString *app_Name = [infoDictionary objectForKey:@"CFBundleDisplayName"];
-            NSString *maskStr = [NSString stringWithFormat:@"POWERED BY %@",app_Name];
-            
-            UIFont *maskStrfFont = [UIFont fontWithName:@"Helvetica" size:20];
-            CGSize maskStrTextSize = [maskStr sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:maskStrfFont,NSFontAttributeName, nil]];
-            
-            CATextLayer *markStrLayer = [CATextLayer layer];
-            markStrLayer.frame = CGRectMake(0, 0, maskStrTextSize.width, maskStrTextSize.height);
-            markStrLayer.position = CGPointMake(renderSize.width - markStrLayer.bounds.size.width / 2 - 10, 90);
-            [markStrLayer setFontSize:20.f];
-            [markStrLayer setString:maskStr];
-            [markStrLayer setFont:@"Helvetica"];
-            [markStrLayer setAlignmentMode:kCAAlignmentCenter];
-            [markStrLayer setForegroundColor:[[UIColor colorWithHexString:@"#ffffff" withAlpha:0.5] CGColor]];
-            [parentLayer addSublayer:markStrLayer];
+//            NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+//            NSString *app_Name = [infoDictionary objectForKey:@"CFBundleDisplayName"];
+//            NSString *maskStr = [NSString stringWithFormat:@"POWERED BY %@",app_Name];
+//
+//            UIFont *maskStrfFont = [UIFont fontWithName:@"Helvetica" size:20];
+//            CGSize maskStrTextSize = [maskStr sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:maskStrfFont,NSFontAttributeName, nil]];
+//
+//            CATextLayer *markStrLayer = [CATextLayer layer];
+//            markStrLayer.frame = CGRectMake(0, 0, maskStrTextSize.width, maskStrTextSize.height);
+//            markStrLayer.position = CGPointMake(renderSize.width - markStrLayer.bounds.size.width / 2 - 10, 90);
+//            [markStrLayer setFontSize:20.f];
+//            [markStrLayer setString:maskStr];
+//            [markStrLayer setFont:@"Helvetica"];
+//            [markStrLayer setAlignmentMode:kCAAlignmentCenter];
+//            [markStrLayer setForegroundColor:[[UIColor colorWithHexString:@"#ffffff" withAlpha:0.5] CGColor]];
+//            [parentLayer addSublayer:markStrLayer];
         }
 
         videoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];

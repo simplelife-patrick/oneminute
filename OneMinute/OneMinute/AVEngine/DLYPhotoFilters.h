@@ -14,7 +14,8 @@
 
 - (NSArray *)filterNames;
 - (NSArray *)filterDisplayNames;
-- (CIFilter *)filterForDisplayName:(NSString *)displayName;
+- (CIFilter *)filterForName:(NSString *)name;
+- (void)changeToName:(NSString *)name;
 - (CIFilter *)defaultFilter;
 - (CIFilter *)currentFilter;
 - (NSString *)currentDisplayFilterName;

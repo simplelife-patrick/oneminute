@@ -7,6 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18627B461FDFBF8F004D4C1C /* MonoBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 18627B451FDFBF8E004D4C1C /* MonoBGM.m4a */; };
+		18627B491FDFC4D9004D4C1C /* Mono.dly in Resources */ = {isa = PBXBuildFile; fileRef = 18627B481FDFC4D9004D4C1C /* Mono.dly */; };
+		18627B4B1FDFCDBF004D4C1C /* FelizNavidadBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 18627B4A1FDFCDBF004D4C1C /* FelizNavidadBGM.m4a */; };
+		18627B4D1FDFCF3B004D4C1C /* DecemberBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 18627B4C1FDFCF3B004D4C1C /* DecemberBGM.m4a */; };
+		18627B501FDFCF9A004D4C1C /* FelizNavidad.dly in Resources */ = {isa = PBXBuildFile; fileRef = 18627B4E1FDFCF9A004D4C1C /* FelizNavidad.dly */; };
+		18627B511FDFCF9A004D4C1C /* December.dly in Resources */ = {isa = PBXBuildFile; fileRef = 18627B4F1FDFCF9A004D4C1C /* December.dly */; };
+		18627B551FDFD836004D4C1C /* YouDaBaiBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 18627B521FDFD836004D4C1C /* YouDaBaiBGM.m4a */; };
+		18627B561FDFD836004D4C1C /* BanTouMingBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 18627B531FDFD836004D4C1C /* BanTouMingBGM.m4a */; };
+		18627B571FDFD836004D4C1C /* ShuangBaiTiaoBGM.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 18627B541FDFD836004D4C1C /* ShuangBaiTiaoBGM.m4a */; };
+		18627B5B1FDFD876004D4C1C /* BanTouMing.dly in Resources */ = {isa = PBXBuildFile; fileRef = 18627B581FDFD876004D4C1C /* BanTouMing.dly */; };
+		18627B5C1FDFD876004D4C1C /* ShuangBaiTiao.dly in Resources */ = {isa = PBXBuildFile; fileRef = 18627B591FDFD876004D4C1C /* ShuangBaiTiao.dly */; };
+		18627B5D1FDFD876004D4C1C /* YouDaBai.dly in Resources */ = {isa = PBXBuildFile; fileRef = 18627B5A1FDFD876004D4C1C /* YouDaBai.dly */; };
 		18DC9FAD1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DC9FAC1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.m */; };
 		1C7E61841EE7DF4F0088F33F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61831EE7DF4F0088F33F /* main.m */; };
 		1C7E61871EE7DF4F0088F33F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61861EE7DF4F0088F33F /* AppDelegate.m */; };
@@ -115,6 +127,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		18627B451FDFBF8E004D4C1C /* MonoBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = MonoBGM.m4a; sourceTree = "<group>"; };
+		18627B481FDFC4D9004D4C1C /* Mono.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = Mono.dly; sourceTree = "<group>"; };
+		18627B4A1FDFCDBF004D4C1C /* FelizNavidadBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = FelizNavidadBGM.m4a; sourceTree = "<group>"; };
+		18627B4C1FDFCF3B004D4C1C /* DecemberBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = DecemberBGM.m4a; sourceTree = "<group>"; };
+		18627B4E1FDFCF9A004D4C1C /* FelizNavidad.dly */ = {isa = PBXFileReference; lastKnownFileType = file; name = FelizNavidad.dly; path = "../../../../../Doc/模板/V2/res/FelizNavidad.dly"; sourceTree = "<group>"; };
+		18627B4F1FDFCF9A004D4C1C /* December.dly */ = {isa = PBXFileReference; lastKnownFileType = file; name = December.dly; path = "../../../../../Doc/模板/V2/res/December.dly"; sourceTree = "<group>"; };
+		18627B521FDFD836004D4C1C /* YouDaBaiBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = YouDaBaiBGM.m4a; sourceTree = "<group>"; };
+		18627B531FDFD836004D4C1C /* BanTouMingBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = BanTouMingBGM.m4a; sourceTree = "<group>"; };
+		18627B541FDFD836004D4C1C /* ShuangBaiTiaoBGM.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = ShuangBaiTiaoBGM.m4a; sourceTree = "<group>"; };
+		18627B581FDFD876004D4C1C /* BanTouMing.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = BanTouMing.dly; sourceTree = "<group>"; };
+		18627B591FDFD876004D4C1C /* ShuangBaiTiao.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = ShuangBaiTiao.dly; sourceTree = "<group>"; };
+		18627B5A1FDFD876004D4C1C /* YouDaBai.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = YouDaBai.dly; sourceTree = "<group>"; };
 		18DC9FAB1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYChooseFilterTableViewCell.h; sourceTree = "<group>"; };
 		18DC9FAC1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DLYChooseFilterTableViewCell.m; sourceTree = "<group>"; };
 		1C7E617F1EE7DF4F0088F33F /* OneMinute.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OneMinute.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -578,7 +602,13 @@
 			isa = PBXGroup;
 			children = (
 				AD24760D1FD9166A004D5D15 /* Lantern.dly */,
+				18627B4F1FDFCF9A004D4C1C /* December.dly */,
+				18627B4E1FDFCF9A004D4C1C /* FelizNavidad.dly */,
 				AD1E17C21FD553DB0042910D /* DreamTheSea.dly */,
+				18627B481FDFC4D9004D4C1C /* Mono.dly */,
+				18627B581FDFD876004D4C1C /* BanTouMing.dly */,
+				18627B591FDFD876004D4C1C /* ShuangBaiTiao.dly */,
+				18627B5A1FDFD876004D4C1C /* YouDaBai.dly */,
 			);
 			path = v2.0;
 			sourceTree = "<group>";
@@ -586,6 +616,12 @@
 		AD887A661F7661FB00A85881 /* BGM */ = {
 			isa = PBXGroup;
 			children = (
+				18627B451FDFBF8E004D4C1C /* MonoBGM.m4a */,
+				18627B4A1FDFCDBF004D4C1C /* FelizNavidadBGM.m4a */,
+				18627B4C1FDFCF3B004D4C1C /* DecemberBGM.m4a */,
+				18627B531FDFD836004D4C1C /* BanTouMingBGM.m4a */,
+				18627B541FDFD836004D4C1C /* ShuangBaiTiaoBGM.m4a */,
+				18627B521FDFD836004D4C1C /* YouDaBaiBGM.m4a */,
 				AD024B121FD2CAEB002FCCC6 /* PrimaryBGM.m4a */,
 				ADF5A6C91FB18A6200161F37 /* AdvancedBGM.m4a */,
 				ADF5A6C81FB18A6200161F37 /* AfternoonTeaBGM.m4a */,
@@ -825,13 +861,18 @@
 			files = (
 				ADF5A6D41FB18A6300161F37 /* MyMaldivesBGM.m4a in Resources */,
 				6F643AF41F97583E001FDA76 /* PromoteVideo.mp4 in Resources */,
+				18627B551FDFD836004D4C1C /* YouDaBaiBGM.m4a in Resources */,
 				AD641CD71FD643020046A5A3 /* Default.dly in Resources */,
 				1C7E61921EE7DF4F0088F33F /* LaunchScreen.storyboard in Resources */,
+				18627B5D1FDFD876004D4C1C /* YouDaBai.dly in Resources */,
 				AD641CD51FD643020046A5A3 /* Advanced.dly in Resources */,
 				ADF5A6D71FB18A6400161F37 /* SoDeliciousBGM.m4a in Resources */,
 				AD641CD61FD643020046A5A3 /* SunSetBeach.dly in Resources */,
 				ADF5A6D81FB18A6400161F37 /* BigMealBGM.m4a in Resources */,
 				AD641CD41FD643020046A5A3 /* SoDelicious.dly in Resources */,
+				18627B461FDFBF8F004D4C1C /* MonoBGM.m4a in Resources */,
+				18627B571FDFD836004D4C1C /* ShuangBaiTiaoBGM.m4a in Resources */,
+				18627B561FDFD836004D4C1C /* BanTouMingBGM.m4a in Resources */,
 				AD024B131FD2CAEB002FCCC6 /* PrimaryBGM.m4a in Resources */,
 				ADF5A6D21FB18A6300161F37 /* AfternoonTeaBGM.m4a in Resources */,
 				AD1E17C71FD5541E0042910D /* LanternBGM.m4a in Resources */,
@@ -843,9 +884,13 @@
 				AD641CD01FD643020046A5A3 /* ColorfulLife.dly in Resources */,
 				AD641CD31FD643020046A5A3 /* MyMaldives.dly in Resources */,
 				AD1E17C41FD553DB0042910D /* DreamTheSea.dly in Resources */,
+				18627B5C1FDFD876004D4C1C /* ShuangBaiTiao.dly in Resources */,
 				ADF5A6DA1FB18A6400161F37 /* SecondaryBGM.m4a in Resources */,
 				1C7E618F1EE7DF4F0088F33F /* Assets.xcassets in Resources */,
 				AD24760E1FD9166A004D5D15 /* Lantern.dly in Resources */,
+				18627B511FDFCF9A004D4C1C /* December.dly in Resources */,
+				18627B491FDFC4D9004D4C1C /* Mono.dly in Resources */,
+				18627B501FDFCF9A004D4C1C /* FelizNavidad.dly in Resources */,
 				AD641CD21FD643020046A5A3 /* AfternoonTea.dly in Resources */,
 				1C7E618D1EE7DF4F0088F33F /* Main.storyboard in Resources */,
 				AD2877D71FD147FB000F8B28 /* dreamTheSea_part0.mp4 in Resources */,
@@ -853,6 +898,9 @@
 				ADF5A6D11FB18A6300161F37 /* GoNorthBGM.m4a in Resources */,
 				AD14ED461F9E0ABD000DB796 /* templateList_v1.plist in Resources */,
 				ADF5A6D51FB18A6300161F37 /* DreamTheSeaBGM.m4a in Resources */,
+				18627B5B1FDFD876004D4C1C /* BanTouMing.dly in Resources */,
+				18627B4D1FDFCF3B004D4C1C /* DecemberBGM.m4a in Resources */,
+				18627B4B1FDFCDBF004D4C1C /* FelizNavidadBGM.m4a in Resources */,
 				AD641CD11FD643020046A5A3 /* GoNorth.dly in Resources */,
 				6F32F7A71F99A57D004C4553 /* iconfont.ttf in Resources */,
 			);

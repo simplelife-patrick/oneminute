@@ -111,6 +111,10 @@ typedef NS_ENUM(NSInteger, DLYMiniVlogTailerType)
 @property (nonatomic, assign) DLYMiniVlogTailerType           videoTailerType;
 
 /**
+ filter名字
+ */
+@property (nonatomic, copy) NSString*           filterName;
+/**
  初始化模板
 
  @param templateId 模板名称
