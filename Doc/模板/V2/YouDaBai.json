@@ -34,7 +34,7 @@
   "BGM": "YouDaBaiBGM",
   "header": 0,
   "tailer": 0,
-  "filter": "CIPhotoEffectFade",
+  "filter": "CIPhotoEffectChrome",
   "templateDescription": "本片长度10s，一起来记录生活中的诗意片段吧。",
   "sampleVideoName": "YouDaBaiSample.mp4"
 }
