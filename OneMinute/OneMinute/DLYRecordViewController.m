@@ -267,9 +267,9 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     if(![[NSUserDefaults standardUserDefaults] boolForKey:@"showFirstPopup"]){
         
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showFirstPopup"];
-        NSArray *arr = @[self.chooseScene,self.chooseFilter, self.flashButton, self.toggleCameraBtn, self.recordBtn];
+        NSArray *arr = @[self.chooseScene, self.flashButton, self.toggleCameraBtn, self.recordBtn];
         self.viewArr = [NSMutableArray arrayWithArray:arr];
-        NSArray *titleArr = @[@"选择场景",@"选择滤镜", @"补光灯", @"切换摄像头", @"录制视频"];
+        NSArray *titleArr = @[@"选择场景", @"补光灯", @"切换摄像头", @"录制视频"];
         self.bubbleTitleArr = [NSMutableArray arrayWithArray:titleArr];
         [self showPopupMenu];
     }
@@ -594,6 +594,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.chooseSceneLabel = [[UILabel alloc]initWithFrame:CGRectMake(6, self.chooseScene.bottom + 2, 50, 13)];
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     self.chooseSceneLabel.text = template.templateTitle;
+    self.chooseSceneLabel.adjustsFontSizeToFitWidth = YES;
     self.chooseSceneLabel.font = FONT_SYSTEM(12);
     self.chooseSceneLabel.textColor = RGBA(255, 255, 255, 1);
     self.chooseSceneLabel.textAlignment = NSTextAlignmentCenter;
@@ -2351,6 +2352,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         typeName.tag = 2002 + i;
         typeName.centerX = view.width / 2;
         typeName.text = templateModel.templateTitle;
+        typeName.adjustsFontSizeToFitWidth = YES;
         typeName.textColor = RGB(255, 255, 255);
         typeName.font = FONT_SYSTEM(16);
         typeName.textAlignment = NSTextAlignmentCenter;
