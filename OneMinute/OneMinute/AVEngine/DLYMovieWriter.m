@@ -21,6 +21,7 @@
 
 @property (strong, nonatomic) dispatch_queue_t                     dispatchQueue;
 @property (nonatomic, strong) dispatch_queue_t                     movieWritingQueue;
+@property (nonatomic, strong) dispatch_semaphore_t                 semaphore;
 @property (nonatomic) BOOL                                         firstSample;
 
 @property (weak, nonatomic) CIContext                              *ciContext;
@@ -54,7 +55,7 @@
         CGAffineTransform t = CGAffineTransformMakeRotation(M_PI);
 //        [_transformFilter setValue:[NSValue valueWithCGAffineTransform:t] forKey:@"inputTransform"];
         _firstSample = YES;
-        
+        _semaphore = dispatch_semaphore_create(1);
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc addObserver:self
                selector:@selector(filterChanged:)
@@ -254,6 +255,7 @@
     if (!self.isWriting) {
         return;
     }
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
     CMTime timestamp =
     CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
     
@@ -307,11 +309,12 @@
     }
     
     CVPixelBufferRelease(outputRenderBuffer);
+    dispatch_semaphore_signal(self.semaphore);
 }
 - (void)stopWriting {
     
     self.isWriting = NO;
-    
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
     dispatch_async(self.movieWritingQueue, ^{
         
         [self.assetWriter finishWritingWithCompletionHandler:^{
@@ -328,6 +331,8 @@
             self.assetWriterVideoInput = nil;
             self.assetWriterAudioInput = nil;
         }];
+        dispatch_semaphore_signal(self.semaphore);
+
     });
 }
 
