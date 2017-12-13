@@ -101,8 +101,8 @@
 @property (nonatomic, strong) DLYSession                        *session;
 @property (nonatomic, strong) DLYRecordTimer                    *recordTimer;
 
-//@property (nonatomic, getter = isRecording) BOOL                recording;
-
+@property (nonatomic, assign) BOOL                              canDiscard;
+@property (nonatomic, assign) DLYMiniVlogRecordType             recordType;
 @end
 
 @implementation DLYAVEngine
@@ -767,6 +767,7 @@
 #pragma mark - 改变录制帧率 -
 - (void) switchRecordFormatWithRecordType:(DLYMiniVlogRecordType)recordtype
 {
+    _recordType = recordtype;
     AVCaptureDevice *device = self.defaultVideoDevice;
     if (recordtype == DLYMiniVlogRecordTypeSlomo) {
         DLYLog(@"慢镜头片段");
@@ -1098,12 +1099,22 @@
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     
     if (captureOutput == self.videoDataOutput) {
-        CVPixelBufferRef imageBuffer =
-        CMSampleBufferGetImageBuffer(sampleBuffer);
-        
-        CIImage *sourceImage = [CIImage imageWithCVPixelBuffer:imageBuffer options:nil];
-        [self.previewView setImage:sourceImage];
+        BOOL ifProcess = NO;
+        if (self.recordType == DLYMiniVlogRecordTypeSlomo) {
+            self.canDiscard = !self.canDiscard;
+            ifProcess = !self.canDiscard;
+        }else{
+            ifProcess = YES;
+        }
+        if (ifProcess) {
+            CVPixelBufferRef imageBuffer =
+            CMSampleBufferGetImageBuffer(sampleBuffer);
+            
+            CIImage *sourceImage = [CIImage imageWithCVPixelBuffer:imageBuffer options:nil];
+            [self.previewView setImage:sourceImage];
+        }
         [self.movieWriter processVideoSampleBuffer:sampleBuffer];
+
 
     }else if(captureOutput == self.audioDataOutput){
         [self.movieWriter processAudioSampleBuffer:sampleBuffer];
