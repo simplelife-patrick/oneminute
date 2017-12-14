@@ -767,6 +767,10 @@
 #pragma mark - 改变录制帧率 -
 - (void) switchRecordFormatWithRecordType:(DLYMiniVlogRecordType)recordtype
 {
+    BOOL isRunning = self.captureSession.isRunning;
+    if (isRunning) {
+        [self.captureSession stopRunning];
+    }
     _recordType = recordtype;
     AVCaptureDevice *device = self.defaultVideoDevice;
     if (recordtype == DLYMiniVlogRecordTypeSlomo) {
@@ -814,6 +818,10 @@
         }
         [self.captureSession commitConfiguration];
     }
+    if (isRunning) {
+        [self.captureSession startRunning];
+    }
+
 }
 #pragma mark 开始录制
 - (void)startRecordingWithPart:(DLYMiniVlogVirtualPart *)part{
