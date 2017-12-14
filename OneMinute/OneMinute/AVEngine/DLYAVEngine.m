@@ -1357,12 +1357,13 @@ BOOL isOnce = YES;
             
             NSArray *draftArray = [fileManager contentsOfDirectoryAtPath:draftPath error:nil];
             BOOL isEmpty = YES;
+            int partNum = 0;
             for (NSInteger i = 0; i < [draftArray count]; i++) {
                 NSString *path = draftArray[i];
                 DLYLog(@"合并-->加载--> 第 %lu 个片段",i);
                 if ([path hasSuffix:@"mp4"]) {
                     isEmpty = NO;
-                    NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
+                    NSString *allPath = [draftPath stringByAppendingFormat:@"/part%d.mp4",partNum++];
                     NSURL *url= [NSURL fileURLWithPath:allPath];
                     
                     AVURLAsset *asset = [AVURLAsset URLAssetWithURL:url options:nil];
@@ -1435,7 +1436,7 @@ BOOL isOnce = YES;
                         NSString *path = draftArray[i];
                         DLYLog(@"合并-->加载--> 第 %lu 个片段",i);
                         if ([path hasSuffix:@"mp4"]) {
-                            NSString *allPath = [draftPath stringByAppendingFormat:@"/%@",path];
+                            NSString *allPath = [draftPath stringByAppendingFormat:@"/part%d.mp4",partNum++];
                             NSURL *url= [NSURL fileURLWithPath:allPath];
                             [videoArray addObject:url];
                         }
