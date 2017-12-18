@@ -50,7 +50,6 @@
         _colorSpace = CGColorSpaceCreateDeviceRGB();
         
         _activeFilter = [[DLYPhotoFilters sharedInstance] defaultFilter];
-        NSLog(@"%@",[CIFilter filterNamesInCategory:kCICategoryGeometryAdjustment]);
         _transformFilter = [CIFilter filterWithName:@"CIAffineTransform"];
         CGAffineTransform t = CGAffineTransformMakeRotation(M_PI);
 //        [_transformFilter setValue:[NSValue valueWithCGAffineTransform:t] forKey:@"inputTransform"];
@@ -89,7 +88,7 @@
         
         if (!self.assetWriter || error) {
             NSString *formatString = @"Could not create AVAssetWriter: %@";
-            NSLog(@"%@", [NSString stringWithFormat:formatString, error]);
+            DLYLog(@"%@", [NSString stringWithFormat:formatString, error]);
             return;
         }
         
@@ -142,7 +141,7 @@
         if ([self.assetWriter canAddInput:self.assetWriterVideoInput]) {
             [self.assetWriter addInput:self.assetWriterVideoInput];
         } else {
-            NSLog(@"Unable to add video input.");
+            DLYLog(@"Unable to add video input.");
             return;
         }
         
@@ -154,7 +153,7 @@
         if ([self.assetWriter canAddInput:self.assetWriterAudioInput]) {
             [self.assetWriter addInput:self.assetWriterAudioInput];
         } else {
-            NSLog(@"Unable to add audio input.");
+            DLYLog(@"Unable to add audio input.");
         }
         
         self.isWriting = YES;
@@ -182,7 +181,7 @@
             if ([self.assetWriter startWriting]) {
                 [self.assetWriter startSessionAtSourceTime:timestamp];
             } else {
-                NSLog(@"Failed to start writing.");
+                DLYLog(@"Failed to start writing.");
             }
             self.firstSample = NO;
         }
@@ -196,7 +195,7 @@
                                                           pixelBufferPool,
                                                           &outputRenderBuffer);
         if (err) {
-            NSLog(@"Unable to obtain a pixel buffer from the pool.");
+            DLYLog(@"Unable to obtain a pixel buffer from the pool.");
             return;
         }
         
@@ -223,7 +222,7 @@
             if (![self.assetWriterInputPixelBufferAdaptor
                   appendPixelBuffer:outputRenderBuffer
                   withPresentationTime:timestamp]) {
-                NSLog(@"Error appending pixel buffer.");
+                DLYLog(@"Error appending pixel buffer.");
             }
         }
         
@@ -233,7 +232,7 @@
     else if (!self.firstSample && mediaType == kCMMediaType_Audio) {
         if (self.assetWriterAudioInput.isReadyForMoreMediaData) {
             if (![self.assetWriterAudioInput appendSampleBuffer:sampleBuffer]) {
-                NSLog(@"Error appending audio sample buffer.");
+                DLYLog(@"Error appending audio sample buffer.");
             }
         }
     }
@@ -246,7 +245,7 @@
     if (!self.firstSample) {
         if (self.assetWriterAudioInput.isReadyForMoreMediaData) {
             if (![self.assetWriterAudioInput appendSampleBuffer:sampleBuffer]) {
-                NSLog(@"Error appending audio sample buffer.");
+                DLYLog(@"Error appending audio sample buffer.");
             }
         }
     }
@@ -263,7 +262,7 @@
         if ([self.assetWriter startWriting]) {
             [self.assetWriter startSessionAtSourceTime:timestamp];
         } else {
-            NSLog(@"Failed to start writing.");
+            DLYLog(@"Failed to start writing.");
         }
         self.firstSample = NO;
     }
@@ -277,7 +276,7 @@
                                                       pixelBufferPool,
                                                       &outputRenderBuffer);
     if (err) {
-        NSLog(@"Unable to obtain a pixel buffer from the pool.");
+        DLYLog(@"Unable to obtain a pixel buffer from the pool.");
         return;
     }
     
@@ -304,7 +303,7 @@
         if (![self.assetWriterInputPixelBufferAdaptor
               appendPixelBuffer:outputRenderBuffer
               withPresentationTime:timestamp]) {
-            NSLog(@"Error appending pixel buffer.");
+            DLYLog(@"Error appending pixel buffer.");
         }
     }
     
@@ -316,21 +315,25 @@
     self.isWriting = NO;
     dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
     dispatch_async(self.movieWritingQueue, ^{
+        if (self.assetWriter.status == 0) {
+            
+        }else{
+            [self.assetWriter finishWritingWithCompletionHandler:^{
+                
+                if (self.assetWriter.status == AVAssetWriterStatusCompleted) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        NSURL *fileURL = [self.assetWriter outputURL];
+                        [self.delegate didWriteMovieAtURL:fileURL];
+                    });
+                } else {
+                    DLYLog(@"Failed to write movie: %@", self.assetWriter.error);
+                }
+                self.assetWriter = nil;
+                self.assetWriterVideoInput = nil;
+                self.assetWriterAudioInput = nil;
+            }];
+        }
         
-        [self.assetWriter finishWritingWithCompletionHandler:^{
-
-            if (self.assetWriter.status == AVAssetWriterStatusCompleted) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    NSURL *fileURL = [self.assetWriter outputURL];
-                    [self.delegate didWriteMovieAtURL:fileURL];
-                });
-            } else {
-                NSLog(@"Failed to write movie: %@", self.assetWriter.error);
-            }
-            self.assetWriter = nil;
-            self.assetWriterVideoInput = nil;
-            self.assetWriterAudioInput = nil;
-        }];
         dispatch_semaphore_signal(self.semaphore);
 
     });
