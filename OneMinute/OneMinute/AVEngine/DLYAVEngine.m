@@ -395,6 +395,15 @@
         int32_t maxWidth = 1280;
         
         AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+//        [device addObserver:self forKeyPath:@"adjustingFocus" options:NSKeyValueObservingOptionNew context:nil];
+        if(device.isSmoothAutoFocusSupported){
+            NSError *error = nil;
+            if([device lockForConfiguration:&error]){
+                device.smoothAutoFocusEnabled = YES;
+                DLYLog(@"成功开启平滑变焦");
+                [device unlockForConfiguration];
+            }
+        }
         for (AVCaptureDeviceFormat *format in [device formats]) {
             
             CMFormatDescriptionRef desc = format.formatDescription;
@@ -629,6 +638,30 @@
         DLYLog(@"Current point of the capture device is :x = %f,y = %f",point.x,point.y);
     }
 }
+// 监听焦距发生改变
+-(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
+    
+    if([keyPath isEqualToString:@"adjustingFocus"]){
+        BOOL adjustingFocus =[[change objectForKey:NSKeyValueChangeNewKey] isEqualToNumber:[NSNumber numberWithInt:1]];
+        
+        NSLog(@"adjustingFocus~~%d  change~~%@", adjustingFocus, change);
+        // 0代表焦距不发生改变 1代表焦距改变
+        if (adjustingFocus == 0) {
+            
+       
+            
+            // 点击一次可能会聚一次焦，也有可能会聚两次焦。一次聚焦，图像清晰。如果聚两次焦，照片会在第二次没有聚焦完成拍照，应为第一次聚焦完成会触发拍照，而拍照时间在第二次未聚焦完成，图像不清晰。增加延时可以让每次都是聚焦完成的时间点
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                [NSThread sleepForTimeInterval:0.2];
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    // 拍照
+                });
+            });
+        }
+        
+    }
+}
+
 
 #pragma mark -视频数据输出设置-
 
@@ -770,7 +803,7 @@
     dispatch_async(_dispatchQueue, ^{
         if (self.recordType ==recordtype) {
             return;
-        }        
+        }
         BOOL isRunning = self.captureSession.isRunning;
         if (isRunning) {
             //        [self.captureSession stopRunning];
