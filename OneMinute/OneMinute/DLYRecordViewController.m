@@ -2495,7 +2495,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     float width = (self.filmView.width - 50)/6;
     videoScrollView.contentSize = CGSizeMake(width * 6 + 10 * 5, videoScrollView.height);
     videoArray = [NSMutableArray array];
-    for(int i = 3; i < typeModelArray.count; i ++)
+    for(int i = 0; i < typeModelArray.count; i ++)
     {
         [videoArray addObject:typeModelArray[i]];
     }
