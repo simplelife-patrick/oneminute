@@ -2246,43 +2246,52 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     return  snapshot;
     return [snapshot applyLightEffect];
 }
+-(void)blurDismissAnimation{
+    self.previewView.alpha = 0;
+    self.previewView.hidden = NO;
+    self.previewStaticView.image = nil;
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        self.previewBlurView.alpha = 0.1;
+        self.previewView.alpha = 1;
+    } completion:^(BOOL finished) {
+        if (finished) {
+            self.previewBlurView.image = nil;
+        }
+        
+    }];
+}
 #pragma mark ==== 每个拍摄片段的点击事件
 - (void)vedioEpisodeClick:(UIButton *)sender {
-
+    [[self class] cancelPreviousPerformRequestsWithTarget:self];
+    [self.previewStaticView.layer removeAllAnimations];
+    [self.previewBlurView.layer removeAllAnimations];
+    
     UIButton * button = (UIButton *)sender;
     NSInteger i = button.tag - 10000;
     selectPartTag = button.tag;
     DLYMiniVlogVirtualPart *part = partModelArray[i-1];
-    
-    self.previewView.hidden = YES;
-    UIImage *originalImage = [self blurUIView:self.previewView];
-    self.previewStaticView.alpha = 1;
-    self.previewStaticView.image = originalImage;
-    self.previewBlurView.alpha = 0;
-    self.previewBlurView.image = [originalImage applyLightEffect];
+    if (self.previewBlurView.image==nil) {
+        self.previewView.hidden = YES;
+        UIImage *originalImage = [self blurUIView:self.previewView];
+        self.previewStaticView.alpha = 1;
+        self.previewStaticView.image = originalImage;
+        self.previewBlurView.alpha = 0;
+        self.previewBlurView.image = [originalImage applyLightEffect];
+        [UIView animateWithDuration:0.5 animations:^{
+            self.previewBlurView.alpha = 1;
+            self.previewStaticView.alpha = 0;
+        }];
+    }
 
-    [UIView animateWithDuration:1 animations:^{
-        self.previewBlurView.alpha = 1;
-        self.previewStaticView.alpha = 0;
-    }];
 
     //设置当前片段录制格式
     [self.AVEngine switchRecordFormatWithRecordType:part.recordType];
     
+    [self performSelector:@selector(blurDismissAnimation)
+               withObject:self
+               afterDelay:1.f];
 
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        self.previewView.alpha = 0;
-        self.previewView.hidden = NO;
-        self.previewStaticView.image = nil;
-
-        [UIView animateWithDuration:0.5 animations:^{
-            self.previewBlurView.alpha = 0.1;
-            self.previewView.alpha = 1;
-        } completion:^(BOOL finished) {
-            self.previewBlurView.image = nil;
-
-        }];
-    });
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     NSString *partStr = [NSString stringWithFormat:@"第%ld段", (long)i];
     [DLYUserTrack recordAndEventKey:@"ChooseRecordPart" andDescribeStr:template.templateTitle andPartNum:partStr];
