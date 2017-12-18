@@ -22,6 +22,8 @@
 #import "DLYContextManager.h"
 #import "DLYPhotoFilters.h"
 #import "DLYChooseFilterTableViewCell.h"
+
+#import "UIImage+ImageEffects.h"
 typedef void(^CompCompletedBlock)(BOOL success);
 typedef void(^CompProgressBlcok)(CGFloat progress);
 
@@ -57,6 +59,8 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
 @property (nonatomic, strong) DLYPreviewView                    *previewView;
 @property (nonatomic, weak) id <DLYImageTarget>                 imageTarget;
 @property (nonatomic, strong) UIImageView                       *previewMaskView;
+@property (nonatomic, strong) UIImageView                       *previewBlurView;
+@property (nonatomic, strong) UIImageView                       *previewStaticView;
 @property (nonatomic, strong) UIImageView                       *focusCursorImageView;
 @property (nonatomic, strong) UIImageView                       *faceRegionImageView;
 @property (nonatomic, strong) UIView * sceneView; //选择场景的view
@@ -563,6 +567,11 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
     self.imageTarget = self.previewView;
     self.previewView.coreImageContext = [DLYContextManager sharedInstance].ciContext;
     [overlayView insertSubview:self.previewView belowSubview:overlayView];
+    
+    self.previewStaticView = [[UIImageView alloc]initWithFrame:SCREEN_RECT];
+    [overlayView addSubview:self.previewStaticView];
+    self.previewBlurView = [[UIImageView alloc]initWithFrame:SCREEN_RECT];
+    [overlayView addSubview:self.previewBlurView];
     self.previewMaskView = [[UIImageView alloc]initWithFrame:SCREEN_RECT];
     if (self.session.currentTemplate.previewBorderName) {
         self.previewMaskView.image = [UIImage imageNamed:self.session.currentTemplate.previewBorderName];
@@ -1957,7 +1966,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self.backScrollView addSubview:button];
         
     }
-    [self changeRecordType];
+   // [self changeRecordType];
     if (isAllPart) {
         [self showPlayView];
     }
@@ -2183,7 +2192,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         [self.backScrollView addSubview:button];
         
     }
-    [self changeRecordType];
+   // [self changeRecordType];
     if (isAllPart) {
         [self showPlayView];
     }
@@ -2229,17 +2238,51 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
         
     }];
 }
-
+- (UIImage *)blurUIView:(UIView *)view {
+    UIGraphicsBeginImageContext(view.frame.size);
+    [view drawViewHierarchyInRect:view.frame afterScreenUpdates:NO];
+    UIImage *snapshot = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return  snapshot;
+    return [snapshot applyLightEffect];
+}
 #pragma mark ==== 每个拍摄片段的点击事件
 - (void)vedioEpisodeClick:(UIButton *)sender {
+
     UIButton * button = (UIButton *)sender;
     NSInteger i = button.tag - 10000;
     selectPartTag = button.tag;
     DLYMiniVlogVirtualPart *part = partModelArray[i-1];
     
+    self.previewView.hidden = YES;
+    UIImage *originalImage = [self blurUIView:self.previewView];
+    self.previewStaticView.alpha = 1;
+    self.previewStaticView.image = originalImage;
+    self.previewBlurView.alpha = 0;
+    self.previewBlurView.image = [originalImage applyLightEffect];
+
+    [UIView animateWithDuration:1 animations:^{
+        self.previewBlurView.alpha = 1;
+        self.previewStaticView.alpha = 0;
+    }];
+
     //设置当前片段录制格式
     [self.AVEngine switchRecordFormatWithRecordType:part.recordType];
     
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.previewView.alpha = 0;
+        self.previewView.hidden = NO;
+        self.previewStaticView.image = nil;
+
+        [UIView animateWithDuration:0.5 animations:^{
+            self.previewBlurView.alpha = 0.1;
+            self.previewView.alpha = 1;
+        } completion:^(BOOL finished) {
+            self.previewBlurView.image = nil;
+
+        }];
+    });
     DLYMiniVlogTemplate *template = self.session.currentTemplate;
     NSString *partStr = [NSString stringWithFormat:@"第%ld段", (long)i];
     [DLYUserTrack recordAndEventKey:@"ChooseRecordPart" andDescribeStr:template.templateTitle andPartNum:partStr];
@@ -2255,6 +2298,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 [view removeFromSuperview];
             }
         }
+
         [self updateShootGuide];
         DLYLogInfo(@"点击了已拍摄片段");
         cursorTag = selectPartTag;

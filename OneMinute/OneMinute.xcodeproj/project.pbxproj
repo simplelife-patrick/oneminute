@@ -20,6 +20,7 @@
 		18627B601FDFDB6D004D4C1C /* December.dly in Resources */ = {isa = PBXBuildFile; fileRef = 18627B5E1FDFDB6D004D4C1C /* December.dly */; };
 		18627B611FDFDB6D004D4C1C /* FelizNavidad.dly in Resources */ = {isa = PBXBuildFile; fileRef = 18627B5F1FDFDB6D004D4C1C /* FelizNavidad.dly */; };
 		18627B631FDFDBD0004D4C1C /* DreamTheSea.dly in Resources */ = {isa = PBXBuildFile; fileRef = 18627B621FDFDBD0004D4C1C /* DreamTheSea.dly */; };
+		18627BAC1FE398E7004D4C1C /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 18627BAB1FE398E7004D4C1C /* UIImage+ImageEffects.m */; };
 		18DC9FAD1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DC9FAC1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.m */; };
 		1C7E61841EE7DF4F0088F33F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61831EE7DF4F0088F33F /* main.m */; };
 		1C7E61871EE7DF4F0088F33F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7E61861EE7DF4F0088F33F /* AppDelegate.m */; };
@@ -140,6 +141,8 @@
 		18627B5E1FDFDB6D004D4C1C /* December.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = December.dly; sourceTree = "<group>"; };
 		18627B5F1FDFDB6D004D4C1C /* FelizNavidad.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = FelizNavidad.dly; sourceTree = "<group>"; };
 		18627B621FDFDBD0004D4C1C /* DreamTheSea.dly */ = {isa = PBXFileReference; lastKnownFileType = file; path = DreamTheSea.dly; sourceTree = "<group>"; };
+		18627BAA1FE398E7004D4C1C /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
+		18627BAB1FE398E7004D4C1C /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
 		18DC9FAB1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DLYChooseFilterTableViewCell.h; sourceTree = "<group>"; };
 		18DC9FAC1FDA5D2E00C9DF26 /* DLYChooseFilterTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DLYChooseFilterTableViewCell.m; sourceTree = "<group>"; };
 		1C7E617F1EE7DF4F0088F33F /* OneMinute.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OneMinute.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -555,6 +558,8 @@
 			children = (
 				6FA02E8F1FACAD48001529CF /* DLYIconFont.h */,
 				6FA02E8E1FACAD47001529CF /* DLYIconFont.m */,
+				18627BAA1FE398E7004D4C1C /* UIImage+ImageEffects.h */,
+				18627BAB1FE398E7004D4C1C /* UIImage+ImageEffects.m */,
 			);
 			name = Tool;
 			sourceTree = "<group>";
@@ -1045,6 +1050,7 @@
 				ADFFF1AE1F18C04400FB5BF7 /* DLYVideoTransition.m in Sources */,
 				ADFFF1A11F18A33000FB5BF7 /* DLYSession.m in Sources */,
 				6F8925CC1F1B13CA00256093 /* DLYBaseNavigationController.m in Sources */,
+				18627BAC1FE398E7004D4C1C /* UIImage+ImageEffects.m in Sources */,
 				ADFFF19D1F18A33000FB5BF7 /* DLYMiniVlogProduct.m in Sources */,
 				ADA51C261FD7889200097A75 /* NSString+DLYAdditions.m in Sources */,
 				6F8925CD1F1B13CA00256093 /* DLYBaseViewController.m in Sources */,
