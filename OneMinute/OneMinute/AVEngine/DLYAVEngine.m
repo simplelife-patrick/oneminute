@@ -801,9 +801,7 @@
 - (void) switchRecordFormatWithRecordType:(DLYMiniVlogRecordType)recordtype
 {
     dispatch_async(_dispatchQueue, ^{
-        if (self.recordType ==recordtype) {
-            return;
-        }
+
         BOOL isRunning = self.captureSession.isRunning;
         if (isRunning) {
             //        [self.captureSession stopRunning];
