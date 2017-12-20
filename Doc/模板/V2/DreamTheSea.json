@@ -25,7 +25,7 @@
       "dubStartTime": "00:00:29",
       "dubStopTime": "00:02:97",
       "soundType": 0,
-      "recordType": 0,
+      "recordType": 1,
       "BGMVolume": 100,
       "transitionType": 0,
       "shootGuide": ""
@@ -50,7 +50,7 @@
       "ifCombin": true,
       "dubStartTime": "00:07:00",
       "dubStopTime": "00:10:00",
-      "recordType": 0,
+      "recordType": 1,
       "soundType": 0,
       "BGMVolume": 100,
       "transitionType": 0,
