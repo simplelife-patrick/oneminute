@@ -811,7 +811,7 @@
         AVCaptureDevice *device = self.defaultVideoDevice;
         if (recordtype == DLYMiniVlogRecordTypeSlomo) {
             DLYLog(@"慢镜头片段");
-            int desiredFPS = 120;
+            int desiredFPS = 30 * SLOMOMULTI;
             [self.captureSession beginConfiguration];
             [self.captureSession removeInput:self.frontCameraInput];
             if ([self.captureSession canAddInput:self.backCameraInput]) {
@@ -894,7 +894,7 @@
             duration = (stopTime - startTime);
             break;
         case DLYMiniVlogRecordTypeSlomo:
-            duration = (stopTime - startTime) / 4;
+            duration = (stopTime - startTime) / SLOMOMULTI;
             break;
         case DLYMiniVlogRecordTypeTimelapse:
             duration = (stopTime - startTime) * 4;
@@ -998,7 +998,7 @@
         if(recordType == DLYMiniVlogRecordTypeTimelapse){
             scale = 0.25f;  // 0.25对应  快速 x4   播放时间压缩帧率平均(低帧率)
         } else if (recordType == DLYMiniVlogRecordTypeSlomo) {
-            scale = 4.0f;  //  4.0对应  慢速 x4   播放时间拉长帧率平均(高帧率)
+            scale = SLOMOMULTI*1.0f;
         }else{
             scale = 1.0f;
         }
