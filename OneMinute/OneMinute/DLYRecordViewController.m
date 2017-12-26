@@ -369,7 +369,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 stopTime = [self getTimeWithString:part.dubStopTime] / 1000;
                 duration = stopTime - startTime;
                 part.partTime = [NSString stringWithFormat:@"%f",duration];
-                part.duration = [NSString stringWithFormat:@"%f",duration / 4];
+                part.duration = [NSString stringWithFormat:@"%f",duration / SLOMOMULTI];
                 
                 break;
             case DLYMiniVlogRecordTypeTimelapse:
@@ -473,7 +473,7 @@ typedef void(^CompProgressBlcok)(CGFloat progress);
                 stopTime = [self getTimeWithString:part.dubStopTime] / 1000;
                 duration = stopTime - startTime;
                 part.partTime = [NSString stringWithFormat:@"%f",duration];
-                part.duration = [NSString stringWithFormat:@"%f",duration / 4];
+                part.duration = [NSString stringWithFormat:@"%f",duration / SLOMOMULTI];
                 
                 break;
             case DLYMiniVlogRecordTypeTimelapse:

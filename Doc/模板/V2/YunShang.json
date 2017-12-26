@@ -1,0 +1,39 @@
+{
+  "id": "YunShang.dly",
+  "title":"云上",
+  "border": "YunShang",
+  "templateType": 0,
+  "info": [
+    {
+      "partNum": 0,
+      "partType": 0,
+      "partPath": "",
+      "ifCombin": false,
+      "dubStartTime": "00:00:00",
+      "dubStopTime": "00:10:00",
+      "recordType": 1,
+      "soundType": 0,
+      "BGMVolume": 100,
+      "transitionType": 0,
+      "shootGuide": ""
+    }
+  ],
+  "subTitle1": {
+    "startTime": "00:02:00",
+    "stopTime": "00:05:00"
+  },
+  "dateWaterMark": {
+    "fontName": "a_LCDNovaObl",
+    "size": 30,
+    "wordSpace": 30,
+    "x": 1621,
+    "y": 986,
+    "color": "ffffff"
+  },
+  "BGM": "YunShangBGM",
+  "header": 0,
+  "tailer": 0,
+  "filter": "CIPhotoEffectFade",
+  "templateDescription": "本片长度10s，一起来记录生活中的诗意片段吧。",
+  "sampleVideoName": "YunShangSample.mp4"
+}

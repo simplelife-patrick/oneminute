@@ -2,11 +2,11 @@
   "images" : [
     {
       "idiom" : "universal",
+      "filename" : "YunShang_preview.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "DreamTheSea_render.png",
       "scale" : "2x"
     },
     {
