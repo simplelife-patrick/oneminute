@@ -2,7 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <array>
-	<string>DreamTheSea.dly</string>
 	<string>Lantern.dly</string>
 	<string>Mono.dly</string>
 	<string>December.dly</string>
@@ -10,5 +9,7 @@
 	<string>BanTouMing.dly</string>
 	<string>ShuangBaiTiao.dly</string>
 	<string>YouDaBai.dly</string>
+	<string>DreamTheSea.dly</string>
+	<string>YunShang.dly</string>
 </array>
 </plist>

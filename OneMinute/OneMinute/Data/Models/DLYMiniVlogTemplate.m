@@ -52,6 +52,14 @@
                 if ([dic valueForKey:@"border"]) {
                     self.previewBorderName = [NSString stringWithFormat:@"%@_preview.png",[dic valueForKey:@"border"]];
                     self.renderBorderName = [NSString stringWithFormat:@"%@_render.png",[dic valueForKey:@"border"]];
+                    if ([[NSBundle mainBundle]pathForResource:self.renderBorderName ofType:nil]) {
+                        
+                    }else{
+                        self.renderBorderName = [NSString stringWithFormat:@"%@_render.gif",[dic valueForKey:@"border"]];
+                        if (![[NSBundle mainBundle]pathForResource:self.renderBorderName ofType:nil]) {
+                            self.renderBorderName = [NSString stringWithFormat:@"%@_render.png",[dic valueForKey:@"border"]];
+                        }
+                    }
                 }
             }else{
                 DLYLog(@"模板脚本文件解析出错");
