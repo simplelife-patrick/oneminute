@@ -23,12 +23,12 @@
     "stopTime": "00:05:00"
   },
   "dateWaterMark": {
-    "fontName": "Courier",
-    "size": 36,
-    "wordSpace": 1,
-    "x": 1553,
-    "y": 943,
-    "color": "4c4b4b"
+    "fontName": "a_LCDNovaObl",
+    "size": 30,
+    "wordSpace": 30,
+    "x": 1621,
+    "y": 986,
+    "color": "ffffff"
   },
   "BGM": "YunShangBGM",
   "header": 0,

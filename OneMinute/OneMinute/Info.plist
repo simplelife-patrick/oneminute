@@ -79,6 +79,7 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>iconfont.ttf</string>
+		<string>LCDNOV_9.TTF</string>
 	</array>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
