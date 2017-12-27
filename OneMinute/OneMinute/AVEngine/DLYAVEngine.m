@@ -1991,12 +1991,11 @@ BOOL isOnce = YES;
                 [parentLayer addSublayer:videoBorderLayer];
             }else{
                 NSArray *imageArr = [self didCompositionGif:self.session.currentTemplate.renderBorderName];
-                CALayer *animatedLayer = [self buildAnimationImages:videoTrack.naturalSize imagesArray:imageArr withTime:0.1 andDuraiton:10];
-//                animatedLayer.frame = CGRectMake(0, 0, renderSize.width, renderSize.height);
+                CALayer *animatedLayer = [self buildAnimationImages:videoTrack.naturalSize imagesArray:imageArr withTime:AVCoreAnimationBeginTimeAtZero andDuraiton:10];
                 CALayer *videoBorderLayer = [CALayer layer];
                 videoBorderLayer.frame = CGRectMake(0, 0, renderSize.width, renderSize.height);
                 [videoBorderLayer addSublayer:animatedLayer];
-                [parentLayer addSublayer:animatedLayer];
+                [parentLayer addSublayer:videoBorderLayer];
 
             }
   
@@ -2533,7 +2532,6 @@ BOOL isOnce = YES;
     videoComposition.animationTool = [AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:videoLayer inLayer:parentLayer];
     videoComposition.frameDuration = CMTimeMake(1, 30); // 30 fps
     videoComposition.renderSize =  assetVideoTrack.naturalSize;
-    
     parentLayer = nil;
     if (animatedLayers) {
         [animatedLayers removeAllObjects];
@@ -2671,28 +2669,27 @@ BOOL isOnce = YES;
         [keyTimesArray addObject:tempTime];
     }
     
-    //    UIImage *image = [UIImage imageWithCGImage:(CGImageRef)imagesArray[0]];
-    //    AVSynchronizedLayer *animationLayer = [CALayer layer];
-    CALayer *animationLayer = [CALayer layer];
+    AVSynchronizedLayer *animationLayer = [CALayer layer];
     
     animationLayer.opacity = 1.0;
     animationLayer.frame = CGRectMake(0, 0, 1280, 720);
     animationLayer.position = CGPointMake(640, 360);
     
     CAKeyframeAnimation *frameAnimation = [[CAKeyframeAnimation alloc] init];
-    frameAnimation.beginTime = beginTime;
+    frameAnimation.beginTime = AVCoreAnimationBeginTimeAtZero;
     [frameAnimation setKeyPath:@"contents"];
     frameAnimation.calculationMode = kCAAnimationLinear;
+    frameAnimation.fillMode = kCAFillModeBoth;
+
     //注释掉就OK了 是否留着最后一张或某一张
-//        [animationLayer setContents:[imagesArray firstObject]];
+    [animationLayer setContents:[imagesArray lastObject]];
     frameAnimation.autoreverses = NO;
+    frameAnimation.removedOnCompletion = NO;
     frameAnimation.duration = duration;
     frameAnimation.repeatCount = 1;
     [frameAnimation setValues:imagesArray];
-//    [frameAnimation setKeyTimes:keyTimesArray];
-    //    [frameAnimation setRemovedOnCompletion:NO];
-    [animationLayer addAnimation:frameAnimation forKey:@"contents"];
-//    animationLayer.beginTime = beginTime;
+
+    [animationLayer addAnimation:frameAnimation forKey:@"content"];
     return animationLayer;
 }
 
