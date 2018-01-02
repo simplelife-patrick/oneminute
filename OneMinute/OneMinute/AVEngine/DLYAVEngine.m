@@ -2749,15 +2749,11 @@ BOOL isOnce = YES;
 - (NSInteger) getTodayIsHowManyDay
 {
     NSDate*date = [NSDate date];
-    NSCalendar*calendar = [NSCalendar currentCalendar];
-    NSDateComponents *comps = [calendar components:(NSWeekCalendarUnit | NSWeekdayCalendarUnit |NSWeekdayOrdinalCalendarUnit)fromDate:date];
+    NSCalendar *gregorian = [[NSCalendar alloc]initWithCalendarIdentifier:NSGregorianCalendar];
+    NSUInteger dayOfYear = [gregorian ordinalityOfUnit:NSDayCalendarUnit inUnit:NSYearCalendarUnit forDate:date];
     
-    NSInteger week = [comps week];
-    NSInteger weekday = [comps weekday];
     
-    NSInteger howManyDay = (week - 1) * 7 + weekday;
-    
-    return howManyDay;
+    return dayOfYear;
 }
 
 //计算两点间距离
